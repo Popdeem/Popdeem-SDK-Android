@@ -1,3 +1,7 @@
+### Bintray Properties ###
+sdkdistro.properties
+
+
 # Created by https://www.gitignore.io/api/intellij,android,osx,windows,gradle
 
 ### Intellij ###

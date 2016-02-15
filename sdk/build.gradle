@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1-DEV"
     }
     buildTypes {
         release {
@@ -23,6 +23,7 @@ dependencies {
 
     // Tests
     testCompile 'junit:junit:4.12'
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.1.2'
 
     // Google
     compile 'com.android.support:appcompat-v7:23.1.1'
@@ -32,5 +33,33 @@ dependencies {
 
     // Square
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
 }
+
+ext {
+    propertiesFileName = 'sdkdistro.properties'
+    bintrayRepo = 'maven'
+    bintrayName = 'popdeem-sdk'
+    bintrayOrg = 'popdeem'
+
+    publishedGroupId = 'com.popdeem.sdk'
+    libraryName = 'PopdeemSDK'
+    artifact = 'sdk'
+
+    libraryDescription = 'PopdeemSDK is used to interact with the Popdeem API.'
+    libraryVersion = '0.0.1'
+
+    siteUrl = 'http://popdeem.com/'
+    gitUrl = 'https://github.com/Popdeem/Popdeem-SDK-Android'
+
+    developerId = 'mobamike'
+    developerName = 'Mike Nolan'
+    developerEmail = 'mike@mobanode.com'
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://raw.githubusercontent.com/Popdeem/Popdeem-SDK-Android/master/LICENSE.txt'
+    allLicenses = ["MIT"]
+}
+
+apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/install.gradle'
+apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/bintray.gradle'
