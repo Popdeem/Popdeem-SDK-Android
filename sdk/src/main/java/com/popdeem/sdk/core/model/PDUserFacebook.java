@@ -1,0 +1,123 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Popdeem
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.popdeem.sdk.core.model;
+
+/**
+ * Popdeem Users Facebook Model Class
+ */
+public class PDUserFacebook {
+
+    /*
+    "social_account_id": 1234,
+      "facebook_id": "123456789",
+      "tester": "false",
+      "access_token": "facebookaccesstoken",
+      "expiration_time": 123456789,
+      "profile_picture_url": "https://imageurl.com",
+      "score": {
+        "total_score": {
+          "value": "100.0"
+        },
+        "influence_score": {
+          "reach_score_value": "100.0",
+          "engangement_score_value": "100.0",
+          "engagement_score_value": "100.0",
+          "frequency_score_value": "100.0"
+        },
+        "advocacy_score": {
+          "value": 100
+        }
+      },
+      "favourite_brand_ids": []
+     */
+
+    private long socialAccountId;
+    private String accessToken;
+    private String profilePictureUrl;
+    private String facebookId;
+    private long expirationTime;
+
+    public PDUserFacebook() {
+    }
+
+    public PDUserFacebook(long socialAccountId, String accessToken, String profilePictureUrl, String facebookId, long expirationTime) {
+        this.socialAccountId = socialAccountId;
+        this.accessToken = accessToken;
+        this.profilePictureUrl = profilePictureUrl;
+        this.facebookId = facebookId;
+        this.expirationTime = expirationTime;
+    }
+
+    public long getSocialAccountId() {
+        return socialAccountId;
+    }
+
+    public void setSocialAccountId(long socialAccountId) {
+        this.socialAccountId = socialAccountId;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public long getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(long expirationTime) {
+        this.expirationTime = expirationTime;
+    }
+
+    @Override
+    public String toString() {
+        return "[accessToken: \"" + value(this.accessToken) + "\", profilePictureUrl: \"" + value(this.profilePictureUrl)
+                + "\", facebookId: \"" + value(this.facebookId) + "\", expirationTime: \"" + this.expirationTime + "]\n";
+    }
+
+    private String value(String s) {
+        return s == null ? "null" : s;
+    }
+
+}

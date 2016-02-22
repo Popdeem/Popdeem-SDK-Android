@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="pd_toolbar_color">#da4d59</color>
+    <color name="pd_toolbar_color_dark">#cc4752</color>
+    <color name="pd_accent">#dba7ac</color>
+
+    <color name="colorPrimary">@color/pd_toolbar_color</color>
+    <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>
+    <color name="colorAccent">@color/pd_accent</color>
+
 </resources>
