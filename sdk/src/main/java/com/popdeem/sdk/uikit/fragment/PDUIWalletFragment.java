@@ -38,6 +38,7 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 public class PDUIWalletFragment extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PDUIWalletRecyclerViewAdapter mAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
     private View mNoItemsInWalletView;
 
@@ -72,9 +74,14 @@ public class PDUIWalletFragment extends Fragment {
             }
         });
 
+        mAdapter = new PDUIWalletRecyclerViewAdapter(mRewards);
+
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_wallet_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+        recyclerView.setAdapter(mAdapter);
+
+        refreshWallet();
 
         return view;
     }
@@ -92,6 +99,7 @@ public class PDUIWalletFragment extends Fragment {
             public void success(ArrayList<PDReward> pdRewards) {
                 mRewards.clear();
                 mRewards.addAll(pdRewards);
+                mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
             }

@@ -49,6 +49,7 @@ import java.util.ArrayList;
 public class PDUIRewardsFragment extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private View noItemsView;
     private PDUIRewardsRecyclerViewAdapter mRecyclerViewAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
 
@@ -64,6 +65,7 @@ public class PDUIRewardsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_rewards, container, false);
 
+        noItemsView = view.findViewById(R.id.pd_rewards_no_items_view);
         mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_rewards_recycler_view);
@@ -99,6 +101,7 @@ public class PDUIRewardsFragment extends Fragment {
                 mRewards.addAll(pdRewards);
                 mRecyclerViewAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
+                noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
             }
 
             @Override

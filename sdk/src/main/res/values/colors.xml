@@ -3,6 +3,14 @@
     <color name="pd_toolbar_color">#da4d59</color>
     <color name="pd_toolbar_color_dark">#cc4752</color>
     <color name="pd_accent">#dba7ac</color>
+    <!--<color name="pd_toolbar_text_color">#00ff00</color>-->
+    <!--<color name="pd_toolbar_up_button_color">#0000ff</color>-->
+
+    <color name="pd_tab_selected_text_color">#ffffff</color>
+    <color name="pd_tab_unselected_text_color">#aaaaaa</color>
+    <color name="pd_tab_indicator_color">#dba7ac</color>
+
+    <color name="pd_inbox_background_color">#ffffff</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>

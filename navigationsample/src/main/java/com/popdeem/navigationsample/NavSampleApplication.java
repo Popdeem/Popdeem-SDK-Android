@@ -24,24 +24,18 @@
 
 package com.popdeem.navigationsample;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.app.Application;
 
 import com.popdeem.sdk.core.PopdeemSDK;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by mikenolan on 22/02/16.
+ */
+public class NavSampleApplication extends Application {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-
-    public void pushPopdeemClick(View view) {
-        PopdeemSDK.showHomeFlow();
+    public void onCreate() {
+        super.onCreate();
+        PopdeemSDK.initializeSDK(this);
     }
 }

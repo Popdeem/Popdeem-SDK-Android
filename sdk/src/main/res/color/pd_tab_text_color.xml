@@ -22,11 +22,10 @@
   ~ SOFTWARE.
   -->
 
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/pd_toolbar_color"
-    app:popupTheme="@style/AppTheme.PopupOverlay"
-    app:theme="@style/AppTheme.AppBarOverlay" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:color="@color/pd_tab_selected_text_color" android:state_selected="true" />
+    <item android:color="@color/pd_tab_unselected_text_color" android:state_selected="false" />
+    <item android:color="@color/pd_tab_unselected_text_color" />
+
+</selector>

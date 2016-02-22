@@ -65,7 +65,7 @@ public class PDUIFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_feed, container, false);
 
-        mNoItemsView = view.findViewById(R.id.pd_activity_no_items_view);
+        mNoItemsView = view.findViewById(R.id.pd_feed_no_items_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -76,7 +76,7 @@ public class PDUIFeedFragment extends Fragment {
 
         mAdapter = new PDUIFeedRecyclerViewAdapter(mFeedItems);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_activity_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_feed_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
         recyclerView.setAdapter(mAdapter);

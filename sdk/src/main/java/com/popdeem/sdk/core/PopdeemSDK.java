@@ -26,15 +26,18 @@ package com.popdeem.sdk.core;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.FacebookSdk;
+import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
+import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 
 import io.realm.Realm;
 
@@ -90,12 +93,12 @@ public class PopdeemSDK {
         PDGCMUtils.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {
             @Override
             public void success(String registrationToken) {
-
+                Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM success. Registration token: " + registrationToken);
             }
 
             @Override
             public void failure(String message) {
-
+                Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM failure: " + message);
             }
         });
 
@@ -113,6 +116,19 @@ public class PopdeemSDK {
 
 
     /**
+     * Show Popdeem Home Flow
+     */
+    public static void showHomeFlow() {
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+
+        Intent intent = new Intent(currentActivity(), PDUIHomeFlowActivity.class);
+        currentActivity().startActivity(intent);
+    }
+
+
+    /**
      * Check if Popdeem SDK has been initialized.
      *
      * @return true if Popdeem SDK is initalized, false otherwise
@@ -121,6 +137,12 @@ public class PopdeemSDK {
         return sdkInitialized;
     }
 
+
+    /**
+     * Get the Popdeem API Key
+     *
+     * @return Popdeem API Key String
+     */
     public static String getPopdeemAPIKey() {
         if (sPopdeemAPIKey == null) {
             sPopdeemAPIKey = PDUtils.getPopdeemAPIKey(sApplication);
@@ -130,7 +152,9 @@ public class PopdeemSDK {
 
 
     /**
-     * @return
+     * Get the Current Activity
+     *
+     * @return Current Activity
      */
     public static Activity currentActivity() {
         return sCurrentActivity;

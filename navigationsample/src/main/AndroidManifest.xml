@@ -25,8 +25,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.popdeem.navigationsample">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".NavSampleApplication"
         android:allowBackup="true"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -41,6 +45,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.popdeem.sdk.ApiKey"
+            android:value="43507f68-eeab-49e7-abf0-da099b14f17f" />
+
+        <meta-data
+            android:name="GCMSenderID"
+            android:value="\ 839359806985" />
+
     </application>
 
 </manifest>

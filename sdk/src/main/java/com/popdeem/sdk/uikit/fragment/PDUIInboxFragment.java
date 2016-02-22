@@ -26,40 +26,81 @@ package com.popdeem.sdk.uikit.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+import java.util.ArrayList;
+
 public class PDUIInboxFragment extends Fragment {
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    //    private PDUIWalletRecyclerViewAdapter mAdapter;
+    private ArrayList<String> mRewards = new ArrayList<>();
+    private View mNoMessagesView;
 
     public PDUIInboxFragment() {
         // Required empty public constructor
     }
 
+    public static PDUIInboxFragment newInstance() {
+        return new PDUIInboxFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_inbox, container, false);
 
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        toolbar.setTitle("Inbox");
-//        activity.setSupportActionBar(toolbar);
-//
-//        ActionBar actionBar = activity.getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        mNoMessagesView = view.findViewById(R.id.pd_inbox_no_items_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pd_inbox_swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshMessages();
+            }
+        });
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_inbox_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+//        recyclerView.setAdapter(mAdapter);
+
+        refreshMessages();
 
         return view;
+    }
+
+    private void refreshMessages() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        PDAPIClient.instance().getPopdeemMessages(new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                Log.d(PDUIInboxFragment.class.getSimpleName(), "json: " + jsonObject.toString());
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void failure(int statusCode, String message) {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override

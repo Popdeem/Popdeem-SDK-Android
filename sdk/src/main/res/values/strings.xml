@@ -2,8 +2,14 @@
 
     <string name="app_name">Popdeem-SDK-Android</string>
 
+    <string name="pd_empty_string" />
     <string name="pd_inbox_text">Inbox</string>
     <string name="pd_instant_coupon_label">Instant Coupon</string>
+    <string name="pd_you_will_be_notified_label">You will be notified if you are the winner.</string>
+    <string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>
     <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
+    <string name="pd_feed_no_items_text">There is no Feed available right now. Please check back later.</string>
+    <string name="pd_rewards_no_items_text">There are no Rewards available right now. Please check back later.</string>
+    <string name="pd_inbox_no_messages_text">You have no message right now…</string>
 
 </resources>

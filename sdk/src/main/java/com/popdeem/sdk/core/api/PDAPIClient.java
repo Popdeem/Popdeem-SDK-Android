@@ -602,7 +602,7 @@ public class PDAPIClient {
      *
      * @param callback {@link PDAPICallback} for API result
      */
-    private void getPopdeemMessages(@NonNull PDAPICallback<JsonObject> callback) {
+    public void getPopdeemMessages(@NonNull PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
 //        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
 

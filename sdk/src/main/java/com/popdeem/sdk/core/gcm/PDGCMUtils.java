@@ -25,6 +25,7 @@
 package com.popdeem.sdk.core.gcm;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -44,6 +45,8 @@ import io.realm.Realm;
  * Created by mikenolan on 21/02/16.
  */
 public class PDGCMUtils {
+
+    private static final String GCM_SENDER_ID_META_DATA_PROPERTY_NAME = "GCMSenderID";
 
     /**
      * Callback for GCM registration result
@@ -82,6 +85,23 @@ public class PDGCMUtils {
      */
     public static boolean isGooglePlayServicesAvailable(Context context) {
         return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS;
+    }
+
+
+    private static String getGCMSenderID(Context context) {
+        ApplicationInfo ai;
+        try {
+            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
+        }
+
+        if (ai.metaData == null) {
+            throw new RuntimeException("Cannot access Application Meta Data.");
+        }
+
+        return ai.metaData.getString(GCM_SENDER_ID_META_DATA_PROPERTY_NAME, null);
     }
 
 
@@ -150,7 +170,14 @@ public class PDGCMUtils {
      * @param callback Callback for registration result
      */
     private static void registerInBackground(Context context, PDGCMRegistrationCallback callback) {
-        new PDGCMRegisterAsync(context, callback).execute();
+        final String gcmSenderID = getGCMSenderID(context);
+        if (gcmSenderID == null) {
+            Log.d("Popdeem", "Cannot register for push. GCM Sender ID was not found in AndroidManifest.xml.\n" +
+                    "Check that: <meta-data android:name=\"" + GCM_SENDER_ID_META_DATA_PROPERTY_NAME + "\" android:value=\"\\ YOUR_API_KEY\" /> is in the <application> element of your app's AndroidManifest.xml\n" +
+                    "The '\\ ' is important and must be added to the start of the GCM Sender ID.");
+        } else {
+            new PDGCMRegisterAsync(context, gcmSenderID, callback).execute();
+        }
     }
 
 
@@ -160,10 +187,12 @@ public class PDGCMUtils {
     private static class PDGCMRegisterAsync extends AsyncTask<Void, Void, String> {
 
         private Context mContext;
+        private String mGcmSenderID;
         private PDGCMRegistrationCallback mCallback;
 
-        public PDGCMRegisterAsync(Context mContext, PDGCMRegistrationCallback mCallback) {
+        public PDGCMRegisterAsync(Context mContext, String gcmSenderID, PDGCMRegistrationCallback mCallback) {
             this.mContext = mContext;
+            this.mGcmSenderID = gcmSenderID;
             this.mCallback = mCallback;
         }
 
@@ -171,7 +200,7 @@ public class PDGCMUtils {
         protected String doInBackground(Void... params) {
             InstanceID instanceID = InstanceID.getInstance(mContext);
             try {
-                String token = instanceID.getToken("TODO Sender ID", GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                String token = instanceID.getToken(mGcmSenderID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 Log.i(PDGCMUtils.class.getSimpleName(), "token: " + token);
                 return token;
             } catch (IOException e) {

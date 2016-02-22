@@ -8,6 +8,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity
+            android:name="com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity"
+            android:label="@string/pd_empty_string"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>
