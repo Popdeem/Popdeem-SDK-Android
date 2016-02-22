@@ -43,7 +43,7 @@ import com.popdeem.sdk.uikit.fragment.PDUIInboxFragment;
 /**
  * Created by mikenolan on 22/02/16.
  */
-public class PDUIHomeFlowActivity extends AppCompatActivity {
+public class PDUIHomeFlowActivity extends PDBaseActivity {
 
     private FragmentManager mFragmentManager;
 
@@ -54,9 +54,6 @@ public class PDUIHomeFlowActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.pd_toolbar_color_dark));
-        }
         setContentView(R.layout.activity_pd_home_flow);
 
         mFragmentManager = getSupportFragmentManager();
@@ -64,21 +61,22 @@ public class PDUIHomeFlowActivity extends AppCompatActivity {
             @Override
             public void onBackStackChanged() {
                 if (mFragmentManager.getBackStackEntryCount() == 0) {
+                    setTitle(R.string.pd_empty_string);
                     menuRes = R.menu.menu_pd_home;
                     invalidateOptionsMenu();
                 }
             }
         });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_text_color));
-//        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_up_button_color));
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+////        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_text_color));
+////        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_up_button_color));
+//        setSupportActionBar(toolbar);
+//
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
 
         showHomeFragment();
     }
@@ -91,6 +89,7 @@ public class PDUIHomeFlowActivity extends AppCompatActivity {
     }
 
     private void showInboxFragment() {
+        setTitle(R.string.pd_inbox_text);
         menuRes = NO_MENU;
         invalidateOptionsMenu();
         Fragment fragment = new PDUIInboxFragment();
@@ -102,7 +101,8 @@ public class PDUIHomeFlowActivity extends AppCompatActivity {
 
     private boolean popBackStackIfNeeded() {
         if (mFragmentManager.getBackStackEntryCount() > 0) {
-            mFragmentManager.popBackStack();
+            String name = mFragmentManager.getBackStackEntryAt(mFragmentManager.getBackStackEntryCount() - 1).getName();
+            mFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return true;
         }
         return false;

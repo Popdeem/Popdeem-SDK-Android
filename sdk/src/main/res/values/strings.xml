@@ -11,5 +11,6 @@
     <string name="pd_feed_no_items_text">There is no Feed available right now. Please check back later.</string>
     <string name="pd_rewards_no_items_text">There are no Rewards available right now. Please check back later.</string>
     <string name="pd_inbox_no_messages_text">You have no message right now…</string>
+    <string name="title_activity_pduifeed_image">Image</string>
 
 </resources>

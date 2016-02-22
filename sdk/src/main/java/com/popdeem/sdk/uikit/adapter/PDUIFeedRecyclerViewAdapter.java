@@ -49,11 +49,20 @@ import java.util.ArrayList;
  */
 public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRecyclerViewAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(View view);
+    }
+
+    private OnItemClickListener mListener;
     private ArrayList<PDFeed> mItems;
     private int imageDimen = -1;
 
     public PDUIFeedRecyclerViewAdapter(ArrayList<PDFeed> mItems) {
         this.mItems = mItems;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -153,6 +162,15 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
+            itemView.setClickable(true);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemClick(v);
+                    }
+                }
+            });
             this.context = context;
             this.profileImageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_feed_profile_image_view);
             this.sharedImageView = (ImageView) itemView.findViewById(R.id.pd_feed_shared_image_view);
