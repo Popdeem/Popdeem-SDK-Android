@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+project.ext.popdeemSdkVersion = '0.0.2-DEV'
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -8,7 +10,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
-        versionName "0.0.1-DEV"
+        versionName popdeemSdkVersion
     }
     buildTypes {
         release {
@@ -39,11 +41,13 @@ dependencies {
 
     // Third Party
     compile 'io.realm:realm-android:0.87.4'
+    compile 'joda-time:joda-time:2.9.2'
 
     // Square
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'com.jakewharton.retrofit:retrofit1-okhttp3-client:1.0.2'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
 ext {
@@ -57,7 +61,7 @@ ext {
     artifact = 'sdk'
 
     libraryDescription = 'PopdeemSDK is used to interact with the Popdeem API.'
-    libraryVersion = '0.0.1'
+    libraryVersion = popdeemSdkVersion
 
     siteUrl = 'http://popdeem.com/'
     gitUrl = 'https://github.com/Popdeem/Popdeem-SDK-Android'

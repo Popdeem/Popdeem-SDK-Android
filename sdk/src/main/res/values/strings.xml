@@ -1,3 +1,9 @@
 <resources>
+
     <string name="app_name">Popdeem-SDK-Android</string>
+
+    <string name="pd_inbox_text">Inbox</string>
+    <string name="pd_instant_coupon_label">Instant Coupon</string>
+    <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
+
 </resources>

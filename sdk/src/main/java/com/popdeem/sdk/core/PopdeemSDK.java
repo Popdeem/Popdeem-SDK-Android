@@ -27,11 +27,16 @@ package com.popdeem.sdk.core;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
+import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
+import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
+
+import io.realm.Realm;
 
 /**
  * Created by mikenolan on 15/02/16.
@@ -59,6 +64,27 @@ public class PopdeemSDK {
 
         // Get Popdeem API Key
         getPopdeemAPIKey();
+
+        // Get UID for Non Social login
+        PDUniqueIdentifierUtils.createUID(application, new PDUniqueIdentifierUtils.PDUIDCallback() {
+            @Override
+            public void success(String uid) {
+                PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
+                uidReam.setId(0);
+                uidReam.setUid(uid);
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(uidReam);
+                realm.commitTransaction();
+                realm.close();
+            }
+
+            @Override
+            public void failure(String message) {
+                Log.d(PDUniqueIdentifierUtils.class.getSimpleName(), "failed to create uid: " + message);
+            }
+        });
 
         // Init GCM
         PDGCMUtils.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {

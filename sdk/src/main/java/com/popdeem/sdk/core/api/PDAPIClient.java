@@ -129,13 +129,16 @@ public class PDAPIClient {
 
 
     /**
-     * @param context
-     * @param callback
+     * Create a Non Social User. This user will be updated upon a social login.
+     *
+     * @param uid         Unique Identifier for user
+     * @param deviceToken Device Token for GCM Push
+     * @param context     Application Context
+     * @param callback    {@link PDAPICallback} for API result
      */
-    public void createNonSocialUser(@NonNull Context context, @NonNull final PDAPICallback<JsonObject> callback) {
-//        AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+    public void createNonSocialUser(@NonNull String uid, @NonNull String deviceToken, @NonNull Context context, @NonNull final PDAPICallback<JsonObject> callback) {
         PopdeemAPI api = getApiInterface(null, null);
-        api.createNonSocialUser("mikemikemikemikemike", "devicetokendevicetokendevicetoken", PDAPIConfig.PLATFORM_VALUE, callback);
+        api.createNonSocialUser(uid, deviceToken, PDAPIConfig.PLATFORM_VALUE, callback);
     }
 
 
@@ -150,7 +153,7 @@ public class PDAPIClient {
      * @param context             Application {@link Context}
      * @param facebookAccessToken Access Token {@link String} received on successful Facebook login
      * @param facebookUserID      Facebook Application ID received on successful Facebook login
-     * @param callback            {@link PDAPICallback} to calling {@link android.app.Activity}.
+     * @param callback            {@link PDAPICallback} for API result
      */
     public void registerUserWithFacebookAccessToken(@NonNull final Context context, @NonNull final String facebookAccessToken,
                                                     @NonNull final String facebookUserID, @NonNull final PDAPICallback<String> callback) {
@@ -228,7 +231,7 @@ public class PDAPIClient {
      * @param userID
      * @param userToken
      * @param userSecret
-     * @param callback
+     * @param callback   {@link PDAPICallback} for API result
      */
     public void connectWithTwitterAccount(@NonNull String userID, @NonNull String userToken, @NonNull String userSecret, @NonNull final PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(PDAPIConfig.REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
@@ -259,7 +262,7 @@ public class PDAPIClient {
      * @param deviceToken - Device token
      * @param latitude    - Current latitude for user
      * @param longitude   - Current longitude for user
-     * @param callback    - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback    {@link PDAPICallback} for API result
      * @deprecated user {@link #updateUserLocationAndDeviceToken(Context, String, String, String, String, PDAPICallback)} instead.
      */
     @Deprecated
@@ -282,7 +285,7 @@ public class PDAPIClient {
      * @param deviceToken Device token
      * @param latitude    Current latitude for user
      * @param longitude   Current longitude for user
-     * @param callback    {@link PDAPICallback} to calling {@link android.app.Activity}.
+     * @param callback    {@link PDAPICallback} for API result
      */
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
                                                  @NonNull final String latitude, @NonNull final String longitude,
@@ -363,8 +366,8 @@ public class PDAPIClient {
      * Get details for User ID
      * (Method will be public once it is tested)
      *
-     * @param id       - User ID
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param id       User ID
+     * @param callback {@link PDAPICallback} for API result
      */
     private void getUserDetailsForId(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
@@ -383,7 +386,7 @@ public class PDAPIClient {
      * @param twitterAccessSecret - Twitter access  secret
      * @param twitterID           - Twitter ID
      * @param screenName          - Twitter user screen name
-     * @param callback            - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback            {@link PDAPICallback} for API result
      */
     private void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
                                                @NonNull String twitterID, @NonNull String screenName,
@@ -400,7 +403,7 @@ public class PDAPIClient {
      * (Method will be public once it is tested)
      *
      * @param id
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     private void getPopdeemFriends(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
@@ -414,7 +417,7 @@ public class PDAPIClient {
     /**
      * Get Brands
      *
-     * @param callback {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void getBrands(@NonNull PDAPICallback<ArrayList<PDBrand>> callback) {
         Gson gson = new GsonBuilder()
@@ -431,7 +434,7 @@ public class PDAPIClient {
 
     /**
      * @param brandID
-     * @param callback {@link PDAPICallback}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void getRewardsForBrandID(@NonNull String brandID, @NonNull PDAPICallback<ArrayList<PDReward>> callback) {
         Gson gson = new GsonBuilder()
@@ -452,7 +455,7 @@ public class PDAPIClient {
      * Request all rewards which are relevant to user.
      * </p>
      *
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void getAllRewards(@NonNull final PDAPICallback<ArrayList<PDReward>> callback) {
         Gson gson = new GsonBuilder()
@@ -479,7 +482,7 @@ public class PDAPIClient {
      * @param image               - {@link android.util.Base64} encoded {@link String}. The image data must be Base64 encoded. If left null, message will only be posted.
      * @param longitude           - Current longitude for user
      * @param latitude            - Current latitude for user
-     * @param callback            - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback            {@link PDAPICallback} for API result
      */
     public void claimReward(@NonNull final Context context, final String facebookAccessToken, final String twitterAuthToken, final String twitterSecret,
                             @NonNull final String rewardId, @NonNull final String message, ArrayList<String> taggedFriendsNames, ArrayList<String> taggedFriendsIds,
@@ -560,7 +563,7 @@ public class PDAPIClient {
      * </p>
      *
      * @param rewardId - Reward ID
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void redeemReward(String rewardId, @NonNull PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
@@ -577,7 +580,7 @@ public class PDAPIClient {
      * Request all rewards which are relevant to user.
      * </p>
      *
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void getRewardsInWallet(@NonNull final PDAPICallback<ArrayList<PDReward>> callback) {
         Gson gson = new GsonBuilder()
@@ -597,7 +600,7 @@ public class PDAPIClient {
      * Get Popdeem Messages
      * (Method will be public once it is tested)
      *
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     private void getPopdeemMessages(@NonNull PDAPICallback<JsonObject> callback) {
 //        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
@@ -611,7 +614,7 @@ public class PDAPIClient {
     /**
      * Get Feeds
      *
-     * @param callback - {@link PDAPICallback} to calling {@link android.app.Activity} / {@link android.app.Fragment}
+     * @param callback {@link PDAPICallback} for API result
      */
     public void getFeeds(@NonNull PDAPICallback<ArrayList<PDFeed>> callback) {
         Gson gson = new GsonBuilder()
