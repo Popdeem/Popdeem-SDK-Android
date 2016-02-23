@@ -42,11 +42,15 @@ import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
@@ -123,7 +127,7 @@ public class PopdeemSDK {
         FacebookSdk.sdkInitialize(application);
 
         // Init Twitter
-
+        PDSocialUtils.initTwitter(application);
 
         sdkInitialized = true;
     }

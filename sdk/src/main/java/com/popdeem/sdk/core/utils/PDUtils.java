@@ -47,6 +47,35 @@ public class PDUtils {
      * @return API Key String
      */
     public static String getPopdeemAPIKey(Context context) {
+//        ApplicationInfo ai;
+//        try {
+//            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
+//        }
+//
+//        if (ai.metaData == null) {
+//            throw new RuntimeException("Cannot access Application Meta Data.");
+//        }
+
+        String apiKey = getStringFromMetaData(context, POPDEEM_API_KEY_PROPERTY);
+        if (apiKey == null) {
+            throw new RuntimeException("Popdeem API key not found.\n" +
+                    "Check that: <meta-data android:name=\"" + POPDEEM_API_KEY_PROPERTY + "\" android:value=\"YOUR_API_KEY\" /> is in the <application> element of your app's AndroidManifest.xml");
+        }
+        return apiKey;
+    }
+
+
+    /**
+     * Get String value from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @param key     Key of String to retrieve
+     * @return null if no String is present, String value otherwise
+     */
+    public static String getStringFromMetaData(Context context, String key) {
         ApplicationInfo ai;
         try {
             ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
@@ -54,18 +83,10 @@ public class PDUtils {
             e.printStackTrace();
             throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
         }
-
         if (ai.metaData == null) {
             throw new RuntimeException("Cannot access Application Meta Data.");
         }
-
-        String apiKey = ai.metaData.getString(POPDEEM_API_KEY_PROPERTY, null);
-
-        if (apiKey == null) {
-            throw new RuntimeException("Popdeem API key not found.\n" +
-                    "Check that: <meta-data android:name=\"" + POPDEEM_API_KEY_PROPERTY + "\" android:value=\"YOUR_API_KEY\" /> is in the <application> element of your app's AndroidManifest.xml");
-        }
-        return apiKey;
+        return ai.metaData.getString(key);
     }
 
 

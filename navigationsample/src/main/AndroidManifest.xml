@@ -57,6 +57,14 @@
             android:value="\ 839359806985" />
 
         <meta-data
+            android:name="TwitterConsumerKey"
+            android:value="rAzr7Tn0wOVBs6Oij13AYecVA" />
+
+        <meta-data
+            android:name="TwitterConsumerSecret"
+            android:value="rHTmAWpw1gPCoCy7AzA43j9eMqb2GJb24qcMfIHeOvepARFsmt" />
+
+        <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 

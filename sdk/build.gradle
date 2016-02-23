@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'io.fabric'
 
 project.ext.popdeemSdkVersion = '0.0.2-DEV'
 
@@ -41,6 +42,11 @@ dependencies {
 
     // Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+
+    // Twitter
+    compile('com.twitter.sdk.android:twitter:1.12.1@aar') {
+        transitive = true
+    }
 
     // Third Party
     compile 'io.realm:realm-android:0.87.4'

@@ -25,7 +25,6 @@
 package com.popdeem.sdk.core.gcm;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -36,6 +35,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.IOException;
 
@@ -89,19 +89,20 @@ public class PDGCMUtils {
 
 
     private static String getGCMSenderID(Context context) {
-        ApplicationInfo ai;
-        try {
-            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
-        }
-
-        if (ai.metaData == null) {
-            throw new RuntimeException("Cannot access Application Meta Data.");
-        }
-
-        return ai.metaData.getString(GCM_SENDER_ID_META_DATA_PROPERTY_NAME, null);
+        return PDUtils.getStringFromMetaData(context, GCM_SENDER_ID_META_DATA_PROPERTY_NAME);
+//        ApplicationInfo ai;
+//        try {
+//            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
+//        }
+//
+//        if (ai.metaData == null) {
+//            throw new RuntimeException("Cannot access Application Meta Data.");
+//        }
+//
+//        return ai.metaData.getString(GCM_SENDER_ID_META_DATA_PROPERTY_NAME, null);
     }
 
 

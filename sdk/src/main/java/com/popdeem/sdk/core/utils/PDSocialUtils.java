@@ -24,10 +24,17 @@
 
 package com.popdeem.sdk.core.utils;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.facebook.AccessToken;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.Arrays;
 import java.util.Set;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by mikenolan on 23/02/16.
@@ -37,6 +44,13 @@ public class PDSocialUtils {
     public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends", "user_education_history"};
     public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
+    private static final String TWITTER_CONSUMER_KEY_META_KEY = "TwitterConsumerKey";
+    private static final String TWITTER_CONSUMER_SECRET_META_KEY = "TwitterConsumerSecret";
+
+
+    //------------------------------------------------------------------------
+    //                          Facebook Methods
+    //------------------------------------------------------------------------
 
     /**
      * Check if user has granted all Facebook Read Permissions
@@ -75,6 +89,52 @@ public class PDSocialUtils {
      */
     public static boolean isLoggedInToFacebook() {
         return AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired();
+    }
+
+
+    //------------------------------------------------------------------------
+    //                          Twitter Methods
+    //------------------------------------------------------------------------
+
+    public static void initTwitter(Context context) {
+        final String consumerKey = getTwitterConsumerKey(context);
+        final String consumerSecret = getTwitterConsumerSecret(context);
+
+        if (consumerKey == null || consumerSecret == null) {
+            if (consumerKey == null) {
+                Log.e(PDSocialUtils.class.getSimpleName(), "Twitter Error: Please ensure you have your Twitter Consumer Key in your AndroidManifest.xml\n" +
+                        "<meta-data android:name=\"TwitterConsumerKey\" android:value=\"YOUR_TWITTER_CONSUMER_KEY\" />");
+            }
+            if (consumerSecret == null) {
+                Log.e(PDSocialUtils.class.getSimpleName(), "Twitter Error: Please ensure you have your Twitter Consumer Secret in your AndroidManifest.xml\n" +
+                        "<meta-data android:name=\"TwitterConsumerSecret\" android:value=\"YOUR_TWITTER_CONSUMER_SECRET\" />");
+            }
+            return;
+        }
+
+        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(consumerKey, consumerSecret);
+        Fabric.with(context, new TwitterCore(twitterAuthConfig));
+    }
+
+    /**
+     * Get Twitter Consumer Key from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getTwitterConsumerKey(Context context) {
+        return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+    }
+
+
+    /**
+     * Get Twitter Consumer Secret from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getTwitterConsumerSecret(Context context) {
+        return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
     }
 
 }
