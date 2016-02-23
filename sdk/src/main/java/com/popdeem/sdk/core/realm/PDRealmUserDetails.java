@@ -43,6 +43,7 @@ public class PDRealmUserDetails extends RealmObject {
     private String college;
     private String type;
     private String userToken;
+    private String suspendUntil;
 
     public PDRealmUserDetails() {
     }
@@ -56,6 +57,7 @@ public class PDRealmUserDetails extends RealmObject {
         this.college = user.getCollege();
         this.type = user.getType();
         this.userToken = user.getUserToken();
+        this.suspendUntil = user.getSuspendUntil();
     }
 
     public int getUid() {
@@ -120,6 +122,14 @@ public class PDRealmUserDetails extends RealmObject {
 
     public void setUserToken(String userToken) {
         this.userToken = userToken;
+    }
+
+    public String getSuspendUntil() {
+        return suspendUntil;
+    }
+
+    public void setSuspendUntil(String suspendUntil) {
+        this.suspendUntil = suspendUntil;
     }
 
 }

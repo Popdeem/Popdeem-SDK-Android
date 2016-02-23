@@ -40,10 +40,12 @@ import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.utils.PDUtils;
 
@@ -152,22 +154,50 @@ public class PDAPIClient {
      * In both cases response is a User object
      * </p>
      *
-     * @param context             Application {@link Context}
      * @param facebookAccessToken Access Token {@link String} received on successful Facebook login
      * @param facebookUserID      Facebook Application ID received on successful Facebook login
      * @param callback            {@link PDAPICallback} for API result
      */
+    public void registerUserWithFacebook(@NonNull final String facebookAccessToken, @NonNull final String facebookUserID, @NonNull final PDAPICallback<PDUser> callback) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
+
+        PopdeemAPI api = getApiInterface(null, new GsonConverter(gson));
+        api.registerUserWithFacebook("", facebookAccessToken, facebookUserID, uidString, callback);
+    }
+
+
+    /**
+     * Register a user using the Facebook Access Token and Facebook App ID from Login
+     * <p>
+     * If user is a new user, then a new user will be created
+     * If not, user will be loaded
+     * In both cases response is a User object
+     * </p>
+     *
+     * @param context             Application {@link Context}
+     * @param facebookAccessToken Access Token {@link String} received on successful Facebook login
+     * @param facebookUserID      Facebook Application ID received on successful Facebook login
+     * @param callback            {@link PDAPICallback} for API result
+     * @deprecated use {@link #registerUserWithFacebook(String, String, PDAPICallback)} instead
+     */
+    @Deprecated
     public void registerUserWithFacebookAccessToken(@NonNull final Context context, @NonNull final String facebookAccessToken,
-                                                    @NonNull final String facebookUserID, @NonNull final PDAPICallback<String> callback) {
+                                                    @NonNull final String facebookUserID, @NonNull final PDAPICallback<PDUser> callback) {
 //        PDDataManager.setFacebookAccessTokenProperty(context, facebookAccessToken);
 
         final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     URL url = new URL(PDAPIConfig.PD_API_ENDPOINT + PDAPIConfig.PD_USERS_PATH);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setConnectTimeout(15000);
@@ -177,7 +207,7 @@ public class PDAPIClient {
                     ArrayList<AbstractMap.SimpleEntry<String, String>> params = new ArrayList<>();
                     params.add(new AbstractMap.SimpleEntry<>("user[facebook][access_token]", facebookAccessToken));
                     params.add(new AbstractMap.SimpleEntry<>("user[facebook][id]", facebookUserID));
-                    if (uid != null && !uid.getUid().isEmpty()) {
+                    if (uidString != null && !uidString.isEmpty()) {
                         params.add(new AbstractMap.SimpleEntry<>("user[unique_identifier]", uid.getUid()));
                     }
 
@@ -208,23 +238,57 @@ public class PDAPIClient {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String inputLine;
                     final StringBuilder response = new StringBuilder();
-
                     while ((inputLine = reader.readLine()) != null) {
                         response.append(inputLine);
                     }
-
                     ((Activity) context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callback.success(response.toString());
+                            Gson gson = new GsonBuilder().registerTypeAdapter(PDUser.class, new PDUserDeserializer()).create();
+                            PDUser user = gson.fromJson(response.toString(), PDUser.class);
+                            callback.success(user);
                         }
                     });
+
+//                    switch (connection.getResponseCode()) {
+//                        case HttpURLConnection.HTTP_OK:
+//                            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//                            String inputLine;
+//                            final StringBuilder response = new StringBuilder();
+//                            while ((inputLine = reader.readLine()) != null) {
+//                                response.append(inputLine);
+//                            }
+//                            ((Activity) context).runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Gson gson = new GsonBuilder().registerTypeAdapter(PDUser.class, new PDUserDeserializer()).create();
+//                                    PDUser user = gson.fromJson(response.toString(), PDUser.class);
+//                                    callback.success(user);
+//                                }
+//                            });
+//                            break;
+//                        default:
+//                            ((Activity) context).runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    try {
+//                                        callback.failure(connection.getResponseCode(), new Exception(connection.getResponseMessage()));
+//                                    } catch (IOException e) {
+//                                        e.printStackTrace();
+//                                        callback.failure(400, e);
+//                                    }
+//                                }
+//                            });
+//                            break;
+//                    }
+
+                    connection.disconnect();
                 } catch (final IOException e) {
                     e.printStackTrace();
                     ((Activity) context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callback.failure(400, e.getMessage());
+                            callback.failure(400, e);
                         }
                     });
                 }
@@ -266,15 +330,16 @@ public class PDAPIClient {
      * @param latitude    - Current latitude for user
      * @param longitude   - Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
-     * @deprecated user {@link #updateUserLocationAndDeviceToken(Context, String, String, String, String, PDAPICallback)} instead.
      */
-    @Deprecated
     public void updateUserLocationAndDeviceToken(@NonNull String id, @NonNull String deviceToken,
                                                  @NonNull String latitude, @NonNull String longitude,
-                                                 @NonNull PDAPICallback<JsonObject> callback) {
+                                                 @NonNull PDAPICallback<PDUser> callback) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
         PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.updateUserLocationAndDeviceToken(id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.updateUserLocationAndDeviceToken("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
     }
 
 
@@ -287,11 +352,14 @@ public class PDAPIClient {
      * @param latitude    Current latitude for user
      * @param longitude   Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
+     * @deprecated use {@link #updateUserLocationAndDeviceToken(String, String, String, String, PDAPICallback)} instead.
      */
+    @Deprecated
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
                                                  @NonNull final String latitude, @NonNull final String longitude,
                                                  @NonNull final PDAPICallback<String> callback) {
         final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -310,7 +378,7 @@ public class PDAPIClient {
                     params.add(new AbstractMap.SimpleEntry<>("user[device_token]", deviceToken));
                     params.add(new AbstractMap.SimpleEntry<>("user[latitude]", latitude));
                     params.add(new AbstractMap.SimpleEntry<>("user[longitude]", longitude));
-                    if (uid != null && !uid.getUid().isEmpty()) {
+                    if (uidString != null && !uidString.isEmpty()) {
                         params.add(new AbstractMap.SimpleEntry<>("user[unique_identifier]", uid.getUid()));
                     }
 
@@ -358,7 +426,7 @@ public class PDAPIClient {
                     ((Activity) context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callback.failure(400, e.getMessage());
+                            callback.failure(400, e);
                         }
                     });
                 }

@@ -35,7 +35,7 @@ public abstract class PDAPICallback<T> implements Callback<T> {
 
     public abstract void success(T t);
 
-    public abstract void failure(int statusCode, String message);
+    public abstract void failure(int statusCode, Exception e);
 
     @Override
     public void success(T t, Response response) {
@@ -44,7 +44,7 @@ public abstract class PDAPICallback<T> implements Callback<T> {
 
     @Override
     public void failure(RetrofitError error) {
-        failure(error.getResponse() == null ? 400 : error.getResponse().getStatus(), error.getMessage());
+        failure(error.getResponse() == null ? 400 : error.getResponse().getStatus(), error);
     }
 
 }

@@ -120,7 +120,7 @@ public class PDUIFeedFragment extends Fragment {
             }
 
             @Override
-            public void failure(int statusCode, String message) {
+            public void failure(int statusCode, Exception e) {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });

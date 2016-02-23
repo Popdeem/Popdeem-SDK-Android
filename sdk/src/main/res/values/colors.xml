@@ -12,6 +12,13 @@
 
     <color name="pd_inbox_background_color">#ffffff</color>
     <color name="pd_social_login_background_color">#bb000000</color>
+    <color name="pd_continue_button_background_color">#3c9915</color>
+    <color name="pd_continue_button_text_color">#ffffff</color>
+
+    <color name="pd_rainbow_color_1">#eac34b</color>
+    <color name="pd_rainbow_color_2">#3e96a7</color>
+    <color name="pd_rainbow_color_3">#bb4f53</color>
+    <color name="pd_rainbow_color_4">#668c3d</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>

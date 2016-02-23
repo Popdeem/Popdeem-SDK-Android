@@ -154,8 +154,8 @@ public class PopdeemSDK {
                 }
 
                 @Override
-                public void failure(int statusCode, String message) {
-                    Log.d(PDAPIClient.class.getSimpleName(), "Register non social user failed. code:" + statusCode + ", message: " + message);
+                public void failure(int statusCode, Exception e) {
+                    Log.d(PDAPIClient.class.getSimpleName(), "Register non social user failed. code:" + statusCode + ", message: " + e.getMessage());
                 }
             });
         }

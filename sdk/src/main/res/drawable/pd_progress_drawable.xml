@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ The MIT License (MIT)
   ~
   ~ Copyright (c) 2015 Popdeem
@@ -22,11 +22,14 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <string name="app_name">Popdeem Navigation Sample</string>
-    <string name="action_settings">Settings</string>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="google_app_id">839359806985</string>
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/pd_divider" />
 
-    <string name="facebook_app_id">370441856449418</string>
-</resources>
+    <item
+        android:id="@+id/progress"
+        android:drawable="@color/pd_rainbow_color_3" />
+
+</layer-list>

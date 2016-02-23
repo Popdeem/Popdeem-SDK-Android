@@ -44,6 +44,7 @@ public class PDUserDeserializer implements JsonDeserializer<PDUser> {
     public PDUser deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(long.class, new PDLongDeserializer())
+                .registerTypeAdapter(int.class, new PDIntDeserializer())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
 

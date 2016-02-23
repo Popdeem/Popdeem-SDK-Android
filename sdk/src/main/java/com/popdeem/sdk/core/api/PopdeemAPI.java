@@ -68,7 +68,7 @@ public interface PopdeemAPI {
             Callback<JsonObject> callback);
 
     @POST(PDAPIConfig.PD_USERS_PATH)
-    void registerUserWithFacebookAccessToken(
+    void registerUserWithFacebook(
             @Body String emptyBody,
             @Query("user[facebook][access_token]") String facebookAccessToken,
             @Query("user[facebook][id]") String facebookUserID,
@@ -82,13 +82,14 @@ public interface PopdeemAPI {
 
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void updateUserLocationAndDeviceToken(
+            @Body String emptyBody,
             @Path("id") String id,
             @Query("user[platform]") String platform,
             @Query("user[device_token]") String deviceToken,
             @Query("user[latitude]") String latitude,
             @Query("user[longitude]") String longitude,
             @Query("user[unique_identifier]") String uid,
-            Callback<JsonObject> callback);
+            Callback<PDUser> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void getUserDetailsForId(@Path("id") String id, Callback<JsonObject> callback);

@@ -39,6 +39,7 @@
         android:padding="10dp">
 
         <TextView
+            android:id="@+id/pd_social_login_header_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -56,6 +57,7 @@
             android:textSize="14sp" />
 
         <ImageView
+            android:id="@+id/pd_social_login_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -64,22 +66,48 @@
             android:src="@drawable/pd_ui_rewards_icon" />
 
         <TextView
+            android:id="@+id/pd_social_rewards_info_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:gravity="center"
+            android:gravity="center_horizontal"
+            android:minLines="3"
             android:text="@string/pd_social_login_connect_facebook_text"
             android:textColor="@android:color/black"
             android:textSize="13sp" />
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/pd_fb_login_button"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_margin="10dp">
+
+            <Button
+                android:id="@+id/pd_social_continue_button"
+                android:layout_width="match_parent"
+                android:layout_height="27dp"
+                android:layout_gravity="center"
+                android:background="@color/pd_continue_button_background_color"
+                android:text="@string/pd_continue_to_app_text"
+                android:textColor="@color/pd_continue_button_text_color"
+                android:visibility="gone" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/pd_fb_login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <ProgressBar
+                android:id="@+id/pd_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:progressDrawable="@drawable/pd_progress_drawable"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
