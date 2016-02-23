@@ -35,6 +35,7 @@ public class PDRealmNonSocialUID extends RealmObject {
     @PrimaryKey
     private int id;
     private String uid;
+    private boolean registered;
 
     public int getId() {
         return id;
@@ -52,4 +53,11 @@ public class PDRealmNonSocialUID extends RealmObject {
         this.uid = uid;
     }
 
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
 }

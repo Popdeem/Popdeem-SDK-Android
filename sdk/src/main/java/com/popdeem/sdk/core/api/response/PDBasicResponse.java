@@ -22,29 +22,42 @@
  * SOFTWARE.
  */
 
-package com.popdeem.sdk.core.api;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+package com.popdeem.sdk.core.api.response;
 
 /**
- * Created by mikenolan on 19/02/16.
+ * Created by mikenolan on 23/02/16.
  */
-public abstract class PDAPICallback<T> implements Callback<T> {
+public class PDBasicResponse {
 
-    public abstract void success(T t);
+    private boolean success;
+    private String message;
 
-    public abstract void failure(int statusCode, String message);
+    public PDBasicResponse() {
+    }
 
-    @Override
-    public void success(T t, Response response) {
-        success(t);
+    public PDBasicResponse(boolean success, String message) {
+        this.success = success;
+        this.message = message;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
-    public void failure(RetrofitError error) {
-        failure(error.getResponse() == null ? 400 : error.getResponse().getStatus(), error.getMessage());
+    public String toString() {
+        return "success=" + this.success + ", message=" + (this.message == null ? "null" : this.message);
     }
-
 }

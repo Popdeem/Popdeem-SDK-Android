@@ -11,6 +11,7 @@
     <color name="pd_tab_indicator_color">#dba7ac</color>
 
     <color name="pd_inbox_background_color">#ffffff</color>
+    <color name="pd_social_login_background_color">#bb000000</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>

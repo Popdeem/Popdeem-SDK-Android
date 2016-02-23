@@ -83,15 +83,15 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
             Picasso.with(holder.context)
-                    .load(R.drawable.star)
-                    .error(R.drawable.star)
-                    .placeholder(R.drawable.star)
+                    .load(R.drawable.pd_ui_star_icon)
+                    .error(R.drawable.pd_ui_star_icon)
+                    .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.imageView);
         } else {
             Picasso.with(holder.context)
                     .load(imageUrl)
-                    .error(R.drawable.star)
-                    .placeholder(R.drawable.star)
+                    .error(R.drawable.pd_ui_star_icon)
+                    .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.imageView);
         }
     }

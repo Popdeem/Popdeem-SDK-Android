@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jakewharton.retrofit.Ok3Client;
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
@@ -133,12 +134,11 @@ public class PDAPIClient {
      *
      * @param uid         Unique Identifier for user
      * @param deviceToken Device Token for GCM Push
-     * @param context     Application Context
      * @param callback    {@link PDAPICallback} for API result
      */
-    public void createNonSocialUser(@NonNull String uid, @NonNull String deviceToken, @NonNull Context context, @NonNull final PDAPICallback<JsonObject> callback) {
+    public void createNonSocialUser(@NonNull String uid, @NonNull String deviceToken, @NonNull final PDAPICallback<PDBasicResponse> callback) {
         PopdeemAPI api = getApiInterface(null, null);
-        api.createNonSocialUser(uid, deviceToken, PDAPIConfig.PLATFORM_VALUE, callback);
+        api.createNonSocialUser("", uid, deviceToken, PDAPIConfig.PLATFORM_VALUE, callback);
     }
 
 

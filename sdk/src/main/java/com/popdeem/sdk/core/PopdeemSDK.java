@@ -28,9 +28,16 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.FacebookSdk;
+import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
@@ -38,6 +45,7 @@ import com.popdeem.sdk.core.realm.PDRealmUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
+import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 
 import io.realm.Realm;
 
@@ -69,31 +77,37 @@ public class PopdeemSDK {
         getPopdeemAPIKey();
 
         // Get UID for Non Social login
-        PDUniqueIdentifierUtils.createUID(application, new PDUniqueIdentifierUtils.PDUIDCallback() {
-            @Override
-            public void success(String uid) {
-                PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
-                uidReam.setId(0);
-                uidReam.setUid(uid);
+        if (PDUniqueIdentifierUtils.getUID() == null) {
+            PDUniqueIdentifierUtils.createUID(application, new PDUniqueIdentifierUtils.PDUIDCallback() {
+                @Override
+                public void success(String uid) {
+                    PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
+                    uidReam.setId(0);
+                    uidReam.setRegistered(false);
+                    uidReam.setUid(uid);
 
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(uidReam);
-                realm.commitTransaction();
-                realm.close();
-            }
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(uidReam);
+                    realm.commitTransaction();
+                    realm.close();
 
-            @Override
-            public void failure(String message) {
-                Log.d(PDUniqueIdentifierUtils.class.getSimpleName(), "failed to create uid: " + message);
-            }
-        });
+                    registerNonSocialUser();
+                }
+
+                @Override
+                public void failure(String message) {
+                    Log.d(PDUniqueIdentifierUtils.class.getSimpleName(), "failed to create uid: " + message);
+                }
+            });
+        }
 
         // Init GCM
         PDGCMUtils.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {
             @Override
             public void success(String registrationToken) {
                 Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM success. Registration token: " + registrationToken);
+                registerNonSocialUser();
             }
 
             @Override
@@ -116,6 +130,39 @@ public class PopdeemSDK {
 
 
     /**
+     * Register Non Social user if UID and GCM Token are present
+     */
+    private static synchronized void registerNonSocialUser() {
+        PDRealmNonSocialUID uid = PDUniqueIdentifierUtils.getUID();
+        String token = PDGCMUtils.getRegistrationToken(sApplication);
+        if (uid != null && !uid.isRegistered() && !token.isEmpty()) {
+            PDAPIClient.instance().createNonSocialUser(uid.getUid(), token, new PDAPICallback<PDBasicResponse>() {
+                @Override
+                public void success(PDBasicResponse response) {
+                    Log.d("Popdeem", "registerNonSocialUser: " + response.toString());
+                    if (response.isSuccess()) {
+                        PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
+                        uidReam.setId(0);
+                        uidReam.setRegistered(true);
+
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.copyToRealmOrUpdate(uidReam);
+                        realm.commitTransaction();
+                        realm.close();
+                    }
+                }
+
+                @Override
+                public void failure(int statusCode, String message) {
+                    Log.d(PDAPIClient.class.getSimpleName(), "Register non social user failed. code:" + statusCode + ", message: " + message);
+                }
+            });
+        }
+    }
+
+
+    /**
      * Show Popdeem Home Flow
      */
     public static void showHomeFlow() {
@@ -125,6 +172,31 @@ public class PopdeemSDK {
 
         Intent intent = new Intent(currentActivity(), PDUIHomeFlowActivity.class);
         currentActivity().startActivity(intent);
+    }
+
+
+    /**
+     * Show social login flow.
+     *
+     * @param activity        AppCompatActivity initiating te social login flow
+     * @param numberOfPrompts Number of Login Prompts
+     */
+    public static void showSocialLogin(final AppCompatActivity activity, final int numberOfPrompts) {
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+
+        new Handler(Looper.getMainLooper())
+                .postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
+                                .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
+                                .commit();
+                    }
+                }, 400);
     }
 
 

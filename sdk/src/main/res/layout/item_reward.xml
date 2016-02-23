@@ -38,7 +38,7 @@
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/star"
+        android:src="@drawable/pd_ui_star_icon"
         app:maskDrawable="@drawable/circle_mask" />
 
     <LinearLayout

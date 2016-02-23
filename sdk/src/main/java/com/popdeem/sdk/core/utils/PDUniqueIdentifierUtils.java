@@ -53,10 +53,15 @@ public class PDUniqueIdentifierUtils {
         new GenerateUIDAsync(context, callback).execute();
     }
 
-    public static String getUID() {
+    public static PDRealmNonSocialUID getUID() {
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(PDRealmNonSocialUID.class).findFirst();
+    }
+
+    public static boolean isRegistered() {
         Realm realm = Realm.getDefaultInstance();
         PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
-        return uid == null ? null : uid.getUid();
+        return uid != null && uid.isRegistered();
     }
 
     private static class GenerateUIDAsync extends AsyncTask<Void, Void, String> {

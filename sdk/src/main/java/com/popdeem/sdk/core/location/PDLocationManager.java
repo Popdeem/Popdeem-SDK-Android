@@ -48,12 +48,12 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
     private LocationListener mLocationListener = null;
 //    private Location mLocation;
 
-    public PDLocationManager(@NonNull Context context, @NonNull LocationListener locationListener) {
+    public PDLocationManager(@NonNull Context context) {
         this.mContext = context;
-        this.mLocationListener = locationListener;
     }
 
-    public void start() {
+    public void start(@NonNull LocationListener locationListener) {
+        this.mLocationListener = locationListener;
         this.mGoogleApiClient = new GoogleApiClient.Builder(this.mContext)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)

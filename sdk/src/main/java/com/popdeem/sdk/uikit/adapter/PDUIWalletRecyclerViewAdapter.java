@@ -60,19 +60,19 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         PDReward reward = this.mItems.get(position);
         boolean isSweepstakes = reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE);
 
-        Picasso.with(holder.context).load(isSweepstakes ? R.drawable.trophy : R.drawable.tag).into(holder.rewardTypeImageView);
+        Picasso.with(holder.context).load(isSweepstakes ? R.drawable.pd_ui_trophy_icon : R.drawable.pd_ui_tag_icon).into(holder.rewardTypeImageView);
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
             Picasso.with(holder.context)
-                    .load(R.drawable.star)
-                    .error(R.drawable.star)
-                    .placeholder(R.drawable.star)
+                    .load(R.drawable.pd_ui_star_icon)
+                    .error(R.drawable.pd_ui_star_icon)
+                    .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.brandImageView);
         } else {
             Picasso.with(holder.context)
                     .load(imageUrl)
-                    .error(R.drawable.star)
-                    .placeholder(R.drawable.star)
+                    .error(R.drawable.pd_ui_star_icon)
+                    .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.brandImageView);
         }
 

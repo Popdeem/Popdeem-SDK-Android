@@ -12,5 +12,10 @@
     <string name="pd_rewards_no_items_text">There are no Rewards available right now. Please check back later.</string>
     <string name="pd_inbox_no_messages_text">You have no message right now…</string>
     <string name="title_activity_pduifeed_image">Image</string>
+    <string name="pd_app_update_text">App Update</string>
+    <string name="pd_rewards_now_available_text">Rewards Now Available</string>
+    <string name="pd_social_login_connect_facebook_text">To see what rewards you have unlocked, simply connect your Facebook account below.</string>
+    <string name="pd_powered_by_popdeem_text">Powered by Popdeem</string>
+    <string name="pd_location_rationale_text">We use your location to deliver local rewards</string>
 
 </resources>

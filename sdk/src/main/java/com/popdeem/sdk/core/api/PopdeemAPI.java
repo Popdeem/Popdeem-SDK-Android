@@ -25,6 +25,7 @@
 package com.popdeem.sdk.core.api;
 
 import com.google.gson.JsonObject;
+import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDReward;
@@ -52,10 +53,11 @@ public interface PopdeemAPI {
 
     @POST(PDAPIConfig.PD_INIT_NON_SOCIAL_USER)
     void createNonSocialUser(
+            @Body String emptyBody,
             @Query("unique_identifier") String uid,
             @Query("device_token") String deviceToken,
             @Query("platform") String platform,
-            Callback<JsonObject> callback);
+            Callback<PDBasicResponse> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithTwitterParams(
