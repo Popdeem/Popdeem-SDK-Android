@@ -24,14 +24,95 @@
 
 package com.popdeem.sdk.core.realm;
 
+import com.popdeem.sdk.core.model.PDUser;
+
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by mikenolan on 18/02/16.
  */
 public class PDRealmUserDetails extends RealmObject {
 
+    @PrimaryKey
+    private int uid;
+    private String id;
+    private String firstName;
+    private String lastName;
+    private String sex;
+    private String college;
+    private String type;
     private String userToken;
+
+    public PDRealmUserDetails() {
+    }
+
+    public PDRealmUserDetails(PDUser user) {
+        this.uid = 0;
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.sex = user.getSex();
+        this.college = user.getCollege();
+        this.type = user.getType();
+        this.userToken = user.getUserToken();
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getUserToken() {
         return userToken;

@@ -39,9 +39,7 @@ public final class PDUser {
     private String id;
     private String firstName;
     private String lastName;
-
-    @SerializedName("sex")
-    private String gender;
+    private String sex;
 
     private String college;
     private String suspendUntil;
@@ -76,12 +74,37 @@ public final class PDUser {
         this.lastName = "";
     }
 
-    public PDUser(String firstName, String lastName, String id, String gender, String userToken) {
+    public PDUser(String userToken, String id, String firstName, String lastName, String sex, String college, String suspendUntil, String type, PDUserFacebook pdUserFacebook, PDUserTwitter pdUserTwitter, double latitude, double longitude, ArrayList<PDSocialMediaFriend> taggableFriends, int likesCount) {
+        this.userToken = userToken;
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = id;
-        this.gender = gender;
+        this.sex = sex;
+        this.college = college;
+        this.suspendUntil = suspendUntil;
+        this.type = type;
+        this.pdUserFacebook = pdUserFacebook;
+        this.pdUserTwitter = pdUserTwitter;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.taggableFriends = taggableFriends;
+        this.likesCount = likesCount;
+    }
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
         this.userToken = userToken;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -100,28 +123,36 @@ public final class PDUser {
         this.lastName = lastName;
     }
 
-    public String getId() {
-        return id;
+    public String getSex() {
+        return sex;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public String getGender() {
-        return gender;
+    public String getCollege() {
+        return college;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setCollege(String college) {
+        this.college = college;
     }
 
-    public String getUserToken() {
-        return userToken;
+    public String getSuspendUntil() {
+        return suspendUntil;
     }
 
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
+    public void setSuspendUntil(String suspendUntil) {
+        this.suspendUntil = suspendUntil;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public PDUserFacebook getPdUserFacebook() {
@@ -140,7 +171,7 @@ public final class PDUser {
         this.pdUserTwitter = pdUserTwitter;
     }
 
-//    public float getTotalScore() {
+    //    public float getTotalScore() {
 //        return totalScore;
 //    }
 //
@@ -230,7 +261,7 @@ public final class PDUser {
 
     @Override
     public String toString() {
-        return "[firstName: \"" + value(this.firstName) + "\", lastName: \"" + value(this.lastName) + "\", gender: \"" + value(this.gender)
+        return "[firstName: \"" + value(this.firstName) + "\", lastName: \"" + value(this.lastName) + "\", sex: \"" + value(this.sex)
                 + "\", userToken: \"" + value(this.userToken) + "\", id: \"" + value(this.id) + "\"]\n"
                 + "[facebook: " + (this.pdUserFacebook == null ? "null" : this.pdUserFacebook.toString()) + "]\n[twitter: " + (this.pdUserTwitter == null ? "null" : this.pdUserTwitter.toString()) + "]";
     }

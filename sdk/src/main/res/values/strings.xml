@@ -17,5 +17,7 @@
     <string name="pd_social_login_connect_facebook_text">To see what rewards you have unlocked, simply connect your Facebook account below.</string>
     <string name="pd_powered_by_popdeem_text">Powered by Popdeem</string>
     <string name="pd_location_rationale_text">We use your location to deliver local rewards</string>
+    <string name="pd_error_title_text">Error</string>
+    <string name="pd_facebook_login_cancelled_error_message">Facebook login cancelled. Please try again.</string>
 
 </resources>

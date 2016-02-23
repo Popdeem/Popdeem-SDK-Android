@@ -35,6 +35,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.location.LocationListener;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 
 import java.util.Arrays;
 
@@ -57,7 +59,6 @@ import java.util.Arrays;
 public class PDUISocialLoginFragment extends Fragment {
 
     private final int LOCATION_PERMISSION_REQUEST = 90;
-    private final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends", "user_education_history"};
 
     private LoginButton mLoginButton;
     private CallbackManager mCallbackManager;
@@ -84,7 +85,7 @@ public class PDUISocialLoginFragment extends Fragment {
         mCallbackManager = CallbackManager.Factory.create();
 
         mLoginButton = (LoginButton) view.findViewById(R.id.pd_fb_login_button);
-        mLoginButton.setReadPermissions(Arrays.asList(FACEBOOK_READ_PERMISSIONS));
+        mLoginButton.setReadPermissions(Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
         mLoginButton.setFragment(this);
         mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -96,11 +97,23 @@ public class PDUISocialLoginFragment extends Fragment {
             @Override
             public void onCancel() {
                 Log.d(PDUISocialLoginFragment.class.getSimpleName(), "Facebook Login onCancel()");
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.pd_error_title_text)
+                        .setMessage(R.string.pd_facebook_login_cancelled_error_message)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(PDUISocialLoginFragment.class.getSimpleName(), "Facebook Login onError(): " + error.getMessage());
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.pd_error_title_text)
+                        .setMessage(error.getMessage())
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
             }
         });
 
