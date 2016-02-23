@@ -72,6 +72,7 @@ public interface PopdeemAPI {
             @Body String emptyBody,
             @Query("user[facebook][access_token]") String facebookAccessToken,
             @Query("user[facebook][id]") String facebookUserID,
+            @Query("user[unique_identifier]") String uid,
             Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
@@ -86,6 +87,7 @@ public interface PopdeemAPI {
             @Query("user[device_token]") String deviceToken,
             @Query("user[latitude]") String latitude,
             @Query("user[longitude]") String longitude,
+            @Query("user[unique_identifier]") String uid,
             Callback<JsonObject> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}")

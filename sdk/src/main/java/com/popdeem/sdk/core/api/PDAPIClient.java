@@ -44,6 +44,7 @@ import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -59,6 +60,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
@@ -159,6 +161,7 @@ public class PDAPIClient {
                                                     @NonNull final String facebookUserID, @NonNull final PDAPICallback<String> callback) {
 //        PDDataManager.setFacebookAccessTokenProperty(context, facebookAccessToken);
 
+        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -174,6 +177,9 @@ public class PDAPIClient {
                     ArrayList<AbstractMap.SimpleEntry<String, String>> params = new ArrayList<>();
                     params.add(new AbstractMap.SimpleEntry<>("user[facebook][access_token]", facebookAccessToken));
                     params.add(new AbstractMap.SimpleEntry<>("user[facebook][id]", facebookUserID));
+                    if (uid != null && !uid.getUid().isEmpty()) {
+                        params.add(new AbstractMap.SimpleEntry<>("user[unique_identifier]", uid.getUid()));
+                    }
 
                     StringBuilder result = new StringBuilder();
                     boolean first = true;
@@ -234,9 +240,6 @@ public class PDAPIClient {
      * @param callback   {@link PDAPICallback} for API result
      */
     public void connectWithTwitterAccount(@NonNull String userID, @NonNull String userToken, @NonNull String userSecret, @NonNull final PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(PDAPIConfig.REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         JsonObject twitterObject = new JsonObject();
         twitterObject.addProperty("social_id", userID);
         twitterObject.addProperty("access_token", userToken);
@@ -269,11 +272,9 @@ public class PDAPIClient {
     public void updateUserLocationAndDeviceToken(@NonNull String id, @NonNull String deviceToken,
                                                  @NonNull String latitude, @NonNull String longitude,
                                                  @NonNull PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
+        PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.updateUserLocationAndDeviceToken(id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, callback);
+        api.updateUserLocationAndDeviceToken(id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
     }
 
 
@@ -290,6 +291,7 @@ public class PDAPIClient {
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
                                                  @NonNull final String latitude, @NonNull final String longitude,
                                                  @NonNull final PDAPICallback<String> callback) {
+        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -308,6 +310,9 @@ public class PDAPIClient {
                     params.add(new AbstractMap.SimpleEntry<>("user[device_token]", deviceToken));
                     params.add(new AbstractMap.SimpleEntry<>("user[latitude]", latitude));
                     params.add(new AbstractMap.SimpleEntry<>("user[longitude]", longitude));
+                    if (uid != null && !uid.getUid().isEmpty()) {
+                        params.add(new AbstractMap.SimpleEntry<>("user[unique_identifier]", uid.getUid()));
+                    }
 
                     StringBuilder result = new StringBuilder();
                     boolean first = true;
@@ -370,9 +375,6 @@ public class PDAPIClient {
      * @param callback {@link PDAPICallback} for API result
      */
     private void getUserDetailsForId(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.getUserDetailsForId(id, callback);
     }
@@ -391,8 +393,6 @@ public class PDAPIClient {
     private void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
                                                @NonNull String twitterID, @NonNull String screenName,
                                                @NonNull PDAPICallback<JsonObject> callback) {
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor();
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.registerUserWithTwitterParams(twitterAccessToken, twitterAccessSecret, twitterID, screenName, callback);
     }
@@ -406,9 +406,6 @@ public class PDAPIClient {
      * @param callback {@link PDAPICallback} for API result
      */
     private void getPopdeemFriends(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.getPopdeemFriends(id, callback);
     }
@@ -423,10 +420,6 @@ public class PDAPIClient {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDBrandsDeserializer.BRANDS_TYPE, new PDBrandsDeserializer())
                 .create();
-
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getBrands(callback);
     }
@@ -440,10 +433,6 @@ public class PDAPIClient {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDRewardsDeserializer.REWARDS_TYPE, new PDRewardsDeserializer())
                 .create();
-
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getRewardsForBrandID(brandID, callback);
     }
@@ -461,10 +450,6 @@ public class PDAPIClient {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDRewardsDeserializer.REWARDS_TYPE, new PDRewardsDeserializer())
                 .create();
-
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getAllRewards(callback);
     }
@@ -566,9 +551,6 @@ public class PDAPIClient {
      * @param callback {@link PDAPICallback} for API result
      */
     public void redeemReward(String rewardId, @NonNull PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.redeemReward(rewardId, callback);
     }
@@ -584,13 +566,8 @@ public class PDAPIClient {
      */
     public void getRewardsInWallet(@NonNull final PDAPICallback<ArrayList<PDReward>> callback) {
         Gson gson = new GsonBuilder()
-//                .registerTypeAdapter(rewardsType, new PDReward.PDRewardDeserializer())
                 .registerTypeAdapter(PDRewardsDeserializer.REWARDS_TYPE, new PDRewardsDeserializer())
                 .create();
-
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getRewardsInWallet(callback);
     }
@@ -603,9 +580,6 @@ public class PDAPIClient {
      * @param callback {@link PDAPICallback} for API result
      */
     public void getPopdeemMessages(@NonNull PDAPICallback<JsonObject> callback) {
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.getPopdeemMessages(callback);
     }
@@ -620,10 +594,6 @@ public class PDAPIClient {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDFeedsDeserializer.FEEDS_TYPE, new PDFeedsDeserializer())
                 .create();
-
-//        PDRequestHeader userTokenRequestHeader = new PDRequestHeader(REQUEST_HEADER_USER_TOKEN, PDDataManager.getUserToken(context));
-//        RequestInterceptor requestInterceptor = PDAPIClient.getUserTokenInterceptor(userTokenRequestHeader);
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getFeeds("20", callback);
     }

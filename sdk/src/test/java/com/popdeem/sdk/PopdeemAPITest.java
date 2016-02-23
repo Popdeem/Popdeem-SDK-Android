@@ -78,7 +78,7 @@ public class PopdeemAPITest {
     @Test
     public void testRegisterAPI() {
         // Facebook
-        buildRestAdapter(new GsonConverter(new GsonBuilder().registerTypeAdapter(PDUser.class, new PDUserDeserializer()).create())).create(PopdeemAPI.class).registerUserWithFacebookAccessToken("", "", "", new Callback<PDUser>() {
+        buildRestAdapter(new GsonConverter(new GsonBuilder().registerTypeAdapter(PDUser.class, new PDUserDeserializer()).create())).create(PopdeemAPI.class).registerUserWithFacebookAccessToken("", "", "", "", new Callback<PDUser>() {
             @Override
             public void success(PDUser pdUser, Response response) {
                 assert pdUser != null;
