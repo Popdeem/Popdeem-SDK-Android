@@ -89,20 +89,9 @@ public class PDGCMUtils {
 
 
     private static String getGCMSenderID(Context context) {
-        return PDUtils.getStringFromMetaData(context, GCM_SENDER_ID_META_DATA_PROPERTY_NAME);
-//        ApplicationInfo ai;
-//        try {
-//            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
-//        }
-//
-//        if (ai.metaData == null) {
-//            throw new RuntimeException("Cannot access Application Meta Data.");
-//        }
-//
-//        return ai.metaData.getString(GCM_SENDER_ID_META_DATA_PROPERTY_NAME, null);
+        String senderID = PDUtils.getStringFromMetaData(context, GCM_SENDER_ID_META_DATA_PROPERTY_NAME);
+        Log.d(PDGCMUtils.class.getSimpleName(), "senderID:" + senderID);
+        return senderID;
     }
 
 
@@ -174,8 +163,7 @@ public class PDGCMUtils {
         final String gcmSenderID = getGCMSenderID(context);
         if (gcmSenderID == null) {
             Log.d("Popdeem", "Cannot register for push. GCM Sender ID was not found in AndroidManifest.xml.\n" +
-                    "Check that: <meta-data android:name=\"" + GCM_SENDER_ID_META_DATA_PROPERTY_NAME + "\" android:value=\"\\ YOUR_API_KEY\" /> is in the <application> element of your app's AndroidManifest.xml\n" +
-                    "The '\\ ' is important and must be added to the start of the GCM Sender ID.");
+                    "Add this string resource to your project \"<string name=\"google_app_id\">YOUR_SENDER_ID</string>\" Check that: <meta-data android:name=\"" + GCM_SENDER_ID_META_DATA_PROPERTY_NAME + "\" android:value=\"@string/google_app_id\" /> is in the <application> element of your app's AndroidManifest.xml.");
         } else {
             new PDGCMRegisterAsync(context, gcmSenderID, callback).execute();
         }
