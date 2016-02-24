@@ -42,6 +42,7 @@ import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
+import com.popdeem.sdk.core.utils.PDPreferencesUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -187,6 +188,17 @@ public class PopdeemSDK {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
 
+        int attemptsLeft = PDPreferencesUtils.getNumberOfLoginAttempts(activity);
+        if (attemptsLeft < 0) {
+            PDPreferencesUtils.setNumberOfLoginAttempts(activity, numberOfPrompts);
+            attemptsLeft = numberOfPrompts;
+        }
+
+        if (attemptsLeft == 0) {
+            return;
+        }
+
+        PDPreferencesUtils.setNumberOfLoginAttempts(activity, attemptsLeft - 1);
         new Handler(Looper.getMainLooper())
                 .postDelayed(new Runnable() {
                     @Override
@@ -204,7 +216,7 @@ public class PopdeemSDK {
     /**
      * Check if Popdeem SDK has been initialized.
      *
-     * @return true if Popdeem SDK is initalized, false otherwise
+     * @return true if Popdeem SDK is initialized, false otherwise
      */
     public static synchronized boolean isPopdeemSDKInitialized() {
         return sdkInitialized;
