@@ -649,7 +649,6 @@ public class PDAPIClient {
 
     /**
      * Get Popdeem Messages
-     * (Method will be public once it is tested)
      *
      * @param callback {@link PDAPICallback} for API result
      */
@@ -659,6 +658,18 @@ public class PDAPIClient {
                 .create();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getPopdeemMessages(callback);
+    }
+
+
+    /**
+     * Mark a message as read.
+     *
+     * @param messageId ID of message to mark as read
+     * @param callback  {@link PDAPICallback} for API result
+     */
+    public void markMessageAsRead(String messageId, @NonNull PDAPICallback<PDBasicResponse> callback) {
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.markMessageAsRead("", messageId, callback);
     }
 
 

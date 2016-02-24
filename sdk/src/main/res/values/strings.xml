@@ -43,5 +43,9 @@
     <string name="pd_storage_permissions_title_string">Storage Permissions</string>
     <string name="pd_storage_permission_rationale_string">We need permission to save the image you take to your phone. Would you like to give permission?</string>
     <string name="pd_storage_permissions_denied_string">This app needs access to your storage to share an image.</string>
+    <string name="pd_inbox_message_sender_string">Sender:</string>
+    <string name="pd_inbox_message_date_string">Date:</string>
+    <string name="pd_inbox_message_body_string">Body:</string>
+    <string name="pd_inbox_message_title_string">Title:</string>
 
 </resources>

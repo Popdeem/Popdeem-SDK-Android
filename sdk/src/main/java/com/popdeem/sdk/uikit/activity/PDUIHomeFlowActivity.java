@@ -24,21 +24,17 @@
 
 package com.popdeem.sdk.uikit.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIInboxFragment;
+import com.popdeem.sdk.uikit.fragment.PDUIInboxMessageFragment;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -57,29 +53,33 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
         setContentView(R.layout.activity_pd_home_flow);
 
         mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (mFragmentManager.getBackStackEntryCount() == 0) {
-                    setTitle(R.string.pd_empty_string);
-                    menuRes = R.menu.menu_pd_home;
-                    invalidateOptionsMenu();
-                }
-            }
-        });
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-////        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_text_color));
-////        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_up_button_color));
-//        setSupportActionBar(toolbar);
-//
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        mFragmentManager.addOnBackStackChangedListener(BACK_STACK_CHANGED_LISTENER);
 
         showHomeFragment();
     }
+
+    private final FragmentManager.OnBackStackChangedListener BACK_STACK_CHANGED_LISTENER = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            final int entryCount = mFragmentManager.getBackStackEntryCount();
+            if (entryCount == 0) {
+                setTitle(R.string.pd_empty_string);
+                menuRes = R.menu.menu_pd_home;
+                invalidateOptionsMenu();
+                return;
+            }
+
+            FragmentManager.BackStackEntry backStackEntry = mFragmentManager.getBackStackEntryAt(entryCount - 1);
+            String name = backStackEntry.getName();
+            if (name.equalsIgnoreCase(PDUIInboxMessageFragment.class.getSimpleName())) {
+                setTitle(R.string.pd_empty_string);
+            } else if (name.equalsIgnoreCase(PDUIInboxFragment.class.getSimpleName())) {
+                setTitle(R.string.pd_inbox_text);
+                menuRes = NO_MENU;
+                invalidateOptionsMenu();
+            }
+        }
+    };
 
     private void showHomeFragment() {
         Fragment fragment = new PDUIHomeFlowFragment();
@@ -89,9 +89,6 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
     }
 
     private void showInboxFragment() {
-        setTitle(R.string.pd_inbox_text);
-        menuRes = NO_MENU;
-        invalidateOptionsMenu();
         Fragment fragment = new PDUIInboxFragment();
         mFragmentManager.beginTransaction()
                 .add(R.id.pd_home_fragment_container, fragment)

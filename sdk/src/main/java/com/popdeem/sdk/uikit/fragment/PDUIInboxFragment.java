@@ -37,11 +37,14 @@ import android.view.ViewGroup;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.uikit.adapter.PDUIMessagesRecyclerAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class PDUIInboxFragment extends Fragment {
 
@@ -79,6 +82,17 @@ public class PDUIInboxFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final int position = recyclerView.getChildAdapterPosition(view);
+
+                PDMessage message = mMessages.get(position);
+
+                markMessageAsRead(message.getId());
+                message.setRead(true);
+                mAdapter.notifyItemChanged(position);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.pd_home_fragment_container, PDUIInboxMessageFragment.newInstance(message))
+                        .addToBackStack(PDUIInboxMessageFragment.class.getSimpleName())
+                        .commit();
             }
         });
 
@@ -90,6 +104,27 @@ public class PDUIInboxFragment extends Fragment {
 
         return view;
     }
+
+    private void markMessageAsRead(long messageId) {
+        PDAPIClient.instance().markMessageAsRead(String.valueOf(messageId), new PDAPICallback<PDBasicResponse>() {
+            @Override
+            public void success(PDBasicResponse response) {
+                Log.d(PDUIInboxFragment.class.getSimpleName(), "message read: " + response.toString());
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                Log.d(PDUIInboxFragment.class.getSimpleName(), "message read failed: code=" + statusCode + ", message=" + e.getMessage());
+            }
+        });
+    }
+
+    private final Comparator<PDMessage> MESSAGES_COMPARATOR = new Comparator<PDMessage>() {
+        @Override
+        public int compare(PDMessage lhs, PDMessage rhs) {
+            return (int) (rhs.getCreatedAt() - lhs.getCreatedAt());
+        }
+    };
 
     private void refreshMessages() {
         mSwipeRefreshLayout.post(new Runnable() {
@@ -104,6 +139,7 @@ public class PDUIInboxFragment extends Fragment {
                 Log.d(PDUIInboxFragment.class.getSimpleName(), "message count: " + messages.size());
                 mMessages.clear();
                 mMessages.addAll(messages);
+                Collections.sort(mMessages, MESSAGES_COMPARATOR);
                 mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 mNoMessagesView.setVisibility(mMessages.size() == 0 ? View.VISIBLE : View.GONE);

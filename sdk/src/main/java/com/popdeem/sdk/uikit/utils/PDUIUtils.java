@@ -28,8 +28,11 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
 
@@ -37,6 +40,8 @@ import java.util.Date;
  * Created by mikenolan on 19/02/16.
  */
 public class PDUIUtils {
+
+    public static final String PD_DATE_FORMAT = "EEE dd MMM kk:mm";
 
     /**
      * Method to calculate the time until (Needs refactoring)
@@ -101,6 +106,20 @@ public class PDUIUtils {
             return minutes + " minutes";
         } else
             return nonClaimedReward ? minutes + " minutes remaining" : "Expires in " + minutes + " minutes";
+    }
+
+
+    /**
+     * Format a Unix Time stamp for the given format
+     *
+     * @param date   Unix Time stamp in seconds
+     * @param format Format to use when converting.
+     * @return Formatted date String
+     */
+    public static String convertUnixTimeToDate(long date, String format) {
+        DateTime dateTime = new DateTime(date * 1000);
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(format);
+        return formatter.print(dateTime);
     }
 
 

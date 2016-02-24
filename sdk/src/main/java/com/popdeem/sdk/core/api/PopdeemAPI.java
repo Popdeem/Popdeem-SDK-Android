@@ -155,11 +155,17 @@ public interface PopdeemAPI {
 
 
     //****************************************
-    // Messages API Call
+    // Messages API Calls
     //****************************************
 
     @GET(PDAPIConfig.PD_MESSAGES_PATH)
     void getPopdeemMessages(Callback<ArrayList<PDMessage>> callback);
+
+    @PUT(PDAPIConfig.PD_MESSAGES_PATH + "/{messageId}/mark_as_read")
+    void markMessageAsRead(
+            @Body String emptyBody,
+            @Path("messageId") String messageId,
+            Callback<PDBasicResponse> callback);
 
 
     //****************************************

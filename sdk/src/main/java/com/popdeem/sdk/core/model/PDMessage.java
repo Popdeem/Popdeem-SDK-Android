@@ -50,13 +50,13 @@ public class PDMessage {
     private String body;
     private String imageUrl;
     private boolean read;
-    private String createdAt;
+    private long createdAt;
     private String senderName;
 
     public PDMessage() {
     }
 
-    public PDMessage(long id, String brandId, String rewardId, String title, String body, String imageUrl, boolean read, String createdAt, String senderName) {
+    public PDMessage(long id, String brandId, String rewardId, String title, String body, String imageUrl, boolean read, long createdAt, String senderName) {
         this.id = id;
         this.brandId = brandId;
         this.rewardId = rewardId;
@@ -124,11 +124,11 @@ public class PDMessage {
         this.read = read;
     }
 
-    public String getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 

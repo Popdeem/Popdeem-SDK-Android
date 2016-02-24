@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDMessage;
+import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
 
@@ -68,8 +69,8 @@ public class PDUIMessagesRecyclerAdapter extends RecyclerView.Adapter<PDUIMessag
         PDMessage message = this.mItems.get(position);
 
         holder.readIndicatorView.setVisibility(message.isRead() ? View.INVISIBLE : View.VISIBLE);
-        holder.dateTextView.setText(message.getCreatedAt());
         holder.bodyTextView.setText(message.getBody());
+        holder.dateTextView.setText(PDUIUtils.convertUnixTimeToDate(message.getCreatedAt(), PDUIUtils.PD_DATE_FORMAT));
 
         if (message.getImageUrl() == null || message.getImageUrl().isEmpty() || message.getImageUrl().contains("default")) {
             Picasso.with(holder.context)
