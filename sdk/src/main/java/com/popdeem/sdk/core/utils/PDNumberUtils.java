@@ -87,4 +87,34 @@ public class PDNumberUtils {
         }
     }
 
+
+    /**
+     * Convert string to int
+     *
+     * @param string {@link String} value to convert
+     * @return Converted int value or 0 if conversion fails
+     */
+    public static int toInt(String string) {
+        return toInt(string, 0);
+    }
+
+    /**
+     * Convert string to int
+     *
+     * @param string       {@link String} value to convert
+     * @param defaultValue default value if conversion fails
+     * @return Converted int value or defaultValue if conversion fails
+     */
+    public static int toInt(String string, int defaultValue) {
+        if (string == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Integer.valueOf(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
 }

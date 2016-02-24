@@ -26,6 +26,8 @@
     <color name="pd_twitter_blue">#FF5BAAF4</color>
     <color name="pd_facebook_blue">#3b5998</color>
 
+    <color name="pd_claim_over_character_limit_color">#ff0000</color>
+
     <color name="pd_message_unread_indicator_color">#2b85d3</color>
 
     <color name="pd_claim_share_button_background_color">#3b5999</color>

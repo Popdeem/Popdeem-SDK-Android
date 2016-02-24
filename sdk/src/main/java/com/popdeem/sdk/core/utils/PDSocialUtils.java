@@ -47,6 +47,9 @@ public class PDSocialUtils {
     public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends", "user_education_history"};
     public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
+    public static final int TWITTER_CHARACTER_LIMIT = 140;
+    public static final int TWITTER_DEFAULT_MEDIA_CHARACTERS_COUNT = 25;
+
     private static final String TWITTER_CONSUMER_KEY_META_KEY = "TwitterConsumerKey";
     private static final String TWITTER_CONSUMER_SECRET_META_KEY = "TwitterConsumerSecret";
 

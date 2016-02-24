@@ -70,6 +70,9 @@ public class PopdeemSDK {
     public static void initializeSDK(Application application) {
         sApplication = application;
 
+        // Register Activity Lifecycle Callbacks
+        application.registerActivityLifecycleCallbacks(PD_ACTIVITY_LIFECYCLE_CALLBACKS);
+
         // Init ACRA
 
         // Init Realm
@@ -117,9 +120,6 @@ public class PopdeemSDK {
                 Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM failure: " + message);
             }
         });
-
-        // Register Activity Lifecycle Callbacks
-        application.registerActivityLifecycleCallbacks(PD_ACTIVITY_LIFECYCLE_CALLBACKS);
 
         // Init Facebook
         FacebookSdk.sdkInitialize(application);
@@ -260,6 +260,7 @@ public class PopdeemSDK {
 
         @Override
         public void onActivityResumed(Activity activity) {
+            Log.d(PopdeemSDK.class.getSimpleName(), "onActivityResumed: " + activity.getClass().getSimpleName());
             sCurrentActivity = activity;
         }
 
