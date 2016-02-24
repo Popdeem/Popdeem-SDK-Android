@@ -151,4 +151,15 @@ public class PDSocialUtils {
         return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
     }
 
+
+    /**
+     * Should the user be presented with the Social Login Flow.
+     *
+     * @param context Application Context
+     * @return true if to be shown, false otherwise
+     */
+    public static boolean shouldShowSocialLogin(Context context) {
+        return !(PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) && PDPreferencesUtils.getLoginUsesCount(context) < PDPreferencesUtils.getNumberOfLoginAttempts(context);
+    }
+
 }

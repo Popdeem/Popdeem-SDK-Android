@@ -46,17 +46,9 @@ public class PDUIHomeFlowFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_pd_home_flow, container, false);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        activity.setSupportActionBar(toolbar);
-
-//        ActionBar actionBar = activity.getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
         viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(activity.getSupportFragmentManager()));
@@ -65,24 +57,5 @@ public class PDUIHomeFlowFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         return view;
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.menu_home_flow, menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        final int ID = item.getItemId();
-//        if (ID == android.R.id.home) {
-//            finish();
-//            return true;
-//        } else if (ID == R.id.action_inbox) {
-//            // TODO Push Inbox
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
 }

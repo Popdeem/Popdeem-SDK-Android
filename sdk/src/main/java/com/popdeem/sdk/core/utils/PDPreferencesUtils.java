@@ -44,7 +44,27 @@ public class PDPreferencesUtils {
     }
 
     public static int getNumberOfLoginAttempts(Context context) {
-        return getSharedPreferences(context).getInt("numberOfAttempts", -1);
+        return getSharedPreferences(context).getInt("numberOfAttempts", 0);
+    }
+
+    public static void setSocialLoginActivityName(Context context, String name) {
+        getSharedPreferences(context).edit().putString("socialLoginActivityName", name).apply();
+    }
+
+    public static String getSocialLoginActivityName(Context context) {
+        return getSharedPreferences(context).getString("socialLoginActivityName", "");
+    }
+
+    public static void setLoginUsesCount(Context context, int uses) {
+        getSharedPreferences(context).edit().putInt("loginUsesCount", uses).apply();
+    }
+
+    public static void incrementLoginUsesCount(Context context) {
+        getSharedPreferences(context).edit().putInt("loginUsesCount", getLoginUsesCount(context) + 1).apply();
+    }
+
+    public static int getLoginUsesCount(Context context) {
+        return getSharedPreferences(context).getInt("loginUsesCount", 0);
     }
 
 }

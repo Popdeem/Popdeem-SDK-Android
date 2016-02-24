@@ -49,5 +49,7 @@
     <string name="pd_inbox_message_title_string">Title:</string>
     <string name="pd_tag_friends_choose_friends_string">Choose Friends</string>
     <string name="pd_claim_twitter_character_limit_reached_string">You are over the character limit for Twitter. Please edit your message.</string>
+    <string name="pd_suspended_title_string">Suspended</string>
+    <string name="pd_suspended_message_string">Your account has been suspended. You cannot claim any rewards at this time.</string>
 
 </resources>

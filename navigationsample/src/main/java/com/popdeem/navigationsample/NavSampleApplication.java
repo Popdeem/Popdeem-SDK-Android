@@ -37,5 +37,6 @@ public class NavSampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         PopdeemSDK.initializeSDK(this);
+        PopdeemSDK.enableSocialLogin(MainActivity.class.getSimpleName(), 3);
     }
 }

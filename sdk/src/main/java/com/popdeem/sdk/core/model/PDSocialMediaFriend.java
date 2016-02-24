@@ -24,19 +24,7 @@
 
 package com.popdeem.sdk.core.model;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 /**
  * Popdeem Social Media Friend Model Class
@@ -94,36 +82,36 @@ public class PDSocialMediaFriend {
     }
 
 
-    public static class PDSocialMediaFriendDeserializer implements JsonDeserializer<ArrayList<PDSocialMediaFriend>> {
-
-        @Override
-        public ArrayList<PDSocialMediaFriend> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Gson gson = new GsonBuilder()
-//                    .registerTypeAdapter(long.class, new PDUser.PDUserLongDeserializer())
-//                    .registerTypeAdapter(int.class, new PDUser.PDIntDeserializer())
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    .create();
-
-            ArrayList<PDSocialMediaFriend> friends = new ArrayList<>();
-
-            JsonArray dataArray = json.getAsJsonObject().getAsJsonArray("data");
-            for (int i = 0; i < dataArray.size(); i++) {
-                JsonElement element = dataArray.get(i);
-                PDSocialMediaFriend friend = gson.fromJson(element, PDSocialMediaFriend.class);
-
-                JsonObject dataObject = element.getAsJsonObject();
-                if (dataObject.has("picture")) {
-                    JsonObject pictureObject = dataObject.getAsJsonObject("picture");
-                    if (pictureObject.has("data")) {
-                        JsonObject pictureDataObject = pictureObject.getAsJsonObject("data");
-                        friend.setImageUrl(pictureDataObject.get("url").getAsString());
-                    }
-                }
-
-                friends.add(friend);
-            }
-
-            return friends;
-        }
-    }
+//    public static class PDSocialMediaFriendDeserializer implements JsonDeserializer<ArrayList<PDSocialMediaFriend>> {
+//
+//        @Override
+//        public ArrayList<PDSocialMediaFriend> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+//            Gson gson = new GsonBuilder()
+////                    .registerTypeAdapter(long.class, new PDUser.PDUserLongDeserializer())
+////                    .registerTypeAdapter(int.class, new PDUser.PDIntDeserializer())
+//                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+//                    .create();
+//
+//            ArrayList<PDSocialMediaFriend> friends = new ArrayList<>();
+//
+//            JsonArray dataArray = json.getAsJsonObject().getAsJsonArray("data");
+//            for (int i = 0; i < dataArray.size(); i++) {
+//                JsonElement element = dataArray.get(i);
+//                PDSocialMediaFriend friend = gson.fromJson(element, PDSocialMediaFriend.class);
+//
+//                JsonObject dataObject = element.getAsJsonObject();
+//                if (dataObject.has("picture")) {
+//                    JsonObject pictureObject = dataObject.getAsJsonObject("picture");
+//                    if (pictureObject.has("data")) {
+//                        JsonObject pictureDataObject = pictureObject.getAsJsonObject("data");
+//                        friend.setImageUrl(pictureDataObject.get("url").getAsString());
+//                    }
+//                }
+//
+//                friends.add(friend);
+//            }
+//
+//            return friends;
+//        }
+//    }
 }

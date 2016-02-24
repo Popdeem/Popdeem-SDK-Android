@@ -62,6 +62,7 @@ import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
@@ -105,6 +106,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private boolean mImageAdded = false;
     private String mCurrentPhotoPath;
     private String mCurrentCroppedPhotoPath;
+
     private ArrayList<String> mTaggedNames = new ArrayList<>();
     private ArrayList<String> mTaggedIds = new ArrayList<>();
 
@@ -298,6 +300,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void post(final boolean addImage) {
         PDUIUtils.hideKeyboard(this, mMessageEditText);
+
+        if (PDUtils.isUserSuspended()) {
+            showBasicOKAlertDialog(R.string.pd_suspended_title_string, R.string.pd_suspended_message_string);
+            return;
+        }
 
         if (calculateTwitterCharsLeft() < 0 && mTwitterOptionEnabled) {
             showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_twitter_character_limit_reached_string);
@@ -567,7 +574,26 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             PDUIUtils.hideKeyboard(this, mMessageEditText);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.pd_claim_tag_friends_container, PDUITagFriendsFragment.newInstance())
+                    .add(R.id.pd_claim_tag_friends_container, PDUITagFriendsFragment.newInstance(new PDUITagFriendsFragment.TagFriendsConfirmedCallback() {
+                        @Override
+                        public void taggedFriendsUpdated(@NonNull ArrayList<String> taggedNames, @NonNull ArrayList<String> taggedIds) {
+                            mTaggedNames = taggedNames;
+                            mTaggedIds = taggedIds;
+
+                            boolean anyCheckBoxChecked = mTaggedIds.size() > 0;
+                            TextView textView = (TextView) findViewById(R.id.pd_claim_tagged_friends_count_text_view);
+                            textView.setVisibility(anyCheckBoxChecked ? View.VISIBLE : View.INVISIBLE);
+                            if (anyCheckBoxChecked) {
+                                if (mTaggedNames.size() == 1) {
+                                    textView.setText(String.format("With %1s", mTaggedNames.get(0)));
+                                } else {
+                                    textView.setText(String.format("With %1s and %2s", mTaggedNames.get(0), ((mTaggedNames.size() > 2) ? ((mTaggedNames.size() - 1) + " others") : "one other")));
+                                }
+                            } else {
+                                textView.setText("");
+                            }
+                        }
+                    }, mTaggedNames, mTaggedIds))
                     .addToBackStack(PDUITagFriendsFragment.class.getSimpleName())
                     .commit();
         }

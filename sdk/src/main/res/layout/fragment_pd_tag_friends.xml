@@ -56,17 +56,30 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:lines="1"
-        android:onClick="confirmTaggedFriendsClick"
         android:padding="10dp"
         android:textColor="@android:color/white"
         android:visibility="invisible"
         tools:text="Mike Nolan" />
 
-    <ListView
-        android:id="@+id/pd_tag_friends_list_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:cacheColorHint="@null" />
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/pd_tag_friends_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:cacheColorHint="@null" />
+
+        <ProgressBar
+            android:id="@+id/pd_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:progressDrawable="@drawable/pd_progress_drawable" />
+
+    </FrameLayout>
 
 </LinearLayout>

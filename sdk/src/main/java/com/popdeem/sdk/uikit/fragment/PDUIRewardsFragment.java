@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,9 +38,12 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
@@ -76,11 +80,15 @@ public class PDUIRewardsFragment extends Fragment {
         mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view) {
-                final int position = recyclerView.getChildAdapterPosition(view);
-                PDReward reward = mRewards.get(position);
-                Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
-                intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-                startActivity(intent);
+                if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
+                    final int position = recyclerView.getChildAdapterPosition(view);
+                    PDReward reward = mRewards.get(position);
+                    Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
+                    intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
+                    startActivity(intent);
+                } else {
+                    PopdeemSDK.showSocialLogin((AppCompatActivity) getActivity());
+                }
             }
         });
 

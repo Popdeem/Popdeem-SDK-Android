@@ -28,8 +28,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -176,40 +175,59 @@ public class PopdeemSDK {
         currentActivity().startActivity(intent);
     }
 
-
     /**
      * Show social login flow.
      *
-     * @param activity        AppCompatActivity initiating te social login flow
-     * @param numberOfPrompts Number of Login Prompts
+     * @param activity AppCompatActivity initiating te social login flow
      */
-    public static void showSocialLogin(final AppCompatActivity activity, final int numberOfPrompts) {
+    public static void showSocialLogin(final AppCompatActivity activity) {
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+        pushSocialLoginFragmentToActivity(activity);
+    }
+
+    /**
+     * Enable social login flow for a given Activity.
+     * <p>
+     * When this activity is presented to the user, the Popdeem Social Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
+     * </p>
+     *
+     * @param activityClassSimpleName Simple Name of AppCompatActivity class you want Social Login flow to appear in. You can get the Simple Name by using this method: MyActivty.class.getSimpleName()
+     * @param numberOfPrompts         Number of Login Prompts
+     */
+    public static void enableSocialLogin(@NonNull String activityClassSimpleName, final int numberOfPrompts) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
 
-        int attemptsLeft = PDPreferencesUtils.getNumberOfLoginAttempts(activity);
-        if (attemptsLeft < 0) {
-            PDPreferencesUtils.setNumberOfLoginAttempts(activity, numberOfPrompts);
-            attemptsLeft = numberOfPrompts;
-        }
+        PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
+        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClassSimpleName);
+    }
 
-        if (attemptsLeft == 0) {
-            return;
-        }
 
-        PDPreferencesUtils.setNumberOfLoginAttempts(activity, attemptsLeft - 1);
-        new Handler(Looper.getMainLooper())
-                .postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
-                                .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
-                                .commit();
-                    }
-                }, 400);
+    /**
+     * Push the Social Login Flow Fragment to the supplied Activity
+     *
+     * @param activity AppCompatActivity to show social login flow in
+     */
+    private static void pushSocialLoginFragmentToActivity(final AppCompatActivity activity) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
+                .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
+                .commit();
+//        new Handler(Looper.getMainLooper())
+//                .postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+//                        fragmentManager.beginTransaction()
+//                                .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
+//                                .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
+//                                .commit();
+//                    }
+//                }, 0);
     }
 
 
@@ -252,6 +270,12 @@ public class PopdeemSDK {
     private static final Application.ActivityLifecycleCallbacks PD_ACTIVITY_LIFECYCLE_CALLBACKS = new Application.ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            if (activity instanceof AppCompatActivity && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+                    && PDSocialUtils.shouldShowSocialLogin(activity)) {
+                Log.i(PopdeemSDK.class.getSimpleName(), "showing social login");
+                PDPreferencesUtils.incrementLoginUsesCount(activity);
+                showSocialLogin((AppCompatActivity) activity);
+            }
         }
 
         @Override
@@ -260,7 +284,6 @@ public class PopdeemSDK {
 
         @Override
         public void onActivityResumed(Activity activity) {
-            Log.d(PopdeemSDK.class.getSimpleName(), "onActivityResumed: " + activity.getClass().getSimpleName());
             sCurrentActivity = activity;
         }
 
