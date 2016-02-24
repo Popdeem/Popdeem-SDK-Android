@@ -61,6 +61,7 @@ import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 
 import java.util.Arrays;
@@ -198,6 +199,17 @@ public class PDUISocialLoginFragment extends Fragment {
         locationManager.start(new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
+                PDRealmUserLocation userLocation = new PDRealmUserLocation();
+                userLocation.setId(0);
+                userLocation.setLatitude(location.getLatitude());
+                userLocation.setLongitude(location.getLongitude());
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(userLocation);
+                realm.commitTransaction();
+                realm.close();
+
                 locationManager.stop();
                 PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
                     @Override
@@ -209,6 +221,7 @@ public class PDUISocialLoginFragment extends Fragment {
                         realm.beginTransaction();
                         realm.copyToRealmOrUpdate(userDetails);
                         realm.commitTransaction();
+                        realm.close();
 
                         updateUser(location);
                     }
@@ -255,6 +268,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(userDetails);
                 realm.commitTransaction();
+                realm.close();
 
                 updateViewAfterLogin();
             }

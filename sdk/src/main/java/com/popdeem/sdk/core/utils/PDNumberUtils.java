@@ -58,4 +58,33 @@ public class PDNumberUtils {
         }
     }
 
+    /**
+     * Convert string to long
+     *
+     * @param string {@link String} value to convert
+     * @return Converted long value or 0 if conversion fails
+     */
+    public static long toLong(String string) {
+        return toLong(string, 0);
+    }
+
+    /**
+     * Convert string to long
+     *
+     * @param string       {@link String} value to convert
+     * @param defaultValue default value if conversion fails
+     * @return Converted long value or defaultValue if conversion fails
+     */
+    public static long toLong(String string, long defaultValue) {
+        if (string == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Long.valueOf(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
 }

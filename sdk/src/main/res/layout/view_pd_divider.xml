@@ -22,39 +22,8 @@
   ~ SOFTWARE.
   -->
 
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pd_feed_swipe_refresh_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/pd_feed_no_items_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="@string/pd_feed_no_items_text"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-            <include layout="@layout/view_pd_divider" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/pd_feed_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-
-</android.support.v4.widget.SwipeRefreshLayout>
+    android:layout_height="0.5dp"
+    android:background="@drawable/pd_divider"
+    android:orientation="vertical" />

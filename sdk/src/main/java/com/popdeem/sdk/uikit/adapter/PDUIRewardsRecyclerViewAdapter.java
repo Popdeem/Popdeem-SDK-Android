@@ -45,10 +45,19 @@ import java.util.Locale;
  */
 public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRewardsRecyclerViewAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(View view);
+    }
+
+    private OnItemClickListener mListener;
     private ArrayList<PDReward> mItems;
 
     public PDUIRewardsRecyclerViewAdapter(ArrayList<PDReward> mItems) {
         this.mItems = mItems;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -115,11 +124,20 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
+            itemView.setClickable(true);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemClick(v);
+                    }
+                }
+            });
             this.context = context;
-            this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.reward_star);
-            this.offerTextView = (TextView) itemView.findViewById(R.id.rewards_offer_text_view);
-            this.remainingTextView = (TextView) itemView.findViewById(R.id.rewards_time_remaining_text_view);
-            this.actionTextView = (TextView) itemView.findViewById(R.id.rewards_request_text_view);
+            this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_reward_star_imgae_view);
+            this.offerTextView = (TextView) itemView.findViewById(R.id.pd_reward_offer_text_view);
+            this.remainingTextView = (TextView) itemView.findViewById(R.id.pd_reward_time_remaining_text_view);
+            this.actionTextView = (TextView) itemView.findViewById(R.id.pd_reward_request_text_view);
         }
     }
 

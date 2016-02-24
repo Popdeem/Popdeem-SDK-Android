@@ -39,11 +39,13 @@ import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDMessagesDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
+import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
@@ -303,7 +305,7 @@ public class PDAPIClient {
      * @param userSecret
      * @param callback   {@link PDAPICallback} for API result
      */
-    public void connectWithTwitterAccount(@NonNull String userID, @NonNull String userToken, @NonNull String userSecret, @NonNull final PDAPICallback<JsonObject> callback) {
+    public void connectWithTwitterAccount(@NonNull String userID, @NonNull String userToken, @NonNull String userSecret, @NonNull final PDAPICallback<PDUser> callback) {
         JsonObject twitterObject = new JsonObject();
         twitterObject.addProperty("social_id", userID);
         twitterObject.addProperty("access_token", userToken);
@@ -317,7 +319,11 @@ public class PDAPIClient {
 
         TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
 
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.connectWithTwitterAccount(body, callback);
     }
 
@@ -647,8 +653,11 @@ public class PDAPIClient {
      *
      * @param callback {@link PDAPICallback} for API result
      */
-    public void getPopdeemMessages(@NonNull PDAPICallback<JsonObject> callback) {
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+    public void getPopdeemMessages(@NonNull PDAPICallback<ArrayList<PDMessage>> callback) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDMessagesDeserializer.MESSAGES_TYPE, new PDMessagesDeserializer())
+                .create();
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getPopdeemMessages(callback);
     }
 

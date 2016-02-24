@@ -31,14 +31,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.model.PDMessage;
+import com.popdeem.sdk.uikit.adapter.PDUIMessagesRecyclerAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -46,8 +46,8 @@ import java.util.ArrayList;
 public class PDUIInboxFragment extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    //    private PDUIWalletRecyclerViewAdapter mAdapter;
-    private ArrayList<String> mRewards = new ArrayList<>();
+    private PDUIMessagesRecyclerAdapter mAdapter;
+    private ArrayList<PDMessage> mMessages = new ArrayList<>();
     private View mNoMessagesView;
 
     public PDUIInboxFragment() {
@@ -72,10 +72,19 @@ public class PDUIInboxFragment extends Fragment {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_inbox_recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_inbox_recycler_view);
+
+        mAdapter = new PDUIMessagesRecyclerAdapter(mMessages);
+        mAdapter.setOnItemClickListener(new PDUIMessagesRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View view) {
+                final int position = recyclerView.getChildAdapterPosition(view);
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
-//        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
         refreshMessages();
 
@@ -89,11 +98,15 @@ public class PDUIInboxFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-        PDAPIClient.instance().getPopdeemMessages(new PDAPICallback<JsonObject>() {
+        PDAPIClient.instance().getPopdeemMessages(new PDAPICallback<ArrayList<PDMessage>>() {
             @Override
-            public void success(JsonObject jsonObject) {
-                Log.d(PDUIInboxFragment.class.getSimpleName(), "json: " + jsonObject.toString());
+            public void success(ArrayList<PDMessage> messages) {
+                Log.d(PDUIInboxFragment.class.getSimpleName(), "message count: " + messages.size());
+                mMessages.clear();
+                mMessages.addAll(messages);
+                mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
+                mNoMessagesView.setVisibility(mMessages.size() == 0 ? View.VISIBLE : View.GONE);
             }
 
             @Override
@@ -101,14 +114,6 @@ public class PDUIInboxFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-
-        }
-        return false;
     }
 
 }

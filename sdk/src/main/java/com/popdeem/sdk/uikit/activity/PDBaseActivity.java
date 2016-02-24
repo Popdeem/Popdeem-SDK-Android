@@ -26,8 +26,10 @@ package com.popdeem.sdk.uikit.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -59,4 +61,23 @@ public class PDBaseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    public void showBasicOKAlertDialog(@StringRes int titleRes, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(titleRes)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
+    }
+
+    public void showBasicOKAlertDialog(@StringRes int titleRes, @StringRes int messageRes) {
+        new AlertDialog.Builder(this)
+                .setTitle(titleRes)
+                .setMessage(messageRes)
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
+    }
+
 }

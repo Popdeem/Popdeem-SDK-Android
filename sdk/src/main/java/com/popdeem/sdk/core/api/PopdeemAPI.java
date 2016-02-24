@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
+import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 
@@ -78,7 +79,7 @@ public interface PopdeemAPI {
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
     void connectWithTwitterAccount(
             @Body TypedInput body,
-            Callback<JsonObject> callback);
+            Callback<PDUser> callback);
 
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void updateUserLocationAndDeviceToken(
@@ -158,7 +159,7 @@ public interface PopdeemAPI {
     //****************************************
 
     @GET(PDAPIConfig.PD_MESSAGES_PATH)
-    void getPopdeemMessages(Callback<JsonObject> callback);
+    void getPopdeemMessages(Callback<ArrayList<PDMessage>> callback);
 
 
     //****************************************

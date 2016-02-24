@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2015 Popdeem
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".uikit.activity.PDUIClaimActivity">
+
+    <include layout="@layout/pd_toolbar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white">
+
+                    <include
+                        android:id="@+id/pd_claim_reward_layout"
+                        layout="@layout/item_reward" />
+                </FrameLayout>
+
+                <include layout="@layout/view_pd_divider" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:minHeight="150dp">
+
+                    <ImageView
+                        android:id="@+id/pd_claim_share_image_view"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:adjustViewBounds="true"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/pd_claim_share_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="100sp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_margin="5dp"
+                        android:layout_toLeftOf="@id/pd_claim_share_image_view"
+                        android:layout_toStartOf="@id/pd_claim_share_image_view"
+                        android:background="@null"
+                        android:gravity="top|start"
+                        android:hint="@string/pd_claim_edit_text_hint"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:singleLine="false"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/pd_claim_tagged_friends_count_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:padding="3dp"
+                        android:textColor="@color/pd_toolbar_color"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:ignore="SmallSp"
+                        tools:text="Mike Nolan and one other" />
+
+                </RelativeLayout>
+
+                <include layout="@layout/view_pd_divider" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white">
+
+                    <ImageButton
+                        android:id="@+id/pd_claim_tag_friends_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@null"
+                        android:src="@drawable/pd_add_friends_icon"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/pd_claim_add_image_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_toEndOf="@+id/pd_claim_tag_friends_button"
+                        android:layout_toRightOf="@+id/pd_claim_tag_friends_button"
+                        android:background="@null"
+                        android:src="@drawable/pd_add_photo_icon" />
+
+                    <TextView
+                        android:id="@+id/pd_claim_twitter_hashtag_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:padding="2dp"
+                        android:textColor="@color/pd_twitter_blue"
+                        android:textSize="13sp"
+                        android:visibility="invisible"
+                        tools:text="#hashtaghere" />
+
+                    <TextView
+                        android:id="@+id/pd_claim_twitter_characters_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/pd_claim_twitter_hashtag_text_view"
+                        android:padding="2dp"
+                        android:textColor="@color/pd_twitter_blue"
+                        android:textSize="13sp"
+                        android:visibility="gone"
+                        tools:text="115" />
+
+                </RelativeLayout>
+
+                <include layout="@layout/view_pd_divider" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="10dp"
+                    android:background="@null" />
+
+                <include layout="@layout/view_pd_divider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/pd_facebook_share_option_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/white"
+                        android:drawableLeft="@drawable/pd_fb_button_deselected"
+                        android:drawablePadding="20dp"
+                        android:drawableStart="@drawable/pd_fb_button_deselected"
+                        android:gravity="start|center_vertical"
+                        android:paddingEnd="1dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="1dp"
+                        android:paddingStart="20dp"
+                        android:text="@string/pd_claim_facebook_button_text" />
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/pd_divider_color" />
+
+                    <Button
+                        android:id="@+id/pd_twitter_share_option_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/white"
+                        android:drawableLeft="@drawable/pd_twitter_button_deselected"
+                        android:drawablePadding="20dp"
+                        android:drawableStart="@drawable/pd_twitter_button_deselected"
+                        android:gravity="start|center_vertical"
+                        android:paddingEnd="1dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="1dp"
+                        android:paddingStart="20dp"
+                        android:text="@string/pd_claim_twitter_button_text" />
+
+                </LinearLayout>
+
+                <include layout="@layout/view_pd_divider" />
+
+                <Button
+                    android:id="@+id/pd_claim_share_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@color/pd_claim_share_button_background_color"
+                    android:padding="10dp"
+                    android:text="@string/pd_share_and_redeem_string"
+                    android:textAllCaps="false"
+                    android:textColor="@color/pd_claim_share_button_text_color"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/pd_claim_tag_friends_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>

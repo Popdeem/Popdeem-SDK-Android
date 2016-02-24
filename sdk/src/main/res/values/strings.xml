@@ -24,5 +24,24 @@
     <string name="pd_location_permission_rationale_text">We use your location to deliver local rewards</string>
     <string name="pd_location_permission_are_you_sure_text">We use your location to deliver local rewards. Would you like to give permission to access your location?</string>
     <string name="pd_social_connected_text">Connected!</string>
+    <string name="pd_claim_string">Claim</string>
+    <string name="pd_claim_edit_text_hint">What are you up to?</string>
+    <string name="pd_claim_facebook_button_text">Facebook</string>
+    <string name="pd_claim_twitter_button_text">Twitter</string>
+    <string name="pd_share_and_redeem_string">Share and Redeem</string>
+    <string name="pd_claim_cannot_deselect_string">Cannot Deselect</string>
+    <string name="pd_claim_facebook_forced_message_string">This reward must be claimed with a Facebook post. You can also post to Twitter if you wish.</string>
+    <string name="pd_claim_twitter_forced_message_string">This reward must be claimed with a Twitter post. You can also post to Facebook if you wish.</string>
+    <string name="pd_claim_photo_required_string">Photo Required</string>
+    <string name="pd_claim_photo_required_message_string">A photo is required for this action. Please add a photo</string>
+    <string name="pd_claim_no_network_selected_string">No Network Selected</string>
+    <string name="pd_claim_no_network_selected_message_string">You must select at least one social network in order to complete this action</string>
+    <string name="pd_claim_reward_claimed_string">Reward Claimed!</string>
+    <string name="pd_claim_reward_in_wallet_string">You can view your reward in your wallet</string>
+    <string name="pd_claim_something_went_wrong_string">Something went wrong. Please try again.</string>
+    <string name="pd_search_string">Search</string>
+    <string name="pd_storage_permissions_title_string">Storage Permissions</string>
+    <string name="pd_storage_permission_rationale_string">We need permission to save the image you take to your phone. Would you like to give permission?</string>
+    <string name="pd_storage_permissions_denied_string">This app needs access to your storage to share an image.</string>
 
 </resources>

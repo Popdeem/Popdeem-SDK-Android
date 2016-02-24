@@ -3,6 +3,9 @@
     <color name="pd_toolbar_color">#da4d59</color>
     <color name="pd_toolbar_color_dark">#cc4752</color>
     <color name="pd_accent">#dba7ac</color>
+
+    <color name="pd_divider_color">#dba7ac</color>
+    <color name="pd_claim_background_color">#dddddd</color>
     <!--<color name="pd_toolbar_text_color">#00ff00</color>-->
     <!--<color name="pd_toolbar_up_button_color">#0000ff</color>-->
 
@@ -19,6 +22,17 @@
     <color name="pd_rainbow_color_2">#3e96a7</color>
     <color name="pd_rainbow_color_3">#bb4f53</color>
     <color name="pd_rainbow_color_4">#668c3d</color>
+
+    <color name="pd_twitter_blue">#FF5BAAF4</color>
+    <color name="pd_facebook_blue">#3b5998</color>
+
+    <color name="pd_message_unread_indicator_color">#2b85d3</color>
+
+    <color name="pd_claim_share_button_background_color">#3b5999</color>
+    <color name="pd_claim_share_button_text_color">#ffffff</color>
+
+    <color name="pd_tagged_friends_color">#3DA8F2</color>
+    <color name="pd_tagged_friends_color_pressed">#ff2d7db5</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>

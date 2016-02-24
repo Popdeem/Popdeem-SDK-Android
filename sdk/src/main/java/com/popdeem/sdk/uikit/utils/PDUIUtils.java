@@ -24,6 +24,10 @@
 
 package com.popdeem.sdk.uikit.utils;
 
+import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 
@@ -97,6 +101,20 @@ public class PDUIUtils {
             return minutes + " minutes";
         } else
             return nonClaimedReward ? minutes + " minutes remaining" : "Expires in " + minutes + " minutes";
+    }
+
+
+    /**
+     * Hide UI Keyboard
+     *
+     * @param context Application Context
+     * @param view    View
+     */
+    public static void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }

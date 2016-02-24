@@ -24,12 +24,15 @@
 
 package com.popdeem.sdk.core.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -113,7 +116,15 @@ public class PDSocialUtils {
         }
 
         TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(consumerKey, consumerSecret);
-        Fabric.with(context, new TwitterCore(twitterAuthConfig));
+        Fabric.with(context, new Twitter(twitterAuthConfig));
+    }
+
+    public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
+        Twitter.logIn(activity, callback);
+    }
+
+    public static boolean isTwitterLoggedIn() {
+        return Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
     }
 
     /**

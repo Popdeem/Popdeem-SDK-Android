@@ -24,6 +24,7 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,10 +35,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
@@ -66,9 +69,21 @@ public class PDUIRewardsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pd_rewards, container, false);
 
         noItemsView = view.findViewById(R.id.pd_rewards_no_items_view);
-        mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_rewards_recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_rewards_recycler_view);
+
+        mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
+        mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view) {
+                final int position = recyclerView.getChildAdapterPosition(view);
+                PDReward reward = mRewards.get(position);
+                Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
+                intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
+                startActivity(intent);
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
