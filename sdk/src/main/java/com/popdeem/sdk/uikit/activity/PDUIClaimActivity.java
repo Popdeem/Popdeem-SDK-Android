@@ -46,6 +46,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -358,6 +359,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void performClaimReward(String message, String encodedImage) {
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pd_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        final Button shareButton = (Button) findViewById(R.id.pd_claim_share_button);
+        shareButton.setEnabled(false);
+        shareButton.animate().alpha(0.5f);
+
         String twitterToken = null;
         String twitterSecret = null;
         if (mTwitterOptionEnabled && PDSocialUtils.isTwitterLoggedIn() && Twitter.getSessionManager().getActiveSession().getAuthToken().token != null
@@ -374,6 +382,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 new PDAPICallback<JsonObject>() {
                     @Override
                     public void success(JsonObject jsonObject) {
+                        progressBar.setVisibility(View.GONE);
+                        shareButton.setEnabled(true);
+                        shareButton.animate().alpha(1.0f);
+
                         new AlertDialog.Builder(PDUIClaimActivity.this)
                                 .setTitle(R.string.pd_claim_reward_claimed_string)
                                 .setMessage(R.string.pd_claim_reward_in_wallet_string)
@@ -389,6 +401,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
                     @Override
                     public void failure(int statusCode, Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        shareButton.setEnabled(true);
+                        shareButton.animate().alpha(1.0f);
                         showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_something_went_wrong_string);
                     }
                 });

@@ -216,17 +216,33 @@
 
                 <include layout="@layout/view_pd_divider" />
 
-                <Button
-                    android:id="@+id/pd_claim_share_button"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/pd_claim_share_button_background_color"
-                    android:padding="10dp"
-                    android:text="@string/pd_share_and_redeem_string"
-                    android:textAllCaps="false"
-                    android:textColor="@color/pd_claim_share_button_text_color"
-                    android:textSize="18sp" />
+                    android:layout_margin="10dp">
+
+                    <Button
+                        android:id="@+id/pd_claim_share_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pd_claim_share_button_background_color"
+                        android:padding="10dp"
+                        android:text="@string/pd_share_and_redeem_string"
+                        android:textAllCaps="false"
+                        android:textColor="@color/pd_claim_share_button_text_color"
+                        android:textSize="18sp" />
+
+                    <ProgressBar
+                        android:id="@+id/pd_progress_bar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
+                        android:progressDrawable="@drawable/pd_progress_drawable"
+                        android:visibility="gone" />
+
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -235,7 +251,7 @@
         <FrameLayout
             android:id="@+id/pd_claim_tag_friends_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"></FrameLayout>
 
     </FrameLayout>
 
