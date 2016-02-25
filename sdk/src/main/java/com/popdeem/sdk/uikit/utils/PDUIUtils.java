@@ -35,6 +35,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -106,6 +107,23 @@ public class PDUIUtils {
             return minutes + " minutes";
         } else
             return nonClaimedReward ? minutes + " minutes remaining" : "Expires in " + minutes + " minutes";
+    }
+
+
+    /**
+     * Get a time in milliseconds in Timer format
+     *
+     * @param millis Time in milliseconds
+     * @return String in timer format
+     */
+    public static String millisecondsToTimer(long millis) {
+        return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    }
+
+
+    public static String millisecondsToMinutes(long millis) {
+        return String.valueOf(TimeUnit.MILLISECONDS.toMinutes(millis));
     }
 
 

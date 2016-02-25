@@ -23,6 +23,11 @@
             android:label="@string/pd_empty_string"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.DarkerWindowBackgroundTheme" />
+        <activity
+            android:name=".uikit.activity.PDUIRedeemActivity"
+            android:label="@string/pd_empty_string"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.DarkerWindowBackgroundTheme" />
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
         <meta-data

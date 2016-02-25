@@ -52,5 +52,12 @@
     <string name="pd_suspended_title_string">Suspended</string>
     <string name="pd_suspended_message_string">You have been suspended. You cannot claim any rewards at this time.</string>
     <string name="pd_suspended_message_with_date_string">You have been suspended. Your account will become active on %1s</string>
+    <string name="pd_share_this_screen_string">Share this screen at the location\nbefore the timer runs out</string>
+    <string name="pd_done_string">Done</string>
+    <string name="pd_redeem_string">Redeem</string>
+    <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
+    <string name="pd_timer_finished_string">Timer Finished</string>
+    <string name="pd_have_you_redeemed_your_reward_string">Have you redeemed your reward?</string>
+    <string name="pd_redeem_reward_first_warning_string">You will not be able to redeem your reward after leaving this screen</string>
 
 </resources>

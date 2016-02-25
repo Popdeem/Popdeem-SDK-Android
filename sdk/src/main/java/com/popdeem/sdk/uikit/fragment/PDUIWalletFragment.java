@@ -24,21 +24,27 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -74,9 +80,40 @@ public class PDUIWalletFragment extends Fragment {
             }
         });
 
-        mAdapter = new PDUIWalletRecyclerViewAdapter(mRewards);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_wallet_recycler_view);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_wallet_recycler_view);
+        mAdapter = new PDUIWalletRecyclerViewAdapter(mRewards);
+        mAdapter.setOnItemClickListener(new PDUIWalletRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                final int position = recyclerView.getChildAdapterPosition(v);
+                final PDReward reward = mRewards.get(position);
+
+                if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+                    final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Are you sure?")
+                            .setMessage("You will have " + PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER) + " minutes to show the next screen at the shop")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                    redeemReward(reward, position);
+                                    Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
+                                    intent.putExtra("imageUrl", reward.getCoverImage());
+                                    intent.putExtra("reward", reward.getDescription());
+                                    intent.putExtra("rules", reward.getRules());
+                                    intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
+                                    intent.putExtra("time", reward.getAvailableUntilInSeconds());
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .create()
+                            .show();
+                }
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
         recyclerView.setAdapter(mAdapter);
@@ -84,6 +121,20 @@ public class PDUIWalletFragment extends Fragment {
         refreshWallet();
 
         return view;
+    }
+
+    private void redeemReward(PDReward reward, int position) {
+        PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+
+            }
+        });
     }
 
     private void refreshWallet() {

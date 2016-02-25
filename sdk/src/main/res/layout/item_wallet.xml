@@ -23,6 +23,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:background="@android:color/white"
@@ -31,8 +32,8 @@
 
     <ImageView
         android:id="@+id/pd_wallet_brand_image_view"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
@@ -41,7 +42,8 @@
         android:layout_marginRight="5dp"
         android:layout_marginStart="5dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:src="@drawable/pd_ui_star_icon" />
 
     <ImageView
         android:id="@+id/pd_wallet_reward_type_image_view"
@@ -55,43 +57,41 @@
         android:scaleType="centerInside"
         android:src="@drawable/pd_ui_tag_icon" />
 
-
-    <TextView
-        android:id="@+id/pd_wallet_reward_title_text_view"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/pd_wallet_brand_image_view"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/pd_wallet_brand_image_view"
         android:layout_toLeftOf="@id/pd_wallet_reward_type_image_view"
         android:layout_toRightOf="@id/pd_wallet_brand_image_view"
         android:layout_toStartOf="@id/pd_wallet_reward_type_image_view"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textSize="14sp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/pd_wallet_reward_expiry_date_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pd_wallet_reward_title_text_view"
-        android:layout_marginTop="3dp"
-        android:layout_toEndOf="@id/pd_wallet_brand_image_view"
-        android:layout_toLeftOf="@id/pd_wallet_reward_type_image_view"
-        android:layout_toRightOf="@id/pd_wallet_brand_image_view"
-        android:layout_toStartOf="@id/pd_wallet_reward_type_image_view"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/pd_wallet_reward_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="14sp"
+            tools:text="This is a reward title" />
 
-    <TextView
-        android:id="@+id/pd_wallet_reward_redeem_at_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pd_wallet_reward_expiry_date_text_view"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@id/pd_wallet_brand_image_view"
-        android:layout_toLeftOf="@id/pd_wallet_reward_type_image_view"
-        android:layout_toRightOf="@id/pd_wallet_brand_image_view"
-        android:layout_toStartOf="@id/pd_wallet_reward_type_image_view"
-        android:text="@string/pd_redeem_at_stores_label"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/pd_wallet_reward_expiry_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="12sp"
+            tools:text="Expiring soon" />
+
+        <TextView
+            android:id="@+id/pd_wallet_reward_redeem_at_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/pd_redeem_at_stores_label"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

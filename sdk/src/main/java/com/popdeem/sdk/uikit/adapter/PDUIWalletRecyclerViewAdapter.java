@@ -44,10 +44,19 @@ import java.util.ArrayList;
  */
 public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWalletRecyclerViewAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(View v);
+    }
+
+    private OnItemClickListener mListener;
     private ArrayList<PDReward> mItems;
 
     public PDUIWalletRecyclerViewAdapter(ArrayList<PDReward> mItems) {
         this.mItems = mItems;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener mListener) {
+        this.mListener = mListener;
     }
 
     @Override
@@ -110,6 +119,16 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
+            itemView.setClickable(true);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemClick(v);
+                    }
+                }
+            });
+
             this.context = context;
             brandImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_brand_image_view);
             rewardTypeImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_reward_type_image_view);
