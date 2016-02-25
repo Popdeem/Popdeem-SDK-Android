@@ -51,6 +51,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
@@ -110,6 +115,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private ArrayList<String> mTaggedNames = new ArrayList<>();
     private ArrayList<String> mTaggedIds = new ArrayList<>();
 
+    private CallbackManager mCallbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +125,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.addOnBackStackChangedListener(BACK_STACK_CHANGED_LISTENER);
+
+        mCallbackManager = CallbackManager.Factory.create();
 
         mReward = new Gson().fromJson(getIntent().getStringExtra("reward"), PDReward.class);
         addRewardDetailsToUI();
@@ -324,6 +333,34 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             return;
         }
 
+        // Check if use has given Facebook Publish permission
+        if (mFacebookOptionEnabled && !PDSocialUtils.hasAllFacebookPublishPermissions()) {
+            LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    post(addImage);
+                }
+
+                @Override
+                public void onCancel() {
+                    Log.d(PDUIClaimActivity.class.getSimpleName(), "Facebook Login onCancel:");
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Log.d(PDUIClaimActivity.class.getSimpleName(), "Facebook Login onError(): " + error.getMessage());
+                    new AlertDialog.Builder(PDUIClaimActivity.this)
+                            .setTitle(R.string.pd_error_title_text)
+                            .setMessage(error.getMessage())
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                }
+            });
+            LoginManager.getInstance().logInWithPublishPermissions(this, Arrays.asList(PDSocialUtils.FACEBOOK_PUBLISH_PERMISSIONS));
+            return;
+        }
+
         // Check if Twitter share is enabled and Twitter is logged in
         if (mTwitterOptionEnabled && !PDSocialUtils.isTwitterLoggedIn()) {
             PDSocialUtils.loginWithTwitter(this, new Callback<TwitterSession>() {
@@ -345,7 +382,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         String message = "";
         String encodedImage = null;
 
-        if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
+        if (!mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
             message = mMessageEditText.getText().toString();
             if (addImage) {
                 File imageFile = new File(mCurrentCroppedPhotoPath);
@@ -513,6 +550,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PDUIImageUtils.PD_TAKE_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (mCurrentPhotoPath != null) {
