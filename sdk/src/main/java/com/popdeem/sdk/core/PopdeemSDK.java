@@ -134,14 +134,14 @@ public class PopdeemSDK {
      * Register Non Social user if UID and GCM Token are present
      */
     private static synchronized void registerNonSocialUser() {
-        PDRealmNonSocialUID uid = PDUniqueIdentifierUtils.getUID();
-        String token = PDGCMUtils.getRegistrationToken(sApplication);
-        if (uid != null && !uid.isRegistered() && !token.isEmpty()) {
-            PDAPIClient.instance().createNonSocialUser(uid.getUid(), token, new PDAPICallback<PDBasicResponse>() {
+        final PDRealmNonSocialUID uid = PDUniqueIdentifierUtils.getUID();
+        final String token = PDGCMUtils.getRegistrationToken(sApplication);
+        if (uid != null && !uid.isRegistered()) {
+            PDAPIClient.instance().createNonSocialUser(uid.getUid(), token.isEmpty() ? null : token, new PDAPICallback<PDBasicResponse>() {
                 @Override
                 public void success(PDBasicResponse response) {
                     Log.d("Popdeem", "registerNonSocialUser: " + response.toString());
-                    if (response.isSuccess()) {
+                    if (response.isSuccess() && !token.isEmpty()) {
                         PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
                         uidReam.setId(0);
                         uidReam.setRegistered(true);

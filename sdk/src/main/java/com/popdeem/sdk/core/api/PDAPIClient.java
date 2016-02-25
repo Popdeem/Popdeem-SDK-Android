@@ -142,7 +142,7 @@ public class PDAPIClient {
      * @param deviceToken Device Token for GCM Push
      * @param callback    {@link PDAPICallback} for API result
      */
-    public void createNonSocialUser(@NonNull String uid, @NonNull String deviceToken, @NonNull final PDAPICallback<PDBasicResponse> callback) {
+    public void createNonSocialUser(@NonNull String uid, String deviceToken, @NonNull final PDAPICallback<PDBasicResponse> callback) {
         PopdeemAPI api = getApiInterface(null, null);
         api.createNonSocialUser("", uid, deviceToken, PDAPIConfig.PLATFORM_VALUE, callback);
     }
@@ -626,7 +626,7 @@ public class PDAPIClient {
      */
     public void redeemReward(String rewardId, @NonNull PDAPICallback<JsonObject> callback) {
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.redeemReward(rewardId, callback);
+        api.redeemReward("", rewardId, callback);
     }
 
 

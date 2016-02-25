@@ -142,6 +142,7 @@ public interface PopdeemAPI {
 
     @POST(PDAPIConfig.PD_REWARDS_PATH + "/{rewardId}/redeem")
     void redeemReward(
+            @Body String emptyBody,
             @Path("rewardId") String rewardId,
             Callback<JsonObject> callback);
 

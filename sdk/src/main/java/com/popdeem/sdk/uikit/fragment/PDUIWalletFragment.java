@@ -48,6 +48,7 @@ import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -97,7 +98,7 @@ public class PDUIWalletFragment extends Fragment {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-//                                    redeemReward(reward, position);
+                                    redeemReward(reward, position);
                                     Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
                                     intent.putExtra("imageUrl", reward.getCoverImage());
                                     intent.putExtra("reward", reward.getDescription());
@@ -123,16 +124,18 @@ public class PDUIWalletFragment extends Fragment {
         return view;
     }
 
-    private void redeemReward(PDReward reward, int position) {
+    private void redeemReward(PDReward reward, final int position) {
         PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
-
+//                Log.d(PDUIWalletFragment.class.getSimpleName(), "redeem success: " + jsonObject.toString());
+                mRewards.remove(position);
+                mAdapter.notifyItemRemoved(position);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-
+//                Log.d(PDUIWalletFragment.class.getSimpleName(), "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
             }
         });
     }
@@ -148,6 +151,14 @@ public class PDUIWalletFragment extends Fragment {
         PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
+                // If a reward has been revoked, reomve it from the users wallet
+                for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
+                    PDReward r = iterator.next();
+                    if (r.getRevoked().equalsIgnoreCase("true")) {
+                        iterator.remove();
+                    }
+                }
+
                 mRewards.clear();
                 mRewards.addAll(pdRewards);
                 mAdapter.notifyDataSetChanged();

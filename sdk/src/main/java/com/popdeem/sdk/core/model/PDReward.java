@@ -64,6 +64,7 @@ public class PDReward {
 
     @SerializedName("available_next")
     private String availableNextInSeconds;
+    private String revoked;
 
     private String twitterMediaCharacters;
     private String[] socialMediaTypes;
@@ -71,12 +72,13 @@ public class PDReward {
     private PDTweetOptions tweetOptions;
     private ArrayList<PDLocation> locations;
 
+
 //    private PDBrand brand;
 
     public PDReward() {
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String twitterMediaCharacters, String[] socialMediaTypes, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -89,6 +91,7 @@ public class PDReward {
         this.action = action;
         this.availableUntilInSeconds = availableUntilInSeconds;
         this.availableNextInSeconds = availableNextInSeconds;
+        this.revoked = revoked;
         this.twitterMediaCharacters = twitterMediaCharacters;
         this.socialMediaTypes = socialMediaTypes;
         this.tweetOptions = tweetOptions;
@@ -189,6 +192,14 @@ public class PDReward {
 
     public void setAvailableNextInSeconds(String availableNextInSeconds) {
         this.availableNextInSeconds = availableNextInSeconds;
+    }
+
+    public String getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(String revoked) {
+        this.revoked = revoked;
     }
 
     public String getTwitterMediaCharacters() {
