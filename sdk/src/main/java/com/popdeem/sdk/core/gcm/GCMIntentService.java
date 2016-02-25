@@ -31,12 +31,16 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
 /**
  * Created by mikenolan on 24/02/16.
@@ -81,11 +85,26 @@ public class GCMIntentService extends IntentService {
             String message = extras.getString("message", extras.getString(NOTIFICATION_KEYS_PREFIX + "message", null));
             sendNotification(title, message, 1);
 
-            if (PopdeemSDK.currentActivity() == null) {
-                Log.d(GCMIntentService.class.getSimpleName(), "app in bg");
-            } else {
-                Log.d(GCMIntentService.class.getSimpleName(), "app in fg");
+            if (PopdeemSDK.currentActivity() != null) {
+                // App is in the Foreground. Show Dialog.
+//                Log.d(GCMIntentService.class.getSimpleName(), "app in fg");
+                if (PopdeemSDK.currentActivity() instanceof AppCompatActivity) {
+                    FragmentManager fm = ((AppCompatActivity) PopdeemSDK.currentActivity()).getSupportFragmentManager();
+                    Fragment prev = fm.findFragmentByTag(PDUINotificationDialogFragment.class.getSimpleName());
+                    if (prev != null) {
+                        fm.beginTransaction().remove(prev).addToBackStack(null).commit();
+                    }
+
+                    PDUINotificationDialogFragment dialog = PDUINotificationDialogFragment.newInstance(title, message);
+                    if (dialog.isCreated()) {
+                        dialog.show(fm, PDUINotificationDialogFragment.class.getSimpleName());
+                    }
+                }
             }
+//            else {
+//                // App is in the background
+//                Log.d(GCMIntentService.class.getSimpleName(), "app in bg");
+//            }
         }
     }
 

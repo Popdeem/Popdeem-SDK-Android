@@ -217,17 +217,6 @@ public class PopdeemSDK {
                 .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
                 .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                 .commit();
-//        new Handler(Looper.getMainLooper())
-//                .postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-//                        fragmentManager.beginTransaction()
-//                                .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
-//                                .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
-//                                .commit();
-//                    }
-//                }, 0);
     }
 
 
