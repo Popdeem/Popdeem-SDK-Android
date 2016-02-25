@@ -121,4 +121,15 @@ public class PDUtils {
         return userDetails != null && userDetails.getSuspendUntil() != null && !userDetails.getSuspendUntil().isEmpty();
     }
 
+    /**
+     * Check if User is Suspended
+     *
+     * @return true if suspended, false if not
+     */
+    public static synchronized String getUserSuspendedUntil() {
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        return userDetails == null ? null : userDetails.getSuspendUntil();
+    }
+
 }

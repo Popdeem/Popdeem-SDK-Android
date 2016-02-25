@@ -302,7 +302,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         PDUIUtils.hideKeyboard(this, mMessageEditText);
 
         if (PDUtils.isUserSuspended()) {
-            showBasicOKAlertDialog(R.string.pd_suspended_title_string, R.string.pd_suspended_message_string);
+            String suspendedUntil = PDUtils.getUserSuspendedUntil();
+            long suspendedUntilTime = PDNumberUtils.toLong(suspendedUntil, -1);
+            if (suspendedUntilTime == -1) {
+                showBasicOKAlertDialog(R.string.pd_suspended_title_string, R.string.pd_suspended_message_string);
+            } else {
+                String dateString = PDUIUtils.convertUnixTimeToDate(suspendedUntilTime, "EEE dd MMM 'at' kk:mm");
+                showBasicOKAlertDialog(R.string.pd_suspended_title_string, String.format(Locale.getDefault(), getString(R.string.pd_suspended_message_with_date_string), dateString));
+            }
             return;
         }
 

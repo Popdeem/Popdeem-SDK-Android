@@ -28,6 +28,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -38,10 +39,28 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by mikenolan on 21/02/16.
  */
 public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener/*, LocationListener*/ {
+
+
+    public static final int STATE_RUNNING = 0;
+    public static final int STATE_STOPPED = 1;
+    public static final int STATE_CONNECTED = 2;
+    public static final int STATE_SUSPENDED = 3;
+    public static final int STATE_CONNECTION_FAILED = 4;
+
+    @IntDef({STATE_RUNNING, STATE_STOPPED, STATE_CONNECTED, STATE_SUSPENDED, STATE_CONNECTION_FAILED})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PDLocationManagerState {
+    }
+
+    @PDLocationManagerState
+    private int mState = STATE_STOPPED;
 
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
@@ -67,6 +86,15 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
             mGoogleApiClient.disconnect();
         }
+    }
+
+    private void setState(@PDLocationManagerState int state) {
+        this.mState = state;
+    }
+
+    @PDLocationManagerState
+    public int getState() {
+        return mState;
     }
 
 //    public Location getLastLocation() {
