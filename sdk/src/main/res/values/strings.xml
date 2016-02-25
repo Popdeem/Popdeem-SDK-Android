@@ -59,5 +59,9 @@
     <string name="pd_timer_finished_string">Timer Finished</string>
     <string name="pd_have_you_redeemed_your_reward_string">Have you redeemed your reward?</string>
     <string name="pd_redeem_reward_first_warning_string">You will not be able to redeem your reward after leaving this screen</string>
+    <string name="pd_are_you_sure_string">Are you sure?</string>
+    <string name="pd_redeem_button_string">Redeem</string>
+    <string name="pd_redeem_reward_info_title_string">How to Redeem</string>
+    <string name="pd_redeem_reward_info_message_string">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
 
 </resources>

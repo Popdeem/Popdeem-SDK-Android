@@ -49,6 +49,7 @@ import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -92,10 +93,12 @@ public class PDUIWalletFragment extends Fragment {
 
                 if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
                     final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+                    String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
+                    String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Are you sure?")
-                            .setMessage("You will have " + PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER) + " minutes to show the next screen at the shop")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            .setTitle(R.string.pd_redeem_reward_info_title_string)
+                            .setMessage(message)
+                            .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     redeemReward(reward, position);
