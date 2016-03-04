@@ -50,6 +50,8 @@ import java.util.ArrayList;
  */
 public class PDUIFeedFragment extends Fragment {
 
+    private View mView;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIFeedRecyclerViewAdapter mAdapter;
     private View mNoItemsView;
@@ -65,40 +67,44 @@ public class PDUIFeedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pd_feed, container, false);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_pd_feed, container, false);
 
-        mNoItemsView = view.findViewById(R.id.pd_feed_no_items_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view;
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshFeed();
-            }
-        });
-
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_feed_recycler_view);
-
-        mAdapter = new PDUIFeedRecyclerViewAdapter(mFeedItems);
-        mAdapter.setOnItemClickListener(new PDUIFeedRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view) {
-                int position = recyclerView.getChildAdapterPosition(view);
-                if (view.findViewById(R.id.pd_feed_shared_image_view).getVisibility() == View.VISIBLE && mFeedItems.get(position) != null) {
-                    Intent intent = new Intent(getActivity(), PDUIFeedImageActivity.class);
-                    intent.putExtra("userName", mFeedItems.get(position).getUserFirstName());
-                    intent.putExtra("imageUrl", mFeedItems.get(position).getImageUrlString());
-                    startActivity(intent);
+            mNoItemsView = mView.findViewById(R.id.pd_feed_no_items_view);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshFeed();
                 }
-            }
-        });
+            });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
-        recyclerView.setAdapter(mAdapter);
+            final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.pd_feed_recycler_view);
 
-        refreshFeed();
+            mAdapter = new PDUIFeedRecyclerViewAdapter(mFeedItems);
+            mAdapter.setOnItemClickListener(new PDUIFeedRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view) {
+                    int position = recyclerView.getChildAdapterPosition(view);
+                    if (view.findViewById(R.id.pd_feed_shared_image_view).getVisibility() == View.VISIBLE && mFeedItems.get(position) != null) {
+                        Intent intent = new Intent(getActivity(), PDUIFeedImageActivity.class);
+                        intent.putExtra("userName", mFeedItems.get(position).getUserFirstName());
+                        intent.putExtra("imageUrl", mFeedItems.get(position).getImageUrlString());
+                        startActivity(intent);
+                    }
+                }
+            });
 
-        return view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.setAdapter(mAdapter);
+
+            refreshFeed();
+        } else {
+            container.removeView(mView);
+        }
+
+        return mView;
     }
 
     private void refreshFeed() {

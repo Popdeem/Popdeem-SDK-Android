@@ -22,35 +22,41 @@
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+package com.popdeem.sdk.uikit.widget;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.ImageView;
 
-    defaultConfig {
-        applicationId "com.popdeem.navigationsample"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+/**
+ * Created by mikenolan on 02/03/16.
+ */
+public class PDFullWidthImageView extends ImageView {
+
+
+    public PDFullWidthImageView(Context context) {
+        super(context);
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    public PDFullWidthImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public PDFullWidthImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Drawable d = getDrawable();
+
+        if (d != null) {
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
+            setMeasuredDimension(width, height);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-
-    // Live
-//    compile 'com.popdeem.sdk:sdk:0.1.0'
-    // Dev
-    compile 'com.popdeem.sdk:sdk:0.1.0-DEV'
 }

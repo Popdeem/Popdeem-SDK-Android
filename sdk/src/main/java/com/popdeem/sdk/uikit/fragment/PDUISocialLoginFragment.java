@@ -254,7 +254,9 @@ public class PDUISocialLoginFragment extends Fragment {
         String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
 
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+
         if (userDetails == null) {
+            realm.close();
             return;
         }
 
@@ -279,6 +281,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 updateViewAfterLogin();
             }
         });
+        realm.close();
     }
 
     public void removeThisFragment() {

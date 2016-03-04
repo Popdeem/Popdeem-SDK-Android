@@ -425,7 +425,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             twitterSecret = Twitter.getSessionManager().getActiveSession().getAuthToken().secret;
         }
 
-        PDRealmUserLocation userLocation = Realm.getDefaultInstance().where(PDRealmUserLocation.class).findFirst();
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
 
         PDAPIClient.instance().claimReward(this, mFacebookOptionEnabled ? AccessToken.getCurrentAccessToken().getToken() : null,
                 twitterToken, twitterSecret, mReward.getId(), message, mTaggedNames, mTaggedIds, encodedImage,
@@ -458,6 +459,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_something_went_wrong_string);
                     }
                 });
+
+        realm.close();
     }
 
     private void connectTwitterAccount(TwitterSession session, final boolean addImage) {

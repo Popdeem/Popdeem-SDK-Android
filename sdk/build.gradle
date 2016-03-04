@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 
-project.ext.popdeemSdkVersion = '0.1.0'
+project.ext.popdeemSdkVersion = '0.1.0-DEV'
 
 android {
     compileSdkVersion 23
@@ -85,5 +85,11 @@ ext {
     allLicenses = ["MIT"]
 }
 
-apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/install.gradle'
-apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/bintray.gradle'
+if(project.rootProject.file(propertiesFileName).exists()) {
+    println("Popdeem SDK Properties file found.")
+    apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/install.gradle'
+    apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/bintray.gradle'
+}
+else {
+    println("Popdeem SDK Properties file is missing. Ignore this is you are not pushing a release.")
+}

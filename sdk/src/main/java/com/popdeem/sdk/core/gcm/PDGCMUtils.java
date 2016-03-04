@@ -137,6 +137,7 @@ public class PDGCMUtils {
     public static String getRegistrationToken(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmGCM gcmRealm = realm.where(PDRealmGCM.class).findFirst();
+
         if (gcmRealm == null) {
             Log.i(PDGCMUtils.class.getSimpleName(), "no registration token saved");
             return "";
@@ -149,7 +150,9 @@ public class PDGCMUtils {
             return "";
         }
 
-        return gcmRealm.getRegistrationToken();
+        String token = gcmRealm.getRegistrationToken();
+        realm.close();
+        return token;
     }
 
 

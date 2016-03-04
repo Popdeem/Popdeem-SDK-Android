@@ -49,6 +49,7 @@ import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
+import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -165,8 +166,10 @@ public class PDAPIClient {
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
                 .create();
 
-        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
         final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
 
         PopdeemAPI api = getApiInterface(null, new GsonConverter(gson));
         api.registerUserWithFacebook("", facebookAccessToken, facebookUserID, uidString, callback);
@@ -192,8 +195,11 @@ public class PDAPIClient {
                                                     @NonNull final String facebookUserID, @NonNull final PDAPICallback<PDUser> callback) {
 //        PDDataManager.setFacebookAccessTokenProperty(context, facebookAccessToken);
 
-        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
         final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -251,39 +257,6 @@ public class PDAPIClient {
                             callback.success(user);
                         }
                     });
-
-//                    switch (connection.getResponseCode()) {
-//                        case HttpURLConnection.HTTP_OK:
-//                            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//                            String inputLine;
-//                            final StringBuilder response = new StringBuilder();
-//                            while ((inputLine = reader.readLine()) != null) {
-//                                response.append(inputLine);
-//                            }
-//                            ((Activity) context).runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Gson gson = new GsonBuilder().registerTypeAdapter(PDUser.class, new PDUserDeserializer()).create();
-//                                    PDUser user = gson.fromJson(response.toString(), PDUser.class);
-//                                    callback.success(user);
-//                                }
-//                            });
-//                            break;
-//                        default:
-//                            ((Activity) context).runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    try {
-//                                        callback.failure(connection.getResponseCode(), new Exception(connection.getResponseMessage()));
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//                                        callback.failure(400, e);
-//                                    }
-//                                }
-//                            });
-//                            break;
-//                    }
-
                     connection.disconnect();
                 } catch (final IOException e) {
                     e.printStackTrace();
@@ -339,13 +312,42 @@ public class PDAPIClient {
      */
     public void updateUserLocationAndDeviceToken(@NonNull String id, @NonNull String deviceToken,
                                                  @NonNull String latitude, @NonNull String longitude,
-                                                 @NonNull PDAPICallback<PDUser> callback) {
+                                                 @NonNull final PDAPICallback<PDUser> callback) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
                 .create();
-        PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+
+        final Realm realm = Realm.getDefaultInstance();
+        PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
+
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
-        api.updateUserLocationAndDeviceToken("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
+
+        // Check if we have a PDReferral
+        final PDRealmReferral referral = realm.where(PDRealmReferral.class).findFirst();
+        if (referral != null) {
+            // Referral present, send with referral
+            api.updateUserLocationAndDeviceTokenWithReferral("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(),
+                    String.valueOf(referral.getSenderId()), referral.getType(), referral.getSenderAppName(), String.valueOf(referral.getRequestId()), new PDAPICallback<PDUser>() {
+                        @Override
+                        public void success(PDUser user) {
+                            Realm realm = Realm.getDefaultInstance();
+                            realm.beginTransaction();
+                            referral.removeFromRealm();
+                            realm.commitTransaction();
+                            callback.success(user);
+                            realm.close();
+                        }
+
+                        @Override
+                        public void failure(int statusCode, Exception e) {
+                            callback.failure(statusCode, e);
+                        }
+                    });
+        } else {
+            // No referrals, send as normal
+            api.updateUserLocationAndDeviceToken("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
+        }
+        realm.close();
     }
 
 
@@ -364,8 +366,11 @@ public class PDAPIClient {
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
                                                  @NonNull final String latitude, @NonNull final String longitude,
                                                  @NonNull final PDAPICallback<String> callback) {
-        final PDRealmNonSocialUID uid = Realm.getDefaultInstance().where(PDRealmNonSocialUID.class).findFirst();
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
         final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
         new Thread(new Runnable() {
             @Override
             public void run() {

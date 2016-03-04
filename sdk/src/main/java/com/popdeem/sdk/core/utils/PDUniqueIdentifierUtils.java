@@ -32,6 +32,7 @@ import android.util.Log;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.popdeem.sdk.core.model.PDNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 
 import java.io.IOException;
@@ -53,15 +54,23 @@ public class PDUniqueIdentifierUtils {
         new GenerateUIDAsync(context, callback).execute();
     }
 
-    public static PDRealmNonSocialUID getUID() {
+    public static PDNonSocialUID getUID() {
+        PDNonSocialUID uid = null;
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(PDRealmNonSocialUID.class).findFirst();
+        PDRealmNonSocialUID uidRealm = realm.where(PDRealmNonSocialUID.class).findFirst();
+        if (uidRealm != null) {
+            uid = new PDNonSocialUID(uidRealm);
+        }
+        realm.close();
+        return uid;
     }
 
     public static boolean isRegistered() {
         Realm realm = Realm.getDefaultInstance();
         PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
-        return uid != null && uid.isRegistered();
+        boolean registered = uid != null && uid.isRegistered();
+        realm.close();
+        return registered;
     }
 
     private static class GenerateUIDAsync extends AsyncTask<Void, Void, String> {

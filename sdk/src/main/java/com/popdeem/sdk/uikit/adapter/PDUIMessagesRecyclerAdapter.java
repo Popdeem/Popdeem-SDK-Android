@@ -69,7 +69,7 @@ public class PDUIMessagesRecyclerAdapter extends RecyclerView.Adapter<PDUIMessag
         PDMessage message = this.mItems.get(position);
 
         holder.readIndicatorView.setVisibility(message.isRead() ? View.INVISIBLE : View.VISIBLE);
-        holder.bodyTextView.setText(message.getBody());
+        holder.titleTextView.setText(message.getTitle());
         holder.dateTextView.setText(PDUIUtils.convertUnixTimeToDate(message.getCreatedAt(), PDUIUtils.PD_DATE_FORMAT));
 
         if (message.getImageUrl() == null || message.getImageUrl().isEmpty() || message.getImageUrl().contains("default")) {
@@ -95,7 +95,7 @@ public class PDUIMessagesRecyclerAdapter extends RecyclerView.Adapter<PDUIMessag
         Context context;
         PDUIBezelImageView imageView;
         TextView dateTextView;
-        TextView bodyTextView;
+        TextView titleTextView;
         View readIndicatorView;
 
         public ViewHolder(View itemView, Context context) {
@@ -112,7 +112,7 @@ public class PDUIMessagesRecyclerAdapter extends RecyclerView.Adapter<PDUIMessag
             this.context = context;
             this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_message_image_view);
             this.dateTextView = (TextView) itemView.findViewById(R.id.pd_message_date_text_view);
-            this.bodyTextView = (TextView) itemView.findViewById(R.id.pd_message_body_text_view);
+            this.titleTextView = (TextView) itemView.findViewById(R.id.pd_title_body_text_view);
             this.readIndicatorView = itemView.findViewById(R.id.pd_message_read_indicator_view);
         }
     }

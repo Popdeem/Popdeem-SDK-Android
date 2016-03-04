@@ -55,6 +55,8 @@ import java.util.ArrayList;
  */
 public class PDUIRewardsFragment extends Fragment {
 
+    private View mView;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View noItemsView;
     private PDUIRewardsRecyclerViewAdapter mRecyclerViewAdapter;
@@ -70,44 +72,48 @@ public class PDUIRewardsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pd_rewards, container, false);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_pd_rewards, container, false);
 
-        noItemsView = view.findViewById(R.id.pd_rewards_no_items_view);
+            noItemsView = mView.findViewById(R.id.pd_rewards_no_items_view);
 
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_rewards_recycler_view);
+            final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.pd_rewards_recycler_view);
 
-        mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
-        mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view) {
-                if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
-                    final int position = recyclerView.getChildAdapterPosition(view);
-                    PDReward reward = mRewards.get(position);
-                    Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
-                    intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-                    startActivity(intent);
-                } else {
-                    PopdeemSDK.showSocialLogin((AppCompatActivity) getActivity());
+            mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
+            mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view) {
+                    if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
+                        final int position = recyclerView.getChildAdapterPosition(view);
+                        PDReward reward = mRewards.get(position);
+                        Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
+                        intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
+                        startActivity(intent);
+                    } else {
+                        PopdeemSDK.showSocialLogin((AppCompatActivity) getActivity());
+                    }
                 }
-            }
-        });
+            });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setNestedScrollingEnabled(true);
-        recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setNestedScrollingEnabled(true);
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.setAdapter(mRecyclerViewAdapter);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view;
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshRewards();
-            }
-        });
+            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshRewards();
+                }
+            });
 
-        refreshRewards();
+            refreshRewards();
+        } else {
+            container.removeView(mView);
+        }
 
-        return view;
+        return mView;
     }
 
     private void refreshRewards() {

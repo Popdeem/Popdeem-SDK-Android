@@ -45,12 +45,19 @@ public class PDUIFeedImageActivity extends PDBaseActivity {
         String userName = getIntent().getStringExtra("userName");
         setTitle(String.format(Locale.getDefault(), "%1s's Action", userName));
 
-        String imageUrl = getIntent().getStringExtra("imageUrl");
-
-        mImageView = (ImageView) findViewById(R.id.pd_feed_image_image_view);
-        Picasso.with(this)
-                .load(imageUrl)
-                .into(mImageView);
+        final String imageUrl = getIntent().getStringExtra("imageUrl");
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            mImageView = (ImageView) findViewById(R.id.pd_feed_image_image_view);
+            mImageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    Picasso.with(PDUIFeedImageActivity.this)
+                            .load(imageUrl)
+                            .resize(mImageView.getWidth(), 0)
+                            .into(mImageView);
+                }
+            });
+        }
     }
 
     @Override

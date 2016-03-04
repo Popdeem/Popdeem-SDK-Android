@@ -92,6 +92,21 @@ public interface PopdeemAPI {
             @Query("user[unique_identifier]") String uid,
             Callback<PDUser> callback);
 
+    @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
+    void updateUserLocationAndDeviceTokenWithReferral(
+            @Body String emptyBody,
+            @Path("id") String id,
+            @Query("user[platform]") String platform,
+            @Query("user[device_token]") String deviceToken,
+            @Query("user[latitude]") String latitude,
+            @Query("user[longitude]") String longitude,
+            @Query("user[unique_identifier]") String uid,
+            @Query("referral[referrer_id]") String referrerId,
+            @Query("referral[type]") String type,
+            @Query("referral[referrer_app_name]") String referrerAppName,
+            @Query("referral[request_id]") String requestId,
+            Callback<PDUser> callback);
+
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void getUserDetailsForId(@Path("id") String id, Callback<JsonObject> callback);
 

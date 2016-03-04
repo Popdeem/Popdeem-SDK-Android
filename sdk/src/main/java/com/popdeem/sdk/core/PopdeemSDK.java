@@ -26,7 +26,9 @@ package com.popdeem.sdk.core;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -39,7 +41,13 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
+import com.popdeem.sdk.core.model.PDNonSocialUID;
+import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
+import com.popdeem.sdk.core.realm.PDRealmReferral;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
 import com.popdeem.sdk.core.utils.PDPreferencesUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
@@ -48,18 +56,22 @@ import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 
+import bolts.AppLinks;
 import io.realm.Realm;
 
 /**
  * Created by mikenolan on 15/02/16.
  */
-public class PopdeemSDK {
+public final class PopdeemSDK {
 
     private static Application sApplication;
     private static Activity sCurrentActivity;
     private static String sPopdeemAPIKey = null;
     private static boolean sdkInitialized = false;
 
+
+    private PopdeemSDK() {
+    }
 
     /**
      * Initialize Popdeem SDK
@@ -131,10 +143,68 @@ public class PopdeemSDK {
 
 
     /**
+     * Process a referral if one is present.
+     *
+     * @param context Application context
+     * @param intent  Incoming intent
+     */
+    public static void processReferral(Context context, Intent intent) {
+        if (intent != null) {
+            Uri targetUri = AppLinks.getTargetUrlFromInboundIntent(context, intent);
+            if (targetUri != null) {
+                Log.d(PopdeemSDK.class.getSimpleName(), "targetUri: " + targetUri.toString());
+
+                Realm realm = Realm.getDefaultInstance();
+
+                // Save PDReferral
+                PDRealmReferral referral = new PDRealmReferral();
+                referral.setId(0);
+                referral.setType("");
+                referral.setRequestId(0);
+                referral.setSenderAppName("");
+                referral.setSenderId(0);
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(referral);
+                realm.commitTransaction();
+
+                PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+                if (userDetails == null) {
+                    return;
+                }
+
+                PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
+                String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
+
+                PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
+                String lat = "", lng = "";
+                if (userLocation != null) {
+                    lat = String.valueOf(userLocation.getLatitude());
+                    lng = String.valueOf(userLocation.getLongitude());
+                }
+
+                PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
+                    @Override
+                    public void success(PDUser user) {
+
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+
+                    }
+                });
+
+                realm.close();
+            }
+        }
+    }
+
+
+    /**
      * Register Non Social user if UID and GCM Token are present
      */
     private static synchronized void registerNonSocialUser() {
-        final PDRealmNonSocialUID uid = PDUniqueIdentifierUtils.getUID();
+        final PDNonSocialUID uid = PDUniqueIdentifierUtils.getUID();
         final String token = PDGCMUtils.getRegistrationToken(sApplication);
         if (uid != null && !uid.isRegistered()) {
             PDAPIClient.instance().createNonSocialUser(uid.getUid(), token.isEmpty() ? null : token, new PDAPICallback<PDBasicResponse>() {

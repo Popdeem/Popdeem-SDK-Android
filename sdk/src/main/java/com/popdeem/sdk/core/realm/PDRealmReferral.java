@@ -22,35 +22,64 @@
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+package com.popdeem.sdk.core.realm;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-    defaultConfig {
-        applicationId "com.popdeem.navigationsample"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+/**
+ * Created by mikenolan on 04/03/16.
+ */
+public class PDRealmReferral extends RealmObject {
+
+    @PrimaryKey
+    private long id;
+    private String type;
+    private String senderAppName;
+    private long senderId;
+    private long requestId;
+
+    public PDRealmReferral() {
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
+    public long getId() {
+        return id;
     }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    // Live
-//    compile 'com.popdeem.sdk:sdk:0.1.0'
-    // Dev
-    compile 'com.popdeem.sdk:sdk:0.1.0-DEV'
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSenderAppName() {
+        return senderAppName;
+    }
+
+    public void setSenderAppName(String senderAppName) {
+        this.senderAppName = senderAppName;
+    }
+
+    public long getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(long senderId) {
+        this.senderId = senderId;
+    }
+
+    public long getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(long requestId) {
+        this.requestId = requestId;
+    }
+
 }

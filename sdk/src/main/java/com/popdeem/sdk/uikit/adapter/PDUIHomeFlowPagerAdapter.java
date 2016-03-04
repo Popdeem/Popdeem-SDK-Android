@@ -32,26 +32,44 @@ import com.popdeem.sdk.uikit.fragment.PDUIFeedFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIWalletFragment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by mikenolan on 19/02/16.
  */
 public class PDUIHomeFlowPagerAdapter extends FragmentStatePagerAdapter {
 
     private final String[] TITLES = {"Rewards", "Activity", "Wallet"};
+    private final int TAB_COUNT = 3;
+
+    private ArrayList<Fragment> mFragments = new ArrayList<>(Arrays.asList(new Fragment[TAB_COUNT]));
 
     public PDUIHomeFlowPagerAdapter(FragmentManager fm) {
         super(fm);
+//        for (int i = 0; i < TAB_COUNT; i++) {
+//            mFragments.add(null);
+//        }
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return PDUIRewardsFragment.newInstance();
+                if (mFragments.get(0) == null) {
+                    mFragments.add(0, PDUIRewardsFragment.newInstance());
+                }
+                return mFragments.get(0);
             case 1:
-                return PDUIFeedFragment.newInstance();
+                if (mFragments.get(1) == null) {
+                    mFragments.add(1, PDUIFeedFragment.newInstance());
+                }
+                return mFragments.get(1);
             case 2:
-                return PDUIWalletFragment.newInstance();
+                if (mFragments.get(2) == null) {
+                    mFragments.add(2, PDUIWalletFragment.newInstance());
+                }
+                return mFragments.get(2);
             default:
                 return null;
         }
@@ -59,7 +77,7 @@ public class PDUIHomeFlowPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return TAB_COUNT;
     }
 
     @Override

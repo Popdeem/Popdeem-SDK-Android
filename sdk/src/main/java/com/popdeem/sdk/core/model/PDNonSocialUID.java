@@ -22,35 +22,44 @@
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+package com.popdeem.sdk.core.model;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 
-    defaultConfig {
-        applicationId "com.popdeem.navigationsample"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+/**
+ * Created by mikenolan on 04/03/16.
+ */
+public class PDNonSocialUID {
+
+    private String uid;
+    private boolean registered;
+
+    public PDNonSocialUID() {
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
+    public PDNonSocialUID(PDRealmNonSocialUID realmUid) {
+        this.uid = realmUid.getUid();
+        this.registered = realmUid.isRegistered();
     }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    public PDNonSocialUID(String uid, boolean registered) {
+        this.uid = uid;
+        this.registered = registered;
+    }
 
-    // Live
-//    compile 'com.popdeem.sdk:sdk:0.1.0'
-    // Dev
-    compile 'com.popdeem.sdk:sdk:0.1.0-DEV'
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
 }

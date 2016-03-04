@@ -56,6 +56,8 @@ import java.util.Locale;
  */
 public class PDUIWalletFragment extends Fragment {
 
+    private View mView;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIWalletRecyclerViewAdapter mAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
@@ -71,60 +73,64 @@ public class PDUIWalletFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pd_wallet, container, false);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_pd_wallet, container, false);
 
-        mNoItemsInWalletView = view.findViewById(R.id.pd_wallet_no_items_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view;
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshWallet();
-            }
-        });
-
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.pd_wallet_recycler_view);
-
-        mAdapter = new PDUIWalletRecyclerViewAdapter(mRewards);
-        mAdapter.setOnItemClickListener(new PDUIWalletRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v) {
-                final int position = recyclerView.getChildAdapterPosition(v);
-                final PDReward reward = mRewards.get(position);
-
-                if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-                    final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
-                    String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
-                    String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.pd_redeem_reward_info_title_string)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    redeemReward(reward, position);
-                                    Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
-                                    intent.putExtra("imageUrl", reward.getCoverImage());
-                                    intent.putExtra("reward", reward.getDescription());
-                                    intent.putExtra("rules", reward.getRules());
-                                    intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
-                                    intent.putExtra("time", reward.getAvailableUntilInSeconds());
-                                    startActivity(intent);
-                                }
-                            })
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .create()
-                            .show();
+            mNoItemsInWalletView = mView.findViewById(R.id.pd_wallet_no_items_view);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshWallet();
                 }
-            }
-        });
+            });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
-        recyclerView.setAdapter(mAdapter);
+            final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.pd_wallet_recycler_view);
 
-        refreshWallet();
+            mAdapter = new PDUIWalletRecyclerViewAdapter(mRewards);
+            mAdapter.setOnItemClickListener(new PDUIWalletRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v) {
+                    final int position = recyclerView.getChildAdapterPosition(v);
+                    final PDReward reward = mRewards.get(position);
 
-        return view;
+                    if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+                        final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+                        String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
+                        String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.pd_redeem_reward_info_title_string)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        redeemReward(reward, position);
+                                        Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
+                                        intent.putExtra("imageUrl", reward.getCoverImage());
+                                        intent.putExtra("reward", reward.getDescription());
+                                        intent.putExtra("rules", reward.getRules());
+                                        intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
+                                        intent.putExtra("time", reward.getAvailableUntilInSeconds());
+                                        startActivity(intent);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .create()
+                                .show();
+                    }
+                }
+            });
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.setAdapter(mAdapter);
+
+            refreshWallet();
+        } else {
+            container.removeView(mView);
+        }
+
+        return mView;
     }
 
     private void redeemReward(PDReward reward, final int position) {
@@ -154,7 +160,7 @@ public class PDUIWalletFragment extends Fragment {
         PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
-                // If a reward has been revoked, reomve it from the users wallet
+                // If a reward has been revoked, remove it from the users wallet
                 for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
                     PDReward r = iterator.next();
                     if (r.getRevoked().equalsIgnoreCase("true")) {

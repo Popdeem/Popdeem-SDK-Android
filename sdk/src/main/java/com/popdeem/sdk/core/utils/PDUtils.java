@@ -106,7 +106,9 @@ public class PDUtils {
     public static synchronized String getUserToken() {
         Realm realm = Realm.getDefaultInstance();
         final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-        return userDetails == null ? null : userDetails.getUserToken();
+        String token = userDetails == null ? null : userDetails.getUserToken();
+        realm.close();
+        return token;
     }
 
 
@@ -118,7 +120,9 @@ public class PDUtils {
     public static synchronized boolean isUserSuspended() {
         Realm realm = Realm.getDefaultInstance();
         final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-        return userDetails != null && userDetails.getSuspendUntil() != null && !userDetails.getSuspendUntil().isEmpty();
+        boolean suspended = userDetails != null && userDetails.getSuspendUntil() != null && !userDetails.getSuspendUntil().isEmpty();
+        realm.close();
+        return suspended;
     }
 
     /**
@@ -129,7 +133,9 @@ public class PDUtils {
     public static synchronized String getUserSuspendedUntil() {
         Realm realm = Realm.getDefaultInstance();
         final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-        return userDetails == null ? null : userDetails.getSuspendUntil();
+        String suspendedUntil = userDetails == null ? null : userDetails.getSuspendUntil();
+        realm.close();
+        return suspendedUntil;
     }
 
 }
