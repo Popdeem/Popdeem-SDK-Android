@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,6 +41,7 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
+import com.popdeem.sdk.core.gcm.GCMIntentService;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.model.PDNonSocialUID;
 import com.popdeem.sdk.core.model.PDUser;
@@ -55,6 +57,7 @@ import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
 import bolts.AppLinks;
 import io.realm.Realm;
@@ -248,9 +251,9 @@ public final class PopdeemSDK {
     /**
      * Show social login flow.
      *
-     * @param activity AppCompatActivity initiating te social login flow
+     * @param activity FragmentActivity / AppCompatActivity initiating the social login flow
      */
-    public static void showSocialLogin(final AppCompatActivity activity) {
+    public static void showSocialLogin(final FragmentActivity activity) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
@@ -279,9 +282,9 @@ public final class PopdeemSDK {
     /**
      * Push the Social Login Flow Fragment to the supplied Activity
      *
-     * @param activity AppCompatActivity to show social login flow in
+     * @param activity FragmentActivity / AppCompatActivity to show social login flow in
      */
-    private static void pushSocialLoginFragmentToActivity(final AppCompatActivity activity) {
+    private static void pushSocialLoginFragmentToActivity(final FragmentActivity activity) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
@@ -329,11 +332,26 @@ public final class PopdeemSDK {
     private static final Application.ActivityLifecycleCallbacks PD_ACTIVITY_LIFECYCLE_CALLBACKS = new Application.ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            if (activity instanceof AppCompatActivity && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+            // Show social login if needed
+            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
                     && PDSocialUtils.shouldShowSocialLogin(activity)) {
                 Log.i(PopdeemSDK.class.getSimpleName(), "showing social login");
                 PDPreferencesUtils.incrementLoginUsesCount(activity);
-                showSocialLogin((AppCompatActivity) activity);
+                showSocialLogin((FragmentActivity) activity);
+            }
+
+            // Check if intent was started from a Popdeem Notification click and show dialog if it was
+            if (activity.getIntent() != null && activity.getIntent().getExtras() != null && (activity instanceof AppCompatActivity || activity instanceof FragmentActivity)) {
+                String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
+                String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
+                String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
+                String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
+                String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
+
+                if (messageId != null && title != null && message != null) {
+                    FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+                    PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
+                }
             }
         }
 
