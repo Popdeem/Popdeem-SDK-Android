@@ -90,7 +90,7 @@ public class PDUIRewardsFragment extends Fragment {
                         intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
                         startActivity(intent);
                     } else {
-                        PopdeemSDK.showSocialLogin((AppCompatActivity) getActivity());
+                        PopdeemSDK.showSocialLogin(getActivity());
                     }
                 }
             });

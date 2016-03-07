@@ -26,12 +26,14 @@ package com.popdeem.sdk.core.gcm;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
 /**
@@ -47,7 +50,19 @@ import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
  */
 public class GCMIntentService extends IntentService {
 
-    private final String NOTIFICATION_KEYS_PREFIX = "gcm.notification.";
+    private static final String PD_SENDER_VALUE = "popdeem";
+    private static final String PD_KEY_TITLE = "title";
+    private static final String PD_KEY_MESSAGE = "message";
+    private static final String PD_KEY_TARGET_URL = "target_url";
+    private static final String PD_KEY_MESSAGE_ID = "message_id";
+    private static final String PD_KEY_DEEP_LINK = "deep_link";
+    private static final String PD_KEY_IMAGE_URL = "image_url";
+
+    public static final String PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY = PD_SENDER_VALUE + "." + PD_KEY_MESSAGE_ID;
+    public static final String PD_NOTIFICATION_INTENT_URL_KEY = PD_SENDER_VALUE + "." + PD_KEY_TARGET_URL;
+    public static final String PD_NOTIFICATION_INTENT_IMAGE_URL_KEY = PD_SENDER_VALUE + "." + PD_KEY_IMAGE_URL;
+    public static final String PD_NOTIFICATION_INTENT_TITLE_KEY = PD_SENDER_VALUE + "." + PD_KEY_TITLE;
+    public static final String PD_NOTIFICATION_INTENT_MESSAGE_KEY = PD_SENDER_VALUE + "." + PD_KEY_MESSAGE;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -77,50 +92,53 @@ public class GCMIntentService extends IntentService {
     private void handleMessage(Intent intent) {
         Bundle extras = intent.getExtras();
 
-        String sender = extras.getString("sender", extras.getString(NOTIFICATION_KEYS_PREFIX + "sender", ""));
-        if (sender.equalsIgnoreCase("popdeem")) {
+        final String sender = extras.getString("sender", "");
+        if (sender.equalsIgnoreCase(PD_SENDER_VALUE)) {
             Log.d(GCMIntentService.class.getSimpleName(), extras.toString());
 
-            String title = extras.getString("title", extras.getString(NOTIFICATION_KEYS_PREFIX + "title", getString(R.string.app_name)));
-            String message = extras.getString("message", extras.getString(NOTIFICATION_KEYS_PREFIX + "message", null));
-            sendNotification(title, message, 1);
+            // Get extras
+            String title = extras.getString(PD_KEY_TITLE, getString(R.string.app_name));
+            String message = extras.getString(PD_KEY_MESSAGE, "");
+            String imageUrl = extras.getString(PD_KEY_IMAGE_URL, "");
+            String targetUrl = extras.getString(PD_KEY_TARGET_URL, null);
+            String deepLink = extras.getString(PD_KEY_DEEP_LINK, null);
+            String messageId = extras.getString(PD_KEY_MESSAGE_ID, null);
 
+            // If app is open, show a dialog, else show a notification
             if (PopdeemSDK.currentActivity() != null) {
-                // App is in the Foreground. Show Dialog.
-//                Log.d(GCMIntentService.class.getSimpleName(), "app in fg");
-                if (PopdeemSDK.currentActivity() instanceof AppCompatActivity) {
-                    FragmentManager fm = ((AppCompatActivity) PopdeemSDK.currentActivity()).getSupportFragmentManager();
-                    Fragment prev = fm.findFragmentByTag(PDUINotificationDialogFragment.class.getSimpleName());
-                    if (prev != null) {
-                        fm.beginTransaction().remove(prev).addToBackStack(null).commit();
-                    }
-
-                    PDUINotificationDialogFragment dialog = PDUINotificationDialogFragment.newInstance(title, message);
-                    if (dialog.isCreated()) {
-                        dialog.show(fm, PDUINotificationDialogFragment.class.getSimpleName());
-                    }
+                if (PopdeemSDK.currentActivity() instanceof FragmentActivity || PopdeemSDK.currentActivity() instanceof AppCompatActivity) {
+                    FragmentManager fm = ((FragmentActivity) PopdeemSDK.currentActivity()).getSupportFragmentManager();
+                    PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, deepLink, messageId);
                 }
+            } else {
+                // Create Pending Intent for Notification
+                PackageManager pm = getPackageManager();
+                Intent openAppIntent = pm.getLaunchIntentForPackage(getPackageName());
+                openAppIntent.putExtra(PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, messageId);
+                openAppIntent.putExtra(PD_NOTIFICATION_INTENT_URL_KEY, targetUrl != null ? targetUrl : deepLink);
+                openAppIntent.putExtra(PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, imageUrl);
+                openAppIntent.putExtra(PD_NOTIFICATION_INTENT_TITLE_KEY, title);
+                openAppIntent.putExtra(PD_NOTIFICATION_INTENT_MESSAGE_KEY, message);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, openAppIntent, 0);
+
+                int id = (int) PDNumberUtils.toLong(messageId, 1);
+                sendNotification(title, message, pendingIntent, id);
             }
-//            else {
-//                // App is in the background
-//                Log.d(GCMIntentService.class.getSimpleName(), "app in bg");
-//            }
         }
     }
 
-    private void sendNotification(String title, String message, int id) {
+    private void sendNotification(String title, String message, PendingIntent pendingIntent, int id) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_pd_notification)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri);
-//                .setContentIntent(pendingIntent);
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notificationBuilder.build());
     }
 }
