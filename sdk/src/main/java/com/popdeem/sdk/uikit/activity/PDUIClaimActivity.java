@@ -536,6 +536,23 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
     }
 
+    private void showAddPictureChoiceDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.pd_add_photo_title_string)
+                .setItems(R.array.pd_photo_dialog_items_array, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {       // Gallery
+                            Crop.pickImage(PDUIClaimActivity.this, PDUIImageUtils.PD_GALLERY_PHOTO_REQUEST_CODE);
+                        } else if (which == 1) {  // Camera
+                            startCameraIntentWithImagePath();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create().show();
+    }
+
     @Override
     protected void onDestroy() {
         PDUIImageUtils.deletePhotoFile(mCurrentPhotoPath);
@@ -571,6 +588,17 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        } else if (requestCode == PDUIImageUtils.PD_GALLERY_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                try {
+                    Uri croppedImageDestination = Uri.fromFile(setUpCroppedPhotoFile());
+                    Crop.of(data.getData(), croppedImageDestination).asSquare().start(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Error picking image
             }
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
             Log.d(PDUIImageUtils.class.getSimpleName(), "handle cropped image");
@@ -622,7 +650,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         .create()
                         .show();
             } else {
-                startCameraIntentWithImagePath();
+//                startCameraIntentWithImagePath();
+                showAddPictureChoiceDialog();
             }
 
         } else if (ID == R.id.pd_claim_tag_friends_button) {

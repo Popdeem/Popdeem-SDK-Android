@@ -43,6 +43,7 @@ import java.util.Locale;
  */
 public class PDUIImageUtils {
 
+    public static final int PD_GALLERY_PHOTO_REQUEST_CODE = 998;
     public static final int PD_TAKE_PHOTO_REQUEST_CODE = 999;
 
     private static final String JPEG_FILE_PREFIX = "IMG_";
@@ -51,6 +52,10 @@ public class PDUIImageUtils {
 
 
     public static int getOrientation(String photoPath) {
+        if (photoPath == null) {
+            return -1;
+        }
+
         ExifInterface ei;
         try {
             ei = new ExifInterface(photoPath);

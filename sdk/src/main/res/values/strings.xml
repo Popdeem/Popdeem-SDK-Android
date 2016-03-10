@@ -69,4 +69,12 @@
     <string name="pd_please_wait_text">Please wait</string>
     <string name="pd_claiming_your_reward_string">Claiming your reward</string>
 
+    <string name="pd_add_photo_title_string">Add Photo</string>
+    <string name="pd_photo_gallery_string">Gallery</string>
+    <string name="pd_photo_camera_string">Camera</string>
+    <string-array name="pd_photo_dialog_items_array">
+        <item>@string/pd_photo_gallery_string</item>
+        <item>@string/pd_photo_camera_string</item>
+    </string-array>
+
 </resources>
