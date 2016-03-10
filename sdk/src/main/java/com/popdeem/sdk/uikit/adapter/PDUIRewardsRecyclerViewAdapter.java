@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
@@ -70,24 +71,20 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         PDReward reward = this.mItems.get(position);
 
         holder.offerTextView.setText(reward.getDescription());
+        holder.rulesTextView.setText(reward.getRules());
+
+        long timeInSecs = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), -1);
+        String expText = String.format(Locale.getDefault(), "Exp %1s", PDUIUtils.convertTimeToDayAndMonth(timeInSecs));
+        String actionText = holder.context.getString(R.string.pd_instant_coupon_label);
 
         final boolean TWITTER_ACTION_REQUIRED = twitterActionRequired(reward.getSocialMediaTypes());
         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo"));
+            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo");
         } else if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in"));
-        } else {
-            holder.actionTextView.setText(R.string.pd_instant_coupon_label);
+            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in");
         }
 
-        try {
-            long timeInMillis = Long.valueOf(reward.getAvailableUntilInSeconds());
-            holder.remainingTextView.setText(PDUIUtils.timeUntil(timeInMillis, true, false));
-        } catch (NumberFormatException e) {
-            holder.remainingTextView.setText("");
-//            Crashlytics.getInstance().core.setString("remaining_reward_time_in_millis", reward.getId() + "_" + reward.getAvailableUntilInSeconds());
-//            Crashlytics.getInstance().core.logException(e);
-        }
+        holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
 
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
@@ -119,7 +116,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         Context context;
         PDUIBezelImageView imageView;
         TextView offerTextView;
-        TextView remainingTextView;
+        TextView rulesTextView;
         TextView actionTextView;
 
         public ViewHolder(View itemView, Context context) {
@@ -134,9 +131,9 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
                 }
             });
             this.context = context;
-            this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_reward_star_imgae_view);
+            this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_reward_star_image_view);
             this.offerTextView = (TextView) itemView.findViewById(R.id.pd_reward_offer_text_view);
-            this.remainingTextView = (TextView) itemView.findViewById(R.id.pd_reward_time_remaining_text_view);
+            this.rulesTextView = (TextView) itemView.findViewById(R.id.pd_reward_item_rules_text_view);
             this.actionTextView = (TextView) itemView.findViewById(R.id.pd_reward_request_text_view);
         }
     }

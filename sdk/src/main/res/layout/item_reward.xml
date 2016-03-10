@@ -32,7 +32,7 @@
     android:padding="5dp">
 
     <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
-        android:id="@+id/pd_reward_star_imgae_view"
+        android:id="@+id/pd_reward_star_image_view"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
@@ -45,8 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/pd_reward_star_imgae_view"
-        android:layout_toRightOf="@id/pd_reward_star_imgae_view"
+        android:layout_toEndOf="@id/pd_reward_star_image_view"
+        android:layout_toRightOf="@id/pd_reward_star_image_view"
         android:orientation="vertical"
         android:padding="5dp">
 
@@ -62,7 +62,7 @@
             tools:text="$0.40c off pampers" />
 
         <TextView
-            android:id="@+id/pd_reward_time_remaining_text_view"
+            android:id="@+id/pd_reward_item_rules_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

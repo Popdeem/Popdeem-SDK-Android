@@ -246,7 +246,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void addRewardDetailsToUI() {
         // Logo
-        final PDUIBezelImageView logoImageView = (PDUIBezelImageView) findViewById(R.id.pd_reward_star_imgae_view);
+        final PDUIBezelImageView logoImageView = (PDUIBezelImageView) findViewById(R.id.pd_reward_star_image_view);
         if (mReward.getCoverImage().contains("default")) {
             Picasso.with(this)
                     .load(R.drawable.pd_ui_star_icon)
@@ -262,24 +262,28 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         // Reward Description
-        final TextView rewardDescTextView = (TextView) findViewById(R.id.pd_reward_offer_text_view);
-        rewardDescTextView.setText(mReward.getDescription());
+        TextView textView = (TextView) findViewById(R.id.pd_reward_offer_text_view);
+        textView.setText(mReward.getDescription());
 
-        // Time Remaining
-        final TextView timeRemainingTextView = (TextView) findViewById(R.id.pd_reward_time_remaining_text_view);
-        long timeInMillis = PDNumberUtils.toLong(mReward.getAvailableUntilInSeconds(), -1);
-        timeRemainingTextView.setText(timeInMillis == -1 ? "" : PDUIUtils.timeUntil(timeInMillis, true, false));
+        // Rules
+        textView = (TextView) findViewById(R.id.pd_reward_item_rules_text_view);
+        textView.setText(mReward.getRules());
+
+        // End date
+        long timeInSecs = PDNumberUtils.toLong(mReward.getAvailableUntilInSeconds(), -1);
+        String expText = String.format(Locale.getDefault(), "Exp %1s", PDUIUtils.convertTimeToDayAndMonth(timeInSecs));
+        String actionText = getString(R.string.pd_instant_coupon_label);
 
         // Action
-        final TextView actionTextView = (TextView) findViewById(R.id.pd_reward_request_text_view);
-        String action = mReward.getAction();
-        if (action.equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            actionTextView.setText(String.format(Locale.getDefault(), "%1s Required", twitterShareForced() ? "Tweet with Photo" : "Photo"));
-        } else if (action.equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            actionTextView.setText(String.format(Locale.getDefault(), "%1s Required", twitterShareForced() ? "Tweet" : "Check-in"));
-        } else {
-            actionTextView.setText(R.string.pd_instant_coupon_label);
+        final boolean TWITTER_ACTION_REQUIRED = twitterShareForced();
+        if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
+            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo");
+        } else if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
+            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in");
         }
+
+        textView = (TextView) findViewById(R.id.pd_reward_request_text_view);
+        textView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
     }
 
     private void updateFacebookButton() {

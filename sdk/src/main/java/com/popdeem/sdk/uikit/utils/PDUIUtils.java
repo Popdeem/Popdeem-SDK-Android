@@ -110,6 +110,15 @@ public class PDUIUtils {
     }
 
 
+    public static String convertTimeToDayAndMonth(long expiryTimeInSeconds) {
+        if (expiryTimeInSeconds <= 0) {
+            return "";
+        }
+
+        return convertUnixTimeToDate(expiryTimeInSeconds, "d MMM");
+    }
+
+
     /**
      * Get a time in milliseconds in Timer format
      *

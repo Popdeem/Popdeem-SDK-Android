@@ -29,7 +29,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,18 +37,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -86,9 +91,14 @@ public class PDUIRewardsFragment extends Fragment {
                     if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
                         final int position = recyclerView.getChildAdapterPosition(view);
                         PDReward reward = mRewards.get(position);
-                        Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
-                        intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-                        startActivity(intent);
+
+                        if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
+                            claimNoActionReward(position, reward.getId());
+                        } else {
+                            Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
+                            intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
+                            startActivity(intent);
+                        }
                     } else {
                         PopdeemSDK.showSocialLogin(getActivity());
                     }
@@ -114,6 +124,54 @@ public class PDUIRewardsFragment extends Fragment {
         }
 
         return mView;
+    }
+
+    private void claimNoActionReward(final int position, String rewardId) {
+        final PDUIProgressDialogFragment progress = PDUIProgressDialogFragment.showProgressDialog(getChildFragmentManager(), getString(R.string.pd_please_wait_text), getString(R.string.pd_claiming_your_reward_string), false, null);
+        String lat = "", lng = "";
+
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
+        if (userLocation != null) {
+            lat = String.valueOf(userLocation.getLatitude());
+            lng = String.valueOf(userLocation.getLongitude());
+        }
+        realm.close();
+
+        PDAPIClient.instance().claimReward(getActivity(), null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                progress.dismiss();
+                if (jsonObject.has("error")) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.pd_error_title_text)
+                            .setMessage(jsonObject.get("error").getAsString())
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                } else {
+                    mRewards.remove(position);
+                    mRecyclerViewAdapter.notifyItemRemoved(position);
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.pd_claim_reward_claimed_string)
+                            .setMessage(R.string.pd_claim_reward_in_wallet_string)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                progress.dismiss();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.pd_error_title_text)
+                        .setMessage(R.string.pd_claim_something_went_wrong_string)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
+            }
+        });
     }
 
     private void refreshRewards() {

@@ -47,18 +47,6 @@ public class PDUtils {
      * @return API Key String
      */
     public static String getPopdeemAPIKey(Context context) {
-//        ApplicationInfo ai;
-//        try {
-//            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("PackageManager.NameNotFoundException: " + e.getMessage());
-//        }
-//
-//        if (ai.metaData == null) {
-//            throw new RuntimeException("Cannot access Application Meta Data.");
-//        }
-
         String apiKey = getStringFromMetaData(context, POPDEEM_API_KEY_PROPERTY);
         if (apiKey == null) {
             throw new RuntimeException("Popdeem API key not found.\n" +
