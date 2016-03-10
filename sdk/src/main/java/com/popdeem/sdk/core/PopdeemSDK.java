@@ -239,13 +239,13 @@ public final class PopdeemSDK {
     /**
      * Show Popdeem Home Flow
      */
-    public static void showHomeFlow() {
+    public static void showHomeFlow(Context context) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
 
-        Intent intent = new Intent(currentActivity(), PDUIHomeFlowActivity.class);
-        currentActivity().startActivity(intent);
+        Intent intent = new Intent(context, PDUIHomeFlowActivity.class);
+        context.startActivity(intent);
     }
 
     /**

@@ -45,6 +45,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pushPopdeemClick(View view) {
-        PopdeemSDK.showHomeFlow();
+        PopdeemSDK.showHomeFlow(this);
     }
 }

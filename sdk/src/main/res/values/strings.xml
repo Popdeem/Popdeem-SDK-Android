@@ -63,6 +63,8 @@
     <string name="pd_redeem_button_string">Redeem</string>
     <string name="pd_redeem_reward_info_title_string">How to Redeem</string>
     <string name="pd_redeem_reward_info_message_string">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
+    <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
+    <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
     <string name="pd_go_button_string">GO</string>
     <string name="pd_please_wait_text">Please wait</string>
     <string name="pd_claiming_your_reward_string">Claiming your reward</string>

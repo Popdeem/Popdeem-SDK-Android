@@ -94,13 +94,19 @@ public class PDUIWalletFragment extends Fragment {
                     final int position = recyclerView.getChildAdapterPosition(v);
                     final PDReward reward = mRewards.get(position);
 
-                    if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+                        builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)
+                                .setMessage(R.string.pd_redeem_sweepstake_reward_info_message_string)
+                                .setPositiveButton(android.R.string.ok, null);
+                    } else {
                         final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
                         String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
                         String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.pd_redeem_reward_info_title_string)
+
+                        builder.setTitle(R.string.pd_redeem_reward_info_title_string)
                                 .setMessage(message)
+                                .setNegativeButton(android.R.string.cancel, null)
                                 .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -113,11 +119,9 @@ public class PDUIWalletFragment extends Fragment {
                                         intent.putExtra("time", reward.getAvailableUntilInSeconds());
                                         startActivity(intent);
                                     }
-                                })
-                                .setNegativeButton(android.R.string.cancel, null)
-                                .create()
-                                .show();
+                                });
                     }
+                    builder.create().show();
                 }
             });
 
