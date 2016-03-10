@@ -27,7 +27,6 @@ package com.popdeem.sdk.core.utils;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -102,7 +101,7 @@ public class PDUniqueIdentifierUtils {
             super.onPostExecute(result);
             if (mCallback != null) {
                 if (success) {
-                    Log.d(PDUniqueIdentifierUtils.class.getSimpleName(), "uid: " + result);
+                    PDLog.d(PDUniqueIdentifierUtils.class, "uid: " + result);
                     mCallback.success(result);
                 } else {
                     mCallback.failure(result);

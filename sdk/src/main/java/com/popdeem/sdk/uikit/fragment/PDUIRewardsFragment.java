@@ -26,6 +26,7 @@ package com.popdeem.sdk.uikit.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,19 +34,21 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
@@ -61,7 +64,7 @@ import io.realm.Realm;
 /**
  * Created by mikenolan on 19/02/16.
  */
-public class PDUIRewardsFragment extends Fragment {
+public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
     private final int PD_CLAIM_REWARD_REQUEST_CODE = 65;
 
@@ -71,6 +74,8 @@ public class PDUIRewardsFragment extends Fragment {
     private View noItemsView;
     private PDUIRewardsRecyclerViewAdapter mRecyclerViewAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
+
+    private PDLocationManager mLocationManager;
 
     public PDUIRewardsFragment() {
     }
@@ -129,6 +134,21 @@ public class PDUIRewardsFragment extends Fragment {
         }
 
         return mView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLocationManager == null) {
+            mLocationManager = new PDLocationManager(getActivity());
+        }
+        mLocationManager.start(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLocationManager.stop();
     }
 
     private void claimNoActionReward(final int position, String rewardId) {
@@ -203,6 +223,19 @@ public class PDUIRewardsFragment extends Fragment {
         });
     }
 
+    private void updateSavedUserLocation(Location location) {
+        PDRealmUserLocation userLocation = new PDRealmUserLocation();
+        userLocation.setId(0);
+        userLocation.setLatitude(location.getLatitude());
+        userLocation.setLongitude(location.getLongitude());
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(userLocation);
+        realm.commitTransaction();
+        realm.close();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PD_CLAIM_REWARD_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
@@ -212,7 +245,7 @@ public class PDUIRewardsFragment extends Fragment {
                 for (Iterator<PDReward> it = mRewards.iterator(); it.hasNext(); ) {
                     PDReward r = it.next();
                     if (r.getId().equalsIgnoreCase(id)) {
-//                        Log.d(PDUIRewardsFragment.class.getSimpleName(), "claimed reward removed");
+//                        PDLog.d(PDUIRewardsFragment.class, "claimed reward removed");
                         int position = mRewards.indexOf(r);
                         it.remove();
                         mRecyclerViewAdapter.notifyItemRemoved(position);
@@ -222,6 +255,14 @@ public class PDUIRewardsFragment extends Fragment {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            PDLog.d(getClass(), "location: " + location.toString());
+            updateSavedUserLocation(location);
         }
     }
 }

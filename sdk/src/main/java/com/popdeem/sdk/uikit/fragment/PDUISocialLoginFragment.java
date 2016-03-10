@@ -37,7 +37,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,7 @@ import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 
 import java.util.Arrays;
@@ -120,13 +120,13 @@ public class PDUISocialLoginFragment extends Fragment {
         mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(PDUISocialLoginFragment.class.getSimpleName(), "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
+                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
                 checkForLocationPermissionAndStartLocationManager();
             }
 
             @Override
             public void onCancel() {
-                Log.d(PDUISocialLoginFragment.class.getSimpleName(), "Facebook Login onCancel()");
+                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.pd_error_title_text)
                         .setMessage(R.string.pd_facebook_login_cancelled_error_message)
@@ -137,7 +137,7 @@ public class PDUISocialLoginFragment extends Fragment {
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(PDUISocialLoginFragment.class.getSimpleName(), "Facebook Login onError(): " + error.getMessage());
+                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.pd_error_title_text)
                         .setMessage(error.getMessage())
@@ -214,7 +214,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
-                        Log.d(PDAPIClient.class.getSimpleName(), "registered with Facebook: " + user.toString());
+                        PDLog.d(PDUISocialLoginFragment.class, "registered with Facebook: " + user.toString());
 
                         PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
                         Realm realm = Realm.getDefaultInstance();
@@ -228,7 +228,7 @@ public class PDUISocialLoginFragment extends Fragment {
 
                     @Override
                     public void failure(int statusCode, Exception e) {
-                        Log.d(PDAPIClient.class.getSimpleName(), "failed register with Facebook: statusCode=" + statusCode + ", message=" + e.getMessage());
+                        PDLog.d(PDUISocialLoginFragment.class, "failed register with Facebook: statusCode=" + statusCode + ", message=" + e.getMessage());
 
                         LoginManager.getInstance().logOut();
 
@@ -263,7 +263,7 @@ public class PDUISocialLoginFragment extends Fragment {
         PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {
-                Log.d(PDAPIClient.class.getSimpleName(), "update user: " + user);
+                PDLog.d(PDUISocialLoginFragment.class, "update user: " + user);
 
                 PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
                 Realm realm = Realm.getDefaultInstance();
@@ -277,7 +277,7 @@ public class PDUISocialLoginFragment extends Fragment {
 
             @Override
             public void failure(int statusCode, Exception e) {
-                Log.d(PDAPIClient.class.getSimpleName(), "failed update user: status=" + statusCode + ", e=" + e.getMessage());
+                PDLog.d(PDUISocialLoginFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
                 updateViewAfterLogin();
             }
         });
@@ -304,7 +304,7 @@ public class PDUISocialLoginFragment extends Fragment {
                     startLocationManagerAfterLogin();
                 } else {
                     // Permission was not given
-                    Log.d("Popdeem", "permission for location not granted");
+                    PDLog.d(getClass(), "permission for location not granted");
                     if (mAskForPermission) {
                         mAskForPermission = false;
                         new AlertDialog.Builder(getActivity())

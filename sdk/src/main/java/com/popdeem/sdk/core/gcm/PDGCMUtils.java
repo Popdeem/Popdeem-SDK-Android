@@ -28,13 +28,14 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class PDGCMUtils {
                 registerInBackground(context, callback);
             }
         } else {
-            Log.d(PDGCMUtils.class.getSimpleName(), "Google Play Services is not available");
+            PDLog.d(PDGCMUtils.class, "Google Play Services is not available");
         }
     }
 
@@ -90,7 +91,7 @@ public class PDGCMUtils {
 
     private static String getGCMSenderID(Context context) {
         String senderID = PDUtils.getStringFromMetaData(context, GCM_SENDER_ID_META_DATA_PROPERTY_NAME);
-        Log.d(PDGCMUtils.class.getSimpleName(), "senderID:" + senderID);
+        PDLog.d(PDGCMUtils.class, "senderID:" + senderID);
         return senderID;
     }
 
@@ -139,14 +140,14 @@ public class PDGCMUtils {
         PDRealmGCM gcmRealm = realm.where(PDRealmGCM.class).findFirst();
 
         if (gcmRealm == null) {
-            Log.i(PDGCMUtils.class.getSimpleName(), "no registration token saved");
+            PDLog.i(PDGCMUtils.class, "no registration token saved");
             return "";
         }
 
         int registeredVersion = gcmRealm.getAppVersion();
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
-            Log.i(PDGCMUtils.class.getSimpleName(), "App version changed.");
+            PDLog.i(PDGCMUtils.class, "App version changed.");
             return "";
         }
 
@@ -165,7 +166,7 @@ public class PDGCMUtils {
     private static void registerInBackground(Context context, PDGCMRegistrationCallback callback) {
         final String gcmSenderID = getGCMSenderID(context);
         if (gcmSenderID == null) {
-            Log.d("Popdeem", "Cannot register for push. GCM Sender ID was not found in AndroidManifest.xml.\n" +
+            PDLog.d(PopdeemSDK.class, "Cannot register for push. GCM Sender ID was not found in AndroidManifest.xml.\n" +
                     "Add this string resource to your project \"<string name=\"google_app_id\">YOUR_SENDER_ID</string>\" Check that: <meta-data android:name=\"" + GCM_SENDER_ID_META_DATA_PROPERTY_NAME + "\" android:value=\"@string/google_app_id\" /> is in the <application> element of your app's AndroidManifest.xml.");
         } else {
             new PDGCMRegisterAsync(context, gcmSenderID, callback).execute();
@@ -193,10 +194,10 @@ public class PDGCMUtils {
             InstanceID instanceID = InstanceID.getInstance(mContext);
             try {
                 String token = instanceID.getToken(mGcmSenderID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-                Log.i(PDGCMUtils.class.getSimpleName(), "token: " + token);
+                PDLog.i(PDGCMUtils.class, "token: " + token);
                 return token;
             } catch (IOException e) {
-                Log.e(PDGCMUtils.class.getSimpleName(), e.getMessage());
+                PDLog.e(PDGCMUtils.class, e.getMessage());
                 if (mCallback != null) {
                     mCallback.failure(e.getMessage());
                 }

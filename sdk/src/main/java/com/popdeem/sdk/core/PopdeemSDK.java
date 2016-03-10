@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.popdeem.sdk.core.api.PDAPICallback;
@@ -51,6 +50,7 @@ import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDPreferencesUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
@@ -116,7 +116,7 @@ public final class PopdeemSDK {
 
                 @Override
                 public void failure(String message) {
-                    Log.d(PDUniqueIdentifierUtils.class.getSimpleName(), "failed to create uid: " + message);
+                    PDLog.d(PDUniqueIdentifierUtils.class, "failed to create uid: " + message);
                 }
             });
         }
@@ -125,13 +125,13 @@ public final class PopdeemSDK {
         PDGCMUtils.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {
             @Override
             public void success(String registrationToken) {
-                Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM success. Registration token: " + registrationToken);
+                PDLog.d(PDGCMUtils.class, "Init GCM success. Registration token: " + registrationToken);
                 registerNonSocialUser();
             }
 
             @Override
             public void failure(String message) {
-                Log.d(PDGCMUtils.class.getSimpleName(), "Init GCM failure: " + message);
+                PDLog.d(PDGCMUtils.class, "Init GCM failure: " + message);
             }
         });
 
@@ -155,7 +155,7 @@ public final class PopdeemSDK {
         if (intent != null) {
             Uri targetUri = AppLinks.getTargetUrlFromInboundIntent(context, intent);
             if (targetUri != null) {
-                Log.d(PopdeemSDK.class.getSimpleName(), "targetUri: " + targetUri.toString());
+                PDLog.d(PopdeemSDK.class, "targetUri: " + targetUri.toString());
 
                 Realm realm = Realm.getDefaultInstance();
 
@@ -213,7 +213,7 @@ public final class PopdeemSDK {
             PDAPIClient.instance().createNonSocialUser(uid.getUid(), token.isEmpty() ? null : token, new PDAPICallback<PDBasicResponse>() {
                 @Override
                 public void success(PDBasicResponse response) {
-                    Log.d("Popdeem", "registerNonSocialUser: " + response.toString());
+                    PDLog.d(PopdeemSDK.class, "registerNonSocialUser: " + response.toString());
                     if (response.isSuccess() && !token.isEmpty()) {
                         PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
                         uidReam.setId(0);
@@ -229,7 +229,7 @@ public final class PopdeemSDK {
 
                 @Override
                 public void failure(int statusCode, Exception e) {
-                    Log.d(PDAPIClient.class.getSimpleName(), "Register non social user failed. code:" + statusCode + ", message: " + e.getMessage());
+                    PDLog.d(PDAPIClient.class, "Register non social user failed. code:" + statusCode + ", message: " + e.getMessage());
                 }
             });
         }
@@ -335,7 +335,7 @@ public final class PopdeemSDK {
             // Show social login if needed
             if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
                     && PDSocialUtils.shouldShowSocialLogin(activity)) {
-                Log.i(PopdeemSDK.class.getSimpleName(), "showing social login");
+                PDLog.i(PopdeemSDK.class, "showing social login");
                 PDPreferencesUtils.incrementLoginUsesCount(activity);
                 showSocialLogin((FragmentActivity) activity);
             }

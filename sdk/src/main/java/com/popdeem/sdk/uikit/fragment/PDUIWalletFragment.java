@@ -141,14 +141,14 @@ public class PDUIWalletFragment extends Fragment {
         PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
-//                Log.d(PDUIWalletFragment.class.getSimpleName(), "redeem success: " + jsonObject.toString());
+//                PDLog.d(PDUIWalletFragment.class, "redeem success: " + jsonObject.toString());
                 mRewards.remove(position);
                 mAdapter.notifyItemRemoved(position);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-//                Log.d(PDUIWalletFragment.class.getSimpleName(), "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
+//                PDLog.d(PDUIWalletFragment.class, "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
             }
         });
     }

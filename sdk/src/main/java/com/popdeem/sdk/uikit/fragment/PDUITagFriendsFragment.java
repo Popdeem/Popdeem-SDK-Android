@@ -31,7 +31,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +53,7 @@ import com.google.gson.reflect.TypeToken;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.deserializer.PDSocialMediaFriendsDeserializer;
 import com.popdeem.sdk.core.model.PDSocialMediaFriend;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.adapter.PDUITaggableFriendsListViewAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 
@@ -191,8 +191,8 @@ public class PDUITagFriendsFragment extends Fragment {
                 mConfirmCallback.taggedFriendsUpdated(mTaggedNames, mTaggedIds);
             }
 
-            Log.d(PDUITagFriendsFragment.class.getSimpleName(), "mTaggedIds: " + mTaggedIds.toString());
-            Log.d(PDUITagFriendsFragment.class.getSimpleName(), "mTaggedNames: " + mTaggedNames.toString());
+            PDLog.d(PDUITagFriendsFragment.class, "mTaggedIds: " + mTaggedIds.toString());
+            PDLog.d(PDUITagFriendsFragment.class, "mTaggedNames: " + mTaggedNames.toString());
 
             updateTaggedFriendsButton();
         }
@@ -240,7 +240,7 @@ public class PDUITagFriendsFragment extends Fragment {
                                 ArrayList<PDSocialMediaFriend> friends = gson.fromJson(json, type);
                                 updateTaggableFriends(friends);
                             }
-                            Log.d(PDUITagFriendsFragment.class.getSimpleName(), "friends: " + json.toString());
+                            PDLog.d(PDUITagFriendsFragment.class, "friends: " + json.toString());
                         }
                     }
                 });

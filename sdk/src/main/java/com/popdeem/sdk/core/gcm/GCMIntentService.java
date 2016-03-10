@@ -37,11 +37,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
@@ -73,7 +73,7 @@ public class GCMIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(GCMIntentService.class.getSimpleName(), "onHandleIntent");
+        PDLog.d(GCMIntentService.class, "onHandleIntent");
         if (intent == null) {
             return;
         }
@@ -94,7 +94,7 @@ public class GCMIntentService extends IntentService {
 
         final String sender = extras.getString("sender", "");
         if (sender.equalsIgnoreCase(PD_SENDER_VALUE)) {
-            Log.d(GCMIntentService.class.getSimpleName(), extras.toString());
+            PDLog.d(GCMIntentService.class, extras.toString());
 
             // Get extras
             String title = extras.getString(PD_KEY_TITLE, getString(R.string.app_name));

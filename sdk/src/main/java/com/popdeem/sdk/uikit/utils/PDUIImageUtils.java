@@ -24,13 +24,13 @@
 
 package com.popdeem.sdk.uikit.utils;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Environment;
-import android.util.Log;
+
+import com.popdeem.sdk.core.utils.PDLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,19 +90,19 @@ public class PDUIImageUtils {
 
     public static void deletePhotoFile(String path) {
         if (path == null) {
-            Log.d(PDUIImageUtils.class.getSimpleName(), "path is null");
+            PDLog.d(PDUIImageUtils.class, "path is null");
             return;
         }
 
         File file = new File(path);
         if (!file.exists()) {
-            Log.d(PDUIImageUtils.class.getSimpleName(), "image does exists");
+            PDLog.d(PDUIImageUtils.class, "image does exists");
             return;
         }
 
-        Log.d(PDUIImageUtils.class.getSimpleName(), "image exists");
+        PDLog.d(PDUIImageUtils.class, "image exists");
         if (file.delete()) {
-            Log.d(PDUIImageUtils.class.getSimpleName(), "image deleted");
+            PDLog.d(PDUIImageUtils.class, "image deleted");
         }
     }
 
@@ -115,7 +115,7 @@ public class PDUIImageUtils {
         if (!albumF.exists()) {
             albumF.mkdirs();
         }
-        Log.d(PDUIImageUtils.class.getSimpleName(), "photo directory: " + albumF.getAbsolutePath());
+        PDLog.d(PDUIImageUtils.class, "photo directory: " + albumF.getAbsolutePath());
         return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
     }
 

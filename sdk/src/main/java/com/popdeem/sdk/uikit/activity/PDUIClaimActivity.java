@@ -40,7 +40,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -65,6 +64,7 @@ import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -167,7 +167,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         if (mReward.getTweetOptions() != null) {
             if (mReward.getTweetOptions().isPrefill() && mReward.getTweetOptions().getPrefilledMessage() != null) {
                 mMessageEditText.setText(mReward.getTweetOptions().getPrefilledMessage());
-                Log.d(PDUIClaimActivity.class.getSimpleName(), mReward.getTweetOptions().getPrefilledMessage());
+                PDLog.d(PDUIClaimActivity.class, mReward.getTweetOptions().getPrefilledMessage());
             }
             if (mReward.getTweetOptions().isForceTag()) {
                 hashTagTextView.setText(mReward.getTweetOptions().getForcedTag());
@@ -347,12 +347,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
                 @Override
                 public void onCancel() {
-                    Log.d(PDUIClaimActivity.class.getSimpleName(), "Facebook Login onCancel:");
+                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onCancel:");
                 }
 
                 @Override
                 public void onError(FacebookException error) {
-                    Log.d(PDUIClaimActivity.class.getSimpleName(), "Facebook Login onError(): " + error.getMessage());
+                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
                     new AlertDialog.Builder(PDUIClaimActivity.this)
                             .setTitle(R.string.pd_error_title_text)
                             .setMessage(error.getMessage())
@@ -399,7 +399,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
                         encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
                         b.recycle();
-                        Log.d(PDUIClaimActivity.class.getSimpleName(), "image_upload->encodedImage: " + encodedImage);
+                        PDLog.d(PDUIClaimActivity.class, "image_upload->encodedImage: " + encodedImage);
                     }
                 }
             }
@@ -408,7 +408,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         if (mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
             message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
         }
-        Log.d(PDUIClaimActivity.class.getSimpleName(), "message: " + message);
+        PDLog.d(PDUIClaimActivity.class, "message: " + message);
 
         performClaimReward(message, encodedImage);
     }
@@ -506,7 +506,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void handleCroppedPhoto() {
         int orientation = PDUIImageUtils.getOrientation(mCurrentPhotoPath);
-        Log.d(PDUIClaimActivity.class.getSimpleName(), "orientation: " + orientation);
+        PDLog.d(PDUIClaimActivity.class, "orientation: " + orientation);
         setPic(mCurrentCroppedPhotoPath, orientation);
     }
 
@@ -581,7 +581,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         if (requestCode == PDUIImageUtils.PD_TAKE_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (mCurrentPhotoPath != null) {
-                Log.d(PDUIImageUtils.class.getSimpleName(), "processImage");
+                PDLog.d(PDUIImageUtils.class, "processImage");
                 try {
                     Uri croppedImageDestination = Uri.fromFile(setUpCroppedPhotoFile());
                     Crop.of(Uri.fromFile(new File(mCurrentPhotoPath)), croppedImageDestination).asSquare().start(this);
@@ -601,7 +601,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 // Error picking image
             }
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
-            Log.d(PDUIImageUtils.class.getSimpleName(), "handle cropped image");
+            PDLog.d(PDUIImageUtils.class, "handle cropped image");
             handleCroppedPhoto();
         } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             TwitterLoginButton loginButton = new TwitterLoginButton(this);
@@ -688,10 +688,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 123) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("Claim", "permissions");
+                PDLog.d(getClass(), "permissions");
                 startCameraIntentWithImagePath();
             } else {
-                Log.d("Claim", "no permissions");
+                PDLog.d(getClass(), "no permissions");
                 Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
             }
         }

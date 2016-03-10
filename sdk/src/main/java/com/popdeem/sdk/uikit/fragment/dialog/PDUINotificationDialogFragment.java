@@ -34,7 +34,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,6 +43,7 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -168,12 +168,12 @@ public class PDUINotificationDialogFragment extends DialogFragment {
         PDAPIClient.instance().markMessageAsRead(messageId, new PDAPICallback<PDBasicResponse>() {
             @Override
             public void success(PDBasicResponse pdBasicResponse) {
-                Log.d(PDUINotificationDialogFragment.class.getSimpleName(), pdBasicResponse.toString());
+                PDLog.d(PDUINotificationDialogFragment.class, pdBasicResponse.toString());
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-                Log.w(PDUINotificationDialogFragment.class.getSimpleName(), e.getMessage());
+                PDLog.w(PDUINotificationDialogFragment.class, e.getMessage());
             }
         });
     }

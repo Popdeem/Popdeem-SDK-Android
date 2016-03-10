@@ -31,13 +31,14 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.utils.PDLog;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -106,7 +107,7 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
                 && ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, locationRequest, this.mLocationListener);
         } else {
-            Log.i("Popdeem", "Your application does not have ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION permissions. Please ensure these permissions are present and you have asked the user permission to access their location.");
+            PDLog.i(PopdeemSDK.class, "Your application does not have ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION permissions. Please ensure these permissions are present and you have asked the user permission to access their location.");
         }
     }
 
@@ -122,13 +123,13 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
     public void onConnectionSuspended(int cause) {
         String causeString = cause == GoogleApiClient.ConnectionCallbacks.CAUSE_NETWORK_LOST ? "CAUSE_NETWORK_LOST"
                 : cause == GoogleApiClient.ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED ? "CAUSE_SERVICE_DISCONNECTED" : "UNKNOWN";
-        Log.d(getClass().getSimpleName(), "onConnectionSuspended(): " + causeString);
+        PDLog.d(getClass(), "onConnectionSuspended(): " + causeString);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(getClass().getSimpleName(), "onConnectionFailed(): errorCode=" + connectionResult.getErrorCode());
-        Log.d(getClass().getSimpleName(), "onConnectionFailed(): errorMessage=" + connectionResult.getErrorMessage());
+        PDLog.d(getClass(), "onConnectionFailed(): errorCode=" + connectionResult.getErrorCode());
+        PDLog.d(getClass(), "onConnectionFailed(): errorMessage=" + connectionResult.getErrorMessage());
     }
 
 //    @Override

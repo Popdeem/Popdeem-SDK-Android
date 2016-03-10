@@ -29,7 +29,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,7 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.model.PDMessage;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.adapter.PDUIMessagesRecyclerAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
@@ -109,12 +109,12 @@ public class PDUIInboxFragment extends Fragment {
         PDAPIClient.instance().markMessageAsRead(String.valueOf(messageId), new PDAPICallback<PDBasicResponse>() {
             @Override
             public void success(PDBasicResponse response) {
-                Log.d(PDUIInboxFragment.class.getSimpleName(), "message read: " + response.toString());
+                PDLog.d(PDUIInboxFragment.class, "message read: " + response.toString());
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-                Log.d(PDUIInboxFragment.class.getSimpleName(), "message read failed: code=" + statusCode + ", message=" + e.getMessage());
+                PDLog.d(PDUIInboxFragment.class, "message read failed: code=" + statusCode + ", message=" + e.getMessage());
             }
         });
     }
@@ -136,7 +136,7 @@ public class PDUIInboxFragment extends Fragment {
         PDAPIClient.instance().getPopdeemMessages(new PDAPICallback<ArrayList<PDMessage>>() {
             @Override
             public void success(ArrayList<PDMessage> messages) {
-                Log.d(PDUIInboxFragment.class.getSimpleName(), "message count: " + messages.size());
+                PDLog.d(PDUIInboxFragment.class, "message count: " + messages.size());
                 mMessages.clear();
                 mMessages.addAll(messages);
                 Collections.sort(mMessages, MESSAGES_COMPARATOR);

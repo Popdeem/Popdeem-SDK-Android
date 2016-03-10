@@ -26,7 +26,6 @@ package com.popdeem.sdk.core.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.twitter.sdk.android.Twitter;
@@ -108,11 +107,11 @@ public class PDSocialUtils {
 
         if (consumerKey == null || consumerSecret == null) {
             if (consumerKey == null) {
-                Log.e(PDSocialUtils.class.getSimpleName(), "Twitter Error: Please ensure you have your Twitter Consumer Key in your AndroidManifest.xml\n" +
+                PDLog.e(PDSocialUtils.class, "Twitter Error: Please ensure you have your Twitter Consumer Key in your AndroidManifest.xml\n" +
                         "<meta-data android:name=\"TwitterConsumerKey\" android:value=\"YOUR_TWITTER_CONSUMER_KEY\" />");
             }
             if (consumerSecret == null) {
-                Log.e(PDSocialUtils.class.getSimpleName(), "Twitter Error: Please ensure you have your Twitter Consumer Secret in your AndroidManifest.xml\n" +
+                PDLog.e(PDSocialUtils.class, "Twitter Error: Please ensure you have your Twitter Consumer Secret in your AndroidManifest.xml\n" +
                         "<meta-data android:name=\"TwitterConsumerSecret\" android:value=\"YOUR_TWITTER_CONSUMER_SECRET\" />");
             }
             return;
