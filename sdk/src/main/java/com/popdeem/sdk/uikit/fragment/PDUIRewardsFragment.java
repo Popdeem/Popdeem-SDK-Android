@@ -24,6 +24,7 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +54,7 @@ import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import io.realm.Realm;
 
@@ -59,6 +62,8 @@ import io.realm.Realm;
  * Created by mikenolan on 19/02/16.
  */
 public class PDUIRewardsFragment extends Fragment {
+
+    private final int PD_CLAIM_REWARD_REQUEST_CODE = 65;
 
     private View mView;
 
@@ -97,7 +102,7 @@ public class PDUIRewardsFragment extends Fragment {
                         } else {
                             Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
                             intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-                            startActivity(intent);
+                            startActivityForResult(intent, PD_CLAIM_REWARD_REQUEST_CODE);
                         }
                     } else {
                         PopdeemSDK.showSocialLogin(getActivity());
@@ -198,4 +203,25 @@ public class PDUIRewardsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PD_CLAIM_REWARD_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            // Reward claimed successfully. Remove from list.
+            String id = data.getStringExtra("id");
+            if (id != null) {
+                for (Iterator<PDReward> it = mRewards.iterator(); it.hasNext(); ) {
+                    PDReward r = it.next();
+                    if (r.getId().equalsIgnoreCase(id)) {
+//                        Log.d(PDUIRewardsFragment.class.getSimpleName(), "claimed reward removed");
+                        int position = mRewards.indexOf(r);
+                        it.remove();
+                        mRecyclerViewAdapter.notifyItemRemoved(position);
+                        break;
+                    }
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

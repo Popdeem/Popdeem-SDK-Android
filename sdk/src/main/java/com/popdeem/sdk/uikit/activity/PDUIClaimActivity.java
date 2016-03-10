@@ -448,6 +448,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        Intent data = new Intent();
+                                        data.putExtra("id", mReward.getId());
+                                        setResult(RESULT_OK, data);
                                         finish();
                                     }
                                 })
