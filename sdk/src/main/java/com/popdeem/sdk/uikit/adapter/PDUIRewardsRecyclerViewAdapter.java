@@ -84,7 +84,12 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
             actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in");
         }
 
-        holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
+        if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || reward.getDistanceFromUser() <= 0) {
+            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
+        } else {
+            String distanceText = String.format(Locale.getDefault(), "%1sm", String.valueOf(reward.getDistanceFromUser()));
+            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s | %3s", actionText, expText, distanceText));
+        }
 
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {

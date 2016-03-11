@@ -196,7 +196,7 @@ public class PDUISocialLoginFragment extends Fragment {
         mLoginButton.setVisibility(View.INVISIBLE);
 
         final PDLocationManager locationManager = new PDLocationManager(getContext());
-        locationManager.start(new LocationListener() {
+        locationManager.startLocationUpdates(new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
                 PDRealmUserLocation userLocation = new PDRealmUserLocation();

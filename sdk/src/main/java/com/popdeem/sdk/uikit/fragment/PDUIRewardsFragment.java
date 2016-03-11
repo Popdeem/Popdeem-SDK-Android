@@ -45,10 +45,16 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.comparator.PDRewardDistanceComparator;
 import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.model.PDLocation;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
@@ -57,6 +63,7 @@ import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import io.realm.Realm;
@@ -73,9 +80,10 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View noItemsView;
     private PDUIRewardsRecyclerViewAdapter mRecyclerViewAdapter;
-    private ArrayList<PDReward> mRewards = new ArrayList<>();
+    private final ArrayList<PDReward> mRewards = new ArrayList<>();
 
     private PDLocationManager mLocationManager;
+    private Location mLocation = null;
 
     public PDUIRewardsFragment() {
     }
@@ -142,7 +150,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         if (mLocationManager == null) {
             mLocationManager = new PDLocationManager(getActivity());
         }
-        mLocationManager.start(this);
+        mLocationManager.startLocationUpdates(this);
     }
 
     @Override
@@ -214,6 +222,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 mRecyclerViewAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+                if (mLocation != null) {
+                    updateListDistances(mLocation);
+                }
             }
 
             @Override
@@ -236,6 +247,51 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         realm.close();
     }
 
+    private void updateListDistances(final Location location) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<PDReward> rewards = new ArrayList<>(mRewards);
+                Location rewardLocation;
+                for (PDReward reward : rewards) {
+                    for (PDLocation loc : reward.getLocations()) {
+                        double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
+                        double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
+
+                        if (lat == -1 || lng == -1) {
+                            if (reward.getDistanceFromUser() <= 0) {
+                                reward.setDistanceFromUser(-1);
+                            }
+                            continue;
+                        }
+
+                        rewardLocation = new Location("");
+                        rewardLocation.setLatitude(lat);
+                        rewardLocation.setLongitude(lng);
+
+                        float distanceInMeters = location.distanceTo(rewardLocation);
+                        if (reward.getDistanceFromUser() == 0 || reward.getDistanceFromUser() > distanceInMeters) {
+                            reward.setDistanceFromUser(distanceInMeters);
+                        }
+                    }
+                }
+
+                Collections.sort(rewards, new PDRewardDistanceComparator());
+
+                synchronized (mRewards) {
+                    mRewards.clear();
+                    mRewards.addAll(rewards);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PD_CLAIM_REWARD_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
@@ -245,7 +301,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 for (Iterator<PDReward> it = mRewards.iterator(); it.hasNext(); ) {
                     PDReward r = it.next();
                     if (r.getId().equalsIgnoreCase(id)) {
-//                        PDLog.d(PDUIRewardsFragment.class, "claimed reward removed");
                         int position = mRewards.indexOf(r);
                         it.remove();
                         mRecyclerViewAdapter.notifyItemRemoved(position);
@@ -261,8 +316,38 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
+            this.mLocation = location;
+            mLocationManager.stop();
+
             PDLog.d(getClass(), "location: " + location.toString());
             updateSavedUserLocation(location);
+
+            if (mRecyclerViewAdapter.getItemCount() > 0) {
+                updateListDistances(location);
+            }
+
+            Realm realm = Realm.getDefaultInstance();
+            PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+            String id = userDetails == null ? null : userDetails.getId();
+
+            PDRealmGCM gcmRealm = realm.where(PDRealmGCM.class).findFirst();
+            String token = gcmRealm == null ? "" : gcmRealm.getRegistrationToken();
+
+            realm.close();
+
+            if (id != null) {
+                PDAPIClient.instance().updateUserLocationAndDeviceToken(id, token, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+                    @Override
+                    public void success(PDUser user) {
+                        PDLog.d(PDUIRewardsFragment.class, "user: " + user.toString());
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+                        PDLog.w(PDUIRewardsFragment.class, "code=" + statusCode + ", e=" + e.getMessage());
+                    }
+                });
+            }
         }
     }
 }

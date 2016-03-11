@@ -33,6 +33,9 @@ import java.util.ArrayList;
  */
 public class PDReward {
 
+    public static final String PD_TRUE = "true";
+    public static final String PD_FALSE = "false";
+
     public static final String PD_SOCIAL_MEDIA_TYPE_FACEBOOK = "Facebook";
     public static final String PD_SOCIAL_MEDIA_TYPE_TWITTER = "Twitter";
 
@@ -69,16 +72,17 @@ public class PDReward {
     private String twitterMediaCharacters;
     private String[] socialMediaTypes;
 
+    private String disableLocationVerification;
+
     private PDTweetOptions tweetOptions;
     private ArrayList<PDLocation> locations;
 
-
-//    private PDBrand brand;
+    private float distanceFromUser;
 
     public PDReward() {
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -94,6 +98,7 @@ public class PDReward {
         this.revoked = revoked;
         this.twitterMediaCharacters = twitterMediaCharacters;
         this.socialMediaTypes = socialMediaTypes;
+        this.disableLocationVerification = disableLocationVerification;
         this.tweetOptions = tweetOptions;
         this.locations = locations;
     }
@@ -234,99 +239,19 @@ public class PDReward {
         this.locations = locations;
     }
 
-    //    @Deprecated
-//    public PDBrand getBrand() {
-//        return brand;
-//    }
-//
-//    @Deprecated
-//    public void setBrand(PDBrand brand) {
-//        this.brand = brand;
-//    }
+    public float getDistanceFromUser() {
+        return distanceFromUser;
+    }
 
-//    @Deprecated
-//    public static class PDRewardDeserializer implements JsonDeserializer<ArrayList<PDReward>> {
-//
-//        @Override
-//        public ArrayList<PDReward> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-//            Gson gson = new GsonBuilder()
-//                    .registerTypeAdapter(long.class, new PDLongDeserializer())
-//                    .registerTypeAdapter(int.class, new PDIntDeserializer())
-//                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-//                    .create();
-//
-//            Gson brandGson = new GsonBuilder()
-//                    .registerTypeAdapter(PDBrand.class, new PDBrandDeserializer())
-//                    .create();
-//
-//            ArrayList<PDReward> rewards = new ArrayList<>();
-//
-//            JsonArray rewardsArray = json.getAsJsonObject().getAsJsonArray("rewards");
-//            for (int i = 0; i < rewardsArray.size(); i++) {
-//                JsonElement rewardElement = rewardsArray.get(i);
-//                PDReward reward = gson.fromJson(rewardElement, PDReward.class);
-//
-//                JsonElement brandElement = rewardElement.getAsJsonObject().getAsJsonObject("brand");
-//                PDBrand brand = brandGson.fromJson(brandElement, PDBrand.class);
-//                reward.setBrand(brand);
-//
-//                rewards.add(reward);
-//            }
-//
-//            return rewards;
-//        }
-//    }
-//
-//
-//    public static class PDRewardArrayDeserializer implements JsonDeserializer<ArrayList<PDReward>> {
-//
-//        @Override
-//        public ArrayList<PDReward> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-//            JsonObject jsonObject = json.getAsJsonObject();
-//            JsonArray array = jsonObject.getAsJsonArray("rewards");
-//
-//            Gson gson = new GsonBuilder()
-//                    .registerTypeAdapter(PDReward.class, new PDRewardObjectDeserializer())
-//                    .registerTypeAdapter(long.class, new PDLongDeserializer())
-//                    .registerTypeAdapter(int.class, new PDIntDeserializer())
-//                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-//                    .create();
-//
-//            Type type = new TypeToken<ArrayList<PDReward>>() {
-//            }.getType();
-//            return gson.fromJson(array, type);
-//        }
-//    }
-//
-//    public static class PDRewardObjectDeserializer implements JsonDeserializer<PDReward> {
-//
-//        @Override
-//        public PDReward deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-//            JsonObject jsonObject = json.getAsJsonObject();
-//
-//            Gson gson = new GsonBuilder()
-////                    .registerTypeAdapter(PDLocation.class, new PDLocation.PDLocationDeserializer())
-//                    .registerTypeAdapter(PDTweetOptions.class, new PDTweetOptions.PDTweetOptionsJsonDeserializer())
-//                    .registerTypeAdapter(long.class, new PDLongDeserializer())
-//                    .registerTypeAdapter(int.class, new PDIntDeserializer())
-//                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-//                    .create();
-//
-//            PDReward reward = gson.fromJson(jsonObject, PDReward.class);
-//            if (jsonObject.has("social_media_types")) {
-//                JsonArray array = jsonObject.getAsJsonArray("social_media_types");
-//                Type type = new TypeToken<String[]>() {
-//                }.getType();
-//                reward.setSocialMediaTypes((String[]) gson.fromJson(array, type));
-//            }
-//            if (jsonObject.has("tweet_options")) {
-//                JsonObject tweetOptionsObject = jsonObject.getAsJsonObject("tweet_options");
-//                PDTweetOptions options = gson.fromJson(tweetOptionsObject, PDTweetOptions.class);
-//                reward.setTweetOptions(options);
-//            }
-//
-//            return reward;
-//        }
-//    }
+    public void setDistanceFromUser(float distanceFromUser) {
+        this.distanceFromUser = distanceFromUser;
+    }
 
+    public String getDisableLocationVerification() {
+        return disableLocationVerification;
+    }
+
+    public void setDisableLocationVerification(String disableLocationVerification) {
+        this.disableLocationVerification = disableLocationVerification;
+    }
 }

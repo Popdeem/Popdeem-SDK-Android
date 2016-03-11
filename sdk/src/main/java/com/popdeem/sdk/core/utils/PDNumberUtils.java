@@ -30,6 +30,35 @@ package com.popdeem.sdk.core.utils;
 public class PDNumberUtils {
 
     /**
+     * Convert string to double
+     *
+     * @param string {@link String} value to convert
+     * @return Converted double value or 0.0 if conversion fails
+     */
+    public static double toDouble(String string) {
+        return toDouble(string, 0.0);
+    }
+
+    /**
+     * Convert string to double
+     *
+     * @param string       {@link String} value to convert
+     * @param defaultValue default value if conversion fails
+     * @return Converted double value or defaultValue if conversion fails
+     */
+    public static double toDouble(String string, double defaultValue) {
+        if (string == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Double.valueOf(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Convert string to float
      *
      * @param string {@link String} value to convert

@@ -30,7 +30,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -66,27 +66,45 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationListener mLocationListener = null;
-//    private Location mLocation;
+    private boolean startedForLastKnownLocation = false;
 
     public PDLocationManager(@NonNull Context context) {
         this.mContext = context;
     }
 
-    public void start(@NonNull LocationListener locationListener) {
+    public void startLocationUpdates(@NonNull LocationListener locationListener) {
+        startedForLastKnownLocation = false;
+        start(locationListener);
+    }
+
+    public void startForLastKnownLocation(@NonNull LocationListener locationListener) {
+        startedForLastKnownLocation = true;
+        start(locationListener);
+    }
+
+    public void stop() {
+        if (mGoogleApiClient != null && (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting())) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private void start(LocationListener locationListener) {
         this.mLocationListener = locationListener;
+        buildGoogleApiClient();
+        this.mGoogleApiClient.connect();
+    }
+
+    private void buildGoogleApiClient() {
+        if (this.mGoogleApiClient != null && (this.mGoogleApiClient.isConnected() || this.mGoogleApiClient.isConnecting())) {
+            this.mGoogleApiClient.disconnect();
+        }
+
         this.mGoogleApiClient = new GoogleApiClient.Builder(this.mContext)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        this.mGoogleApiClient.connect();
-    }
-
-    public void stop() {
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
-            mGoogleApiClient.disconnect();
-        }
     }
 
     private void setState(@PDLocationManagerState int state) {
@@ -103,9 +121,19 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 //    }
 
     private void requestLocationUpdatesIfPermitted(LocationRequest locationRequest) {
-        if (ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            setState(STATE_RUNNING);
             LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, locationRequest, this.mLocationListener);
+        } else {
+            PDLog.i(PopdeemSDK.class, "Your application does not have ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION permissions. Please ensure these permissions are present and you have asked the user permission to access their location.");
+        }
+    }
+
+    private void requestLastKnownLocationIfPermitted() {
+        if (ContextCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationListener.onLocationChanged(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
         } else {
             PDLog.i(PopdeemSDK.class, "Your application does not have ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION permissions. Please ensure these permissions are present and you have asked the user permission to access their location.");
         }
@@ -113,14 +141,20 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 
     @Override
     public void onConnected(Bundle bundle) {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(0);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        requestLocationUpdatesIfPermitted(locationRequest);
+        setState(STATE_CONNECTED);
+        if (startedForLastKnownLocation) {
+            requestLastKnownLocationIfPermitted();
+        } else {
+            LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setInterval(0);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            requestLocationUpdatesIfPermitted(locationRequest);
+        }
     }
 
     @Override
     public void onConnectionSuspended(int cause) {
+        setState(STATE_SUSPENDED);
         String causeString = cause == GoogleApiClient.ConnectionCallbacks.CAUSE_NETWORK_LOST ? "CAUSE_NETWORK_LOST"
                 : cause == GoogleApiClient.ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED ? "CAUSE_SERVICE_DISCONNECTED" : "UNKNOWN";
         PDLog.d(getClass(), "onConnectionSuspended(): " + causeString);
@@ -128,6 +162,7 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        setState(STATE_CONNECTION_FAILED);
         PDLog.d(getClass(), "onConnectionFailed(): errorCode=" + connectionResult.getErrorCode());
         PDLog.d(getClass(), "onConnectionFailed(): errorMessage=" + connectionResult.getErrorMessage());
     }
