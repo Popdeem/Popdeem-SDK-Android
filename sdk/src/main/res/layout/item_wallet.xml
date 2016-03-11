@@ -27,7 +27,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:minHeight="80dp"
+    android:minHeight="60dp"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -46,54 +46,66 @@
         android:scaleType="centerInside"
         android:src="@drawable/pd_ui_star_icon" />
 
-    <ImageView
-        android:id="@+id/pd_wallet_reward_type_image_view"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:adjustViewBounds="true"
-        android:padding="5dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/pd_ui_tag_icon" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/pd_wallet_reward_title_text_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/pd_wallet_brand_image_view"
-        android:layout_toLeftOf="@id/pd_wallet_reward_type_image_view"
         android:layout_toRightOf="@id/pd_wallet_brand_image_view"
-        android:layout_toStartOf="@id/pd_wallet_reward_type_image_view"
-        android:orientation="vertical">
+        android:ellipsize="end"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="This is a reward title" />
 
-        <TextView
-            android:id="@+id/pd_wallet_reward_title_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            tools:text="This is a reward title" />
+    <!--<ImageView-->
+    <!--android:id="@+id/pd_wallet_reward_type_image_view"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:padding="5dp"-->
+    <!--android:scaleType="centerInside"-->
+    <!--android:src="@drawable/pd_ui_tag_icon" />-->
 
-        <TextView
-            android:id="@+id/pd_wallet_reward_expiry_date_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            tools:text="Expiring soon" />
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_toEndOf="@id/pd_wallet_brand_image_view"-->
+    <!--android:layout_toLeftOf="@id/pd_wallet_reward_type_image_view"-->
+    <!--android:layout_toRightOf="@id/pd_wallet_brand_image_view"-->
+    <!--android:layout_toStartOf="@id/pd_wallet_reward_type_image_view"-->
+    <!--android:orientation="vertical">-->
 
-        <TextView
-            android:id="@+id/pd_wallet_reward_redeem_at_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/pd_redeem_at_stores_label"
-            android:textSize="12sp" />
+    <!--<TextView-->
+    <!--android:id="@+id/pd_wallet_reward_title_text_view"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ellipsize="end"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="14sp"-->
+    <!--tools:text="This is a reward title" />-->
 
-    </LinearLayout>
+    <!--<TextView-->
+    <!--android:id="@+id/pd_wallet_reward_expiry_date_text_view"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="3dp"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="12sp"-->
+    <!--tools:text="Expiring soon" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/pd_wallet_reward_redeem_at_text_view"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:text="@string/pd_redeem_at_stores_label"-->
+    <!--android:textSize="12sp" />-->
+
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

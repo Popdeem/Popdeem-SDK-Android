@@ -40,4 +40,6 @@
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>
     <color name="colorAccent">@color/pd_accent</color>
 
+    <color name="pd_image_corder_color">#efeff4</color>
+
 </resources>

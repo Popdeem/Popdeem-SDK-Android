@@ -553,6 +553,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 .create().show();
     }
 
+    private void showCropView(Uri source) throws IOException {
+        Uri croppedImageDestination = Uri.fromFile(setUpCroppedPhotoFile());
+        Crop.of(source, croppedImageDestination).start(this);
+    }
+
     @Override
     protected void onDestroy() {
         PDUIImageUtils.deletePhotoFile(mCurrentPhotoPath);
@@ -583,8 +588,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             if (mCurrentPhotoPath != null) {
                 PDLog.d(PDUIImageUtils.class, "processImage");
                 try {
-                    Uri croppedImageDestination = Uri.fromFile(setUpCroppedPhotoFile());
-                    Crop.of(Uri.fromFile(new File(mCurrentPhotoPath)), croppedImageDestination).asSquare().start(this);
+                    showCropView(Uri.fromFile(new File(mCurrentPhotoPath)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -592,8 +596,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (requestCode == PDUIImageUtils.PD_GALLERY_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 try {
-                    Uri croppedImageDestination = Uri.fromFile(setUpCroppedPhotoFile());
-                    Crop.of(data.getData(), croppedImageDestination).asSquare().start(this);
+                    showCropView(data.getData());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

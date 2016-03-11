@@ -68,9 +68,11 @@
                         android:layout_height="80dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_margin="3dp"
                         android:adjustViewBounds="true"
-                        android:padding="10dp"
-                        android:scaleType="centerCrop"
+                        android:background="@drawable/pd_image_border"
+                        android:padding="3dp"
+                        android:scaleType="centerInside"
                         android:visibility="gone" />
 
                     <EditText

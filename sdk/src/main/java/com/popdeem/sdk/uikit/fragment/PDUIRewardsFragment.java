@@ -137,6 +137,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             });
 
             refreshRewards();
+
+            mLocationManager = new PDLocationManager(getActivity());
+            mLocationManager.startLocationUpdates(this);
         } else {
             container.removeView(mView);
         }
@@ -145,18 +148,11 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (mLocationManager == null) {
-            mLocationManager = new PDLocationManager(getActivity());
-        }
-        mLocationManager.startLocationUpdates(this);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        mLocationManager.stop();
+        if (mLocationManager != null) {
+            mLocationManager.stop();
+        }
     }
 
     private void claimNoActionReward(final int position, String rewardId) {
@@ -251,9 +247,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<PDReward> rewards = new ArrayList<>(mRewards);
+//                ArrayList<PDReward> rewards = new ArrayList<>(mRewards);
                 Location rewardLocation;
-                for (PDReward reward : rewards) {
+                for (PDReward reward : mRewards) {
                     for (PDLocation loc : reward.getLocations()) {
                         double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
                         double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
@@ -276,11 +272,10 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     }
                 }
 
-                Collections.sort(rewards, new PDRewardDistanceComparator());
-
                 synchronized (mRewards) {
-                    mRewards.clear();
-                    mRewards.addAll(rewards);
+                    Collections.sort(mRewards, new PDRewardDistanceComparator());
+//                    mRewards.clear();
+//                    mRewards.addAll(rewards);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -22,7 +22,8 @@
             android:name=".uikit.activity.PDUIClaimActivity"
             android:label="@string/pd_empty_string"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.DarkerWindowBackgroundTheme" />
+            android:theme="@style/AppTheme.DarkerWindowBackgroundTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".uikit.activity.PDUIRedeemActivity"
             android:label="@string/pd_empty_string"
