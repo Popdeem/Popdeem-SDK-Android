@@ -39,56 +39,55 @@
 
         <ImageView
             android:id="@+id/pd_redeem_brand_image_view"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginEnd="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginStart="5dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:src="@drawable/pd_ui_star_icon" />
 
         <TextView
             android:id="@+id/pd_redeem_reward_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/pd_redeem_brand_image_view"
-            android:layout_toEndOf="@id/pd_redeem_brand_image_view"
-            android:layout_toRightOf="@id/pd_redeem_brand_image_view"
+            android:layout_below="@id/pd_redeem_brand_image_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            tools:text="Hello" />
+            tools:text="Reward Title" />
 
         <TextView
             android:id="@+id/pd_redeem_reward_rules_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/pd_redeem_reward_title_text_view"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="3dp"
-            android:layout_toEndOf="@id/pd_redeem_brand_image_view"
-            android:layout_toRightOf="@id/pd_redeem_brand_image_view"
             android:textColor="@android:color/black"
             android:textSize="12sp"
-            tools:text="Hello" />
+            tools:text="Rules" />
 
 
         <TextView
             android:id="@+id/pd_redeem_instructions_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pd_redeem_brand_image_view"
+            android:layout_below="@id/pd_redeem_reward_rules_text_view"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:lineSpacingExtra="3dp"
             android:padding="5dp"
             android:text="@string/pd_share_this_screen_string"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
 
         <TextView
@@ -99,7 +98,8 @@
             android:layout_centerHorizontal="true"
             android:padding="5dp"
             android:textColor="@color/pd_toolbar_color"
-            android:textSize="50sp" />
+            android:textSize="50sp"
+            tools:text="30:00" />
 
         <Button
             android:id="@+id/pd_redeem_done_button"

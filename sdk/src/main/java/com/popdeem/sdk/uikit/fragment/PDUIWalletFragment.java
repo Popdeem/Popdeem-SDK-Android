@@ -100,7 +100,8 @@ public class PDUIWalletFragment extends Fragment {
                                 .setMessage(R.string.pd_redeem_sweepstake_reward_info_message_string)
                                 .setPositiveButton(android.R.string.ok, null);
                     } else {
-                        final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+//                        final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+                        final long REDEMPTION_TIMER = (reward.getCountdownTimer() * 1000) + 500;
                         String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
                         String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
 
@@ -117,6 +118,7 @@ public class PDUIWalletFragment extends Fragment {
                                         intent.putExtra("rules", reward.getRules());
                                         intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
                                         intent.putExtra("time", reward.getAvailableUntilInSeconds());
+                                        intent.putExtra("countdown", reward.getCountdownTimer());
                                         startActivity(intent);
                                     }
                                 });

@@ -77,13 +77,14 @@ public class PDReward {
 
     private PDTweetOptions tweetOptions;
     private ArrayList<PDLocation> locations;
+    private long countdownTimer;
 
     private float distanceFromUser;
 
     public PDReward() {
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -102,6 +103,7 @@ public class PDReward {
         this.disableLocationVerification = disableLocationVerification;
         this.tweetOptions = tweetOptions;
         this.locations = locations;
+        this.countdownTimer = countdownTimer;
     }
 
     public String getId() {
@@ -254,5 +256,13 @@ public class PDReward {
 
     public void setDisableLocationVerification(String disableLocationVerification) {
         this.disableLocationVerification = disableLocationVerification;
+    }
+
+    public long getCountdownTimer() {
+        return countdownTimer;
+    }
+
+    public void setCountdownTimer(long countdownTimer) {
+        this.countdownTimer = countdownTimer;
     }
 }

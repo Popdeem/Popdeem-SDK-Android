@@ -96,7 +96,8 @@ public class PDUIRedeemActivity extends PDBaseActivity {
             long timeInSeconds = PDNumberUtils.toLong(getIntent().getStringExtra("time"), 0);
             countdownTextView.setText(PDUIUtils.timeUntil(timeInSeconds, false, true));
         } else {
-            final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+//            final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
+            final long REDEMPTION_TIMER = (getIntent().getLongExtra("countdown", 300) * 1000) + 500;
             final long COUNTDOWN_INTERVAL_IN_MILLIS = 1000;
 
             countdownTextView.setText(PDUIUtils.millisecondsToTimer(REDEMPTION_TIMER));
