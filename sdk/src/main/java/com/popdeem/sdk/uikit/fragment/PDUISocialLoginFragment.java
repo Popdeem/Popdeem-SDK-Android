@@ -272,6 +272,9 @@ public class PDUISocialLoginFragment extends Fragment {
                 realm.commitTransaction();
                 realm.close();
 
+                // Send broadcast to any registered receivers that user has logged in
+                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+                // Update view
                 updateViewAfterLogin();
             }
 

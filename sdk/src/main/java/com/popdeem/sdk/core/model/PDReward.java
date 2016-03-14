@@ -46,6 +46,7 @@ public class PDReward {
     public static final String PD_REWARD_ACTION_CHECKIN = "checkin";
     public static final String PD_REWARD_ACTION_PHOTO = "photo";
     public static final String PD_REWARD_ACTION_NONE = "none";
+    public static final String PD_REWARD_ACTION_SOCIAL_LOGIN = "social_login";
 
     public static final String PD_REWARD_STATUS_LIVE = "live";
     public static final String PD_REWARD_STATUS_EXPIRED = "expired";

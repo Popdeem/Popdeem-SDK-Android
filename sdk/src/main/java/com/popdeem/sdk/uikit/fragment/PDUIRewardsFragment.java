@@ -25,7 +25,10 @@
 package com.popdeem.sdk.uikit.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -73,6 +76,7 @@ import io.realm.Realm;
  */
 public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
+    public static final String PD_LOGGED_IN_RECEIVER_FILTER = "com.popdeem.sdk.LOGGED_IN";
     private final int PD_CLAIM_REWARD_REQUEST_CODE = 65;
 
     private View mView;
@@ -112,7 +116,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
                         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
                             claimNoActionReward(position, reward.getId());
-                        } else {
+                        } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
                             Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
                             intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
                             startActivityForResult(intent, PD_CLAIM_REWARD_REQUEST_CODE);
@@ -148,8 +152,15 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PD_LOGGED_IN_RECEIVER_FILTER));
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        getActivity().unregisterReceiver(mLoggedInBroadcastReceiver);
         if (mLocationManager != null) {
             mLocationManager.stop();
         }
@@ -286,6 +297,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             }
         }).start();
     }
+
+    private final BroadcastReceiver mLoggedInBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
+            refreshRewards();
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
