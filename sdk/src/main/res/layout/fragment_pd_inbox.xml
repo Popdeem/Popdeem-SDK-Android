@@ -30,7 +30,7 @@
     android:orientation="vertical"
     tools:context="com.popdeem.sdk.uikit.fragment.PDUIInboxFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout
         android:id="@+id/pd_inbox_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -65,6 +65,6 @@
 
         </FrameLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout>
 
 </LinearLayout>

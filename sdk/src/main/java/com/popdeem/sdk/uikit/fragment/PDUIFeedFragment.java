@@ -42,6 +42,7 @@ import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.uikit.activity.PDUIFeedImageActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIFeedRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
+import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class PDUIFeedFragment extends Fragment {
 
     private View mView;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIFeedRecyclerViewAdapter mAdapter;
     private View mNoItemsView;
     private ArrayList<PDFeed> mFeedItems = new ArrayList<>();
@@ -71,7 +72,7 @@ public class PDUIFeedFragment extends Fragment {
             mView = inflater.inflate(R.layout.fragment_pd_feed, container, false);
 
             mNoItemsView = mView.findViewById(R.id.pd_feed_no_items_view);
-            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -95,7 +96,10 @@ public class PDUIFeedFragment extends Fragment {
                 }
             });
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
+
+            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
             recyclerView.setAdapter(mAdapter);
 

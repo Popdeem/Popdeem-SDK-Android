@@ -41,6 +41,7 @@ import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.adapter.PDUIMessagesRecyclerAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
+import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,17 +49,25 @@ import java.util.Comparator;
 
 public class PDUIInboxFragment extends Fragment {
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    public interface InboxItemClickListener {
+        void itemClicked(PDMessage message);
+    }
+
+    private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIMessagesRecyclerAdapter mAdapter;
     private ArrayList<PDMessage> mMessages = new ArrayList<>();
     private View mNoMessagesView;
+
+    private InboxItemClickListener mListener;
 
     public PDUIInboxFragment() {
         // Required empty public constructor
     }
 
-    public static PDUIInboxFragment newInstance() {
-        return new PDUIInboxFragment();
+    public static PDUIInboxFragment newInstance(InboxItemClickListener listener) {
+        PDUIInboxFragment fragment = new PDUIInboxFragment();
+        fragment.addInboxItemClickListener(listener);
+        return fragment;
     }
 
     @Override
@@ -67,7 +76,7 @@ public class PDUIInboxFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pd_inbox, container, false);
 
         mNoMessagesView = view.findViewById(R.id.pd_inbox_no_items_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pd_inbox_swipe_refresh_layout);
+        mSwipeRefreshLayout = (PDUISwipeRefreshLayout) view.findViewById(R.id.pd_inbox_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,20 +98,26 @@ public class PDUIInboxFragment extends Fragment {
                 message.setRead(true);
                 mAdapter.notifyItemChanged(position);
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.pd_home_fragment_container, PDUIInboxMessageFragment.newInstance(message))
-                        .addToBackStack(PDUIInboxMessageFragment.class.getSimpleName())
-                        .commit();
+                if (mListener != null) {
+                    mListener.itemClicked(message);
+                }
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(container.getContext());
+        mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
         recyclerView.setAdapter(mAdapter);
 
         refreshMessages();
 
         return view;
+    }
+
+    private void addInboxItemClickListener(InboxItemClickListener listener) {
+        this.mListener = listener;
     }
 
     private void markMessageAsRead(long messageId) {

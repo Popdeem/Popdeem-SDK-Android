@@ -64,6 +64,7 @@ import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
+import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +82,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
     private View mView;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private View noItemsView;
     private PDUIRewardsRecyclerViewAdapter mRecyclerViewAdapter;
     private final ArrayList<PDReward> mRewards = new ArrayList<>();
@@ -127,12 +128,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 }
             });
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setNestedScrollingEnabled(true);
             recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
             recyclerView.setAdapter(mRecyclerViewAdapter);
 
-            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
+            mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

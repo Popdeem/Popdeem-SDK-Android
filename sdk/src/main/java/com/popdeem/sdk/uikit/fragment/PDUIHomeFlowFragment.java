@@ -24,17 +24,20 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIHomeFlowPagerAdapter;
+import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,14 +47,27 @@ public class PDUIHomeFlowFragment extends Fragment {
     public PDUIHomeFlowFragment() {
     }
 
+    public static PDUIHomeFlowFragment newInstance() {
+        return new PDUIHomeFlowFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_home_flow, container, false);
 
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.pd_home_inbox_fab);
+        fab.setImageDrawable(PDUIColorUtils.getInboxButtonIcon(getActivity()));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), PDUIInboxActivity.class));
+            }
+        });
+
+//        AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
-        viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(activity.getSupportFragmentManager()));
+        viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(getChildFragmentManager()));
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
         tabLayout.setupWithViewPager(viewPager);

@@ -24,8 +24,11 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,10 +45,12 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
+import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,7 +63,7 @@ public class PDUIWalletFragment extends Fragment {
 
     private View mView;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIWalletRecyclerViewAdapter mAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
     private View mNoItemsInWalletView;
@@ -77,7 +82,7 @@ public class PDUIWalletFragment extends Fragment {
             mView = inflater.inflate(R.layout.fragment_pd_wallet, container, false);
 
             mNoItemsInWalletView = mView.findViewById(R.id.pd_wallet_no_items_view);
-            mSwipeRefreshLayout = (SwipeRefreshLayout) mView;
+            mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -127,7 +132,10 @@ public class PDUIWalletFragment extends Fragment {
                 }
             });
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(container.getContext());
+            mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
+
+            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
             recyclerView.setAdapter(mAdapter);
 
@@ -138,6 +146,26 @@ public class PDUIWalletFragment extends Fragment {
 
         return mView;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(mLoggedInBroadcastReceiver);
+    }
+
+    private final BroadcastReceiver mLoggedInBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            PDLog.i(PDUIWalletFragment.class, "LoggedIn broadcast onReceive");
+            refreshWallet();
+        }
+    };
 
     private void redeemReward(PDReward reward, final int position) {
         PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {

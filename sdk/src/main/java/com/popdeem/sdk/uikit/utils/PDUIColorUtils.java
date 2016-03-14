@@ -42,4 +42,11 @@ public class PDUIColorUtils {
         return drawerIcon;
     }
 
+
+    public static Drawable getInboxButtonIcon(Context context) {
+        Drawable drawerIcon = ContextCompat.getDrawable(context, R.drawable.pd_ic_inbox);
+        drawerIcon.setColorFilter(ContextCompat.getColor(context, R.color.pd_inbox_button_icon_color), PorterDuff.Mode.SRC_IN);
+        return drawerIcon;
+    }
+
 }

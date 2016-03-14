@@ -1,1 +1,1 @@
-include ':sdk', ':navigationsample'
+include ':sdk', ':navigationsample', ':tabbedsample'

@@ -19,6 +19,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".uikit.activity.PDUIInboxActivity"
+            android:label="@string/pd_empty_string"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".uikit.activity.PDUIClaimActivity"
             android:label="@string/pd_empty_string"
             android:screenOrientation="portrait"

@@ -21,21 +21,13 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".uikit.fragment.PDUIHomeFlowFragment">
-
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-    <!--<include layout="@layout/pd_toolbar" />-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/pd_home_tab_layout"
@@ -47,12 +39,21 @@
         app:tabIndicatorColor="@color/pd_tab_indicator_color"
         app:tabIndicatorHeight="4dp" />
 
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <!--<include layout="@layout/content_home_flow" />-->
     <android.support.v4.view.ViewPager
         android:id="@+id/pd_home_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/pd_home_tab_layout" />
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pd_home_inbox_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/pd_ic_inbox"
+        app:backgroundTint="@color/pd_inbox_button_bg_color" />
+
+</RelativeLayout>
