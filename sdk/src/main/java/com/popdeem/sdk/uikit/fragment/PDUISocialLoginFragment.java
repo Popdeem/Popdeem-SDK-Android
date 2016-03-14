@@ -41,7 +41,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -63,6 +63,7 @@ import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
 import java.util.Arrays;
 
@@ -76,7 +77,7 @@ public class PDUISocialLoginFragment extends Fragment {
     private final int LOCATION_PERMISSION_REQUEST = 90;
 
     private ProgressBar mProgress;
-    private ImageView mImageView;
+    //    private ImageView mImageView;
     private TextView mHeaderTextView;
     private TextView mRewardsInfoTextView;
     private Button mContinueButton;
@@ -97,7 +98,11 @@ public class PDUISocialLoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_social_login, container, false);
-        view.setOnClickListener(new View.OnClickListener() {
+        mCallbackManager = CallbackManager.Factory.create();
+
+        ImageButton backButton = (ImageButton) view.findViewById(R.id.pd_social_login_back_button);
+        backButton.setImageDrawable(PDUIColorUtils.getBackButtonIcon(getActivity()));
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mProgress.getVisibility() == View.GONE) {
@@ -106,10 +111,8 @@ public class PDUISocialLoginFragment extends Fragment {
             }
         });
 
-        mCallbackManager = CallbackManager.Factory.create();
-
         mProgress = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
-        mImageView = (ImageView) view.findViewById(R.id.pd_social_login_image_view);
+//        mImageView = (ImageView) view.findViewById(R.id.pd_social_login_image_view);
         mHeaderTextView = (TextView) view.findViewById(R.id.pd_social_login_header_text_view);
         mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
         mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
@@ -155,7 +158,7 @@ public class PDUISocialLoginFragment extends Fragment {
         mRewardsInfoTextView.setText(R.string.pd_social_login_rewards_unlocked_text);
         mHeaderTextView.setText(R.string.pd_social_connected_text);
         mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
-        mImageView.setImageResource(R.drawable.pd_ui_rewards_success_icon);
+//        mImageView.setImageResource(R.drawable.pd_ui_rewards_success_icon);
         mLoginButton.setVisibility(View.GONE);
         mContinueButton.setVisibility(View.VISIBLE);
         mContinueButton.setOnClickListener(new View.OnClickListener() {

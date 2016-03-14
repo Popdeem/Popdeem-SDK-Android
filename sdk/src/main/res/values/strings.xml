@@ -72,6 +72,10 @@
     <string name="pd_add_photo_title_string">Add Photo</string>
     <string name="pd_photo_gallery_string">Gallery</string>
     <string name="pd_photo_camera_string">Camera</string>
+    <string name="pd_social_login_new_text">New: Social Features</string>
+    <string name="pd_social_login_header_text">Connect your Facebook to earn additional Rewards</string>
+    <string name="pd_social_login_info_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
+    <string name="pd_social_login_privacy_policy_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
     <string-array name="pd_photo_dialog_items_array">
         <item>@string/pd_photo_gallery_string</item>
         <item>@string/pd_photo_camera_string</item>

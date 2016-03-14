@@ -21,20 +21,45 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pd_social_login_background_color"
-    android:clickable="true">
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/pd_social_login_header_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pd_social_login_header_image" />
+
+        <ImageButton
+            android:id="@+id/pd_social_login_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="10dp"
+            tools:src="@drawable/pd_ic_arrow_back" />
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="285dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@android:color/white"
-        android:clickable="true"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -43,43 +68,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/pd_app_update_text"
-            android:textColor="@color/pd_toolbar_color"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:text="@string/pd_social_login_new_text"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="@string/pd_rewards_now_available_text"
+            android:text="@string/pd_social_login_header_text"
             android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/pd_social_login_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/pd_ui_rewards_icon" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/pd_social_rewards_info_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
             android:minLines="3"
-            android:text="@string/pd_social_login_connect_facebook_text"
+            android:text="@string/pd_social_login_info_text"
             android:textColor="@android:color/black"
             android:textSize="13sp" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_marginBottom="10dp">
 
             <Button
                 android:id="@+id/pd_social_continue_button"
@@ -110,15 +125,13 @@
         </FrameLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableBottom="@drawable/pd_ui_rainbow_icon"
-            android:drawablePadding="5dp"
             android:gravity="center"
-            android:text="@string/pd_powered_by_popdeem_text"
+            android:text="@string/pd_social_login_privacy_policy_text"
             android:textColor="@android:color/black"
-            android:textSize="13sp" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

@@ -3,6 +3,7 @@
     <color name="pd_toolbar_color">#da4d59</color>
     <color name="pd_toolbar_color_dark">#cc4752</color>
     <color name="pd_accent">#dba7ac</color>
+    <color name="pd_back_button_color">#ffffff</color>
 
     <color name="pd_divider_color">#dba7ac</color>
     <color name="pd_claim_background_color">#dddddd</color>
