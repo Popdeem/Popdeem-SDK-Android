@@ -28,6 +28,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.popdeem.sdk.core.utils.PDLocaleUtils;
+
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -169,13 +171,13 @@ public class PDUIUtils {
 
 
     public static String formatDistance(float distanceInMeters) {
-        if (distanceInMeters < 1000) {
-            return String.format(Locale.getDefault(), "%1sm", String.valueOf(distanceInMeters));
+        if (PDLocaleUtils.useMetricSystem()) {
+            double distanceInKm = distanceInMeters / 1000;
+            return String.format(Locale.getDefault(), "%1skm", DF_TWO_PLACES.format(distanceInKm));
+        } else {
+            double miles = distanceInMeters / 1609.344;
+            return String.format(Locale.getDefault(), "%1smiles", DF_TWO_PLACES.format(miles));
         }
-
-        double distanceInKm = distanceInMeters / 1000;
-        String kmString = DF_TWO_PLACES.format(distanceInKm);
-        return String.format(Locale.getDefault(), "%1skm", kmString);
     }
 
 }

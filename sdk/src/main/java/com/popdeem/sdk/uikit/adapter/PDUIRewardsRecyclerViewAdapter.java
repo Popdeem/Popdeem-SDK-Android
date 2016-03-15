@@ -73,23 +73,28 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         holder.offerTextView.setText(reward.getDescription());
         holder.rulesTextView.setText(reward.getRules());
 
-        long timeInSecs = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), -1);
-        String expText = String.format(Locale.getDefault(), "Exp %1s", PDUIUtils.convertTimeToDayAndMonth(timeInSecs));
-        String actionText = holder.context.getString(R.string.pd_instant_coupon_label);
+        StringBuilder actionStringBuilder = new StringBuilder("");
 
         final boolean TWITTER_ACTION_REQUIRED = twitterActionRequired(reward.getSocialMediaTypes());
         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo");
+            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo"));
         } else if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in");
+            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in"));
+        } else {
+            actionStringBuilder.append(holder.context.getString(R.string.pd_instant_coupon_label));
         }
 
-        if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || reward.getDistanceFromUser() <= 0) {
-            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
-        } else {
-//            String distanceText = String.format(Locale.getDefault(), "%1sm", String.valueOf(reward.getDistanceFromUser()));
-            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s | %3s", actionText, expText, PDUIUtils.formatDistance(reward.getDistanceFromUser())));
+        long timeInSecs = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), -1);
+        String convertedTimeString = PDUIUtils.convertTimeToDayAndMonth(timeInSecs);
+        if (!convertedTimeString.isEmpty()) {
+            actionStringBuilder.append(String.format(Locale.getDefault(), " | Exp %1s", convertedTimeString));
         }
+
+        if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || reward.getDistanceFromUser() > 0) {
+            actionStringBuilder.append(String.format(Locale.getDefault(), " | %1s", PDUIUtils.formatDistance(reward.getDistanceFromUser())));
+        }
+
+        holder.actionTextView.setText(actionStringBuilder.toString());
 
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
