@@ -34,7 +34,9 @@ import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -161,6 +163,17 @@ public class PDUIUtils {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+
+    public static String formatDistance(float distanceInMeters) {
+        if (distanceInMeters < 1000) {
+            return String.format(Locale.getDefault(), "%1sm", String.valueOf(distanceInMeters));
+        }
+
+        double distanceInKm = distanceInMeters / 1000;
+        String kmString = new DecimalFormat(".##").format(distanceInKm);
+        return String.format(Locale.getDefault(), "%1skm", kmString);
     }
 
 }

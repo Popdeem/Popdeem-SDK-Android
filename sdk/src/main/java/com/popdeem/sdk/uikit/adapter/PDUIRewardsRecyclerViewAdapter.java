@@ -87,8 +87,8 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || reward.getDistanceFromUser() <= 0) {
             holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
         } else {
-            String distanceText = String.format(Locale.getDefault(), "%1sm", String.valueOf(reward.getDistanceFromUser()));
-            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s | %3s", actionText, expText, distanceText));
+//            String distanceText = String.format(Locale.getDefault(), "%1sm", String.valueOf(reward.getDistanceFromUser()));
+            holder.actionTextView.setText(String.format(Locale.getDefault(), "%1s | %2s | %3s", actionText, expText, PDUIUtils.formatDistance(reward.getDistanceFromUser())));
         }
 
         String imageUrl = reward.getCoverImage();
