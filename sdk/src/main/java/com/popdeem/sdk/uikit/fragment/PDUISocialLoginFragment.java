@@ -286,6 +286,8 @@ public class PDUISocialLoginFragment extends Fragment {
                 PDLog.d(PDUISocialLoginFragment.class, "registered with Facebook: " + user.toString());
 
                 PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+                userDetails.setUid(0);
+
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(userDetails);
@@ -335,6 +337,8 @@ public class PDUISocialLoginFragment extends Fragment {
                 PDLog.d(PDUISocialLoginFragment.class, "update user: " + user);
 
                 PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+                userDetails.setUid(0);
+
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(userDetails);

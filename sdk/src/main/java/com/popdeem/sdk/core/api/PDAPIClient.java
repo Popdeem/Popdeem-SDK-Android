@@ -50,6 +50,7 @@ import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
+import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -316,26 +317,33 @@ public class PDAPIClient {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
                 .create();
-
-        final Realm realm = Realm.getDefaultInstance();
-        PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
-
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+
+        // Realm Instance
+        final Realm realm = Realm.getDefaultInstance();
+
+        // Non Social UID
+        PDRealmNonSocialUID uidRealm = realm.where(PDRealmNonSocialUID.class).findFirst();
+        String uid = uidRealm == null ? null : uidRealm.getUid();
+
+        // Third Party Token
+        PDRealmThirdPartyToken thirdPartyTokenRealm = realm.where(PDRealmThirdPartyToken.class).findFirst();
+        String thirdPartToken = thirdPartyTokenRealm == null ? null : thirdPartyTokenRealm.getToken();
 
         // Check if we have a PDReferral
         final PDRealmReferral referral = realm.where(PDRealmReferral.class).findFirst();
         if (referral != null) {
             // Referral present, send with referral
-            api.updateUserLocationAndDeviceTokenWithReferral("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(),
-                    String.valueOf(referral.getSenderId()), referral.getType(), referral.getSenderAppName(), String.valueOf(referral.getRequestId()), new PDAPICallback<PDUser>() {
+            api.updateUserLocationAndDeviceTokenWithReferral("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid,
+                    String.valueOf(referral.getSenderId()), referral.getType(), referral.getSenderAppName(), String.valueOf(referral.getRequestId()), thirdPartToken, new PDAPICallback<PDUser>() {
                         @Override
                         public void success(PDUser user) {
                             Realm realm = Realm.getDefaultInstance();
                             realm.beginTransaction();
                             referral.removeFromRealm();
                             realm.commitTransaction();
-                            callback.success(user);
                             realm.close();
+                            callback.success(user);
                         }
 
                         @Override
@@ -345,8 +353,10 @@ public class PDAPIClient {
                     });
         } else {
             // No referrals, send as normal
-            api.updateUserLocationAndDeviceToken("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid == null ? null : uid.getUid(), callback);
+            api.updateUserLocationAndDeviceToken("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid, thirdPartToken, callback);
         }
+
+        // Close Realm
         realm.close();
     }
 

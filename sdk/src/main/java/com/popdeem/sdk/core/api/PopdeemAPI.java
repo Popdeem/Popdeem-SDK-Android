@@ -90,6 +90,7 @@ public interface PopdeemAPI {
             @Query("user[latitude]") String latitude,
             @Query("user[longitude]") String longitude,
             @Query("user[unique_identifier]") String uid,
+            @Query("user[third_party_user_token]") String thirdPartyToken,
             Callback<PDUser> callback);
 
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
@@ -101,10 +102,11 @@ public interface PopdeemAPI {
             @Query("user[latitude]") String latitude,
             @Query("user[longitude]") String longitude,
             @Query("user[unique_identifier]") String uid,
-            @Query("referral[referrer_id]") String referrerId,
-            @Query("referral[type]") String type,
-            @Query("referral[referrer_app_name]") String referrerAppName,
-            @Query("referral[request_id]") String requestId,
+            @Query("user[referral][referrer_id]") String referrerId,
+            @Query("user[referral][type]") String type,
+            @Query("user[referral][referrer_app_name]") String referrerAppName,
+            @Query("user[referral][request_id]") String requestId,
+            @Query("user[third_party_user_token]") String thirdPartyToken,
             Callback<PDUser> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}")

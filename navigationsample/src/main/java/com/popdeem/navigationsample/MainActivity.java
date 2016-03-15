@@ -73,4 +73,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void thirdPartyTokenClick(View view) {
+        PopdeemSDK.setThirdPartyToken("thirdPartyTokenTest");
+    }
 }

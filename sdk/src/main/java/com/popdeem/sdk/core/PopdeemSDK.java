@@ -47,6 +47,7 @@ import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
+import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
@@ -188,7 +189,14 @@ public final class PopdeemSDK {
                 PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
+                        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+                        userDetails.setUid(0);
 
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.copyToRealmOrUpdate(userDetails);
+                        realm.commitTransaction();
+                        realm.close();
                     }
 
                     @Override
@@ -276,6 +284,58 @@ public final class PopdeemSDK {
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
         PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClassSimpleName);
+    }
+
+
+    /**
+     * Set a Third Parry Token that will be used for custom backend integration
+     *
+     * @param thirdPartyToken String Token for Third Party service
+     */
+    public static void setThirdPartyToken(@NonNull String thirdPartyToken) {
+        PDRealmThirdPartyToken tokenRealm = new PDRealmThirdPartyToken();
+        tokenRealm.setId(0);
+        tokenRealm.setToken(thirdPartyToken);
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(tokenRealm);
+        realm.commitTransaction();
+
+        PDRealmUserDetails userDetailsRealm = realm.where(PDRealmUserDetails.class).findFirst();
+
+        if (userDetailsRealm != null && userDetailsRealm.getUserToken() != null) {
+            PDRealmGCM gcmRealm = realm.where(PDRealmGCM.class).findFirst();
+            String gcmToken = gcmRealm == null ? "" : gcmRealm.getRegistrationToken();
+
+            PDRealmUserLocation userLocationRealm = realm.where(PDRealmUserLocation.class).findFirst();
+            double lat = 0, lng = 0;
+            if (userLocationRealm != null) {
+                lat = userLocationRealm.getLatitude();
+                lng = userLocationRealm.getLongitude();
+            }
+
+            PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetailsRealm.getId(), gcmToken, String.valueOf(lat), String.valueOf(lng), new PDAPICallback<PDUser>() {
+                @Override
+                public void success(PDUser user) {
+                    PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+                    userDetails.setUid(0);
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(userDetails);
+                    realm.commitTransaction();
+                    realm.close();
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+
+                }
+            });
+        }
+
+        realm.close();
     }
 
 

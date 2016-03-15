@@ -49,6 +49,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:onClick="triggerActionClick"
-        android:text="Trigger Action Test" />
+        android:text="Trigger Custom Action" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="thirdPartyTokenClick"
+        android:text="Set Third Party Token" />
 
 </LinearLayout>

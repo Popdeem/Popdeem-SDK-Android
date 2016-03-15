@@ -476,6 +476,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     @Override
                     public void success(PDUser user) {
                         PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+                        userDetails.setUid(0);
+
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
                         realm.copyToRealmOrUpdate(userDetails);
