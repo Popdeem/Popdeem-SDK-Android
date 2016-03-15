@@ -100,6 +100,9 @@
         <service
             android:name="com.popdeem.sdk.core.gcm.GCMIntentService"
             android:exported="true" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />
     </application>
 
 </manifest>

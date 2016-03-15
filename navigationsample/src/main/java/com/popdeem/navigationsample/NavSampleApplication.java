@@ -27,6 +27,8 @@ package com.popdeem.navigationsample;
 import android.app.Application;
 
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -36,6 +38,7 @@ public class NavSampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         PopdeemSDK.initializeSDK(this);
         PopdeemSDK.enableSocialLogin(MainActivity.class.getSimpleName(), 3);
     }

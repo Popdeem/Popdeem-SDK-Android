@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 /*
  * The MIT License (MIT)
  *
@@ -23,6 +32,12 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 23
@@ -53,4 +68,7 @@ dependencies {
 //    compile 'com.popdeem.sdk:sdk:0.1.7'
     // Dev
     compile 'com.popdeem.sdk:sdk:0.1.8-SNAPSHOT'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
 }
