@@ -46,6 +46,8 @@ public class PDUIUtils {
 
     public static final String PD_DATE_FORMAT = "EEE dd MMM kk:mm";
 
+    private static final DecimalFormat DF_TWO_PLACES = new DecimalFormat(".##");
+
     /**
      * Method to calculate the time until (Needs refactoring)
      *
@@ -172,7 +174,7 @@ public class PDUIUtils {
         }
 
         double distanceInKm = distanceInMeters / 1000;
-        String kmString = new DecimalFormat(".##").format(distanceInKm);
+        String kmString = DF_TWO_PLACES.format(distanceInKm);
         return String.format(Locale.getDefault(), "%1skm", kmString);
     }
 
