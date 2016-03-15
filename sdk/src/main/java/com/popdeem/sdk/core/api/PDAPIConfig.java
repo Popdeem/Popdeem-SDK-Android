@@ -49,6 +49,7 @@ public class PDAPIConfig {
     public static final String PD_FEEDS_PATH = API_PATH + API_VERSION + "/feeds";
     public static final String PD_CONNECT_SOCIAL_ACCOUNT = API_PATH + API_VERSION + PD_USERS_ENDPOINT + "/connect_social_account";
     public static final String PD_INIT_NON_SOCIAL_USER = API_PATH + API_VERSION + PD_USERS_ENDPOINT + "/init_non_social_user";
+    public static final String PD_MOMENTS_PATH = API_PATH + API_VERSION + "/moments";
 
     public static final String PD_BRANDS_PATH = API_PATH + API_VERSION + "/brands";
 

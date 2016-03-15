@@ -693,6 +693,18 @@ public class PDAPIClient {
 
 
     /**
+     * Deliver a custom action trigger for an event
+     *
+     * @param moment   Action configured on backend
+     * @param callback {@link PDAPICallback} for API result
+     */
+    public void logMoment(@NonNull String moment, @NonNull PDAPICallback<PDBasicResponse> callback) {
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.logMoment("", moment, callback);
+    }
+
+
+    /**
      * Get User Token Interceptor
      *
      * @return Interceptor with User Token Header or null if no token is saved.

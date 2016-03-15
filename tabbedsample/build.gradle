@@ -50,7 +50,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
 
     // Live
-    compile 'com.popdeem.sdk:sdk:0.1.6'
+//    compile 'com.popdeem.sdk:sdk:0.1.6'
     // Dev
-//    compile 'com.popdeem.sdk:sdk:0.1.7-SNAPSHOT'
+    compile 'com.popdeem.sdk:sdk:0.1.7-SNAPSHOT'
 }

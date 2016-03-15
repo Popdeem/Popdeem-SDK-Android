@@ -191,4 +191,10 @@ public interface PopdeemAPI {
     @GET(PDAPIConfig.PD_FEEDS_PATH)
     void getFeeds(@Query("limit") String limit, Callback<ArrayList<PDFeed>> callback);
 
+
+    @POST(PDAPIConfig.PD_MOMENTS_PATH)
+    void logMoment(@Body String emptyBody,
+                   @Query("trigger_action") String moment,
+                   Callback<PDBasicResponse> callback);
+
 }
