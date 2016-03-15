@@ -65,9 +65,9 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
 
     // Live
-//    compile 'com.popdeem.sdk:sdk:0.1.7'
+    compile 'com.popdeem.sdk:sdk:0.1.8'
     // Dev
-    compile 'com.popdeem.sdk:sdk:0.1.8-SNAPSHOT'
+//    compile 'com.popdeem.sdk:sdk:0.1.8-SNAPSHOT'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
