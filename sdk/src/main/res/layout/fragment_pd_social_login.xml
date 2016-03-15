@@ -94,24 +94,40 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginBottom="10dp">
 
             <Button
                 android:id="@+id/pd_social_continue_button"
                 android:layout_width="match_parent"
-                android:layout_height="27dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/pd_continue_button_background_color"
                 android:text="@string/pd_continue_to_app_text"
                 android:textColor="@color/pd_continue_button_text_color"
                 android:visibility="gone" />
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/pd_fb_login_button"
+            <!--<com.facebook.login.widget.LoginButton-->
+            <!--android:id="@+id/pd_fb_login_button"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center" />-->
+
+            <Button
+                android:id="@+id/pd_facebook_login_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_height="match_parent"
+                android:background="@color/pd_facebook_blue"
+                android:drawableLeft="@drawable/pd_facebook_button_icon"
+                android:drawableStart="@drawable/pd_facebook_button_icon"
+                android:paddingEnd="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:text="@string/pd_log_in_with_facebook_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/pd_progress_bar"

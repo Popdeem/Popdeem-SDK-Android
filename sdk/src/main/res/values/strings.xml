@@ -20,10 +20,15 @@
     <string name="pd_error_title_text">Error</string>
     <string name="pd_facebook_login_cancelled_error_message">Facebook login cancelled. Please try again.</string>
     <string name="pd_continue_to_app_text">Continue to app</string>
+
+    <string name="pd_location_disabled_title_text">Location Disabled</string>
+    <string name="pd_location_disabled_message_text">Location Services need to be enabled to continue. We use your location to deliver local rewards. Would you like to be taken Location Settings?</string>
     <string name="pd_location_permission_title_text">Locations Permission</string>
     <string name="pd_location_permission_rationale_text">We use your location to deliver local rewards</string>
     <string name="pd_location_permission_are_you_sure_text">We use your location to deliver local rewards. Would you like to give permission to access your location?</string>
+
     <string name="pd_social_connected_text">Connected!</string>
+
     <string name="pd_claim_string">Claim</string>
     <string name="pd_claim_edit_text_hint">What are you up to?</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
@@ -76,6 +81,8 @@
     <string name="pd_social_login_header_text">Connect your Facebook to earn additional Rewards</string>
     <string name="pd_social_login_info_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
     <string name="pd_social_login_privacy_policy_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
+    <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
+    <string name="pd_log_out_facebook_text">Log out</string>
     <string-array name="pd_photo_dialog_items_array">
         <item>@string/pd_photo_gallery_string</item>
         <item>@string/pd_photo_camera_string</item>

@@ -232,6 +232,17 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 mRecyclerViewAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+                if (mLocation == null) {
+                    Realm realm = Realm.getDefaultInstance();
+                    PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
+                    if (userLocation != null) {
+                        mLocation = new Location("");
+                        mLocation.setLongitude(userLocation.getLongitude());
+                        mLocation.setLatitude(userLocation.getLatitude());
+                    }
+                    realm.close();
+                }
                 if (mLocation != null) {
                     updateListDistances(mLocation);
                 }

@@ -26,8 +26,11 @@ package com.popdeem.sdk.core.location;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -82,17 +85,17 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
         start(locationListener);
     }
 
+    private void start(LocationListener locationListener) {
+        this.mLocationListener = locationListener;
+        buildGoogleApiClient();
+        this.mGoogleApiClient.connect();
+    }
+
     public void stop() {
         if (mGoogleApiClient != null && (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting())) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
             mGoogleApiClient.disconnect();
         }
-    }
-
-    private void start(LocationListener locationListener) {
-        this.mLocationListener = locationListener;
-        buildGoogleApiClient();
-        this.mGoogleApiClient.connect();
     }
 
     private void buildGoogleApiClient() {
@@ -125,6 +128,7 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
                 && ContextCompat.checkSelfPermission(this.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             setState(STATE_RUNNING);
             LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, locationRequest, this.mLocationListener);
+            mLocationListener.onLocationChanged(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
         } else {
             PDLog.i(PopdeemSDK.class, "Your application does not have ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION permissions. Please ensure these permissions are present and you have asked the user permission to access their location.");
         }
@@ -148,6 +152,7 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setInterval(0);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//            requestLastKnownLocationIfPermitted();
             requestLocationUpdatesIfPermitted(locationRequest);
         }
     }
@@ -171,5 +176,15 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 //    public void onLocationChanged(Location location) {
 //        this.mLocation = location;
 //    }
+
+
+    public static boolean isGpsEnabled(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static void startLocationSettingsActivity(Context context) {
+        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
 
 }

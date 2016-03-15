@@ -51,7 +51,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.location.LocationListener;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
@@ -76,12 +75,15 @@ public class PDUISocialLoginFragment extends Fragment {
 
     private final int LOCATION_PERMISSION_REQUEST = 90;
 
+    private PDLocationManager mLocationManager;
+
     private ProgressBar mProgress;
     //    private ImageView mImageView;
     private TextView mHeaderTextView;
     private TextView mRewardsInfoTextView;
     private Button mContinueButton;
-    private LoginButton mLoginButton;
+    //    private LoginButton mLoginButton;
+    private Button mFacebookLoginButton;
     private CallbackManager mCallbackManager;
 
     private boolean mAskForPermission = true;
@@ -98,31 +100,13 @@ public class PDUISocialLoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pd_social_login, container, false);
+
+        mLocationManager = new PDLocationManager(getActivity());
         mCallbackManager = CallbackManager.Factory.create();
-
-        ImageButton backButton = (ImageButton) view.findViewById(R.id.pd_social_login_back_button);
-        backButton.setImageDrawable(PDUIColorUtils.getBackButtonIcon(getActivity()));
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mProgress.getVisibility() == View.GONE) {
-                    removeThisFragment();
-                }
-            }
-        });
-
-        mProgress = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
-//        mImageView = (ImageView) view.findViewById(R.id.pd_social_login_image_view);
-        mHeaderTextView = (TextView) view.findViewById(R.id.pd_social_login_header_text_view);
-        mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
-        mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
-
-        mLoginButton = (LoginButton) view.findViewById(R.id.pd_fb_login_button);
-        mLoginButton.setReadPermissions(Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
-        mLoginButton.setFragment(this);
-        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                mFacebookLoginButton.setText(R.string.pd_log_out_facebook_text);
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
                 checkForLocationPermissionAndStartLocationManager();
             }
@@ -150,6 +134,78 @@ public class PDUISocialLoginFragment extends Fragment {
             }
         });
 
+        ImageButton backButton = (ImageButton) view.findViewById(R.id.pd_social_login_back_button);
+        backButton.setImageDrawable(PDUIColorUtils.getBackButtonIcon(getActivity()));
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mProgress.getVisibility() == View.GONE) {
+                    removeThisFragment();
+                }
+            }
+        });
+
+        mProgress = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
+//        mImageView = (ImageView) view.findViewById(R.id.pd_social_login_image_view);
+        mHeaderTextView = (TextView) view.findViewById(R.id.pd_social_login_header_text_view);
+        mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
+        mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
+
+        mFacebookLoginButton = (Button) view.findViewById(R.id.pd_facebook_login_button);
+        mFacebookLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (PDLocationManager.isGpsEnabled(getActivity())) {
+                    LoginManager.getInstance().logInWithReadPermissions(PDUISocialLoginFragment.this, Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
+                } else {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.pd_location_disabled_title_text)
+                            .setMessage(R.string.pd_location_disabled_message_text)
+                            .setNegativeButton(android.R.string.no, null)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    PDLocationManager.startLocationSettingsActivity(getActivity());
+                                }
+                            })
+                            .create().show();
+                }
+            }
+        });
+
+//        mLoginButton = (LoginButton) view.findViewById(R.id.pd_fb_login_button);
+//        mLoginButton.setReadPermissions(Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
+//        mLoginButton.setFragment(this);
+//        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
+//                checkForLocationPermissionAndStartLocationManager();
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
+//                new AlertDialog.Builder(getActivity())
+//                        .setTitle(R.string.pd_error_title_text)
+//                        .setMessage(R.string.pd_facebook_login_cancelled_error_message)
+//                        .setPositiveButton(android.R.string.ok, null)
+//                        .create()
+//                        .show();
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
+//                new AlertDialog.Builder(getActivity())
+//                        .setTitle(R.string.pd_error_title_text)
+//                        .setMessage(error.getMessage())
+//                        .setPositiveButton(android.R.string.ok, null)
+//                        .create()
+//                        .show();
+//            }
+//        });
+
         return view;
     }
 
@@ -159,7 +215,8 @@ public class PDUISocialLoginFragment extends Fragment {
         mHeaderTextView.setText(R.string.pd_social_connected_text);
 //        mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
 //        mImageView.setImageResource(R.drawable.pd_ui_rewards_success_icon);
-        mLoginButton.setVisibility(View.GONE);
+//        mLoginButton.setVisibility(View.GONE);
+        mFacebookLoginButton.setVisibility(View.GONE);
         mContinueButton.setVisibility(View.VISIBLE);
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,56 +253,65 @@ public class PDUISocialLoginFragment extends Fragment {
 
     private void startLocationManagerAfterLogin() {
         mProgress.setVisibility(View.VISIBLE);
-        mLoginButton.setVisibility(View.INVISIBLE);
+//        mLoginButton.setVisibility(View.INVISIBLE);
+        mFacebookLoginButton.setVisibility(View.INVISIBLE);
 
-        final PDLocationManager locationManager = new PDLocationManager(getContext());
-        locationManager.startLocationUpdates(new LocationListener() {
+        mLocationManager.startLocationUpdates(new LocationListener() {
             @Override
-            public void onLocationChanged(final Location location) {
-                PDRealmUserLocation userLocation = new PDRealmUserLocation();
-                userLocation.setId(0);
-                userLocation.setLatitude(location.getLatitude());
-                userLocation.setLongitude(location.getLongitude());
+            public void onLocationChanged(Location location) {
+                if (location != null) {
+                    handleLocationUpdate(location);
+                }
+            }
+        });
+    }
 
+    private void handleLocationUpdate(final Location location) {
+        mLocationManager.stop();
+
+        PDRealmUserLocation userLocation = new PDRealmUserLocation();
+        userLocation.setId(0);
+        userLocation.setLatitude(location.getLatitude());
+        userLocation.setLongitude(location.getLongitude());
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(userLocation);
+        realm.commitTransaction();
+        realm.close();
+
+        PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
+            @Override
+            public void success(PDUser user) {
+                PDLog.d(PDUISocialLoginFragment.class, "registered with Facebook: " + user.toString());
+
+                PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
-                realm.copyToRealmOrUpdate(userLocation);
+                realm.copyToRealmOrUpdate(userDetails);
                 realm.commitTransaction();
                 realm.close();
 
-                locationManager.stop();
-                PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
-                    @Override
-                    public void success(PDUser user) {
-                        PDLog.d(PDUISocialLoginFragment.class, "registered with Facebook: " + user.toString());
+                updateUser(location);
+            }
 
-                        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealmOrUpdate(userDetails);
-                        realm.commitTransaction();
-                        realm.close();
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUISocialLoginFragment.class, "failed register with Facebook: statusCode=" + statusCode + ", message=" + e.getMessage());
 
-                        updateUser(location);
-                    }
+                LoginManager.getInstance().logOut();
 
-                    @Override
-                    public void failure(int statusCode, Exception e) {
-                        PDLog.d(PDUISocialLoginFragment.class, "failed register with Facebook: statusCode=" + statusCode + ", message=" + e.getMessage());
+                mProgress.setVisibility(View.GONE);
+//                        mLoginButton.setVisibility(View.VISIBLE);
+                mFacebookLoginButton.setVisibility(View.VISIBLE);
+                mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
 
-                        LoginManager.getInstance().logOut();
-
-                        mProgress.setVisibility(View.GONE);
-                        mLoginButton.setVisibility(View.VISIBLE);
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.pd_error_title_text)
-                                .setMessage("An error occurred while registering. Please try again")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .create()
-                                .show();
-                    }
-                });
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.pd_error_title_text)
+                        .setMessage("An error occurred while registering. Please try again")
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
             }
         });
     }
