@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -55,11 +56,14 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.location.PDLocationValidator;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -95,7 +99,7 @@ import io.realm.Realm;
 /**
  * Created by mikenolan on 23/02/16.
  */
-public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickListener {
+public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickListener, LocationListener {
 
     private FragmentManager mFragmentManager;
 
@@ -116,12 +120,15 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private ArrayList<String> mTaggedIds = new ArrayList<>();
 
     private CallbackManager mCallbackManager;
+    private PDLocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pd_claim);
         setTitle(R.string.pd_claim_string);
+
+        mLocationManager = new PDLocationManager(this);
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.addOnBackStackChangedListener(BACK_STACK_CHANGED_LISTENER);
@@ -149,6 +156,46 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         addClickListenersToViews();
         updateFacebookButton();
         updateTwitterButton();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocationManager.startLocationUpdates(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mLocationManager != null) {
+            mLocationManager.stop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        PDUIImageUtils.deletePhotoFile(mCurrentPhotoPath);
+        PDUIImageUtils.deletePhotoFile(mCurrentCroppedPhotoPath);
+        super.onDestroy();
+    }
+
+    private void checkIsHere(final Location location) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final boolean isHere = PDLocationValidator.validateLocationForReward(mReward, location);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isHere) {
+
+                        } else {
+
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private void performTwitterEnabledActions() {
@@ -566,12 +613,17 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         Crop.of(source, croppedImageDestination).start(this);
     }
 
-    @Override
-    protected void onDestroy() {
-        PDUIImageUtils.deletePhotoFile(mCurrentPhotoPath);
-        PDUIImageUtils.deletePhotoFile(mCurrentCroppedPhotoPath);
-        super.onDestroy();
+
+    private void updateSavedUserLocation(Location location) {
+        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(userLocation);
+        realm.commitTransaction();
+        realm.close();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -705,6 +757,21 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 PDLog.d(getClass(), "no permissions");
                 Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private int locationCounter = 0;
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            locationCounter++;
+            checkIsHere(location);
+            updateSavedUserLocation(location);
+        }
+
+        if (locationCounter >= 3) {
+            mLocationManager.stop();
         }
     }
 }

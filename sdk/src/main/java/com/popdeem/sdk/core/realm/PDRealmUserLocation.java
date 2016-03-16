@@ -37,6 +37,15 @@ public class PDRealmUserLocation extends RealmObject {
     private double latitude;
     private double longitude;
 
+    public PDRealmUserLocation() {
+    }
+
+    public PDRealmUserLocation(double latitude, double longitude) {
+        this.id = 0;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public int getId() {
         return id;
     }

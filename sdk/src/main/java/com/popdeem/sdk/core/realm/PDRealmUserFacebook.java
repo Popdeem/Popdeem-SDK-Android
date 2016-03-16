@@ -22,13 +22,19 @@
  * SOFTWARE.
  */
 
-package com.popdeem.sdk.core.model;
+package com.popdeem.sdk.core.realm;
+
+import com.popdeem.sdk.core.model.PDUserFacebook;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
- * Popdeem Users Facebook Model Class
+ * Created by mikenolan on 16/03/16.
  */
-public class PDUserFacebook {
+public class PDRealmUserFacebook extends RealmObject {
 
+    @PrimaryKey
     private long socialAccountId;
     private String facebookId;
     private String tester;
@@ -40,26 +46,24 @@ public class PDUserFacebook {
     private String influenceEngagementScore;
     private String influenceFrequencyScore;
     private int advocacyScore;
-    private String[] favouriteBrandIds;
     private String defaultPrivacySetting;
 
-    public PDUserFacebook() {
+    public PDRealmUserFacebook() {
     }
 
-    public PDUserFacebook(long socialAccountId, String facebookId, String tester, String accessToken, long expirationTime, String profilePictureUrl, String totalScore, String influenceReachScore, String influenceEngagementScore, String influenceFrequencyScore, int advocacyScore, String[] favouriteBrandIds, String defaultPrivacySetting) {
-        this.socialAccountId = socialAccountId;
-        this.facebookId = facebookId;
-        this.tester = tester;
-        this.accessToken = accessToken;
-        this.expirationTime = expirationTime;
-        this.profilePictureUrl = profilePictureUrl;
-        this.totalScore = totalScore;
-        this.influenceReachScore = influenceReachScore;
-        this.influenceEngagementScore = influenceEngagementScore;
-        this.influenceFrequencyScore = influenceFrequencyScore;
-        this.advocacyScore = advocacyScore;
-        this.favouriteBrandIds = favouriteBrandIds;
-        this.defaultPrivacySetting = defaultPrivacySetting;
+    public PDRealmUserFacebook(PDUserFacebook userFacebook) {
+        this.socialAccountId = userFacebook.getSocialAccountId();
+        this.facebookId = userFacebook.getFacebookId();
+        this.tester = userFacebook.getTester();
+        this.accessToken = userFacebook.getAccessToken();
+        this.expirationTime = userFacebook.getExpirationTime();
+        this.profilePictureUrl = userFacebook.getProfilePictureUrl();
+        this.totalScore = userFacebook.getTotalScore();
+        this.influenceReachScore = userFacebook.getInfluenceReachScore();
+        this.influenceEngagementScore = userFacebook.getInfluenceEngagementScore();
+        this.influenceFrequencyScore = userFacebook.getInfluenceFrequencyScore();
+        this.advocacyScore = userFacebook.getAdvocacyScore();
+        this.defaultPrivacySetting = userFacebook.getDefaultPrivacySetting();
     }
 
     public long getSocialAccountId() {
@@ -150,29 +154,11 @@ public class PDUserFacebook {
         this.advocacyScore = advocacyScore;
     }
 
-    public String[] getFavouriteBrandIds() {
-        return favouriteBrandIds;
-    }
-
-    public void setFavouriteBrandIds(String[] favouriteBrandIds) {
-        this.favouriteBrandIds = favouriteBrandIds;
-    }
-
     public String getDefaultPrivacySetting() {
         return defaultPrivacySetting;
     }
 
     public void setDefaultPrivacySetting(String defaultPrivacySetting) {
         this.defaultPrivacySetting = defaultPrivacySetting;
-    }
-
-    @Override
-    public String toString() {
-        return "[accessToken: \"" + value(this.accessToken) + "\", profilePictureUrl: \"" + value(this.profilePictureUrl)
-                + "\", facebookId: \"" + value(this.facebookId) + "\", expirationTime: \"" + this.expirationTime + "]\n";
-    }
-
-    private String value(String s) {
-        return s == null ? "null" : s;
     }
 }

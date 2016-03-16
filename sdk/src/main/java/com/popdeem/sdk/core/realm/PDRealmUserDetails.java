@@ -44,6 +44,7 @@ public class PDRealmUserDetails extends RealmObject {
     private String type;
     private String userToken;
     private String suspendUntil;
+    private PDRealmUserFacebook userFacebook;
 
     public PDRealmUserDetails() {
     }
@@ -58,6 +59,7 @@ public class PDRealmUserDetails extends RealmObject {
         this.type = user.getType();
         this.userToken = user.getUserToken();
         this.suspendUntil = user.getSuspendUntil();
+        this.userFacebook = new PDRealmUserFacebook(user.getPdUserFacebook());
     }
 
     public int getUid() {
@@ -132,4 +134,11 @@ public class PDRealmUserDetails extends RealmObject {
         this.suspendUntil = suspendUntil;
     }
 
+    public PDRealmUserFacebook getUserFacebook() {
+        return userFacebook;
+    }
+
+    public void setUserFacebook(PDRealmUserFacebook userFacebook) {
+        this.userFacebook = userFacebook;
+    }
 }

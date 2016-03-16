@@ -256,10 +256,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void updateSavedUserLocation(Location location) {
-        PDRealmUserLocation userLocation = new PDRealmUserLocation();
-        userLocation.setId(0);
-        userLocation.setLatitude(location.getLatitude());
-        userLocation.setLongitude(location.getLongitude());
+        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

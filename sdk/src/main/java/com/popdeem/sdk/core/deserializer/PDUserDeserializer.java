@@ -32,6 +32,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.model.PDUserFacebook;
 
 import java.lang.reflect.Type;
 
@@ -45,6 +46,7 @@ public class PDUserDeserializer implements JsonDeserializer<PDUser> {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(long.class, new PDLongDeserializer())
                 .registerTypeAdapter(int.class, new PDIntDeserializer())
+                .registerTypeAdapter(PDUserFacebook.class, new PDSocialAccountFacebookDeserializer())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
 
