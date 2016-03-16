@@ -269,21 +269,27 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         textView = (TextView) findViewById(R.id.pd_reward_item_rules_text_view);
         textView.setText(mReward.getRules());
 
-        // End date
-        long timeInSecs = PDNumberUtils.toLong(mReward.getAvailableUntilInSeconds(), -1);
-        String expText = String.format(Locale.getDefault(), "Exp %1s", PDUIUtils.convertTimeToDayAndMonth(timeInSecs));
-        String actionText = getString(R.string.pd_instant_coupon_label);
+        StringBuilder actionStringBuilder = new StringBuilder("");
 
         // Action
         final boolean TWITTER_ACTION_REQUIRED = twitterShareForced();
         if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo");
+            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo"));
         } else if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            actionText = String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in");
+            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in"));
+        } else {
+            actionStringBuilder.append(getString(R.string.pd_instant_coupon_label));
+        }
+
+        // End date
+        long timeInSecs = PDNumberUtils.toLong(mReward.getAvailableUntilInSeconds(), -1);
+        String convertedTimeString = PDUIUtils.convertTimeToDayAndMonth(timeInSecs);
+        if (!convertedTimeString.isEmpty()) {
+            actionStringBuilder.append(String.format(Locale.getDefault(), " | Exp %1s", convertedTimeString));
         }
 
         textView = (TextView) findViewById(R.id.pd_reward_request_text_view);
-        textView.setText(String.format(Locale.getDefault(), "%1s | %2s", actionText, expText));
+        textView.setText(actionStringBuilder.toString());
     }
 
     private void updateFacebookButton() {
