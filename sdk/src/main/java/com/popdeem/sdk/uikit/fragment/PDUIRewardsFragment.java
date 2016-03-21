@@ -301,7 +301,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                            if (mRecyclerViewAdapter != null) {
+                                mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                            }
                         }
                     });
                 }

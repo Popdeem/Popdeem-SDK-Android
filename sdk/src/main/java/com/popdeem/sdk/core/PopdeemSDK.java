@@ -88,13 +88,17 @@ public final class PopdeemSDK {
         // Register Activity Lifecycle Callbacks
         application.registerActivityLifecycleCallbacks(PD_ACTIVITY_LIFECYCLE_CALLBACKS);
 
-        // Init ACRA
-
         // Init Realm
         PDRealmUtils.initRealmDB(application);
 
         // Get Popdeem API Key
         getPopdeemAPIKey();
+
+        // Init Facebook
+        FacebookSdk.sdkInitialize(application);
+
+        // Init Twitter
+        PDSocialUtils.initTwitter(application);
 
         // Get UID for Non Social login
         if (PDUniqueIdentifierUtils.getUID() == null) {
@@ -135,12 +139,6 @@ public final class PopdeemSDK {
                 PDLog.d(PDGCMUtils.class, "Init GCM failure: " + message);
             }
         });
-
-        // Init Facebook
-        FacebookSdk.sdkInitialize(application);
-
-        // Init Twitter
-        PDSocialUtils.initTwitter(application);
 
         sdkInitialized = true;
     }

@@ -159,14 +159,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         mLocationManager.startLocationUpdates(this);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if (mLocationManager != null) {
             mLocationManager.stop();
         }

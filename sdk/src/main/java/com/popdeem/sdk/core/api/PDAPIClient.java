@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jakewharton.retrofit.Ok3Client;
@@ -610,7 +611,7 @@ public class PDAPIClient {
             public void onResponse(Call call, final okhttp3.Response response) throws IOException {
                 // Convert OkHTTP response to Retrofit Response
                 final String responseBody = response.body().string();
-                final JsonObject object = (JsonObject) new JsonParser().parse(responseBody);
+                final JsonElement object = new JsonParser().parse(responseBody);
                 final TypedInput bodyTypedInput = new TypedString(responseBody);
                 final ArrayList<Header> headers = new ArrayList<>();
 
@@ -622,7 +623,7 @@ public class PDAPIClient {
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.success(object, new Response(response.request().url().toString(), response.networkResponse().code(), response.networkResponse().message(), headers, bodyTypedInput));
+                        callback.success(object.isJsonNull() ? null : object.getAsJsonObject(), new Response(response.request().url().toString(), response.networkResponse().code(), response.networkResponse().message(), headers, bodyTypedInput));
                     }
                 });
             }

@@ -73,6 +73,7 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 
     public PDLocationManager(@NonNull Context context) {
         this.mContext = context;
+        buildGoogleApiClient();
     }
 
     public void startLocationUpdates(@NonNull LocationListener locationListener) {
@@ -87,13 +88,17 @@ public class PDLocationManager implements GoogleApiClient.ConnectionCallbacks, G
 
     private void start(LocationListener locationListener) {
         this.mLocationListener = locationListener;
-        buildGoogleApiClient();
         this.mGoogleApiClient.connect();
     }
 
     public void stop() {
+        setState(STATE_STOPPED);
         if (mGoogleApiClient != null && (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting())) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
+            try {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
             mGoogleApiClient.disconnect();
         }
     }
