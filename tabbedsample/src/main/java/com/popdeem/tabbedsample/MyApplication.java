@@ -26,8 +26,10 @@ package com.popdeem.tabbedsample;
 
 import android.app.Application;
 
-import com.popdeem.sdk.core.PopdeemSDK;
 import com.crashlytics.android.Crashlytics;
+import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -38,10 +40,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics(), PDSocialUtils.getTwitterKitForFabric(this));
 
         // Initialise Popdeem SDK
         PopdeemSDK.initializeSDK(this);
-        PopdeemSDK.enableSocialLogin(MainActivity.class.getSimpleName(), 5);
+        PopdeemSDK.enableSocialLogin(MainActivity.class, 5);
     }
 }

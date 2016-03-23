@@ -272,16 +272,16 @@ public final class PopdeemSDK {
      * When this activity is presented to the user, the Popdeem Social Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
      * </p>
      *
-     * @param activityClassSimpleName Simple Name of AppCompatActivity class you want Social Login flow to appear in. You can get the Simple Name by using this method: MyActivty.class.getSimpleName()
+     * @param activityClass AppCompatActivity / FragmentActivity class you want Social Login flow to appear in. e.g. MainActivity.class
      * @param numberOfPrompts         Number of Login Prompts
      */
-    public static void enableSocialLogin(@NonNull String activityClassSimpleName, final int numberOfPrompts) {
+    public static void enableSocialLogin(@NonNull Class activityClass, final int numberOfPrompts) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
-        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClassSimpleName);
+        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getSimpleName());
     }
 
 

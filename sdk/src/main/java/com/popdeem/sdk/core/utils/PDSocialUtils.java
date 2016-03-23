@@ -102,6 +102,21 @@ public class PDSocialUtils {
     //------------------------------------------------------------------------
 
     public static void initTwitter(Context context) {
+        Twitter twitterKit = getTwitterKitForFabric(context);
+        if (twitterKit != null) {
+            Fabric.with(context, twitterKit);
+        }
+    }
+
+    public static Twitter getTwitterKitForFabric(Context context) {
+        TwitterAuthConfig twitterAuthConfig = getTwitterAuthConfig(context);
+        if (twitterAuthConfig != null) {
+            return new Twitter(twitterAuthConfig);
+        }
+        return null;
+    }
+
+    private static TwitterAuthConfig getTwitterAuthConfig(Context context) {
         final String consumerKey = getTwitterConsumerKey(context);
         final String consumerSecret = getTwitterConsumerSecret(context);
 
@@ -114,19 +129,20 @@ public class PDSocialUtils {
                 PDLog.e(PDSocialUtils.class, "Twitter Error: Please ensure you have your Twitter Consumer Secret in your AndroidManifest.xml\n" +
                         "<meta-data android:name=\"TwitterConsumerSecret\" android:value=\"YOUR_TWITTER_CONSUMER_SECRET\" />");
             }
-            return;
+            return null;
         }
 
-        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(consumerKey, consumerSecret);
-        Fabric.with(context, new Twitter(twitterAuthConfig));
+        return new TwitterAuthConfig(consumerKey, consumerSecret);
     }
 
     public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
-        Twitter.logIn(activity, callback);
+        if (isFabricInitialisedWithTwitter()) {
+            Twitter.logIn(activity, callback);
+        }
     }
 
     public static boolean isTwitterLoggedIn() {
-        return Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
+        return isFabricInitialisedWithTwitter() && Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
     }
 
     /**
@@ -148,6 +164,18 @@ public class PDSocialUtils {
      */
     public static String getTwitterConsumerSecret(Context context) {
         return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
+    }
+
+    private static boolean isFabricInitialisedWithTwitter() {
+        if (!Fabric.isInitialized()) {
+            PDLog.e(PDSocialUtils.class, "Fabric is not initialised");
+            return false;
+        }
+        if (Fabric.getKit(Twitter.class) == null) {
+            PDLog.e(PDSocialUtils.class, "Twitter is not initialised with Fabric");
+            return false;
+        }
+        return true;
     }
 
 
