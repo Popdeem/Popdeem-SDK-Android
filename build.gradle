@@ -23,7 +23,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        mavenLocal()
+//        mavenLocal()
 //        maven { url 'https://dl.bintray.com/popdeem/maven' }
         maven { url 'https://maven.fabric.io/public' }
     }
