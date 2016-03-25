@@ -83,6 +83,9 @@
     <string name="pd_social_login_privacy_policy_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
     <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
     <string name="pd_log_out_facebook_text">Log out</string>
+
+    <string name="pd_credit_added_text">was added to your balance.</string>
+
     <string-array name="pd_photo_dialog_items_array">
         <item>@string/pd_photo_gallery_string</item>
         <item>@string/pd_photo_camera_string</item>

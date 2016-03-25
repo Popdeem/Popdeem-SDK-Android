@@ -34,10 +34,10 @@ import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDReward;
-import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -67,9 +67,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         PDReward reward = this.mItems.get(position);
-//        boolean isSweepstakes = reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE);
 
-//        Picasso.with(holder.context).load(isSweepstakes ? R.drawable.pd_ui_trophy_icon : R.drawable.pd_ui_tag_icon).into(holder.rewardTypeImageView);
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
             Picasso.with(holder.context)
@@ -85,37 +83,27 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                     .into(holder.brandImageView);
         }
 
-        // Set reward type Drawable
-        holder.titleTextView.setText(reward.getDescription());
-
-//        if (isSweepstakes) {
-//            holder.actionTextView.setText(R.string.pd_you_will_be_notified_label);
-//        } else {
-//            holder.actionTextView.setText(R.string.pd_redeem_at_stores_label);
-//        }
-
-//        try {
-//            long timeInMillis = Long.valueOf(reward.getAvailableUntilInSeconds());
-//            String expiryString = (isSweepstakes ? "Draw in " : "") + PDUIUtils.timeUntil(timeInMillis, false, isSweepstakes);
-//            holder.expiryTextView.setText(expiryString);
-//        } catch (NumberFormatException e) {
-//            holder.expiryTextView.setText("");
-//        }
+        if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
+            holder.titleTextView.setText(String.format(
+                    Locale.getDefault(),
+                    "%1s %2s",
+                    reward.getCredit() == null ? "Credit" : reward.getCredit(),
+                    holder.context.getString(R.string.pd_credit_added_text)));
+        } else {
+            holder.titleTextView.setText(reward.getDescription());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mItems == null ? 0 : mItems.size();
+        return this.mItems == null ? 0 : this.mItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         Context context;
         ImageView brandImageView;
-//        ImageView rewardTypeImageView;
         TextView titleTextView;
-//        TextView expiryTextView;
-//        TextView actionTextView;
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
@@ -130,11 +118,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
             });
 
             this.context = context;
-            brandImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_brand_image_view);
-//            rewardTypeImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_reward_type_image_view);
-            titleTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_title_text_view);
-//            expiryTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_expiry_date_text_view);
-//            actionTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_redeem_at_text_view);
+            this.brandImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_brand_image_view);
+            this.titleTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_title_text_view);
         }
     }
 

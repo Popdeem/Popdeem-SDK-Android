@@ -42,6 +42,7 @@ public class PDReward {
     public static final String PD_REWARD_TYPE_COUPON = "coupon";
     public static final String PD_REWARD_TYPE_SWEEPSTAKE = "sweepstake";
     public static final String PD_REWARD_TYPE_INSTANT = "instant";
+    public static final String PD_REWARD_TYPE_CREDIT = "credit";
 
     public static final String PD_REWARD_ACTION_CHECKIN = "checkin";
     public static final String PD_REWARD_ACTION_PHOTO = "photo";
@@ -74,6 +75,7 @@ public class PDReward {
     private String[] socialMediaTypes;
 
     private String disableLocationVerification;
+    private String credit;
 
     private PDTweetOptions tweetOptions;
     private ArrayList<PDLocation> locations;
@@ -84,7 +86,7 @@ public class PDReward {
     public PDReward() {
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -101,6 +103,7 @@ public class PDReward {
         this.twitterMediaCharacters = twitterMediaCharacters;
         this.socialMediaTypes = socialMediaTypes;
         this.disableLocationVerification = disableLocationVerification;
+        this.credit = credit;
         this.tweetOptions = tweetOptions;
         this.locations = locations;
         this.countdownTimer = countdownTimer;
@@ -256,6 +259,14 @@ public class PDReward {
 
     public void setDisableLocationVerification(String disableLocationVerification) {
         this.disableLocationVerification = disableLocationVerification;
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public void setCredit(String credit) {
+        this.credit = credit;
     }
 
     public long getCountdownTimer() {
