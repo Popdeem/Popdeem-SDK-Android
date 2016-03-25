@@ -90,7 +90,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
             actionStringBuilder.append(String.format(Locale.getDefault(), " | Exp %1s", convertedTimeString));
         }
 
-        if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || reward.getDistanceFromUser() > 0) {
+        if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_FALSE) && reward.getDistanceFromUser() > 0) {
             actionStringBuilder.append(String.format(Locale.getDefault(), " | %1s", PDUIUtils.formatDistance(reward.getDistanceFromUser())));
         }
 
