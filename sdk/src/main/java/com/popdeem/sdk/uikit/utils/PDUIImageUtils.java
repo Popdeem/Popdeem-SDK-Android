@@ -33,6 +33,7 @@ import android.os.Environment;
 import com.popdeem.sdk.core.utils.PDLog;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -117,6 +118,17 @@ public class PDUIImageUtils {
         }
         PDLog.d(PDUIImageUtils.class, "photo directory: " + albumF.getAbsolutePath());
         return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+    }
+
+
+    public static void reduceImageSizeAndSaveToPath(String currentPath, String resizedPath, int targetHeight, int targetWidth) throws IOException {
+        File reFile = new File(resizedPath);
+        Bitmap resized = PDUIImageUtils.getResizedBitmap(currentPath, targetHeight, targetWidth, PDUIImageUtils.getOrientation(currentPath));
+        FileOutputStream out = new FileOutputStream(reFile);
+        resized.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        out.flush();
+        out.close();
+        resized.recycle();
     }
 
 

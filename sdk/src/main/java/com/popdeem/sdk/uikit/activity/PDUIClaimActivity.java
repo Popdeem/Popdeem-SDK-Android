@@ -114,6 +114,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private boolean mImageAdded = false;
     private String mCurrentPhotoPath;
+    private String mCurrentResizedPhotoPath;
     private String mCurrentCroppedPhotoPath;
 
     private ArrayList<String> mTaggedNames = new ArrayList<>();
@@ -176,6 +177,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     protected void onDestroy() {
         PDUIImageUtils.deletePhotoFile(mCurrentPhotoPath);
         PDUIImageUtils.deletePhotoFile(mCurrentCroppedPhotoPath);
+        PDUIImageUtils.deletePhotoFile(mCurrentResizedPhotoPath);
         super.onDestroy();
     }
 
@@ -553,6 +555,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         return f;
     }
 
+    private File setUpResizedPhotoFile() throws IOException {
+        File f = PDUIImageUtils.createImageFile(false);
+        mCurrentResizedPhotoPath = f.getAbsolutePath();
+        return f;
+    }
+
     private File setUpCroppedPhotoFile() throws IOException {
         File f = PDUIImageUtils.createImageFile(true);
         mCurrentCroppedPhotoPath = f.getAbsolutePath();
@@ -648,7 +656,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             if (mCurrentPhotoPath != null) {
                 PDLog.d(PDUIImageUtils.class, "processImage");
                 try {
-                    showCropView(Uri.fromFile(new File(mCurrentPhotoPath)));
+                    // reduce image size and use resized file path
+                    setUpResizedPhotoFile();
+                    PDUIImageUtils.reduceImageSizeAndSaveToPath(mCurrentPhotoPath, mCurrentResizedPhotoPath, 500, 500);
+
+                    showCropView(Uri.fromFile(new File(mCurrentResizedPhotoPath)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
