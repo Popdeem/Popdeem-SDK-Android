@@ -269,7 +269,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                ArrayList<PDReward> rewards = new ArrayList<>(mRewards);
                 Location rewardLocation;
                 for (PDReward reward : mRewards) {
                     for (PDLocation loc : reward.getLocations()) {
@@ -296,16 +295,16 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
                 synchronized (mRewards) {
                     Collections.sort(mRewards, new PDRewardDistanceComparator());
-//                    mRewards.clear();
-//                    mRewards.addAll(rewards);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mRecyclerViewAdapter != null) {
-                                mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mRecyclerViewAdapter != null) {
+                                    mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         }).start();

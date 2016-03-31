@@ -713,7 +713,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         .create()
                         .show();
             } else {
-//                startCameraIntentWithImagePath();
                 showAddPictureChoiceDialog();
             }
 

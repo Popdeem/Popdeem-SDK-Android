@@ -31,13 +31,13 @@ import android.view.inputmethod.InputMethodManager;
 import com.popdeem.sdk.core.utils.PDLocaleUtils;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DecimalFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -59,16 +59,16 @@ public class PDUIUtils {
      * @return {@link String} value for time until
      */
     public static String timeUntil(long expiryTimeInSeconds, boolean nonClaimedReward, boolean isSweepstakes) {
-        Date expiryDate = new Date(expiryTimeInSeconds * 1000);
-        Date now = new Date();
+        final DateTime now = DateTime.now();
+        final DateTime expiry = new DateTime(expiryTimeInSeconds * 1000);
 
-        if (expiryDate.before(now)) {
+        // Check if reward has expired
+        if (expiry.isBefore(now)) {
             return "Reward has expired";
         }
 
-        Period period = new Period(now.getTime(), expiryDate.getTime(), PeriodType.yearMonthDayTime());
-
-        int days = period.getDays();
+        // Days
+        int days = Days.daysBetween(now, expiry).getDays();
         if (days == 1) {
             if (isSweepstakes) {
                 return "1 day";
@@ -84,7 +84,8 @@ public class PDUIUtils {
             }
         }
 
-        int hours = period.getHours();
+        // Hours
+        int hours = Hours.hoursBetween(now, expiry).getHours();
         if (hours == 1) {
             if (isSweepstakes) {
                 return "1 hour";
@@ -100,7 +101,8 @@ public class PDUIUtils {
             }
         }
 
-        int minutes = period.getMinutes();
+        // Minutes
+        int minutes = Minutes.minutesBetween(now, expiry).getMinutes();
         if (minutes == 1) {
             if (isSweepstakes) {
                 return "1 minute";
