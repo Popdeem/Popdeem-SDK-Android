@@ -108,7 +108,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private EditText mMessageEditText;
     private Button mFacebookButton;
     private Button mTwitterButton;
+    private View mNotHereView;
 
+    private boolean mIsHere = false;
     private boolean mFacebookOptionEnabled = false;
     private boolean mTwitterOptionEnabled = false;
 
@@ -142,6 +144,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         mMessageEditText = (EditText) findViewById(R.id.pd_claim_share_edit_text);
         mFacebookButton = (Button) findViewById(R.id.pd_facebook_share_option_button);
         mTwitterButton = (Button) findViewById(R.id.pd_twitter_share_option_button);
+        mNotHereView = findViewById(R.id.pd_claim_not_here_container);
 
         if (noShareMediaForced()) {
             mFacebookOptionEnabled = false;
@@ -185,15 +188,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final boolean isHere = PDLocationValidator.validateLocationForReward(mReward, location);
+                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (isHere) {
-
-                        } else {
-
-                        }
+                        mNotHereView.setVisibility(mIsHere ? View.GONE : View.VISIBLE);
                     }
                 });
             }
@@ -704,6 +703,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             updateTwitterButton();
         } else if (ID == R.id.pd_claim_share_button) {
             PDUIUtils.hideKeyboard(this, mMessageEditText);
+            if (!mIsHere) {
+                showBasicOKAlertDialog(R.string.pd_not_here_title_text, R.string.pd_not_here_message_text);
+                return;
+            }
             if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
                 showBasicOKAlertDialog(R.string.pd_claim_photo_required_string, R.string.pd_claim_photo_required_message_string);
             } else {
@@ -776,7 +779,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            locationCounter++;
+            if (mIsHere) {
+                locationCounter++;
+            }
             checkIsHere(location);
             updateSavedUserLocation(location);
         }

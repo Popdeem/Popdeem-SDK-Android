@@ -86,6 +86,8 @@
     <string name="pd_log_out_facebook_text">Log out</string>
 
     <string name="pd_credit_added_text">was added to your balance.</string>
+    <string name="pd_not_here_message_text">You must be at this location to claim this reward.\nPlease come back later.</string>
+    <string name="pd_not_here_title_text">Not at location</string>
 
     <string-array name="pd_photo_dialog_items_array">
         <item>@string/pd_photo_gallery_string</item>
