@@ -189,7 +189,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             @Override
             public void success(JsonObject jsonObject) {
                 progress.dismiss();
-                if (jsonObject.has("error")) {
+                if (jsonObject == null) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.pd_error_title_text)
+                            .setMessage(R.string.pd_claim_something_went_wrong_string)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                } else if (jsonObject.has("error")) {
                     new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.pd_error_title_text)
                             .setMessage(jsonObject.get("error").getAsString())

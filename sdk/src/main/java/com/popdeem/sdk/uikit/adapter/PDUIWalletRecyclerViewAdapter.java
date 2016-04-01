@@ -50,6 +50,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
     private OnItemClickListener mListener;
     private ArrayList<PDReward> mItems;
+    private String mAddedTextString = null;
+    private int mImageDimen = -1;
 
     public PDUIWalletRecyclerViewAdapter(ArrayList<PDReward> mItems) {
         this.mItems = mItems;
@@ -61,25 +63,30 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mAddedTextString == null) {
+            mAddedTextString = parent.getContext().getString(R.string.pd_credit_added_text);
+        }
+        if (mImageDimen == -1) {
+            mImageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.wallet_image_dimen);
+        }
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet, parent, false), parent.getContext());
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PDReward reward = this.mItems.get(position);
+        final PDReward reward = this.mItems.get(position);
 
         String imageUrl = reward.getCoverImage();
         if (imageUrl.contains("default")) {
             Picasso.with(holder.context)
                     .load(R.drawable.pd_ui_star_icon)
-                    .error(R.drawable.pd_ui_star_icon)
-                    .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.brandImageView);
         } else {
             Picasso.with(holder.context)
                     .load(imageUrl)
                     .error(R.drawable.pd_ui_star_icon)
                     .placeholder(R.drawable.pd_ui_star_icon)
+                    .resize(mImageDimen, 0)
                     .into(holder.brandImageView);
         }
 
@@ -88,7 +95,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                     Locale.getDefault(),
                     "%1s %2s",
                     reward.getCredit() == null ? "Credit" : reward.getCredit(),
-                    holder.context.getString(R.string.pd_credit_added_text)));
+                    mAddedTextString));
         } else {
             holder.titleTextView.setText(reward.getDescription());
         }

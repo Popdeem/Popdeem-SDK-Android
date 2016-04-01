@@ -29,6 +29,8 @@
 
     <string name="pd_social_connected_text">Connected!</string>
 
+    <string name="pd_default_error_text">An error has occurred. Please try again.</string>
+
     <string name="pd_claim_string">Claim</string>
     <string name="pd_claim_edit_text_hint">What are you up to?</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>

@@ -39,10 +39,15 @@ import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDFeed;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
+import io.realm.Realm;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -56,9 +61,18 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
     private OnItemClickListener mListener;
     private ArrayList<PDFeed> mItems;
     private int imageDimen = -1;
+    private String mCurrentUserName = "";
 
     public PDUIFeedRecyclerViewAdapter(ArrayList<PDFeed> mItems) {
         this.mItems = mItems;
+
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails != null) {
+            mCurrentUserName = String.format(Locale.getDefault(), "%1s %2s", userDetails.getFirstName(), userDetails.getLastName());
+            PDLog.d(getClass(), "name: " + mCurrentUserName);
+        }
+        realm.close();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -90,20 +104,6 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
                     .into(holder.sharedImageView);
         }
 
-//        if (holder.sharedImageView.getVisibility() == View.VISIBLE){
-////          check if list item has image and jump to larger view to see it in all its glory - how? Dunno, I'm really hungover and listening to Michelle Branch -> in a bad way sham, a bad way
-//            convertView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent i = new Intent(context, ImageActivity.class);
-//                    i.putExtra("img", item.getImageUrlString());
-//                    i.putExtra("name", item.getUserFirstName());
-//                    context.startActivity(i);
-//                }
-//            });
-//        }
-
-
         if (item.getUserProfilePicUrlString().isEmpty()) {
 
         } else {
@@ -126,12 +126,8 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
     private Spannable getRedemptionText(Context context, String firstName, String secondName, String reward, String brandName, boolean isCheckin) {
         String fullName = firstName + " " + secondName;
-//        String currentUserName = PDDataManager.getUserFirstName(context) + " " + PDDataManager.getUserLastName(context);
-        // TODO Fix
-        String currentUserName = "Mike Nolan";
-
         String redemptionName;
-        if (fullName.equalsIgnoreCase(currentUserName)) {
+        if (fullName.equalsIgnoreCase(mCurrentUserName)) {
             redemptionName = "You";
         } else {
             redemptionName = fullName;
