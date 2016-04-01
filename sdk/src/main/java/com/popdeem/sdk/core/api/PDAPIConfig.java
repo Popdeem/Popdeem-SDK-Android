@@ -33,7 +33,7 @@ package com.popdeem.sdk.core.api;
 public class PDAPIConfig {
 
     public static final String PD_PROD_API_ENDPOINT = "http://api.popdeem.com";         // Production API Endpoint
-    public static final String PD_STAGING_API_ENDPOINT = "http://staging.popdeem.com";  // Staging API Endpoint
+    public static final String PD_STAGING_API_ENDPOINT = "https://staging.popdeem.com";  // Staging API Endpoint
 
     public static final String PD_API_ENDPOINT = PD_STAGING_API_ENDPOINT;
 
