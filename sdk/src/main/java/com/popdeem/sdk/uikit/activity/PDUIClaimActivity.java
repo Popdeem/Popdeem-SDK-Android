@@ -147,7 +147,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         mNotHereView = findViewById(R.id.pd_claim_not_here_container);
 
         if (noShareMediaForced()) {
-            mFacebookOptionEnabled = false;
+            mFacebookOptionEnabled = true;
             mTwitterOptionEnabled = false;
         } else {
             mFacebookOptionEnabled = facebookShareForced();

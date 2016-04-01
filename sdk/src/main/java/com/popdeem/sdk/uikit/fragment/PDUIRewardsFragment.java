@@ -113,8 +113,12 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 public void onItemClick(View view) {
                     if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
                         final int position = recyclerView.getChildAdapterPosition(view);
-                        PDReward reward = mRewards.get(position);
 
+                        if (position == RecyclerView.NO_POSITION) {
+                            return;
+                        }
+
+                        PDReward reward = mRewards.get(position);
                         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
                             claimNoActionReward(position, reward.getId());
                         } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {

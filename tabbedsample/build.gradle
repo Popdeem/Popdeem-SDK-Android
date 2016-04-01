@@ -65,7 +65,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
 
     // Live
-    compile 'com.popdeem.sdk:sdk:0.1.12'
+    compile 'com.popdeem.sdk:sdk:0.1.13'
     // Dev
 //    compile 'com.popdeem.sdk:sdk:0.1.11-SNAPSHOT'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
