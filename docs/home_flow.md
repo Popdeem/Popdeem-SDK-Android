@@ -16,7 +16,7 @@ From an Fragment:
 PopdeemSDK.showHomeFlow(getActivity());
 ```
 
-An example of this can be see in the `navigationsample` module in the `MainActivity` class.
+An example of this can be seen in the `navigationsample` module in the `MainActivity` class.
 
 #### Fragment
 
@@ -27,7 +27,7 @@ PDUIHomeFlowFragment.newInstance();
 
 This can be used in your `PagerAdapter` or in a `FragmentTransaction` depending on your requirements.
 
-An example of this can be see in the `tabbedsample` module in the `MainActivity` class.
+An example of this can be seen in the `tabbedsample` module in the `MainActivity` class.
 
 ---
 [Docs Home](./ "Docs Home")
