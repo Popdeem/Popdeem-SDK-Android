@@ -3,7 +3,7 @@
 ### Dependency
 
 The Popdeem Android SDK is available through jcenter and mavenCentral.
-Add the following line to your dependencies block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
+Add the following line to the `dependencies` block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
 
 ```
 compile 'com.popdeem.sdk:sdk:0.1.20'
@@ -40,7 +40,7 @@ You can follow this [tutorial](https://developers.google.com/cloud-messaging/and
 
 Once you have implemented GCM, include the following:
 
-Add your Google App ID to your applications `strings.xml`.
+Add your Google App ID to your applications `strings.xml`.  
 _This can be found in your [Google Console Dashboard](https://console.cloud.google.com/home/dashboard "Google Console") for your app under the **Project Number** heading._
 
 ```
