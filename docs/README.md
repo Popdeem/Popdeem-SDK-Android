@@ -5,8 +5,9 @@
 ---
 
 1 - [Getting Started](getting_started.md "Getting Started")     
-2 - [Facebook App Setup](facebook_app_setup.md "Getting Started")       
-3 - [Login Flow](login_flow.md "Login Flow")       
-4 - [Home Flow](home_flow.md "Home Flow")   
+2 - [Facebook App Setup](facebook_app_setup.md "Facebook App Setup")       
+3 - [Twitter App Setup](twitter_app_setup.md "Twitter App Setup")       
+4 - [Login Flow](login_flow.md "Login Flow")       
+5 - [Home Flow](home_flow.md "Home Flow")   
 
 ---

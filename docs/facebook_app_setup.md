@@ -38,7 +38,7 @@ Then in your `AndroidManifest.xml` file add these lines inside the `<application
 
 ---
 
-Next, [Trigger Login Flow](login_flow.md "Login Flow")
+Next, [Twitter App Setup](twitter_app_setup.md "Login Flow")
 
 ---
 [Docs Home](./ "Docs Home")
