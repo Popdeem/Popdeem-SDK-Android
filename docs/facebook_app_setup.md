@@ -41,4 +41,4 @@ Then in your `AndroidManifest.xml` file add these lines inside the `<application
 Next, [Trigger Login Flow](login_flow.md "Login Flow")
 
 ---
-[Docs Home](../ "Docs Home")
+[Docs Home](./ "Docs Home")
