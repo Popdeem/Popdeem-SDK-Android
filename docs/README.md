@@ -4,7 +4,9 @@
 
 ---
 
-1 - [Getting Started](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/getting_started.md "Getting Started")
-2 - [Facebook App Setup](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/facebook_app_setup.md "Getting Started")
-3 - [Login Flow](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/login_flow.md "Login Flow")   
-4 - [Home Flow](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/home_flow.md "Home Flow")  
+1 - [Getting Started](getting_started.md "Getting Started")     
+2 - [Facebook App Setup](facebook_app_setup.md "Getting Started")       
+3 - [Login Flow](login_flow.md "Login Flow")       
+4 - [Home Flow](home_flow.md "Home Flow")   
+
+---

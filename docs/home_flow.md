@@ -30,4 +30,4 @@ This can be used in your `PagerAdapter` or in a `FragmentTransaction` depending 
 An example of this can be see in the `tabbedsample` module in the `MainActivity` class.
 
 ---
-[Docs Home](https://github.com/Popdeem/Popdeem-SDK-iOS/tree/master/Docs/README.md "Docs Home")
+[Docs Home](./ "Docs Home")

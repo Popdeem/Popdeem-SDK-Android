@@ -18,7 +18,7 @@ On app launch, if the user has been previously logged in, the Popdeem SDK will t
 
 When you initialize the Popdeem SDK, a non-social user is created and registered on Popdeem. This allows you to track which of your app users have converted to Social.  
 
-Next, [Trigger Home Flow](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/home_flow.md "Home Flow")  
+Next, [Trigger Home Flow](home_flow.md "Home Flow")  
 
 ---
-[Docs Home](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/README.md "Docs Home")
+[Docs Home](./ "Docs Home")

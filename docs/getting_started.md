@@ -77,7 +77,7 @@ To initialise the Popdeem SDK add the following line to your `Application` class
 PopdeemSDK.initializeSDK(this);
 ```
 
-Next, set up your [Facebook App](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/facebook_app_setup.md "Facebook App")
+Next, set up your [Facebook App](facebook_app_setup.md "Facebook App")
 
 ---
-[Docs Home](https://github.com/Popdeem/Popdeem-SDK-Android/tree/master/docs/README.md "Docs Home")
+[Docs Home](./ "Docs Home")
