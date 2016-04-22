@@ -73,7 +73,6 @@ public final class PopdeemSDK {
     private static String sPopdeemAPIKey = null;
     private static boolean sdkInitialized = false;
 
-
     private PopdeemSDK() {
     }
 
@@ -82,7 +81,7 @@ public final class PopdeemSDK {
      *
      * @param application Application context
      */
-    public static void initializeSDK(Application application) {
+    public static void initializeSDK(@NonNull Application application) {
         sApplication = application;
 
         // Register Activity Lifecycle Callbacks
