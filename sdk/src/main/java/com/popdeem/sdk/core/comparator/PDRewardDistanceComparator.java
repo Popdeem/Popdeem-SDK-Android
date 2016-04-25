@@ -35,14 +35,21 @@ public class PDRewardDistanceComparator implements Comparator<PDReward> {
 
     @Override
     public int compare(PDReward lhs, PDReward rhs) {
+        // Check if Location Verification is disabled
         if (lhs.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE)) {
             return -1;
-        }
-
-        if (lhs.getDistanceFromUser() <= 0) {
+        } else if (rhs.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE)) {
             return 1;
         }
 
+        // Check if reward has a distance
+        if (lhs.getDistanceFromUser() <= 0) {
+            return 1;
+        } else if (rhs.getDistanceFromUser() <= 0) {
+            return -1;
+        }
+
+        // Then compare the distances
         return (int) (lhs.getDistanceFromUser() - rhs.getDistanceFromUser());
     }
 

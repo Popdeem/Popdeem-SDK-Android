@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 
-project.ext.popdeemSdkVersion = '0.1.21'
+project.ext.popdeemSdkVersion = '0.1.22'
 
 android {
     compileSdkVersion 23
