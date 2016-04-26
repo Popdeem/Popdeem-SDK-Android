@@ -31,10 +31,10 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/pd_home_tab_layout"
-        style="@style/AppTheme.TabLayoutTheme"
+        style="@style/PopdeemSDKTheme.TabLayoutTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pd_toolbar_color"
+        android:background="@color/pd_tab_background_color"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/pd_tab_indicator_color"
         app:tabIndicatorHeight="4dp" />

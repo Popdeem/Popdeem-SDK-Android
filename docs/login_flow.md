@@ -2,7 +2,7 @@
 
 To trigger the Popdeem login flow, call the `enableSocialLogin(@NonNull Class activityClass, int numberOfPrompts)` method of the `PopdeemSDK` class:
 
-```
+```java
 PopdeemSDK.enableSocialLogin(MainActivity.class, 3);
 ```
 

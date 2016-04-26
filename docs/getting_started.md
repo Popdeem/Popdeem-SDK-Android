@@ -5,8 +5,8 @@
 The Popdeem Android SDK is available through jcenter and mavenCentral.
 Add the following line to the `dependencies` block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
 
-```
-compile 'com.popdeem.sdk:sdk:0.1.21'
+```java
+compile 'com.popdeem.sdk:sdk:0.1.22'
 ```
 
 ### Initialise SDK
@@ -15,7 +15,7 @@ compile 'com.popdeem.sdk:sdk:0.1.21'
 
 Add your Popdeem API Key to your applications `AndroidManifest.xml`  inside the `<application>` tags:
 
-```
+```xml
 <meta-data
     android:name="com.popdeem.sdk.ApiKey"
     android:value="YOUR_POPDEEM_API_KEY" />
@@ -25,7 +25,7 @@ Add your Popdeem API Key to your applications `AndroidManifest.xml`  inside the 
 
 Add the following permissions to your applications `AndroidManifest.xml` if they are not already declared.
 
-```
+```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -43,19 +43,19 @@ Once you have implemented GCM, include the following:
 Add your Google App ID to your applications `strings.xml`.  
 _This can be found in your [Google Console Dashboard](https://console.cloud.google.com/home/dashboard "Google Console") for your app under the **Project Number** heading._
 
-```
+```xml
 <string name="google_app_id">YOUR_GOOGLE_APP_ID</string>
 ```
 
 Then reference this in your `AndroidManifest.xml` inside the `<application>` tags:
-```
+```xml
 <meta-data
     android:name="GCMSenderID"
     android:value="@string/google_app_id" />
 ```
 
 Add the following `receiver` and `service` after the lines above:
-```
+```xml
 <receiver
     android:name="com.popdeem.sdk.core.gcm.GCMBroadcastReceiver"
     android:exported="true"
@@ -73,7 +73,7 @@ Add the following `receiver` and `service` after the lines above:
 #### Initialise Popdeem SDK
 
 To initialise the Popdeem SDK add the following line to your `Application` class:
-```
+```java
 PopdeemSDK.initializeSDK(this);
 ```
 

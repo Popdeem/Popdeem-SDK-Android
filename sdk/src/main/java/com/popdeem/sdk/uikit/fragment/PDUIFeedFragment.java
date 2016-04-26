@@ -100,7 +100,7 @@ public class PDUIFeedFragment extends Fragment {
             mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
 
             recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_feed_list_divider_color));
             recyclerView.setAdapter(mAdapter);
 
             refreshFeed();

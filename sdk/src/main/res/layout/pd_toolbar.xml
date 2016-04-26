@@ -28,5 +28,5 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/pd_toolbar_color"
-    app:popupTheme="@style/AppTheme.PopupOverlay"
-    app:theme="@style/AppTheme.AppBarOverlay" />
+    app:popupTheme="@style/PopdeemSDKTheme.PopupOverlay"
+    app:theme="@style/PopdeemSDKTheme.AppBarOverlay" />

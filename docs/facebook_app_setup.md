@@ -19,12 +19,12 @@ You then need to create *two* Open Graph stories using these objects:
 ---
 
 When you have your Facebook app set up, make note of your Facebook App ID. Add the following to your Android applications `string.xml` file:
-```
+```xml
 <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
 ```
 
 Then in your `AndroidManifest.xml` file add these lines inside the `<application>` tags:
-```
+```xml
 <meta-data
     android:name="com.facebook.sdk.ApplicationId"
     android:value="@string/facebook_app_id" />

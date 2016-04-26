@@ -147,7 +147,7 @@ public class PDUIWalletFragment extends Fragment {
             mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
 
             recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color));
             recyclerView.setAdapter(mAdapter);
 
             refreshWallet();

@@ -61,8 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
                 android:gravity="end"
-                android:text="@string/pd_inbox_message_sender_string"
-                android:textColor="@android:color/black" />
+                android:text="@string/pd_inbox_message_sender_tag_text"
+                android:textColor="@color/pd_inbox_list_item_body_text_color" />
 
             <TextView
                 android:id="@+id/pd_inbox_message_sender_text_view"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/pd_inbox_list_item_body_text_color"
                 tools:text="This is a sender" />
 
         </LinearLayout>
@@ -89,8 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
                 android:gravity="end"
-                android:text="@string/pd_inbox_message_date_string"
-                android:textColor="@android:color/black" />
+                android:text="@string/pd_inbox_message_date_tag_text"
+                android:textColor="@color/pd_inbox_list_item_body_text_color" />
 
             <TextView
                 android:id="@+id/pd_inbox_message_date_text_view"
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/pd_inbox_list_item_body_text_color"
                 tools:text="Some date" />
 
         </LinearLayout>
@@ -117,8 +117,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:gravity="end"
-            android:text="@string/pd_inbox_message_title_string"
-            android:textColor="@android:color/black" />
+            android:text="@string/pd_inbox_message_title_tag_text"
+            android:textColor="@color/pd_inbox_list_item_body_text_color" />
 
         <TextView
             android:id="@+id/pd_inbox_message_title_text_view"
@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_inbox_list_item_body_text_color"
             tools:text="This is a sender" />
 
     </LinearLayout>
@@ -143,8 +143,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:gravity="end"
-            android:text="@string/pd_inbox_message_body_string"
-            android:textColor="@android:color/black" />
+            android:text="@string/pd_inbox_message_body_tag_text"
+            android:textColor="@color/pd_inbox_list_item_body_text_color" />
 
         <TextView
             android:id="@+id/pd_inbox_message_body_text_view"
@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_inbox_list_item_body_text_color"
             tools:text="Some date" />
 
     </LinearLayout>

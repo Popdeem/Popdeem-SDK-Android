@@ -51,7 +51,7 @@ public class PDUIRedeemActivity extends PDBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pd_redeem);
-        setTitle(R.string.pd_redeem_string);
+        setTitle(R.string.pd_redeem_title);
 
         findViewById(R.id.pd_redeem_done_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +111,7 @@ public class PDUIRedeemActivity extends PDBaseActivity {
                 public void onFinish() {
                     timerFinished = true;
                     countdownTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                    countdownTextView.setText(R.string.pd_timer_finished_string);
+                    countdownTextView.setText(R.string.pd_redeem_timer_finished_text);
                 }
             };
             mCountDownTimer.start();
@@ -120,8 +120,8 @@ public class PDUIRedeemActivity extends PDBaseActivity {
 
     private void checkIfRedeemed() {
         new AlertDialog.Builder(this)
-                .setTitle(R.string.pd_have_you_redeemed_your_reward_string)
-                .setMessage(R.string.pd_redeem_reward_first_warning_string)
+                .setTitle(R.string.pd_redeem_done_alert_title_text)
+                .setMessage(R.string.pd_redeem_done_alert_body_text)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

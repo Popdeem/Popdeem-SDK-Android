@@ -25,6 +25,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pd_redeem_background_colour"
     android:orientation="vertical"
     tools:context=".uikit.activity.PDUIRedeemActivity">
 
@@ -60,7 +61,7 @@
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_redeem_title_text_colour"
             android:textSize="16sp"
             tools:text="Reward Title" />
 
@@ -71,7 +72,7 @@
             android:layout_below="@id/pd_redeem_reward_title_text_view"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="3dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_redeem_description_text_colour"
             android:textSize="12sp"
             tools:text="Rules" />
 
@@ -86,7 +87,7 @@
             android:lineSpacingExtra="3dp"
             android:padding="5dp"
             android:text="@string/pd_share_this_screen_string"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_redeem_description_text_colour"
             android:textSize="14sp" />
 
 
@@ -97,7 +98,7 @@
             android:layout_below="@id/pd_redeem_instructions_text_view"
             android:layout_centerHorizontal="true"
             android:padding="5dp"
-            android:textColor="@color/pd_toolbar_color"
+            android:textColor="@color/pd_redeem_timer_text_colour"
             android:textSize="50sp"
             tools:text="30:00" />
 
@@ -107,9 +108,9 @@
             android:layout_height="30dp"
             android:layout_below="@id/pd_redeem_countdown_timer_text_view"
             android:layout_marginTop="10dp"
-            android:background="@color/pd_toolbar_color"
+            android:background="@color/pd_redeem_done_button_background_colour"
             android:text="@string/pd_done_string"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/pd_redeem_done_button_text_colour" />
 
     </RelativeLayout>
 

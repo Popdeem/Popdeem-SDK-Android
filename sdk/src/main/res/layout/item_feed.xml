@@ -27,6 +27,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/pd_feed_list_background_color"
     android:padding="10dp">
 
     <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
@@ -49,19 +50,7 @@
         android:layout_toEndOf="@+id/pd_feed_profile_image_view"
         android:layout_toRightOf="@+id/pd_feed_profile_image_view"
         android:minHeight="50dp"
-        android:textColor="@color/pd_accent"
-        tools:text="Hello, world" />
-
-    <TextView
-        android:id="@+id/pd_feed_time_ago_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pd_feed_shared_image_view"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_toEndOf="@+id/pd_feed_profile_image_view"
-        android:layout_toRightOf="@+id/pd_feed_profile_image_view"
+        android:textColor="@color/pd_feed_item_default_text_color"
         tools:text="Hello, world" />
 
     <ImageView
@@ -77,5 +66,18 @@
         android:adjustViewBounds="true"
         android:background="@android:color/black"
         android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/pd_feed_time_ago_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pd_feed_shared_image_view"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_toEndOf="@+id/pd_feed_profile_image_view"
+        android:layout_toRightOf="@+id/pd_feed_profile_image_view"
+        android:textColor="@color/pd_feed_item_time_text_color"
+        tools:text="Hello, world" />
 
 </RelativeLayout>

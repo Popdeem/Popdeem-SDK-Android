@@ -47,9 +47,7 @@ public class PDUIHomeFlowPagerAdapter extends FragmentStatePagerAdapter {
 
     public PDUIHomeFlowPagerAdapter(FragmentManager fm) {
         super(fm);
-//        for (int i = 0; i < TAB_COUNT; i++) {
-//            mFragments.add(null);
-//        }
+
     }
 
     @Override

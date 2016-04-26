@@ -4,7 +4,7 @@ If you do not have a Twitter app and the corresponding consumer secret and consu
 
 Once you have the Twitter app consumer key and consumer secret add the following lines to your `AndroidMainfest.xml` inside the `<application>` tags:
 
-```
+```xml
 <meta-data
     android:name="TwitterConsumerKey"
     android:value="YOUR_TWITTER_CONSUMER_KEY" />
@@ -26,7 +26,7 @@ The Popdeem SDK provides a method to create the Twitter kit using the consumers 
 If you are already using the a Twitter kit with Fabric you will need to replace it in your Fabric init with this method.      
 If you are not using the Twitter kit already you just need to add this method to the list of kits in your Fabric init.
 
-```
+```java
 Fabric.with(this, PDSocialUtils.getTwitterKitForFabric(this));
 ```
 

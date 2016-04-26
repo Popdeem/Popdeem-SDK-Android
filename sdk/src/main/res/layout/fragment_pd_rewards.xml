@@ -25,7 +25,8 @@
 <com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pd_rewards_swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/pd_rewards_background_color">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -42,8 +43,8 @@
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="@string/pd_rewards_no_items_text"
-                android:textColor="@android:color/black"
+                android:text="@string/pd_rewards_not_available_text"
+                android:textColor="@color/pd_rewards_no_rewards_text_color"
                 android:textSize="17sp" />
 
             <include layout="@layout/view_pd_divider" />

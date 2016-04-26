@@ -51,7 +51,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="@string/pd_inbox_no_messages_text"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/pd_inbox_no_messages_text_color"
                     android:textSize="17sp" />
 
                 <include layout="@layout/view_pd_divider" />

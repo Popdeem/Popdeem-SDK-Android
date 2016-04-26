@@ -27,7 +27,7 @@
 
     <stroke
         android:width="3dp"
-        android:color="@color/pd_image_corder_color" />
+        android:color="@color/pd_image_border_color" />
     <solid android:color="@android:color/black" />
 
 </shape>

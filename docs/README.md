@@ -9,5 +9,7 @@
 3 - [Twitter App Setup](twitter_app_setup.md "Twitter App Setup")       
 4 - [Login Flow](login_flow.md "Login Flow")       
 5 - [Home Flow](home_flow.md "Home Flow")   
+6 - [Theme](theme.md "Theme")   
+7 - [Strings](strings.md "Strings")   
 
 ---

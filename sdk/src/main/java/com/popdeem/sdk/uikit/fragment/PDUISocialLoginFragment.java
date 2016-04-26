@@ -211,8 +211,8 @@ public class PDUISocialLoginFragment extends Fragment {
 
     private void updateViewAfterLogin() {
         mProgress.setVisibility(View.GONE);
-        mRewardsInfoTextView.setText(R.string.pd_social_login_rewards_unlocked_text);
-        mHeaderTextView.setText(R.string.pd_social_connected_text);
+        mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
+        mHeaderTextView.setText(R.string.pd_social_login_success_text);
 //        mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
 //        mImageView.setImageResource(R.drawable.pd_ui_rewards_success_icon);
 //        mLoginButton.setVisibility(View.GONE);

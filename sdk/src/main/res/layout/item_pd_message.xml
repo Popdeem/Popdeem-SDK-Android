@@ -27,6 +27,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/pd_inbox_list_item_background_color"
     android:minHeight="70dp"
     android:padding="5dp">
 
@@ -57,6 +58,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:textColor="@color/pd_inbox_list_item_time_text_color"
         android:textSize="12sp"
         tools:text="Tue 23 Feb 17:27" />
 
@@ -69,7 +71,7 @@
         android:layout_toLeftOf="@id/pd_message_read_indicator_view"
         android:layout_toRightOf="@id/pd_message_image_view"
         android:layout_toStartOf="@id/pd_message_read_indicator_view"
-        android:textColor="@android:color/black"
+        android:textColor="@color/pd_inbox_list_item_body_text_color"
         tools:text="Message Title" />
 
 </RelativeLayout>

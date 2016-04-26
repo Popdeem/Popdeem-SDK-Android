@@ -27,6 +27,8 @@ package com.popdeem.sdk.uikit.utils;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 
 import com.popdeem.sdk.R;
@@ -37,16 +39,32 @@ import com.popdeem.sdk.R;
 public class PDUIColorUtils {
 
     public static Drawable getBackButtonIcon(Context context) {
-        Drawable drawerIcon = ContextCompat.getDrawable(context, R.drawable.pd_ic_arrow_back);
-        drawerIcon.setColorFilter(ContextCompat.getColor(context, R.color.pd_back_button_color), PorterDuff.Mode.SRC_IN);
-        return drawerIcon;
+        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_back_button_color, false);
     }
 
-
     public static Drawable getInboxButtonIcon(Context context) {
-        Drawable drawerIcon = ContextCompat.getDrawable(context, R.drawable.pd_ic_inbox);
-        drawerIcon.setColorFilter(ContextCompat.getColor(context, R.color.pd_inbox_button_icon_color), PorterDuff.Mode.SRC_IN);
-        return drawerIcon;
+        return getTintedDrawable(context, R.drawable.pd_ic_inbox, R.color.pd_inbox_button_icon_color, false);
+    }
+
+    public static Drawable getLocationVerificationTickIcon(Context context) {
+        return getTintedDrawable(context, R.drawable.ic_tick, R.color.pd_claim_location_verification_tick_color, false);
+    }
+
+    public static Drawable getListDivider(Context context, @ColorRes int color) {
+        return getTintedDrawable(context, R.drawable.pd_divider, color, true);
+    }
+
+    public static Drawable getTintedDrawable(Context context, @DrawableRes int drawableRes, @ColorRes int colorRes, boolean mutate) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableRes);
+        if (drawable == null) {
+            return null;
+        }
+
+        if (mutate) {
+            drawable = drawable.mutate();
+        }
+        drawable.setColorFilter(ContextCompat.getColor(context, colorRes), PorterDuff.Mode.SRC_IN);
+        return drawable;
     }
 
 }

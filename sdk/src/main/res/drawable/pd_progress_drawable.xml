@@ -26,10 +26,10 @@
 
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/pd_divider" />
+        android:drawable="@color/pd_horizontal_progress_background_color" />
 
     <item
         android:id="@+id/progress"
-        android:drawable="@color/pd_rainbow_color_3" />
+        android:drawable="@color/pd_horizontal_progress_color" />
 
 </layer-list>

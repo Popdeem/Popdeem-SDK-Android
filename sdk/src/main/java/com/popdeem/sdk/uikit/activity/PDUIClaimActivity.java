@@ -73,6 +73,7 @@ import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
+import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
@@ -129,7 +130,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pd_claim);
-        setTitle(R.string.pd_claim_string);
+        setTitle(R.string.pd_claim_title);
 
         mLocationManager = new PDLocationManager(this);
 
@@ -145,6 +146,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         mFacebookButton = (Button) findViewById(R.id.pd_facebook_share_option_button);
         mTwitterButton = (Button) findViewById(R.id.pd_twitter_share_option_button);
         mNotHereView = findViewById(R.id.pd_claim_not_here_container);
+
+        ImageView notHereTickImageView = (ImageView) findViewById(R.id.pd_claim_not_here_tick_image_view);
+        notHereTickImageView.setImageDrawable(PDUIColorUtils.getLocationVerificationTickIcon(this));
 
         if (noShareMediaForced()) {
             mFacebookOptionEnabled = true;
@@ -254,7 +258,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void updateTwitterCharsLeft() {
         int charsLeft = calculateTwitterCharsLeft();
         TextView textView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
-        textView.setTextColor(ContextCompat.getColor(PDUIClaimActivity.this, charsLeft < 1 ? R.color.pd_claim_over_character_limit_color : R.color.pd_twitter_blue));
+        textView.setTextColor(ContextCompat.getColor(PDUIClaimActivity.this, charsLeft < 1 ? R.color.pd_claim_over_character_limit_text_color : R.color.pd_twitter_blue));
         textView.setText(String.valueOf(charsLeft));
     }
 
@@ -280,7 +284,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         public void onBackStackChanged() {
             final int entryCount = mFragmentManager.getBackStackEntryCount();
             if (entryCount == 0) {
-                setTitle(R.string.pd_claim_string);
+                setTitle(R.string.pd_claim_title);
                 return;
             }
 
@@ -341,12 +345,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void updateFacebookButton() {
-        mFacebookButton.setTextColor(ContextCompat.getColor(this, mFacebookOptionEnabled ? R.color.pd_facebook_blue : R.color.pd_divider_color));
+        mFacebookButton.setTextColor(ContextCompat.getColor(this, mFacebookOptionEnabled ? R.color.pd_facebook_blue : R.color.pd_claim_network_button_off_text_color));
         mFacebookButton.setCompoundDrawablesWithIntrinsicBounds(mFacebookOptionEnabled ? R.drawable.pd_fb_button_selected : R.drawable.pd_fb_button_deselected, 0, 0, 0);
     }
 
     private void updateTwitterButton() {
-        mTwitterButton.setTextColor(ContextCompat.getColor(this, mTwitterOptionEnabled ? R.color.pd_twitter_blue : R.color.pd_divider_color));
+        mTwitterButton.setTextColor(ContextCompat.getColor(this, mTwitterOptionEnabled ? R.color.pd_twitter_blue : R.color.pd_claim_network_button_off_text_color));
         mTwitterButton.setCompoundDrawablesWithIntrinsicBounds(mTwitterOptionEnabled ? R.drawable.pd_twitter_button_selected : R.drawable.pd_twitter_button_deselected, 0, 0, 0);
     }
 
@@ -381,13 +385,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         if (calculateTwitterCharsLeft() < 0 && mTwitterOptionEnabled) {
-            showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_twitter_character_limit_reached_string);
+            showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_tweet_too_long_text);
             return;
         }
 
         // Check if at least one network is selected
         if (!mFacebookOptionEnabled && !mTwitterOptionEnabled) {
-            showBasicOKAlertDialog(R.string.pd_claim_no_network_selected_string, R.string.pd_claim_no_network_selected_message_string);
+            showBasicOKAlertDialog(R.string.pd_claim_no_network_selected_title_text, R.string.pd_claim_no_network_selected_message_text);
             return;
         }
 
@@ -497,8 +501,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         shareButton.animate().alpha(1.0f);
 
                         new AlertDialog.Builder(PDUIClaimActivity.this)
-                                .setTitle(R.string.pd_claim_reward_claimed_string)
-                                .setMessage(R.string.pd_claim_reward_in_wallet_string)
+                                .setTitle(R.string.pd_claim_reward_claimed_text)
+                                .setMessage(R.string.pd_claim_reward_claimed_success_text)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -688,14 +692,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         final int ID = v.getId();
         if (ID == R.id.pd_facebook_share_option_button) {
             if (mFacebookOptionEnabled && facebookShareForced()) {
-                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_string, R.string.pd_claim_facebook_forced_message_string);
+                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_text, R.string.pd_claim_facebook_forced_message_string);
                 return;
             }
             mFacebookOptionEnabled = !mFacebookOptionEnabled;
             updateFacebookButton();
         } else if (ID == R.id.pd_twitter_share_option_button) {
             if (mTwitterOptionEnabled && twitterShareForced()) {
-                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_string, R.string.pd_claim_twitter_forced_message_string);
+                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_text, R.string.pd_claim_twitter_forced_message_string);
                 return;
             }
             mTwitterOptionEnabled = !mTwitterOptionEnabled;
@@ -704,7 +708,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (ID == R.id.pd_claim_share_button) {
             PDUIUtils.hideKeyboard(this, mMessageEditText);
             if (!mIsHere) {
-                showBasicOKAlertDialog(R.string.pd_not_here_title_text, R.string.pd_not_here_message_text);
+                showBasicOKAlertDialog(R.string.pd_not_here_title_text, R.string.pd_claim_verify_location_failed_text);
                 return;
             }
             if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {

@@ -141,9 +141,9 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
         }
 
         Spannable spannable = new SpannableString(redemptionName + " " + redemptionAction + " " + reward + " at " + brandName);
-        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)), 0, redemptionName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.pd_toolbar_color)), (redemptionName + " " + redemptionAction).length(), (redemptionName + " " + redemptionAction + " ").length() + reward.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.pd_toolbar_color)), (redemptionName + " " + redemptionAction + " " + reward + " at").length(), (redemptionName + " " + redemptionAction + " " + reward + " at ").length() + brandName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.pd_feed_item_name_text_color)), 0, redemptionName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.pd_feed_item_title_text_color)), (redemptionName + " " + redemptionAction).length(), (redemptionName + " " + redemptionAction + " ").length() + reward.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.pd_feed_item_title_text_color)), (redemptionName + " " + redemptionAction + " " + reward + " at").length(), (redemptionName + " " + redemptionAction + " " + reward + " at ").length() + brandName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         return spannable;
     }

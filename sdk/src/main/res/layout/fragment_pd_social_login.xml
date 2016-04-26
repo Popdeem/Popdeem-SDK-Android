@@ -67,9 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/pd_social_login_new_text"
-            android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:text="@string/pd_social_login_tagline_text"
+            android:textColor="@color/pd_login_tagline_text_color"
             android:textSize="16sp" />
 
         <TextView
@@ -78,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:minLines="2"
-            android:text="@string/pd_social_login_header_text"
-            android:textColor="@android:color/black"
+            android:text="@string/pd_social_login_heading_text"
+            android:textColor="@color/pd_login_heading_text_color"
             android:textSize="16sp" />
 
         <TextView
@@ -88,8 +87,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:minLines="3"
-            android:text="@string/pd_social_login_info_text"
-            android:textColor="@android:color/black"
+            android:text="@string/pd_social_login_body_text"
+            android:textColor="@color/pd_login_body_text_color"
             android:textSize="13sp" />
 
         <FrameLayout
@@ -102,16 +101,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/pd_continue_button_background_color"
-                android:text="@string/pd_continue_to_app_text"
-                android:textColor="@color/pd_continue_button_text_color"
+                android:background="@color/pd_login_continue_button_background_color"
+                android:text="@string/pd_social_login_continue_text"
+                android:textColor="@color/pd_login_continue_button_text_color"
                 android:visibility="gone" />
-
-            <!--<com.facebook.login.widget.LoginButton-->
-            <!--android:id="@+id/pd_fb_login_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center" />-->
 
             <Button
                 android:id="@+id/pd_facebook_login_button"
@@ -145,8 +138,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/pd_social_login_privacy_policy_text"
-            android:textColor="@android:color/black"
+            android:text="@string/pd_social_login_terms_text"
+            android:textColor="@color/pd_login_terms_text_color"
             android:textSize="10sp" />
 
     </LinearLayout>

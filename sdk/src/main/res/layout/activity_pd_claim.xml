@@ -44,7 +44,7 @@
                 android:id="@+id/pd_claim_not_here_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/pd_not_here_bg_color"
+                android:background="@color/pd_claim_location_verification_background_color"
                 android:padding="10dp"
                 android:visibility="gone">
 
@@ -64,8 +64,8 @@
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
                     android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
-                    android:text="@string/pd_not_here_message_text"
-                    android:textColor="@android:color/black"
+                    android:text="@string/pd_claim_verify_location_failed_text"
+                    android:textColor="@color/pd_claim_location_verification_text_color"
                     android:textSize="12sp" />
 
             </RelativeLayout>
@@ -121,7 +121,7 @@
                             android:layout_toStartOf="@id/pd_claim_share_image_view"
                             android:background="@null"
                             android:gravity="top|start"
-                            android:hint="@string/pd_claim_edit_text_hint"
+                            android:hint="@string/pd_claim_message_placeholder_text"
                             android:inputType="textCapSentences|textMultiLine"
                             android:singleLine="false"
                             android:textSize="13sp" />
@@ -134,7 +134,7 @@
                             android:ellipsize="end"
                             android:lines="1"
                             android:padding="3dp"
-                            android:textColor="@color/pd_toolbar_color"
+                            android:textColor="@color/pd_claim_tagged_friends_text_color"
                             android:textSize="10sp"
                             android:visibility="gone"
                             tools:ignore="SmallSp"
@@ -264,7 +264,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/pd_claim_share_button_background_color"
                             android:padding="10dp"
-                            android:text="@string/pd_share_and_redeem_string"
+                            android:text="@string/pd_claim_get_reward_text"
                             android:textAllCaps="false"
                             android:textColor="@color/pd_claim_share_button_text_color"
                             android:textSize="18sp" />

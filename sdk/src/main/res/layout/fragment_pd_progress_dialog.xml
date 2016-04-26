@@ -36,10 +36,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/pd_notification_dialog_title_text_color"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:text="@string/pd_please_wait_text" />
+        tools:text="@string/pd_common_please_wait_text" />
 
     <TextView
         android:id="@+id/pd_progress_dialog_message"
@@ -48,9 +48,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="30dp"
         android:gravity="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/pd_notification_dialog_message_text_color"
         android:textSize="15sp"
-        tools:text="@string/pd_claiming_your_reward_string" />
+        tools:text="@string/pd_claim_claiming_reward_text" />
 
     <ProgressBar
         android:id="@+id/pd_progress_bar"

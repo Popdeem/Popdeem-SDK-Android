@@ -34,6 +34,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -52,8 +53,7 @@ public class PDBaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_text_color));
-//        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.pd_toolbar_up_button_color));
+        toolbar.setNavigationIcon(PDUIColorUtils.getBackButtonIcon(this));
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();

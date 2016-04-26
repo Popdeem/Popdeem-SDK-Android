@@ -2,6 +2,77 @@
 
     <string name="app_name">Popdeem-SDK-Android</string>
 
+    <!-- Common -->
+    <string name="pd_common_please_wait_text">Please wait</string>
+
+
+    <!-- Social Login -->
+    <string name="pd_social_login_success_text">Connected!</string>
+    <string name="pd_social_login_success_description_text">Rewards are now unlocked. You will be notified when new rewards are available.</string>
+    <string name="pd_social_login_heading_text">Connect your Facebook to earn additional Rewards</string>
+    <string name="pd_social_login_body_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
+    <string name="pd_social_login_footer_text">Powered by Popdeem</string>
+    <string name="pd_social_login_continue_text">Continue to app</string>
+    <string name="pd_social_login_tagline_text">NEW: SOCIAL FEATURES</string>
+    <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
+    <!--<string name="pd_social_login_connect_facebook_text">To see what rewards you have unlocked, simply connect your Facebook account below.</string>-->
+
+
+    <!-- Rewards -->
+    <string name="pd_rewards_title">Rewards</string>
+    <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
+    <!-- TODO tab titles -->
+
+
+    <!-- Claim -->
+    <string name="pd_claim_title">Claim</string>
+    <string name="pd_claim_get_reward_text">Share and Redeem</string>
+    <string name="pd_claim_verify_location_failed_text">You must be at this location to claim this reward.\nPlease come back later.</string>
+
+    <string name="pd_claim_message_placeholder_text">What are you up to?</string>
+
+    <string name="pd_claim_cannot_deselect_text">Cannot Deselect</string>
+    <string name="pd_claim_facebook_forced_message_string">This reward must be claimed with a Facebook post. You can also post to Twitter if you wish.</string>
+    <string name="pd_claim_twitter_forced_message_string">This reward must be claimed with a Twitter post. You can also post to Facebook if you wish.</string>
+
+    <string name="pd_claim_reward_claimed_text">Reward Claimed!</string>
+    <string name="pd_claim_reward_claimed_success_text">You can view your reward in your wallet</string>
+    <string name="pd_claim_claiming_reward_text">Claiming your reward</string>
+    <string name="pd_claim_tweet_too_long_text">You are over the character limit for Twitter. Please edit your message.</string>
+    <string name="pd_claim_no_network_selected_title_text">No Network Selected</string>
+    <string name="pd_claim_no_network_selected_message_text">You must select at least one social network in order to complete this action</string>
+
+
+    <!-- Inbox -->
+    <string name="pd_inbox_message_sender_tag_text">Sender:</string>
+    <string name="pd_inbox_message_date_tag_text">Date:</string>
+    <string name="pd_inbox_message_body_tag_text">Body:</string>
+    <string name="pd_inbox_message_title_tag_text">Title:</string>
+
+
+    <!-- Redeem -->
+    <string name="pd_redeem_title">Redeem</string>
+    <string name="pd_redeem_done_alert_title_text">Have you redeemed your reward?</string>
+    <string name="pd_redeem_done_alert_body_text">You will not be able to redeem your reward after leaving this screen</string>
+    <string name="pd_redeem_timer_finished_text">Timer Finished</string>
+    <string name="pd_redeem_reward_info_message_string">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
+
+    <string name="pd_are_you_sure_string">Are you sure?</string>
+    <string name="pd_redeem_button_string">Redeem</string>
+    <string name="pd_redeem_reward_info_title_string">How to Redeem</string>
+
+    <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
+    <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
+    <string name="pd_redeem_sweepstake_reward_no_date_message_string">\n\n- There is no date set for this draw.</string>
+    <string name="pd_go_button_string">GO</string>
+
+    <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
+
+
+
+
+
+
     <string name="pd_empty_string" />
     <string name="pd_inbox_text">Inbox</string>
     <string name="pd_instant_coupon_label">Instant Coupon</string>
@@ -9,17 +80,15 @@
     <string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>
     <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
     <string name="pd_feed_no_items_text">There is no Feed available right now. Please check back later.</string>
-    <string name="pd_rewards_no_items_text">There are no Rewards available right now. Please check back later.</string>
+
     <string name="pd_inbox_no_messages_text">You have no message right now…</string>
     <string name="title_activity_pduifeed_image">Image</string>
     <string name="pd_app_update_text">App Update</string>
     <string name="pd_rewards_now_available_text">Rewards Now Available</string>
-    <string name="pd_social_login_connect_facebook_text">To see what rewards you have unlocked, simply connect your Facebook account below.</string>
-    <string name="pd_social_login_rewards_unlocked_text">Rewards are now unlocked. You will be notified when new rewards are available.</string>
-    <string name="pd_powered_by_popdeem_text">Powered by Popdeem</string>
+
     <string name="pd_error_title_text">Error</string>
     <string name="pd_facebook_login_cancelled_error_message">Facebook login cancelled. Please try again.</string>
-    <string name="pd_continue_to_app_text">Continue to app</string>
+
 
     <string name="pd_location_disabled_title_text">Location Disabled</string>
     <string name="pd_location_disabled_message_text">Location Services need to be enabled to continue. We use your location to deliver local rewards. Would you like to be taken Location Settings?</string>
@@ -27,68 +96,45 @@
     <string name="pd_location_permission_rationale_text">We use your location to deliver local rewards</string>
     <string name="pd_location_permission_are_you_sure_text">We use your location to deliver local rewards. Would you like to give permission to access your location?</string>
 
-    <string name="pd_social_connected_text">Connected!</string>
+
 
     <string name="pd_default_error_text">An error has occurred. Please try again.</string>
 
-    <string name="pd_claim_string">Claim</string>
-    <string name="pd_claim_edit_text_hint">What are you up to?</string>
+
+
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
-    <string name="pd_share_and_redeem_string">Share and Redeem</string>
-    <string name="pd_claim_cannot_deselect_string">Cannot Deselect</string>
-    <string name="pd_claim_facebook_forced_message_string">This reward must be claimed with a Facebook post. You can also post to Twitter if you wish.</string>
-    <string name="pd_claim_twitter_forced_message_string">This reward must be claimed with a Twitter post. You can also post to Facebook if you wish.</string>
+
+
     <string name="pd_claim_photo_required_string">Photo Required</string>
     <string name="pd_claim_photo_required_message_string">A photo is required for this action. Please add a photo</string>
-    <string name="pd_claim_no_network_selected_string">No Network Selected</string>
-    <string name="pd_claim_no_network_selected_message_string">You must select at least one social network in order to complete this action</string>
-    <string name="pd_claim_reward_claimed_string">Reward Claimed!</string>
-    <string name="pd_claim_reward_in_wallet_string">You can view your reward in your wallet</string>
+
+
     <string name="pd_claim_something_went_wrong_string">Something went wrong. Please try again.</string>
     <string name="pd_search_string">Search</string>
     <string name="pd_storage_permissions_title_string">Storage Permissions</string>
     <string name="pd_storage_permission_rationale_string">We need permission to save the image you take to your phone. Would you like to give permission?</string>
     <string name="pd_storage_permissions_denied_string">This app needs access to your storage to share an image.</string>
-    <string name="pd_inbox_message_sender_string">Sender:</string>
-    <string name="pd_inbox_message_date_string">Date:</string>
-    <string name="pd_inbox_message_body_string">Body:</string>
-    <string name="pd_inbox_message_title_string">Title:</string>
+
     <string name="pd_tag_friends_choose_friends_string">Choose Friends</string>
-    <string name="pd_claim_twitter_character_limit_reached_string">You are over the character limit for Twitter. Please edit your message.</string>
+
     <string name="pd_suspended_title_string">Suspended</string>
     <string name="pd_suspended_message_string">You have been suspended. You cannot claim any rewards at this time.</string>
     <string name="pd_suspended_message_with_date_string">You have been suspended. Your account will become active on %1s</string>
     <string name="pd_share_this_screen_string">Share this screen at the location\nbefore the timer runs out</string>
     <string name="pd_done_string">Done</string>
-    <string name="pd_redeem_string">Redeem</string>
-    <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
-    <string name="pd_timer_finished_string">Timer Finished</string>
-    <string name="pd_have_you_redeemed_your_reward_string">Have you redeemed your reward?</string>
-    <string name="pd_redeem_reward_first_warning_string">You will not be able to redeem your reward after leaving this screen</string>
-    <string name="pd_are_you_sure_string">Are you sure?</string>
-    <string name="pd_redeem_button_string">Redeem</string>
-    <string name="pd_redeem_reward_info_title_string">How to Redeem</string>
-    <string name="pd_redeem_reward_info_message_string">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
-    <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
-    <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
-    <string name="pd_redeem_sweepstake_reward_no_date_message_string">\n\n- There is no date set for this draw.</string>
-    <string name="pd_go_button_string">GO</string>
-    <string name="pd_please_wait_text">Please wait</string>
-    <string name="pd_claiming_your_reward_string">Claiming your reward</string>
+
+
 
     <string name="pd_add_photo_title_string">Add Photo</string>
     <string name="pd_photo_gallery_string">Gallery</string>
     <string name="pd_photo_camera_string">Camera</string>
-    <string name="pd_social_login_new_text">New: Social Features</string>
-    <string name="pd_social_login_header_text">Connect your Facebook to earn additional Rewards</string>
-    <string name="pd_social_login_info_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
-    <string name="pd_social_login_privacy_policy_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
+
     <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
     <string name="pd_log_out_facebook_text">Log out</string>
 
     <string name="pd_credit_added_text">was added to your balance.</string>
-    <string name="pd_not_here_message_text">You must be at this location to claim this reward.\nPlease come back later.</string>
+
     <string name="pd_not_here_title_text">Not at location</string>
 
     <string-array name="pd_photo_dialog_items_array">

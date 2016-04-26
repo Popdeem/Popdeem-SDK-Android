@@ -85,10 +85,10 @@ public class PDUIProgressDialogFragment extends DialogFragment {
         builder.setOnCancelListener(mOnCancelListener);
 
         TextView textView = (TextView) view.findViewById(R.id.pd_progress_dialog_title);
-        textView.setText(args.getString(TITLE_KEY, getString(R.string.pd_please_wait_text)));
+        textView.setText(args.getString(TITLE_KEY, getString(R.string.pd_common_please_wait_text)));
 
         textView = (TextView) view.findViewById(R.id.pd_progress_dialog_message);
-        textView.setText(args.getString(MESSAGE_KEY, getString(R.string.pd_claiming_your_reward_string)));
+        textView.setText(args.getString(MESSAGE_KEY, getString(R.string.pd_claim_claiming_reward_text)));
 
         return builder.create();
     }

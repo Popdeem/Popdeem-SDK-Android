@@ -26,7 +26,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/pd_wallet_item_background_color"
     android:minHeight="60dp"
     android:orientation="horizontal"
     android:padding="10dp">
@@ -54,7 +54,7 @@
         android:layout_toEndOf="@id/pd_wallet_brand_image_view"
         android:layout_toRightOf="@id/pd_wallet_brand_image_view"
         android:ellipsize="end"
-        android:textColor="@android:color/black"
+        android:textColor="@color/pd_wallet_item_default_text_color"
         android:textSize="16sp"
         tools:text="This is a reward title" />
 

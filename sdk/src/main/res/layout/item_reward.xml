@@ -27,6 +27,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/pd_reward_list_background_color"
     android:minHeight="80dp"
     android:orientation="vertical"
     android:padding="5dp">
@@ -56,7 +57,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_reward_list_item_title_text_color"
             android:textSize="15sp"
             tools:ignore="MissingPrefix"
             tools:text="$0.40c off pampers" />
@@ -68,7 +69,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@android:color/black"
+            android:textColor="@color/pd_reward_list_item_subtitle_text_color"
             android:textSize="13sp"
             tools:text="Remaining" />
 
@@ -78,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:maxLines="2"
+            android:textColor="@color/pd_reward_list_item_info_text_color"
             android:textSize="12sp"
             tools:ignore="MissingPrefix"
             tools:text="3 Days Remaining" />

@@ -135,7 +135,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setNestedScrollingEnabled(true);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity()));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_reward_list_divider_color));
             recyclerView.setAdapter(mRecyclerViewAdapter);
 
             mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
@@ -174,7 +174,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void claimNoActionReward(final int position, String rewardId) {
-        final PDUIProgressDialogFragment progress = PDUIProgressDialogFragment.showProgressDialog(getChildFragmentManager(), getString(R.string.pd_please_wait_text), getString(R.string.pd_claiming_your_reward_string), false, null);
+        final PDUIProgressDialogFragment progress = PDUIProgressDialogFragment.showProgressDialog(getChildFragmentManager(), getString(R.string.pd_common_please_wait_text), getString(R.string.pd_claim_claiming_reward_text), false, null);
         String lat = "", lng = "";
 
         Realm realm = Realm.getDefaultInstance();
@@ -207,8 +207,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     mRewards.remove(position);
                     mRecyclerViewAdapter.notifyItemRemoved(position);
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.pd_claim_reward_claimed_string)
-                            .setMessage(R.string.pd_claim_reward_in_wallet_string)
+                            .setTitle(R.string.pd_claim_reward_claimed_text)
+                            .setMessage(R.string.pd_claim_reward_claimed_success_text)
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
                             .show();
