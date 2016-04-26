@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/pd_social_login_header_image" />
+            android:src="@drawable/pd_default_login" />
 
         <ImageButton
             android:id="@+id/pd_social_login_back_button"

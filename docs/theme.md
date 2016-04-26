@@ -1,5 +1,26 @@
 # Customize the PopdeemSDK Theme
 
+### Images
+There are a few images that you can override to suit your application.
+
+##### Notification Icon
+To customize the notification icon that is shown when your app receives a push notification from Popdeem add an image to your drawable folders with this name:
+```
+ic_pd_notification.png
+```
+_We recommend using the built in Image Asset creator in Android Studio to do this as it will add an image for all densities._   
+_To do this use File -> New -> Image Asset and choose "Notification Icons"_
+
+##### Social Login Header Image
+To customize the header image shown in the Social Login view add an image to your drawable folders called:
+```
+pd_default_login.png
+```
+
+---
+
+### Colors
+
 You can customize the Popdeem SDK's UI colors to help with integration.
 
 All you need to do it declare the color in your applications `colors.xml` file.
