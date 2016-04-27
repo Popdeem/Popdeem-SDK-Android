@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 
-project.ext.popdeemSdkVersion = '0.2.0'
+project.ext.popdeemSdkVersion = '0.2.1'
 
 android {
     compileSdkVersion 23
@@ -32,8 +32,8 @@ dependencies {
     testCompile 'com.squareup.okhttp3:mockwebserver:3.1.2'
 
     // Google
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
     compile 'com.google.code.gson:gson:2.6.1'
 
     // Play Services
