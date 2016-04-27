@@ -64,10 +64,8 @@ public class PDUIHomeFlowFragment extends Fragment {
             }
         });
 
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
-        viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(getChildFragmentManager()));
+        viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(getChildFragmentManager(), getActivity()));
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
         tabLayout.setupWithViewPager(viewPager);

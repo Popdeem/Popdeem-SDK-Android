@@ -45,7 +45,7 @@ public class PDUIInboxActivity extends PDBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pd_inbox);
 
-        setTitle(R.string.pd_inbox_text);
+        setTitle(R.string.pd_inbox_title);
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()

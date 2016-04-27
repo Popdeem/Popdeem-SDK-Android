@@ -24,10 +24,12 @@
 
 package com.popdeem.sdk.uikit.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.popdeem.sdk.R;
 import com.popdeem.sdk.uikit.fragment.PDUIFeedFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIWalletFragment;
@@ -40,14 +42,14 @@ import java.util.Arrays;
  */
 public class PDUIHomeFlowPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final String[] TITLES = {"Rewards", "Activity", "Wallet"};
+    private final String[] TITLES;
     private final int TAB_COUNT = 3;
 
     private ArrayList<Fragment> mFragments = new ArrayList<>(Arrays.asList(new Fragment[TAB_COUNT]));
 
-    public PDUIHomeFlowPagerAdapter(FragmentManager fm) {
+    public PDUIHomeFlowPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-
+        TITLES = context.getResources().getStringArray(R.array.home_flow_tab_titles);
     }
 
     @Override

@@ -326,11 +326,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         // Action
         final boolean TWITTER_ACTION_REQUIRED = twitterShareForced();
         if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo"));
+            actionStringBuilder.append(getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_photo : R.string.pd_claim_action_photo));
         } else if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in"));
+            actionStringBuilder.append(getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_checkin : R.string.pd_claim_action_checkin));
         } else {
-            actionStringBuilder.append(getString(R.string.pd_instant_coupon_label));
+            actionStringBuilder.append(getString(R.string.pd_claim_action_none));
         }
 
         // End date

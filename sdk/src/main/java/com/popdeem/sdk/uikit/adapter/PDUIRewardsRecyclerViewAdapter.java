@@ -77,11 +77,11 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
 
         final boolean TWITTER_ACTION_REQUIRED = twitterActionRequired(reward.getSocialMediaTypes());
         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet with Photo" : "Photo"));
+            actionStringBuilder.append(holder.context.getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_photo : R.string.pd_claim_action_photo));
         } else if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
-            actionStringBuilder.append(String.format(Locale.getDefault(), "%1s Required", TWITTER_ACTION_REQUIRED ? "Tweet" : "Check-in"));
+            actionStringBuilder.append(holder.context.getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_checkin : R.string.pd_claim_action_checkin));
         } else {
-            actionStringBuilder.append(holder.context.getString(R.string.pd_instant_coupon_label));
+            actionStringBuilder.append(holder.context.getString(R.string.pd_claim_action_none));
         }
 
         long timeInSecs = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), -1);

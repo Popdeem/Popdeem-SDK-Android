@@ -19,9 +19,18 @@
 
 
     <!-- Rewards -->
-    <string name="pd_rewards_title">Rewards</string>
     <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
-    <!-- TODO tab titles -->
+
+
+    <!-- Tab Titles -->
+    <string name="pd_rewards_title">Rewards</string>
+    <string name="pd_activity_title">Rewards</string>
+    <string name="pd_wallet_title">Rewards</string>
+    <string-array name="home_flow_tab_titles">
+        <item>@string/pd_redeem_title</item>
+        <item>@string/pd_activity_title</item>
+        <item>@string/pd_wallet_title</item>
+    </string-array>
 
 
     <!-- Claim -->
@@ -44,6 +53,7 @@
 
 
     <!-- Inbox -->
+    <string name="pd_inbox_title">Inbox</string>
     <string name="pd_inbox_message_sender_tag_text">Sender:</string>
     <string name="pd_inbox_message_date_tag_text">Date:</string>
     <string name="pd_inbox_message_body_tag_text">Body:</string>
@@ -68,14 +78,20 @@
 
     <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
 
+    <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
+    <string name="pd_claim_action_photo">Photo required</string>
+    <string name="pd_claim_action_none">Instant Coupon</string>
+    <string name="pd_claim_action_checkin">Check-in Required</string>
+    <string name="pd_claim_action_tweet">Tweet Required</string>
+    <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
 
 
 
 
 
     <string name="pd_empty_string" />
-    <string name="pd_inbox_text">Inbox</string>
-    <string name="pd_instant_coupon_label">Instant Coupon</string>
+    
+    
     <string name="pd_you_will_be_notified_label">You will be notified if you are the winner.</string>
     <string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>
     <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
