@@ -9,6 +9,43 @@ Add the following line to the `dependencies` block of your applications `build.g
 compile 'com.popdeem.sdk:sdk:0.1.22'
 ```
 
+---
+#### NOTE: For projects that do NOT use Fabric
+
+The Popdeem SDK uses [Fabric](https://get.fabric.io/ "Fabric") for the official Twitter SDK but due to a limitation in Fabric regarding use in Android Libraries these steps will need to be taken. Fabric have stated that official support for this is upcoming.      
+_If you already use Fabric in your application, these steps do not apply to you. You can skip to the Initialise SDK section below._
+
+If you do not use Fabric in your project you will need to add the following or you will get an error when syncing project files:
+
+In your ***top-level*** `build.gradle` file add the lines marked in the sample below:
+
+```java
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' } // Add this line
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'io.fabric.tools:gradle:1.+' // Add this line
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' } // Add this line
+    }
+}
+```
+
+Then in your ***application-level*** `build.gradle` file add the line marked below:
+
+```java
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric' // Add this line
+```
+---
 ### Initialise SDK
 
 #### API Key
