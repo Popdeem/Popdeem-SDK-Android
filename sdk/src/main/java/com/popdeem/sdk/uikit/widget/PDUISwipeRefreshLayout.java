@@ -25,9 +25,12 @@
 package com.popdeem.sdk.uikit.widget;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
+
+import com.popdeem.sdk.R;
 
 /**
  * Created by mikenolan on 14/03/16.
@@ -38,10 +41,25 @@ public class PDUISwipeRefreshLayout extends SwipeRefreshLayout {
 
     public PDUISwipeRefreshLayout(Context context) {
         super(context);
+        if (!isInEditMode()) {
+            init(context);
+        }
     }
 
     public PDUISwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        if (!isInEditMode()) {
+            init(context);
+        }
+    }
+
+    private void init(Context context) {
+        int[] colors = context.getResources().getIntArray(R.array.pd_swipe_refresh_colors_array);
+        if (colors.length > 0) {
+            setColorSchemeColors(colors);
+        } else {
+            setColorSchemeColors(ContextCompat.getColor(context, R.color.pd_toolbar_color));
+        }
     }
 
     public void addLinearLayoutManager(LinearLayoutManager linearLayoutManager) {

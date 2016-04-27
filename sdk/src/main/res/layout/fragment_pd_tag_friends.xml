@@ -40,7 +40,7 @@
         android:drawableLeft="@drawable/pd_ic_search_black"
         android:drawablePadding="10dp"
         android:drawableStart="@drawable/pd_ic_search_black"
-        android:hint="@string/pd_search_string"
+        android:hint="@string/pd_claim_choose_friends_search_text"
         android:imeOptions="actionSearch"
         android:inputType="textCapWords"
         android:lines="1" />

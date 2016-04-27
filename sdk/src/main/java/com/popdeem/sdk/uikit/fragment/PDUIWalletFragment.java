@@ -119,7 +119,7 @@ public class PDUIWalletFragment extends Fragment {
                     } else if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
                         final long REDEMPTION_TIMER = (reward.getCountdownTimer() * 1000) + 500;
                         String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
-                        String message = String.format(Locale.getDefault(), getString(R.string.pd_redeem_reward_info_message_string), minutes, minutes);
+                        String message = String.format(Locale.getDefault(), getString(R.string.pd_wallet_coupon_info_message_text), minutes, minutes);
 
                         builder.setTitle(R.string.pd_redeem_reward_info_title_string)
                                 .setMessage(message)

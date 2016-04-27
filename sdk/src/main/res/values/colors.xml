@@ -107,14 +107,18 @@
     <!-- Notification Dialog Colors -->
     <color name="pd_notification_dialog_title_text_color">#000000</color>
     <color name="pd_notification_dialog_message_text_color">#000000</color>
+    
+    
+    <!-- Swipe Refresh Colors -->
+    <array name="pd_swipe_refresh_colors_array">
+        <item>@color/pd_rainbow_color_3</item>
+        <item>@color/pd_rainbow_color_2</item>
+        <item>@color/pd_rainbow_color_4</item>
+        <item>@color/pd_rainbow_color_1</item>
+    </array>
 
 
-    <!--<color name="pd_rainbow_color_1">#eac34b</color>-->
-    <!--<color name="pd_rainbow_color_2">#3e96a7</color>-->
-    <!--<color name="pd_rainbow_color_3">#bb4f53</color>-->
-    <!--<color name="pd_rainbow_color_4">#668c3d</color>-->
-    <!--<color name="pd_social_login_background_color">#bb000000</color>-->
-
+    <!-- Misc Colors -->
     <color name="pd_twitter_blue">#FF5BAAF4</color>
     <color name="pd_facebook_blue">#3b5998</color>
     <color name="pd_claim_network_button_off_text_color">#dba7ac</color>
@@ -126,5 +130,11 @@
     <color name="colorAccent">@color/pd_accent</color>
 
     <color name="pd_image_border_color">#efeff4</color>
+
+    <color name="pd_rainbow_color_1">#eac34b</color>
+    <color name="pd_rainbow_color_2">#3e96a7</color>
+    <color name="pd_rainbow_color_3">#bb4f53</color>
+    <color name="pd_rainbow_color_4">#668c3d</color>
+    <!--<color name="pd_social_login_background_color">#bb000000</color>-->
 
 </resources>

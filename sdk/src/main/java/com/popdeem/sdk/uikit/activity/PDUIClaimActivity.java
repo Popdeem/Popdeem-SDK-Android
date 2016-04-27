@@ -291,7 +291,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(entryCount - 1);
             String name = entry.getName();
             if (name.equalsIgnoreCase(PDUITagFriendsFragment.class.getSimpleName())) {
-                setTitle(R.string.pd_tag_friends_choose_friends_string);
+                setTitle(R.string.pd_claim_choose_friends_title);
             }
         }
     };
@@ -385,7 +385,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         if (calculateTwitterCharsLeft() < 0 && mTwitterOptionEnabled) {
-            showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_tweet_too_long_text);
+            showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
             return;
         }
 
@@ -412,7 +412,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 public void onError(FacebookException error) {
                     PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
                     new AlertDialog.Builder(PDUIClaimActivity.this)
-                            .setTitle(R.string.pd_error_title_text)
+                            .setTitle(R.string.pd_common_sorry_text)
                             .setMessage(error.getMessage())
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
@@ -521,7 +521,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         progressBar.setVisibility(View.GONE);
                         shareButton.setEnabled(true);
                         shareButton.animate().alpha(1.0f);
-                        showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_something_went_wrong_string);
+                        showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_common_something_wrong_text);
                     }
                 });
 
@@ -547,7 +547,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
                     @Override
                     public void failure(int statusCode, Exception e) {
-                        showBasicOKAlertDialog(R.string.pd_error_title_text, R.string.pd_claim_something_went_wrong_string);
+                        showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_common_something_wrong_text);
                     }
                 });
     }
@@ -604,8 +604,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void showAddPictureChoiceDialog() {
         new AlertDialog.Builder(this)
-                .setTitle(R.string.pd_add_photo_title_string)
-                .setItems(R.array.pd_photo_dialog_items_array, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.pd_claim_add_photo_title_text)
+                .setItems(R.array.pd_claim_add_photo_dialog_items_array, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {       // Gallery
@@ -708,11 +708,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (ID == R.id.pd_claim_share_button) {
             PDUIUtils.hideKeyboard(this, mMessageEditText);
             if (!mIsHere) {
-                showBasicOKAlertDialog(R.string.pd_not_here_title_text, R.string.pd_claim_verify_location_failed_text);
+                showBasicOKAlertDialog(R.string.pd_claim_verify_location_failed_title_text, R.string.pd_claim_verify_location_failed_text);
                 return;
             }
             if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-                showBasicOKAlertDialog(R.string.pd_claim_photo_required_string, R.string.pd_claim_photo_required_message_string);
+                showBasicOKAlertDialog(R.string.pd_claim_photo_required_text, R.string.pd_claim_photo_required_message_text);
             } else {
                 post(mImageAdded);
             }

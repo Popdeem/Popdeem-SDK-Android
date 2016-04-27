@@ -64,7 +64,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mAddedTextString == null) {
-            mAddedTextString = parent.getContext().getString(R.string.pd_credit_added_text);
+            mAddedTextString = parent.getContext().getString(R.string.pd_wallet_credit_reward_text);
         }
         if (mImageDimen == -1) {
             mImageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.wallet_image_dimen);

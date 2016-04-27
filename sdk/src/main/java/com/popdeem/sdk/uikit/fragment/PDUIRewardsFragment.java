@@ -191,14 +191,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 progress.dismiss();
                 if (jsonObject == null) {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.pd_error_title_text)
-                            .setMessage(R.string.pd_claim_something_went_wrong_string)
+                            .setTitle(R.string.pd_common_sorry_text)
+                            .setMessage(R.string.pd_common_something_wrong_text)
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
                             .show();
                 } else if (jsonObject.has("error")) {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.pd_error_title_text)
+                            .setTitle(R.string.pd_common_sorry_text)
                             .setMessage(jsonObject.get("error").getAsString())
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
@@ -219,8 +219,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             public void failure(int statusCode, Exception e) {
                 progress.dismiss();
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.pd_error_title_text)
-                        .setMessage(R.string.pd_claim_something_went_wrong_string)
+                        .setTitle(R.string.pd_common_sorry_text)
+                        .setMessage(R.string.pd_common_something_wrong_text)
                         .setPositiveButton(android.R.string.ok, null)
                         .create()
                         .show();

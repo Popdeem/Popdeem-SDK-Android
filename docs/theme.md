@@ -14,7 +14,7 @@ _To do this use File -> New -> Image Asset and choose "Notification Icons"_
 ##### Social Login Header Image
 To customize the header image shown in the Social Login view add an image to your drawable folders called:
 ```
-pd_default_login.png
+pd_social_login_header.png
 ```
 
 ---
@@ -136,6 +136,16 @@ The list of colors that can be changed are as follows:
 <!-- Notification Dialog Colors -->
 <color name="pd_notification_dialog_title_text_color">#000000</color>
 <color name="pd_notification_dialog_message_text_color">#000000</color>
+
+
+<!-- Swipe Refresh Colors. Should contain between 1...n colors. -->
+<!-- If an empty array is provided the swipe refresh color defaults to pd_toolbar_color -->
+<array name="pd_swipe_refresh_colors_array">
+    <item>@color/pd_rainbow_color_1</item>
+    <item>@color/pd_rainbow_color_2</item>
+    <item>@color/pd_rainbow_color_3</item>
+    <item>@color/pd_rainbow_color_4</item>
+</array>
 ```
 
 ---

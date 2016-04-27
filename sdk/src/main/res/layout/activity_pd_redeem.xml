@@ -86,7 +86,7 @@
             android:gravity="center"
             android:lineSpacingExtra="3dp"
             android:padding="5dp"
-            android:text="@string/pd_share_this_screen_string"
+            android:text="@string/pd_redeem_info_text"
             android:textColor="@color/pd_redeem_description_text_colour"
             android:textSize="14sp" />
 
@@ -109,7 +109,7 @@
             android:layout_below="@id/pd_redeem_countdown_timer_text_view"
             android:layout_marginTop="10dp"
             android:background="@color/pd_redeem_done_button_background_colour"
-            android:text="@string/pd_done_string"
+            android:text="@string/pd_redeem_done_text"
             android:textColor="@color/pd_redeem_done_button_text_colour" />
 
     </RelativeLayout>

@@ -115,8 +115,8 @@ public class PDUISocialLoginFragment extends Fragment {
             public void onCancel() {
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.pd_error_title_text)
-                        .setMessage(R.string.pd_facebook_login_cancelled_error_message)
+                        .setTitle(R.string.pd_common_facebook_login_cancelled_title_text)
+                        .setMessage(R.string.pd_common_facebook_login_cancelled_message_text)
                         .setPositiveButton(android.R.string.ok, null)
                         .create()
                         .show();
@@ -126,7 +126,7 @@ public class PDUISocialLoginFragment extends Fragment {
             public void onError(FacebookException error) {
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.pd_error_title_text)
+                        .setTitle(R.string.pd_common_sorry_text)
                         .setMessage(error.getMessage())
                         .setPositiveButton(android.R.string.ok, null)
                         .create()
@@ -306,7 +306,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.pd_error_title_text)
+                        .setTitle(R.string.pd_common_sorry_text)
                         .setMessage("An error occurred while registering. Please try again")
                         .setPositiveButton(android.R.string.ok, null)
                         .create()

@@ -142,7 +142,7 @@ public class PDUINotificationDialogFragment extends DialogFragment {
         if (targetUrl == null && deepLink == null) {
             builder.setPositiveButton(android.R.string.ok, negativeClick);
         } else {
-            builder.setPositiveButton(R.string.pd_go_button_string, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.pd_notification_go_button_text, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     markMessageAsRead(messageId);
