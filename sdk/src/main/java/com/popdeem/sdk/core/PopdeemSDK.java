@@ -53,6 +53,7 @@ import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDPreferencesUtils;
+import com.popdeem.sdk.core.utils.PDReferralUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -186,9 +187,16 @@ public final class PopdeemSDK {
      */
     public static void processReferral(Context context, Intent intent) {
         if (intent != null) {
-            Uri targetUri = AppLinks.getTargetUrlFromInboundIntent(context, intent);
-            if (targetUri != null) {
-                PDLog.d(PopdeemSDK.class, "targetUri: " + targetUri.toString());
+            Bundle appLinkData = AppLinks.getAppLinkData(intent);
+            if (appLinkData != null) {
+                PDLog.d(PopdeemSDK.class, "appLinkData: " + appLinkData.toString());
+
+                String targetUrl = appLinkData.getString("target_url", null);
+                if (targetUrl == null) {
+                    return;
+                }
+
+                int requestId = PDReferralUtils.getRequestIdFromUrl(targetUrl);
 
                 Realm realm = Realm.getDefaultInstance();
 
@@ -196,7 +204,7 @@ public final class PopdeemSDK {
                 PDRealmReferral referral = new PDRealmReferral();
                 referral.setId(0);
                 referral.setType("");
-                referral.setRequestId(0);
+                referral.setRequestId(requestId);
                 referral.setSenderAppName("");
                 referral.setSenderId(0);
                 realm.beginTransaction();

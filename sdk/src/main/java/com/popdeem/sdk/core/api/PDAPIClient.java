@@ -341,7 +341,7 @@ public class PDAPIClient {
                         public void success(PDUser user) {
                             Realm realm = Realm.getDefaultInstance();
                             realm.beginTransaction();
-                            referral.removeFromRealm();
+                            referral.deleteFromRealm();
                             realm.commitTransaction();
                             realm.close();
                             callback.success(user);
