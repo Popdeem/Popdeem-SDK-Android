@@ -32,52 +32,45 @@
 
     <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
         android:id="@+id/pd_feed_profile_image_view"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_width="@dimen/pd_feed_profile_image_dimen"
+        android:layout_height="@dimen/pd_feed_profile_image_dimen"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         app:maskDrawable="@drawable/circle_mask" />
 
-    <TextView
-        android:id="@+id/pd_feed_action_text_view"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
         android:layout_toEndOf="@+id/pd_feed_profile_image_view"
         android:layout_toRightOf="@+id/pd_feed_profile_image_view"
-        android:minHeight="50dp"
-        android:textColor="@color/pd_feed_item_default_text_color"
-        tools:text="Hello, world" />
+        android:orientation="vertical"
+        android:padding="7dp">
 
-    <ImageView
-        android:id="@+id/pd_feed_shared_image_view"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_below="@id/pd_feed_action_text_view"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@id/pd_feed_profile_image_view"
-        android:layout_toRightOf="@id/pd_feed_profile_image_view"
-        android:adjustViewBounds="true"
-        android:background="@android:color/black"
-        android:scaleType="centerInside" />
+        <TextView
+            android:id="@+id/pd_feed_user_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pd_feed_item_name_text_color"
+            android:textStyle="bold"
+            tools:text="Hello, world" />
 
-    <TextView
-        android:id="@+id/pd_feed_time_ago_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pd_feed_shared_image_view"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_toEndOf="@+id/pd_feed_profile_image_view"
-        android:layout_toRightOf="@+id/pd_feed_profile_image_view"
-        android:textColor="@color/pd_feed_item_time_text_color"
-        tools:text="Hello, world" />
+        <TextView
+            android:id="@+id/pd_feed_user_comment_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/pd_feed_item_comment_text_color"
+            tools:text="Hello, world" />
+
+        <ImageView
+            android:id="@+id/pd_feed_shared_image_view"
+            android:layout_width="@dimen/pd_feed_shared_image_dimen"
+            android:layout_height="@dimen/pd_feed_shared_image_dimen"
+            android:layout_marginTop="7dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            tools:background="@android:color/black" />
+
+    </LinearLayout>
 
 </RelativeLayout>

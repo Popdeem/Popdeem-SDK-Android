@@ -24,6 +24,8 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Popdeem Feed Model Class
  */
@@ -32,14 +34,17 @@ public class PDFeed {
     private int userId;
     private String brandLogoUrlString;
     private String brandName;
+    @SerializedName("picture=")
     private String imageUrlString;
     private String rewardTypeString;
     private String userProfilePicUrlString;
     private String userFirstName;
     private String userLastName;
+    @SerializedName("text")
     private String actionText;
-    private String timeAgoString;
+    private String timeAgo;
     private String descriptionString;
+    private String caption;
 
     public PDFeed() {
         this.userId = -1;
@@ -51,11 +56,12 @@ public class PDFeed {
         this.userFirstName = "";
         this.userLastName = "";
         this.actionText = "";
-        this.timeAgoString = "";
+        this.timeAgo = "";
         this.descriptionString = "";
+        this.caption = "";
     }
 
-    public PDFeed(int userId, String brandLogoUrlString, String brandName, String imageUrlString, String rewardTypeString, String userProfilePicUrlString, String userFirstName, String userLastName, String actionText, String timeAgoString, String descriptionString) {
+    public PDFeed(int userId, String brandLogoUrlString, String brandName, String imageUrlString, String rewardTypeString, String userProfilePicUrlString, String userFirstName, String userLastName, String actionText, String timeAgo, String descriptionString, String caption) {
         this.userId = userId;
         this.brandLogoUrlString = brandLogoUrlString;
         this.brandName = brandName;
@@ -65,8 +71,9 @@ public class PDFeed {
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
         this.actionText = actionText;
-        this.timeAgoString = timeAgoString;
+        this.timeAgo = timeAgo;
         this.descriptionString = descriptionString;
+        this.caption = caption;
     }
 
 
@@ -142,12 +149,12 @@ public class PDFeed {
         this.actionText = actionText;
     }
 
-    public String getTimeAgoString() {
-        return timeAgoString;
+    public String getTimeAgo() {
+        return timeAgo;
     }
 
-    public void setTimeAgoString(String timeAgoString) {
-        this.timeAgoString = timeAgoString;
+    public void setTimeAgo(String timeAgo) {
+        this.timeAgo = timeAgo;
     }
 
     public String getDescriptionString() {
@@ -158,51 +165,11 @@ public class PDFeed {
         this.descriptionString = descriptionString;
     }
 
+    public String getCaption() {
+        return caption;
+    }
 
-//    public static class PDFeedJsonDeserializer implements JsonDeserializer<ArrayList<PDFeed>> {
-//
-//        @Override
-//        public ArrayList<PDFeed> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-//            JsonArray feedsArray = json.getAsJsonObject().getAsJsonArray("feeds");
-//
-//            ArrayList<PDFeed> feeds = new ArrayList<>();
-//            for (int i = 0; i < feedsArray.size(); i++) {
-//                PDFeed feed = new PDFeed();
-//
-//                JsonObject feedObject = (JsonObject) feedsArray.get(i);
-//                if (feedObject.has("brand")) {
-//                    JsonObject brandObject = feedObject.getAsJsonObject("brand");
-//                    feed.setBrandName(brandObject.get("name").getAsString());
-//                    feed.setBrandLogoUrlString(brandObject.get("logo").getAsString());
-//                }
-//
-//                if (feedObject.has("reward")) {
-//                    JsonObject brandObject = feedObject.getAsJsonObject("reward");
-//                    feed.setRewardTypeString(brandObject.get("type").getAsString());
-//                    feed.setDescriptionString(brandObject.get("description").getAsString());
-//                }
-//
-//                feed.setTimeAgoString(feedObject.get("time_ago").getAsString());
-//                feed.setImageUrlString(feedObject.get("picture=").getAsString());
-//                feed.setActionText(feedObject.get("text").getAsString());
-//
-//                if (feedObject.has("social_account")) {
-//                    JsonObject socialObject = feedObject.getAsJsonObject("social_account");
-//                    feed.setUserProfilePicUrlString(socialObject.get("profile_picture").getAsString());
-//
-//                    if (socialObject.has("user")) {
-//                        JsonObject userObject = socialObject.getAsJsonObject("user");
-//                        feed.setUserId(userObject.get("id").getAsInt());
-//                        feed.setUserFirstName(userObject.get("first_name").getAsString());
-//                        feed.setUserLastName(userObject.get("last_name").getAsString());
-//                    }
-//                }
-//
-//                feeds.add(feed);
-//            }
-//
-//            return feeds;
-//        }
-//    }
-
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
 }

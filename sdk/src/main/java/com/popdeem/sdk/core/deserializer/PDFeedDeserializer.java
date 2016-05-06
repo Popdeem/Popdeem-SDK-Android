@@ -24,6 +24,9 @@
 
 package com.popdeem.sdk.core.deserializer;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -40,25 +43,28 @@ public class PDFeedDeserializer implements JsonDeserializer<PDFeed> {
 
     @Override
     public PDFeed deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        PDFeed feed = new PDFeed();
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+
+        PDFeed feed = gson.fromJson(json, typeOfT);
 
         JsonObject feedObject = json.getAsJsonObject();
+        // Brand
         if (feedObject.has("brand")) {
             JsonObject brandObject = feedObject.getAsJsonObject("brand");
             feed.setBrandName(brandObject.get("name").getAsString());
             feed.setBrandLogoUrlString(brandObject.get("logo").getAsString());
         }
 
+        // Reward
         if (feedObject.has("reward")) {
             JsonObject brandObject = feedObject.getAsJsonObject("reward");
             feed.setRewardTypeString(brandObject.get("type").getAsString());
             feed.setDescriptionString(brandObject.get("description").getAsString());
         }
 
-        feed.setTimeAgoString(feedObject.get("time_ago").getAsString());
-        feed.setImageUrlString(feedObject.get("picture=").getAsString());
-        feed.setActionText(feedObject.get("text").getAsString());
-
+        // Social Account
         if (feedObject.has("social_account")) {
             JsonObject socialObject = feedObject.getAsJsonObject("social_account");
             if (socialObject.has("profile_picture")) {
@@ -72,6 +78,10 @@ public class PDFeedDeserializer implements JsonDeserializer<PDFeed> {
                 feed.setUserLastName(userObject.get("last_name").getAsString());
             }
         }
+
+//        feed.setTimeAgo(feedObject.get("time_ago").getAsString());
+//        feed.setImageUrlString(feedObject.get("picture=").getAsString());
+//        feed.setActionText(feedObject.get("text").getAsString());
 
         return feed;
     }

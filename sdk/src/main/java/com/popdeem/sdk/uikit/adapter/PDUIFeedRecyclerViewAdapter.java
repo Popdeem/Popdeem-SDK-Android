@@ -60,7 +60,8 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
     private OnItemClickListener mListener;
     private ArrayList<PDFeed> mItems;
-    private int imageDimen = -1;
+    private int mSharedImageDimen = -1;
+    private int mProfileImageDimen = -1;
     private String mCurrentUserName = "";
 
     public PDUIFeedRecyclerViewAdapter(ArrayList<PDFeed> mItems) {
@@ -81,8 +82,11 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (imageDimen == -1) {
-            imageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.pd_feed_shared_image_dimen);
+        if (mSharedImageDimen == -1) {
+            mSharedImageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.pd_feed_shared_image_dimen);
+        }
+        if (mProfileImageDimen == -1) {
+            mProfileImageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.pd_feed_profile_image_dimen);
         }
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed, parent, false), parent.getContext());
     }
@@ -99,7 +103,7 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
             holder.sharedImageView.setVisibility(View.VISIBLE);
             Picasso.with(holder.context)
                     .load(item.getImageUrlString())
-                    .resize(imageDimen, imageDimen)
+                    .resize(mSharedImageDimen, mSharedImageDimen)
                     .centerCrop()
                     .into(holder.sharedImageView);
         }
@@ -109,14 +113,14 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
         } else {
             Picasso.with(holder.context)
                     .load(item.getUserProfilePicUrlString())
-                    .resize(imageDimen, imageDimen)
+                    .resize(mProfileImageDimen, mProfileImageDimen)
                     .centerCrop()
                     .into(holder.profileImageView);
         }
 
-        Spannable actionText = getRedemptionText(holder.context, item.getUserFirstName(), item.getUserLastName(), item.getDescriptionString(), item.getBrandName(), isCheckin);
-        holder.actionTextView.setText(actionText);
-        holder.timeTextView.setText(item.getTimeAgoString());
+//        Spannable actionText = getRedemptionText(holder.context, item.getUserFirstName(), item.getUserLastName(), item.getDescriptionString(), item.getBrandName(), isCheckin);
+        holder.userNameTextView.setText(getNameForItem(item.getUserFirstName(), item.getUserLastName()));
+        holder.userCommentTextView.setText(item.getCaption());
     }
 
     @Override
@@ -124,6 +128,16 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
         return mItems == null ? 0 : mItems.size();
     }
 
+    private String getNameForItem(String firstName, String secondName) {
+        String fullName = String.format(Locale.getDefault(), "%1s %2s", firstName, secondName);
+        if (fullName.equalsIgnoreCase(mCurrentUserName)) {
+            return "You";
+        } else {
+            return fullName;
+        }
+    }
+
+    @Deprecated
     private Spannable getRedemptionText(Context context, String firstName, String secondName, String reward, String brandName, boolean isCheckin) {
         String fullName = firstName + " " + secondName;
         String redemptionName;
@@ -153,8 +167,8 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
         Context context;
         PDUIBezelImageView profileImageView;
         ImageView sharedImageView;
-        TextView actionTextView;
-        TextView timeTextView;
+        TextView userNameTextView;
+        TextView userCommentTextView;
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
@@ -170,8 +184,8 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
             this.context = context;
             this.profileImageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_feed_profile_image_view);
             this.sharedImageView = (ImageView) itemView.findViewById(R.id.pd_feed_shared_image_view);
-            this.actionTextView = (TextView) itemView.findViewById(R.id.pd_feed_action_text_view);
-            this.timeTextView = (TextView) itemView.findViewById(R.id.pd_feed_time_ago_text_view);
+            this.userNameTextView = (TextView) itemView.findViewById(R.id.pd_feed_user_name_text_view);
+            this.userCommentTextView = (TextView) itemView.findViewById(R.id.pd_feed_user_comment_text_view);
         }
 
     }
