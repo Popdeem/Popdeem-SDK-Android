@@ -24,36 +24,11 @@
 
 package com.popdeem.sdk.core.realm;
 
-import android.content.Context;
-
-import io.realm.DynamicRealm;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
+import io.realm.annotations.RealmModule;
 
 /**
- * Created by mikenolan on 18/02/16.
+ * Created by mikenolan on 06/05/16.
  */
-public class PDRealmUtils {
-
-    private static final int REALM_SCHEMA_VERSION = 1;
-
-    public static void initRealmDB(Context context) {
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(context)
-                .name("popdeemrealm.realm")
-                .modules(new PDRealmModule())
-                .schemaVersion(REALM_SCHEMA_VERSION)
-                .migration(REALM_MIGRATION)
-                .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-        Realm.compactRealm(realmConfiguration);
-    }
-
-    private static final RealmMigration REALM_MIGRATION = new RealmMigration() {
-        @Override
-        public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-            // TODO when DB schema is updated
-        }
-    };
-
+@RealmModule(library = true, allClasses = true)
+public class PDRealmModule {
 }

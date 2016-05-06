@@ -114,6 +114,24 @@ To initialise the Popdeem SDK add the following line to your `Application` class
 PopdeemSDK.initializeSDK(this);
 ```
 
+
+#### For Applications that use Realm
+
+If your application uses [Realm](https://realm.io/) you will need to add the Popdeem SDK's schema to your Realm Configuration. You can read about this [here](https://realm.io/docs/java/latest/#schemas) in the Realm documentation.
+
+The Popdeem SDK's Realm Module class is `PDRealmModule`. A sample RealmConfiguration might look like this when including Popdeem's Realm Module:
+
+```java
+RealmConfiguration config = new RealmConfiguration.Builder(this)
+        .schemaVersion(1)
+        .modules(Realm.getDefaultModule(), new PDRealmModule())
+        .name("yourdbname.realm")
+        .build();
+Realm.setDefaultConfiguration(config);
+```
+
+---
+
 Next, set up your [Facebook App](facebook_app_setup.md "Facebook App")
 
 ---

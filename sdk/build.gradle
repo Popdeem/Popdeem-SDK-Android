@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '0.2.1'
+project.ext.popdeemSdkVersion = '0.2.2'
 
 android {
     compileSdkVersion 23
@@ -49,7 +50,6 @@ dependencies {
     }
 
     // Third Party
-    compile 'io.realm:realm-android:0.87.5'
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
 
