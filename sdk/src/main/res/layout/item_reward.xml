@@ -28,14 +28,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/pd_reward_list_background_color"
-    android:minHeight="80dp"
+    android:minHeight="90dp"
     android:orientation="vertical"
     android:padding="5dp">
 
     <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
         android:id="@+id/pd_reward_star_image_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/pd_reward_item_image_dimen"
+        android:layout_height="@dimen/pd_reward_item_image_dimen"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
@@ -59,7 +59,6 @@
             android:maxLines="2"
             android:textColor="@color/pd_reward_list_item_title_text_color"
             android:textSize="15sp"
-            tools:ignore="MissingPrefix"
             tools:text="$0.40c off pampers" />
 
         <TextView
@@ -81,7 +80,6 @@
             android:maxLines="2"
             android:textColor="@color/pd_reward_list_item_info_text_color"
             android:textSize="12sp"
-            tools:ignore="MissingPrefix"
             tools:text="3 Days Remaining" />
 
     </LinearLayout>

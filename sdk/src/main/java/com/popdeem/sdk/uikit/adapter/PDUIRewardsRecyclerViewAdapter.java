@@ -71,7 +71,14 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         PDReward reward = this.mItems.get(position);
 
         holder.offerTextView.setText(reward.getDescription());
-        holder.rulesTextView.setText(reward.getRules());
+
+        if (reward.getRules() == null || reward.getRules().isEmpty()) {
+            holder.rulesTextView.setText("");
+            holder.rulesTextView.setVisibility(View.GONE);
+        } else {
+            holder.rulesTextView.setText(reward.getRules());
+            holder.rulesTextView.setVisibility(View.VISIBLE);
+        }
 
         StringBuilder actionStringBuilder = new StringBuilder("");
 
