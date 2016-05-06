@@ -76,7 +76,6 @@ import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
-import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.Twitter;
@@ -298,7 +297,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void addRewardDetailsToUI() {
         // Logo
-        final PDUIBezelImageView logoImageView = (PDUIBezelImageView) findViewById(R.id.pd_reward_star_image_view);
+        final ImageView logoImageView = (ImageView) findViewById(R.id.pd_reward_star_image_view);
         if (mReward.getCoverImage().contains("default")) {
             Picasso.with(this)
                     .load(R.drawable.pd_ui_star_icon)

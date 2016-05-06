@@ -29,13 +29,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
-import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         Context context;
-        PDUIBezelImageView imageView;
+        ImageView imageView;
         TextView offerTextView;
         TextView rulesTextView;
         TextView actionTextView;
@@ -148,7 +148,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
                 }
             });
             this.context = context;
-            this.imageView = (PDUIBezelImageView) itemView.findViewById(R.id.pd_reward_star_image_view);
+            this.imageView = (ImageView) itemView.findViewById(R.id.pd_reward_star_image_view);
             this.offerTextView = (TextView) itemView.findViewById(R.id.pd_reward_offer_text_view);
             this.rulesTextView = (TextView) itemView.findViewById(R.id.pd_reward_item_rules_text_view);
             this.actionTextView = (TextView) itemView.findViewById(R.id.pd_reward_request_text_view);
