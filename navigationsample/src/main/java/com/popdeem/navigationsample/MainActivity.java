@@ -28,15 +28,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.utils.PDLog;
-import com.popdeem.sdk.core.utils.PDSocialUtils;
-import com.popdeem.sdk.core.utils.PDUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,21 +54,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void triggerActionClick(View view) {
-        if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
-            PDAPIClient.instance().logMoment("post_payment", new PDAPICallback<PDBasicResponse>() {
-                @Override
-                public void success(PDBasicResponse response) {
-                    PDLog.d(PDAPIClient.class, response.toString());
-                }
+        PopdeemSDK.logMoment("post_payment", new PDAPICallback<PDBasicResponse>() {
+            @Override
+            public void success(PDBasicResponse response) {
+                PDLog.d(PDAPIClient.class, response.toString());
+            }
 
-                @Override
-                public void failure(int statusCode, Exception e) {
-                    PDLog.w(PDAPIClient.class, "code=" + statusCode + ", message=" + e.getMessage());
-                }
-            });
-        } else {
-            Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.w(PDAPIClient.class, "code=" + statusCode + ", message=" + e.getMessage());
+            }
+        });
     }
 
     public void thirdPartyTokenClick(View view) {

@@ -60,6 +60,8 @@ import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
+import java.net.HttpURLConnection;
+
 import bolts.AppLinks;
 import io.realm.Realm;
 
@@ -140,6 +142,39 @@ public final class PopdeemSDK {
         });
 
         sdkInitialized = true;
+    }
+
+
+    /**
+     * Check if Popdeem SDK has been initialized.
+     *
+     * @return true if Popdeem SDK is initialized, false otherwise
+     */
+    public static synchronized boolean isPopdeemSDKInitialized() {
+        return sdkInitialized;
+    }
+
+
+    /**
+     * Get the Popdeem API Key
+     *
+     * @return Popdeem API Key String
+     */
+    public static String getPopdeemAPIKey() {
+        if (sPopdeemAPIKey == null) {
+            sPopdeemAPIKey = PDUtils.getPopdeemAPIKey(sApplication);
+        }
+        return sPopdeemAPIKey;
+    }
+
+
+    /**
+     * Get the Current Activity
+     *
+     * @return Current Activity
+     */
+    public static Activity currentActivity() {
+        return sCurrentActivity;
     }
 
 
@@ -271,8 +306,8 @@ public final class PopdeemSDK {
      * When this activity is presented to the user, the Popdeem Social Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
      * </p>
      *
-     * @param activityClass AppCompatActivity / FragmentActivity class you want Social Login flow to appear in. e.g. MainActivity.class
-     * @param numberOfPrompts         Number of Login Prompts
+     * @param activityClass   AppCompatActivity / FragmentActivity class you want Social Login flow to appear in. e.g. MainActivity.class
+     * @param numberOfPrompts Number of Login Prompts
      */
     public static void enableSocialLogin(@NonNull Class activityClass, final int numberOfPrompts) {
         if (!isPopdeemSDKInitialized()) {
@@ -281,6 +316,20 @@ public final class PopdeemSDK {
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
         PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getSimpleName());
+    }
+
+
+    /**
+     *
+     * @param moment Moment to log
+     * @param callback
+     */
+    public static void logMoment(@NonNull String moment, @NonNull PDAPICallback<PDBasicResponse> callback) {
+        if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
+            PDAPIClient.instance().logMoment(moment, callback);
+        } else {
+            callback.failure(HttpURLConnection.HTTP_UNAUTHORIZED, new IllegalStateException("Not logged in."));
+        }
     }
 
 
@@ -347,39 +396,6 @@ public final class PopdeemSDK {
                 .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
                 .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                 .commit();
-    }
-
-
-    /**
-     * Check if Popdeem SDK has been initialized.
-     *
-     * @return true if Popdeem SDK is initialized, false otherwise
-     */
-    public static synchronized boolean isPopdeemSDKInitialized() {
-        return sdkInitialized;
-    }
-
-
-    /**
-     * Get the Popdeem API Key
-     *
-     * @return Popdeem API Key String
-     */
-    public static String getPopdeemAPIKey() {
-        if (sPopdeemAPIKey == null) {
-            sPopdeemAPIKey = PDUtils.getPopdeemAPIKey(sApplication);
-        }
-        return sPopdeemAPIKey;
-    }
-
-
-    /**
-     * Get the Current Activity
-     *
-     * @return Current Activity
-     */
-    public static Activity currentActivity() {
-        return sCurrentActivity;
     }
 
 
