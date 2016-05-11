@@ -321,7 +321,7 @@ public class PDAPIClient {
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
 
         // Realm Instance
-        final Realm realm = Realm.getDefaultInstance();
+        Realm realm = Realm.getDefaultInstance();
 
         // Non Social UID
         PDRealmNonSocialUID uidRealm = realm.where(PDRealmNonSocialUID.class).findFirst();
@@ -332,7 +332,7 @@ public class PDAPIClient {
         String thirdPartToken = thirdPartyTokenRealm == null ? null : thirdPartyTokenRealm.getToken();
 
         // Check if we have a PDReferral
-        final PDRealmReferral referral = realm.where(PDRealmReferral.class).findFirst();
+        PDRealmReferral referral = realm.where(PDRealmReferral.class).findFirst();
         if (referral != null) {
             // Referral present, send with referral
             api.updateUserLocationAndDeviceTokenWithReferral("", id, PDAPIConfig.PLATFORM_VALUE, deviceToken, latitude, longitude, uid,
@@ -340,6 +340,7 @@ public class PDAPIClient {
                         @Override
                         public void success(PDUser user) {
                             Realm realm = Realm.getDefaultInstance();
+                            PDRealmReferral referral = realm.where(PDRealmReferral.class).findFirst();
                             realm.beginTransaction();
                             referral.deleteFromRealm();
                             realm.commitTransaction();

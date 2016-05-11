@@ -24,21 +24,30 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.adapter.PDUIMessagesRecyclerAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
@@ -68,6 +77,12 @@ public class PDUIInboxFragment extends Fragment {
         PDUIInboxFragment fragment = new PDUIInboxFragment();
         fragment.addInboxItemClickListener(listener);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -167,4 +182,32 @@ public class PDUIInboxFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (PDUtils.getUserToken() != null && PDSocialUtils.isLoggedInToFacebook()) {
+            inflater.inflate(R.menu.menu_pd_inbox, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+        if (id == R.id.action_pd_logout) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.pd_common_logout_text)
+                    .setMessage(R.string.pd_common_logout_message_text)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            PopdeemSDK.logout(getActivity());
+                            getActivity().finish();
+                        }
+                    })
+                    .create()
+                    .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

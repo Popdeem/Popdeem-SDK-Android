@@ -24,21 +24,24 @@
 
 package com.popdeem.sdk.core.utils;
 
+import android.net.Uri;
+
 /**
  * Created by mikenolan on 06/05/16.
  */
 public class PDReferralUtils {
 
-    public static int getRequestIdFromUrl(String url) {
-        if (url == null || url.isEmpty()) {
+    public static int getRequestIdFromUrl(Uri targetUri) {
+        if (targetUri == null || targetUri.toString().isEmpty()) {
             return -1;
         }
 
-        String[] parts = url.split("/");
+        String[] parts = targetUri.toString().split("/");
         for (int i = 0, count = parts.length; i < count; i++) {
             String part = parts[i];
             if (part.equalsIgnoreCase("requests") && (i + 1 < count)) {
-                return PDNumberUtils.toInt(parts[i + 1], -1);
+                String splitFromParams = parts[i + 1].split("\\?", 2)[0];
+                return PDNumberUtils.toInt(splitFromParams, -1);
             }
         }
         return -1;

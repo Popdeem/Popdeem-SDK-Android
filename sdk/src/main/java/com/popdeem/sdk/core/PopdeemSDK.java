@@ -36,6 +36,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
@@ -49,15 +51,18 @@ import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserFacebook;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.realm.PDRealmUtils;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDPreferencesUtils;
 import com.popdeem.sdk.core.utils.PDReferralUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUniqueIdentifierUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
+import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 
@@ -65,6 +70,7 @@ import java.net.HttpURLConnection;
 
 import bolts.AppLinks;
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by mikenolan on 15/02/16.
@@ -186,31 +192,46 @@ public final class PopdeemSDK {
      * @param intent  Incoming intent
      */
     public static void processReferral(Context context, Intent intent) {
-        if (intent != null) {
+        if (intent != null && intent.getData() != null) {
+            // Compare schemes
+            String scheme = context.getString(R.string.facebook_url_scheme);
+            String schemeFromIntent = intent.getData().getScheme();
+            if (!scheme.equalsIgnoreCase(schemeFromIntent)) {
+                // Schemes are not the same, ignore the intent data.
+                return;
+            }
+
             Bundle appLinkData = AppLinks.getAppLinkData(intent);
             if (appLinkData != null) {
-                PDLog.d(PopdeemSDK.class, "appLinkData: " + appLinkData.toString());
+//                PDLog.d(PopdeemSDK.class, "appLinkData: " + appLinkData.toString());
+                PDRealmReferral referral = new PDRealmReferral();
+                referral.setId(0); // Always 0. Only used for storage as we only want to save one referral at a time.
+                referral.setType("open");
+                referral.setSenderAppName("");
+                referral.setSenderId(-1);
+                referral.setRequestId(-1);
 
-                String targetUrl = appLinkData.getString("target_url", null);
-                if (targetUrl == null) {
-                    return;
+                Bundle referrerBundle = appLinkData.getBundle("referer_app_link");
+                if (referrerBundle != null && referrerBundle.containsKey("app_name")) {
+                    referral.setSenderAppName(referrerBundle.getString("app_name", ""));
                 }
 
-                int requestId = PDReferralUtils.getRequestIdFromUrl(targetUrl);
+                Uri data = intent.getData();
+                if (data != null) {
+                    referral.setSenderId(PDNumberUtils.toLong(data.getQueryParameter("user_id"), -1));
+                }
 
-                Realm realm = Realm.getDefaultInstance();
+                Uri targetUri = AppLinks.getTargetUrlFromInboundIntent(context, intent);
+                int requestId = PDReferralUtils.getRequestIdFromUrl(targetUri);
+                referral.setRequestId(requestId);
 
                 // Save PDReferral
-                PDRealmReferral referral = new PDRealmReferral();
-                referral.setId(0);
-                referral.setType("");
-                referral.setRequestId(requestId);
-                referral.setSenderAppName("");
-                referral.setSenderId(0);
+                Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(referral);
                 realm.commitTransaction();
 
+                // Send Referral in Update call if logged in
                 PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
                 if (userDetails == null) {
                     return;
@@ -328,8 +349,7 @@ public final class PopdeemSDK {
 
 
     /**
-     *
-     * @param moment Moment to log
+     * @param moment   Moment to log
      * @param callback
      */
     public static void logMoment(@NonNull String moment, @NonNull PDAPICallback<PDBasicResponse> callback) {
@@ -404,6 +424,31 @@ public final class PopdeemSDK {
                 .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
                 .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                 .commit();
+    }
+
+
+    public static void logout(@NonNull Context context) {
+        // Facebook Logout
+        LoginManager.getInstance().logOut();
+
+        // Clear Shared Preferences
+//        PDPreferencesUtils.clearPrefs(context);
+
+        // Clear some DB data
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+
+        RealmResults<PDRealmUserDetails> userResults = realm.where(PDRealmUserDetails.class).findAll();
+        userResults.deleteAllFromRealm();
+
+        RealmResults<PDRealmUserFacebook> fbResults = realm.where(PDRealmUserFacebook.class).findAll();
+        fbResults.deleteAllFromRealm();
+
+        realm.commitTransaction();
+        realm.close();
+
+        // Broadcast to update rewards / wallet / etc
+        context.sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
     }
 
 

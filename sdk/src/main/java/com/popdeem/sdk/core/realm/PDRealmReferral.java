@@ -33,11 +33,11 @@ import io.realm.annotations.PrimaryKey;
 public class PDRealmReferral extends RealmObject {
 
     @PrimaryKey
-    private long id;
-    private String type;
-    private String senderAppName;
-    private long senderId;
-    private long requestId;
+    private long id;                // Only used for storage
+    private String type;            // Referral Type (open, install)
+    private String senderAppName;   // appLinkData.getBundle("referer_app_link").getString("app_name")
+    private long senderId;          // intent.getData().getQueryParameter("user_id")
+    private long requestId;         // PDReferralUtils
 
     public PDRealmReferral() {
     }

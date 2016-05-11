@@ -67,4 +67,14 @@ public class PDPreferencesUtils {
         return getSharedPreferences(context).getInt("loginUsesCount", 0);
     }
 
+
+    /**
+     * Clear com.popdeem.sdk.preferences
+     *
+     * @param context Application Context
+     */
+    public static void clearPrefs(Context context) {
+        getSharedPreferences(context).edit().clear().apply();
+    }
+
 }
