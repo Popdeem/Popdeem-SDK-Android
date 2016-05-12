@@ -25,6 +25,10 @@
     <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
 
 
+    <!-- Home Flow -->
+    <string name="pd_home_banner_text">Share your Popdeem experience on social networks to earn more rewards.</string>
+
+
     <!-- Rewards -->
     <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
 

@@ -17,6 +17,13 @@ To customize the header image shown in the Social Login view add an image to you
 pd_social_login_header.png
 ```
 
+
+##### Home Flow Banner Image
+To customize the header / banner image shown in the Home Flow, add an image to your drawable folders called:
+```
+pd_home_banner.png
+```
+
 ---
 
 ### Colors
@@ -48,6 +55,11 @@ The list of colors that can be changed are as follows:
 <color name="pd_tab_selected_text_color">#ffffff</color>
 <color name="pd_tab_unselected_text_color">#aaaaaa</color>
 <color name="pd_tab_indicator_color">#dba7ac</color>
+
+
+<!-- Home Flow -->
+<color name="pd_home_flow_banner_text_color">#ffffff</color>
+<color name="pd_home_flow_banner_bg_color">#da4d59</color>
 
 
 <!-- Inbox / Message Center Colors -->
@@ -88,6 +100,7 @@ The list of colors that can be changed are as follows:
 <color name="pd_feed_list_divider_color">#dba7ac</color>
 <color name="pd_feed_item_default_text_color">#A2A2A1</color>
 <color name="pd_feed_item_name_text_color">#000000</color>
+<color name="pd_feed_item_comment_text_color">#888888</color>
 <color name="pd_feed_item_time_text_color">#A2A2A1</color>
 <color name="pd_feed_item_title_text_color">#da4d59</color>
 

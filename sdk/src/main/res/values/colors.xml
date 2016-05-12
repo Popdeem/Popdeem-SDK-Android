@@ -21,6 +21,11 @@
     <color name="pd_tab_indicator_color">#dba7ac</color>
 
 
+    <!-- Home Flow -->
+    <color name="pd_home_flow_banner_text_color">#ffffff</color>
+    <color name="pd_home_flow_banner_bg_color">#cc4752</color>
+
+
     <!-- Inbox / Message Center Colors -->
     <color name="pd_inbox_background_color">#ffffff</color>
     <color name="pd_inbox_no_messages_text_color">#000000</color>

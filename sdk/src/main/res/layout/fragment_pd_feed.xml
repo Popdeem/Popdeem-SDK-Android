@@ -23,10 +23,12 @@
   -->
 
 <com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/pd_feed_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pd_feed_background">
+    android:background="@color/pd_feed_background"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
         android:layout_width="match_parent"

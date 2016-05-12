@@ -15,6 +15,8 @@ The list of strings that can be changed are as follows:
 <string name="pd_common_please_wait_text">Please wait</string>
 <string name="pd_common_sorry_text">Sorry</string>
 <string name="pd_common_something_wrong_text">Something went wrong. Please try again later.</string>
+<string name="pd_common_logout_text">Logout</string>
+<string name="pd_common_logout_message_text">Are you sure you want to log out?</string>
 <string name="pd_common_facebook_login_cancelled_title_text">Login Cancelled</string>
 <string name="pd_common_facebook_login_cancelled_message_text">You may browse the app before connecting your Facebook, but you must log in with Facebook to avail of social rewards.</string>
 
@@ -28,6 +30,10 @@ The list of strings that can be changed are as follows:
 <string name="pd_social_login_continue_text">Continue to app</string>
 <string name="pd_social_login_tagline_text">NEW: SOCIAL FEATURES</string>
 <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
+
+
+<!-- Home Flow -->
+<string name="pd_home_banner_text">Share your Popdeem experience on social networks to earn more rewards.</string>
 
 
 <!-- Rewards -->
