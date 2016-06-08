@@ -298,7 +298,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void addRewardDetailsToUI() {
         // Logo
         final ImageView logoImageView = (ImageView) findViewById(R.id.pd_reward_star_image_view);
-        if (mReward.getCoverImage().contains("default")) {
+        final String imageUrl = mReward.getCoverImage();
+        if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
             Picasso.with(this)
                     .load(R.drawable.pd_ui_star_icon)
                     .error(R.drawable.pd_ui_star_icon)
@@ -306,8 +307,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     .into(logoImageView);
         } else {
             Picasso.with(this)
-                    .load(mReward.getCoverImage())
+                    .load(imageUrl)
                     .error(R.drawable.pd_ui_star_icon)
+                    .resizeDimen(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                     .placeholder(R.drawable.pd_ui_star_icon)
                     .into(logoImageView);
         }

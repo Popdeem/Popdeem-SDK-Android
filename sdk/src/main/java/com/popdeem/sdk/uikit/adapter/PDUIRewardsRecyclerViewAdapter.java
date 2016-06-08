@@ -104,7 +104,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         holder.actionTextView.setText(actionStringBuilder.toString());
 
         String imageUrl = reward.getCoverImage();
-        if (imageUrl.contains("default")) {
+        if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
             Picasso.with(holder.context)
                     .load(R.drawable.pd_ui_star_icon)
                     .error(R.drawable.pd_ui_star_icon)
@@ -114,6 +114,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
             Picasso.with(holder.context)
                     .load(imageUrl)
                     .error(R.drawable.pd_ui_star_icon)
+                    .resizeDimen(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                     .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.imageView);
         }
