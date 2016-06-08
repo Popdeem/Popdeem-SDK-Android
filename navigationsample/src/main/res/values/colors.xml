@@ -26,4 +26,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
+    <color name="pd_social_login_back_button_color">#000000</color>
 </resources>

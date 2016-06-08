@@ -135,7 +135,7 @@ public class PDUISocialLoginFragment extends Fragment {
         });
 
         ImageButton backButton = (ImageButton) view.findViewById(R.id.pd_social_login_back_button);
-        backButton.setImageDrawable(PDUIColorUtils.getBackButtonIcon(getActivity()));
+        backButton.setImageDrawable(PDUIColorUtils.getSocialLoginBackButtonIcon(getActivity()));
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

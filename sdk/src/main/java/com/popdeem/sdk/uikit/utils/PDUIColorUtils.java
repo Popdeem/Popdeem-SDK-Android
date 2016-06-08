@@ -42,6 +42,10 @@ public class PDUIColorUtils {
         return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_back_button_color, false);
     }
 
+    public static Drawable getSocialLoginBackButtonIcon(Context context) {
+        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_social_login_back_button_color, false);
+    }
+
     public static Drawable getInboxButtonIcon(Context context) {
         return getTintedDrawable(context, R.drawable.pd_ic_inbox, R.color.pd_inbox_button_icon_color, false);
     }

@@ -40,9 +40,11 @@ The list of colors that can be changed are as follows:
 <!-- Toolbar Colors -->
 <color name="pd_toolbar_color">#da4d59</color>
 <color name="pd_toolbar_color_dark">#cc4752</color>
+<color name="pd_toolbar_text_color">#ffffff</color>
 <color name="pd_accent">#dba7ac</color>
 <color name="pd_back_button_color">#ffffff</color>
-<color name="pd_toolbar_text_color">#ffffff</color>
+<!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
+<color name="pd_social_login_back_button_color">@color/pd_back_button_color</color>
 
 
 <!-- Inbox Floating Action Button Colors -->
