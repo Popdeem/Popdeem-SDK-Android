@@ -21,7 +21,7 @@
     <string name="pd_social_login_body_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
     <string name="pd_social_login_footer_text">Powered by Popdeem</string>
     <string name="pd_social_login_continue_text">Continue to app</string>
-    <string name="pd_social_login_tagline_text">NEW: SOCIAL FEATURES</string>
+    <string name="pd_social_login_tagline_text">New: Social Rewards</string>
     <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
 
 
@@ -149,7 +149,7 @@
 
 
     <!-- Social Strings -->
-    <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
+    <string name="pd_log_in_with_facebook_text">Sign in with Facebook</string>
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>

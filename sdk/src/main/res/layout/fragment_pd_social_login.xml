@@ -32,7 +32,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="3">
 
         <ImageView
             android:id="@+id/pd_social_login_header_image_view"
@@ -59,9 +59,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="@dimen/social_login_padding">
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,27 +71,29 @@
             android:layout_marginBottom="10dp"
             android:text="@string/pd_social_login_tagline_text"
             android:textColor="@color/pd_login_tagline_text_color"
-            android:textSize="16sp" />
+            android:textSize="@dimen/social_login_header_text_size"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/pd_social_login_header_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:minLines="2"
-            android:text="@string/pd_social_login_heading_text"
-            android:textColor="@color/pd_login_heading_text_color"
-            android:textSize="16sp" />
+        <!--<TextView-->
+        <!--android:id="@+id/pd_social_login_header_text_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="15dp"-->
+        <!--android:minLines="2"-->
+        <!--android:text="@string/pd_social_login_heading_text"-->
+        <!--android:textColor="@color/pd_login_heading_text_color"-->
+        <!--android:textSize="16sp"-->
+        <!--android:visibility="gone" />-->
 
         <TextView
             android:id="@+id/pd_social_rewards_info_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:minLines="3"
             android:text="@string/pd_social_login_body_text"
             android:textColor="@color/pd_login_body_text_color"
-            android:textSize="13sp" />
+            android:textSize="@dimen/social_login_body_text_size" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -120,6 +124,8 @@
                 android:text="@string/pd_log_in_with_facebook_text"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
+                android:textSize="@dimen/social_login_sign_in_button_text_size"
+                android:textStyle="bold"
                 android:visibility="visible" />
 
             <ProgressBar
@@ -140,7 +146,7 @@
             android:gravity="center"
             android:text="@string/pd_social_login_terms_text"
             android:textColor="@color/pd_login_terms_text_color"
-            android:textSize="10sp" />
+            android:textSize="@dimen/social_login_terms_text_size" />
 
     </LinearLayout>
 

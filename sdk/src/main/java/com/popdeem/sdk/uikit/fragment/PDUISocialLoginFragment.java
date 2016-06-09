@@ -78,8 +78,7 @@ public class PDUISocialLoginFragment extends Fragment {
     private PDLocationManager mLocationManager;
 
     private ProgressBar mProgress;
-    //    private ImageView mImageView;
-    private TextView mHeaderTextView;
+//    private TextView mHeaderTextView;
     private TextView mRewardsInfoTextView;
     private Button mContinueButton;
     //    private LoginButton mLoginButton;
@@ -146,8 +145,7 @@ public class PDUISocialLoginFragment extends Fragment {
         });
 
         mProgress = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
-//        mImageView = (ImageView) view.findViewById(R.id.pd_social_login_image_view);
-        mHeaderTextView = (TextView) view.findViewById(R.id.pd_social_login_header_text_view);
+//        mHeaderTextView = (TextView) view.findViewById(R.id.pd_social_login_header_text_view);
         mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
         mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
 
@@ -212,9 +210,8 @@ public class PDUISocialLoginFragment extends Fragment {
     private void updateViewAfterLogin() {
         mProgress.setVisibility(View.GONE);
         mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
-        mHeaderTextView.setText(R.string.pd_social_login_success_text);
+//        mHeaderTextView.setText(R.string.pd_social_login_success_text);
 //        mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
-//        mImageView.setImageResource(R.drawable.pd_ui_rewards_success_icon);
 //        mLoginButton.setVisibility(View.GONE);
         mFacebookLoginButton.setVisibility(View.GONE);
         mContinueButton.setVisibility(View.VISIBLE);

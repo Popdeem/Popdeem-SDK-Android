@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '0.2.2'
+project.ext.popdeemSdkVersion = '0.2.3'
 
 android {
     compileSdkVersion 23
@@ -38,8 +38,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.1'
 
     // Play Services
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
+    compile 'com.google.android.gms:play-services-location:9.0.2'
 
     // Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'

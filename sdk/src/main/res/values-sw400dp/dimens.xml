@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ The MIT License (MIT)
   ~
   ~ Copyright (c) 2015 Popdeem
@@ -24,27 +25,11 @@
 
 <resources>
 
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="fab_margin">16dp</dimen>
-
-    <dimen name="pd_feed_shared_image_dimen">100dp</dimen>
-    <dimen name="pd_feed_profile_image_dimen">60dp</dimen>
-
-    <dimen name="pd_reward_item_image_dimen">60dp</dimen>
-
-    <dimen name="pd_notification_dialog_image_dimen">100dp</dimen>
-
-    <dimen name="wallet_image_dimen">40dp</dimen>
-
-    <dimen name="pd_home_flow_banner_height">160dp</dimen>
-
     <!-- Social Login -->
-    <dimen name="social_login_padding">25dp</dimen>
-    <dimen name="social_login_sign_in_button_text_size">17sp</dimen>
-    <dimen name="social_login_terms_text_size">9dp</dimen>
-    <dimen name="social_login_body_text_size">13sp</dimen>
-    <dimen name="social_login_header_text_size">25sp</dimen>
+    <dimen name="social_login_padding">30dp</dimen>
+    <dimen name="social_login_sign_in_button_text_size">20sp</dimen>
+    <dimen name="social_login_terms_text_size">11dp</dimen>
+    <dimen name="social_login_body_text_size">15sp</dimen>
+    <dimen name="social_login_header_text_size">30sp</dimen>
 
 </resources>
