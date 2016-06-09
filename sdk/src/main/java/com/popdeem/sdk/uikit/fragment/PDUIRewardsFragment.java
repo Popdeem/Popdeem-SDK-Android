@@ -266,16 +266,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         });
     }
 
-    private void updateSavedUserLocation(Location location) {
-        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(userLocation);
-        realm.commitTransaction();
-        realm.close();
-    }
-
     private void updateListDistances(final Location location) {
         new Thread(new Runnable() {
             @Override
@@ -357,7 +347,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             mLocationManager.stop();
 
             PDLog.d(getClass(), "location: " + location.toString());
-            updateSavedUserLocation(location);
+            PDUtils.updateSavedUserLocation(location);
 
             if (mRecyclerViewAdapter.getItemCount() > 0) {
                 updateListDistances(location);

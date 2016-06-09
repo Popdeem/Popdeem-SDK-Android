@@ -27,9 +27,11 @@ package com.popdeem.sdk.core.utils;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
 
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 
 import io.realm.Realm;
 
@@ -124,6 +126,26 @@ public class PDUtils {
         String suspendedUntil = userDetails == null ? null : userDetails.getSuspendUntil();
         realm.close();
         return suspendedUntil;
+    }
+
+
+    /**
+     * Update the saved location for the current user
+     *
+     * @param location Users current location
+     */
+    public static void updateSavedUserLocation(Location location) {
+        if (location == null) {
+            return;
+        }
+
+        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(userLocation);
+        realm.commitTransaction();
+        realm.close();
     }
 
 }

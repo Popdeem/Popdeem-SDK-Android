@@ -59,9 +59,9 @@ import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
-import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
 import java.util.Arrays;
@@ -269,14 +269,7 @@ public class PDUISocialLoginFragment extends Fragment {
     private void handleLocationUpdate(final Location location) {
         mLocationManager.stop();
 
-        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(userLocation);
-        realm.commitTransaction();
-        realm.close();
-
+        PDUtils.updateSavedUserLocation(location);
         PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {

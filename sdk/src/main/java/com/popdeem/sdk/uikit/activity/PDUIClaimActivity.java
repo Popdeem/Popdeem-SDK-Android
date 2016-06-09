@@ -163,6 +163,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         addClickListenersToViews();
         updateFacebookButton();
         updateTwitterButton();
+        updateEnabledStateOfViews();
     }
 
     @Override
@@ -196,6 +197,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     @Override
                     public void run() {
                         mNotHereView.setVisibility(mIsHere ? View.GONE : View.VISIBLE);
+                        updateEnabledStateOfViews();
                     }
                 });
             }
@@ -252,6 +254,15 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         findViewById(R.id.pd_claim_add_image_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_share_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_tag_friends_button).setOnClickListener(this);
+    }
+
+    private void updateEnabledStateOfViews() {
+        mFacebookButton.setEnabled(mIsHere);
+        mTwitterButton.setEnabled(mIsHere);
+        findViewById(R.id.pd_claim_add_image_button).setEnabled(mIsHere);
+        findViewById(R.id.pd_claim_share_button).setEnabled(mIsHere);
+        findViewById(R.id.pd_claim_tag_friends_button).setEnabled(mIsHere);
+        mMessageEditText.setEnabled(mIsHere);
     }
 
     private void updateTwitterCharsLeft() {
@@ -626,17 +637,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
 
-    private void updateSavedUserLocation(Location location) {
-        PDRealmUserLocation userLocation = new PDRealmUserLocation(location.getLatitude(), location.getLongitude());
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(userLocation);
-        realm.commitTransaction();
-        realm.close();
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int ID = item.getItemId();
@@ -788,7 +788,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 locationCounter++;
             }
             checkIsHere(location);
-            updateSavedUserLocation(location);
+            PDUtils.updateSavedUserLocation(location);
         }
 
         if (locationCounter >= 3) {

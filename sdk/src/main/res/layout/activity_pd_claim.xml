@@ -54,14 +54,15 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_tick" />
+                    android:src="@drawable/ic_tick"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
                     android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
                     android:text="@string/pd_claim_verify_location_failed_text"
