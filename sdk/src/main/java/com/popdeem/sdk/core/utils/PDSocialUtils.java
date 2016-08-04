@@ -52,6 +52,62 @@ public class PDSocialUtils {
     private static final String TWITTER_CONSUMER_KEY_META_KEY = "TwitterConsumerKey";
     private static final String TWITTER_CONSUMER_SECRET_META_KEY = "TwitterConsumerSecret";
 
+    private static final String INSTAGRAM_CLIENT_ID_KEY = "InstagramClientId";
+    private static final String INSTAGRAM_CLIENT_SECRET_KEY = "InstagramClientSecret";
+    private static final String INSTAGRAM_CALLBACK_URL_KEY = "InstagramCallbackUrl";
+
+    //------------------------------------------------------------------------
+    //                          Instagram Methods
+    //------------------------------------------------------------------------
+
+    /**
+     * Get Instagram Client ID from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramClientId(Context context) {
+        final String clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
+        if (clientId == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client ID in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramClientId\" android:value=\"YOUR_INSTAGRAM_CLIENT_ID\" />");
+            return null;
+        }
+        return clientId;
+    }
+
+    /**
+     * Get Instagram Client Secret from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramClientSecret(Context context) {
+        final String clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
+        if (clientSecret == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramClientSecret\" android:value=\"YOUR_INSTAGRAM_CLIENT_SECRET\" />");
+            return null;
+        }
+        return clientSecret;
+    }
+
+    /**
+     * Get Instagram Client Secret from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramCallbackUrl(Context context) {
+        final String callbackUrl = PDUtils.getStringFromMetaData(context, INSTAGRAM_CALLBACK_URL_KEY);
+        if (callbackUrl == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Callback URL in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramCallbackUrl\" android:value=\"YOUR_INSTAGRAM_CALLBACK_URL\" />");
+            return null;
+        }
+        return callbackUrl;
+    }
+
 
     //------------------------------------------------------------------------
     //                          Facebook Methods

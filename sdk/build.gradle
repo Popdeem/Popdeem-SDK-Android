@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '0.2.3'
+project.ext.popdeemSdkVersion = '0.3.0-SNAPSHOT'
 
 android {
     compileSdkVersion 23
