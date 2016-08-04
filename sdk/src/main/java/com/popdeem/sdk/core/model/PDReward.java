@@ -38,6 +38,7 @@ public class PDReward {
 
     public static final String PD_SOCIAL_MEDIA_TYPE_FACEBOOK = "Facebook";
     public static final String PD_SOCIAL_MEDIA_TYPE_TWITTER = "Twitter";
+    public static final String PD_SOCIAL_MEDIA_TYPE_INSTAGRAM = "Instagram";
 
     public static final String PD_REWARD_TYPE_COUPON = "coupon";
     public static final String PD_REWARD_TYPE_SWEEPSTAKE = "sweepstake";
@@ -78,15 +79,19 @@ public class PDReward {
     private String credit;
 
     private PDTweetOptions tweetOptions;
+    @SerializedName("instagram_option")
+    private PDInstagramOptions instagramOptions;
     private ArrayList<PDLocation> locations;
     private long countdownTimer;
 
     private float distanceFromUser;
 
+    private boolean instagramVerified;
+
     public PDReward() {
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -107,6 +112,7 @@ public class PDReward {
         this.tweetOptions = tweetOptions;
         this.locations = locations;
         this.countdownTimer = countdownTimer;
+        this.instagramVerified = instagramVerified;
     }
 
     public String getId() {
@@ -237,6 +243,14 @@ public class PDReward {
         this.tweetOptions = tweetOptions;
     }
 
+    public PDInstagramOptions getInstagramOptions() {
+        return instagramOptions;
+    }
+
+    public void setInstagramOptions(PDInstagramOptions instagramOptions) {
+        this.instagramOptions = instagramOptions;
+    }
+
     public ArrayList<PDLocation> getLocations() {
         return locations;
     }
@@ -275,5 +289,13 @@ public class PDReward {
 
     public void setCountdownTimer(long countdownTimer) {
         this.countdownTimer = countdownTimer;
+    }
+
+    public boolean isInstagramVerified() {
+        return instagramVerified;
+    }
+
+    public void setInstagramVerified(boolean instagramVerified) {
+        this.instagramVerified = instagramVerified;
     }
 }
