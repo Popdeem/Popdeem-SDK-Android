@@ -81,6 +81,11 @@ public interface PopdeemAPI {
             @Body TypedInput body,
             Callback<PDUser> callback);
 
+    @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
+    void connectWithInstagramAccount(
+            @Body TypedInput body,
+            Callback<JsonObject> callback);
+
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void updateUserLocationAndDeviceToken(
             @Body String emptyBody,
@@ -161,6 +166,11 @@ public interface PopdeemAPI {
     void redeemReward(
             @Body String emptyBody,
             @Path("rewardId") String rewardId,
+            Callback<JsonObject> callback);
+
+    @POST(PDAPIConfig.PD_REWARDS_PATH + "/verify")
+    void verifyInstagramPostForReward(
+            @Body TypedInput body,
             Callback<JsonObject> callback);
 
 
