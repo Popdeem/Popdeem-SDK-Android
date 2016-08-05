@@ -108,6 +108,9 @@ public final class PopdeemSDK {
         // Init Twitter
         PDSocialUtils.initTwitter(application);
 
+        // Init Instagram
+        PDSocialUtils.initInstagram(application);
+
         // Get UID for Non Social login
         if (PDUniqueIdentifierUtils.getUID() == null) {
             PDUniqueIdentifierUtils.createUID(application, new PDUniqueIdentifierUtils.PDUIDCallback() {

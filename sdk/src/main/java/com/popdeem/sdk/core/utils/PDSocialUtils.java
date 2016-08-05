@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.facebook.AccessToken;
+import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
 
 /**
  * Created by mikenolan on 23/02/16.
@@ -59,6 +61,35 @@ public class PDSocialUtils {
     //------------------------------------------------------------------------
     //                          Instagram Methods
     //------------------------------------------------------------------------
+
+    /**
+     * Initialise Instagram config.
+     * This will gather the Instagram client ID, secret and callback URL to be used when authenticating an Instagram user.
+     *
+     * @param context Application Context
+     */
+    public static void initInstagram(Context context) {
+        final String clientId = getInstagramClientId(context);
+        final String clientSecret = getInstagramClientSecret(context);
+        final String callbackUrl = getInstagramCallbackUrl(context);
+
+        if (clientId == null || clientSecret == null || callbackUrl == null) {
+            PDLog.w(PDSocialUtils.class, "Could not initialise Instagram");
+            return;
+        }
+
+        PDRealmInstagramConfig config = new PDRealmInstagramConfig();
+        config.setUid(0);
+        config.setInstagramClientId(clientId);
+        config.setInstagramClientSecret(clientSecret);
+        config.setInstagramCallbackUrl(callbackUrl);
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(config);
+        realm.commitTransaction();
+        realm.close();
+    }
 
     /**
      * Get Instagram Client ID from AndroidManifest Meta Data
