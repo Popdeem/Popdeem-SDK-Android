@@ -67,7 +67,7 @@ public class PDInstagramOptions {
         this.prefill = prefill;
     }
 
-    public boolean getForceTag() {
+    public boolean isForceTag() {
         return forceTag;
     }
 

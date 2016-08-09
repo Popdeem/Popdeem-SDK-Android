@@ -53,6 +53,8 @@ public class PDAPIConfig {
 
     public static final String PD_BRANDS_PATH = API_PATH + API_VERSION + "/brands";
 
+    public static final String PD_INSTAGRAM_PATH = "https://api.instagram.com/v1";
+
     public static final String PLATFORM_VALUE = "Android";
 
     public static final String REQUEST_HEADER_API_KEY = "Api-Key";

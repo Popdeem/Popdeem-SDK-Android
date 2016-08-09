@@ -24,8 +24,12 @@
 
 package com.popdeem.sdk.core.model;
 
+import android.support.annotation.StringDef;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 /**
@@ -39,6 +43,11 @@ public class PDReward {
     public static final String PD_SOCIAL_MEDIA_TYPE_FACEBOOK = "Facebook";
     public static final String PD_SOCIAL_MEDIA_TYPE_TWITTER = "Twitter";
     public static final String PD_SOCIAL_MEDIA_TYPE_INSTAGRAM = "Instagram";
+
+    @StringDef({PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PD_SOCIAL_MEDIA_TYPE_TWITTER, PD_SOCIAL_MEDIA_TYPE_INSTAGRAM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PDSocialMediaType {
+    }
 
     public static final String PD_REWARD_TYPE_COUPON = "coupon";
     public static final String PD_REWARD_TYPE_SWEEPSTAKE = "sweepstake";

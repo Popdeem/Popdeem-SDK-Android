@@ -26,14 +26,22 @@ package com.popdeem.sdk.core.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.facebook.AccessToken;
+import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -137,6 +145,66 @@ public class PDSocialUtils {
             return null;
         }
         return callbackUrl;
+    }
+
+
+    /**
+     * Check if user is logged in to Instagram
+     */
+    public static void isInstagramLoggedIn(@NonNull final PDAPICallback<Boolean> callback) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        String accessToken = null;
+        if (userDetails != null && userDetails.getUserInstagram() != null) {
+            accessToken = userDetails.getUserInstagram().getAccessToken();
+        }
+        realm.close();
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            callback.success(false);
+        } else {
+            PDAPIClient.instance().checkInstagramAccessToken(accessToken, new PDAPICallback<Boolean>() {
+                @Override
+                public void success(Boolean success) {
+                    callback.success(success);
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    callback.success(false);
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Check if user has Instagram installed
+     *
+     * @param pm PackageManger
+     * @return true if Instagram is installed, false if it is not
+     */
+    public static boolean hasInstagramAppInstalled(PackageManager pm) {
+        try {
+            pm.getPackageInfo("com.instagram.android", PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create a chooser Intent for sharing an Image file to Instagram
+     *
+     * @param path Path to Image file
+     * @return Chooser Intent
+     */
+    public static Intent createInstagramIntent(String path) {
+        File file = new File(path);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        return Intent.createChooser(intent, "Share to");
     }
 
 

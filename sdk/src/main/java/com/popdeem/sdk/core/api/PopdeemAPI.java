@@ -84,6 +84,11 @@ public interface PopdeemAPI {
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
     void connectWithInstagramAccount(
             @Body TypedInput body,
+            Callback<PDUser> callback);
+
+    @GET(PDAPIConfig.PD_INSTAGRAM_PATH + "/users/self")
+    void checkInstagramAccessToken(
+            @Query("access_token") String accessToken,
             Callback<JsonObject> callback);
 
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")

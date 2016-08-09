@@ -9,6 +9,7 @@
     <string name="pd_common_sorry_text">Sorry</string>
     <string name="pd_common_something_wrong_text">Something went wrong. Please try again later.</string>
     <string name="pd_common_logout_text">Logout</string>
+    <string name="pd_common_next_text">Next</string>
     <string name="pd_common_logout_message_text">Are you sure you want to log out?</string>
     <string name="pd_common_facebook_login_cancelled_title_text">Login Cancelled</string>
     <string name="pd_common_facebook_login_cancelled_message_text">You may browse the app before connecting your Facebook, but you must log in with Facebook to avail of social rewards.</string>
@@ -71,6 +72,8 @@
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
+
+    <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
 
     <!-- Claim Add Image Dialog -->
     <string name="pd_claim_add_photo_title_text">Add Photo</string>
@@ -153,6 +156,13 @@
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
+
+    <!-- Connect Social Account Dialog -->
+    <string name="pd_connect_facebook_title">Facebook</string>
+    <string name="pd_connect_twitter_title">Twitter</string>
+    <string name="pd_connect_instagram_title">Instagram</string>
+    <string name="pd_connect_dialog_message_text">You must connect your %1s account to claim this reward</string>
+    <string name="pd_connect_dialog_button_text">Connect %1s Account</string>
 
 
     <!-- Misc Strings -->

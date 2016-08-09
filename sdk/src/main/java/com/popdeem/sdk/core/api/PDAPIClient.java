@@ -70,6 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -314,7 +315,7 @@ public class PDAPIClient {
      * @param screenName  Users Screen Name
      * @param callback    {@link PDAPICallback} for API result
      */
-    public void connectWithInstagramAccount(@NonNull String userId, @NonNull String accessToken, @NonNull String screenName, @NonNull final PDAPICallback<JsonObject> callback) {
+    public void connectWithInstagramAccount(@NonNull String userId, @NonNull String accessToken, @NonNull String screenName, @NonNull final PDAPICallback<PDUser> callback) {
         JsonObject instagramObject = new JsonObject();
         instagramObject.addProperty("id", userId);
         instagramObject.addProperty("access_token", accessToken);
@@ -327,8 +328,38 @@ public class PDAPIClient {
         json.add("user", userJson);
 
         TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.connectWithInstagramAccount(body, callback);
+    }
+
+
+    /**
+     * Check if users Instagram access token is still valid
+     *
+     * @param accessToken Instagram Access token to check
+     * @param callback    {@link PDAPICallback} for API result
+     */
+    public void checkInstagramAccessToken(@NonNull String accessToken, @NonNull final PDAPICallback<Boolean> callback) {
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(PDAPIConfig.PD_INSTAGRAM_PATH + "/users/self?access_token=" + accessToken)
+                .get()
+                .build();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.failure(400, e);
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                callback.success(response.code() == 200);
+            }
+        });
     }
 
 
@@ -589,7 +620,7 @@ public class PDAPIClient {
      * @param latitude            - Current latitude for user
      * @param callback            {@link PDAPICallback} for API result
      */
-    public void claimReward(@NonNull final Context context, final String facebookAccessToken, final String twitterAuthToken, final String twitterSecret,
+    public void claimReward(@NonNull final Context context, final String facebookAccessToken, final String twitterAuthToken, final String twitterSecret, final String instagramAccessToken,
                             @NonNull final String rewardId, @NonNull final String message, ArrayList<String> taggedFriendsNames, ArrayList<String> taggedFriendsIds,
                             final String image, @NonNull final String longitude, @NonNull final String latitude, @NonNull final PDAPICallback<JsonObject> callback) {
         final Handler mainHandler = new Handler(context.getMainLooper());
@@ -616,6 +647,9 @@ public class PDAPIClient {
         if (twitterAuthToken != null) {
             bodyBuilder.add("twitter[access_token]", twitterAuthToken);
             bodyBuilder.add("twitter[access_secret]", twitterSecret);
+        }
+        if (instagramAccessToken != null) {
+            bodyBuilder.add("instagram[access_token]", instagramAccessToken);
         }
 
         if (image != null) {

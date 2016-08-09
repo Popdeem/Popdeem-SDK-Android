@@ -185,7 +185,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
         realm.close();
 
-        PDAPIClient.instance().claimReward(getActivity(), null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
+        PDAPIClient.instance().claimReward(getActivity(), null, null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
                 progress.dismiss();

@@ -23,6 +23,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -211,44 +212,97 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:background="@android:color/white"
                         android:orientation="horizontal">
 
-                        <Button
-                            android:id="@+id/pd_facebook_share_option_button"
+                        <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@android:color/white"
-                            android:drawableLeft="@drawable/pd_fb_button_deselected"
-                            android:drawablePadding="20dp"
-                            android:drawableStart="@drawable/pd_fb_button_deselected"
-                            android:gravity="start|center_vertical"
-                            android:paddingEnd="1dp"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="1dp"
-                            android:paddingStart="20dp"
-                            android:text="@string/pd_claim_facebook_button_text" />
+                            android:layout_weight="1">
 
-                        <View
-                            android:layout_width="0.5dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/pd_divider_color" />
+                            <android.support.v7.widget.SwitchCompat
+                                android:id="@+id/pd_claim_facebook_switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:drawableLeft="@drawable/pd_facebook_icon_small"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/pd_facebook_icon_small"
+                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
-                        <Button
-                            android:id="@+id/pd_twitter_share_option_button"
+                        </FrameLayout>
+
+
+                        <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@android:color/white"
-                            android:drawableLeft="@drawable/pd_twitter_button_deselected"
-                            android:drawablePadding="20dp"
-                            android:drawableStart="@drawable/pd_twitter_button_deselected"
-                            android:gravity="start|center_vertical"
-                            android:paddingEnd="1dp"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="1dp"
-                            android:paddingStart="20dp"
-                            android:text="@string/pd_claim_twitter_button_text" />
+                            android:layout_weight="1">
+
+                            <android.support.v7.widget.SwitchCompat
+                                android:id="@+id/pd_claim_twitter_switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:drawableLeft="@drawable/pd_twitter_icon_small"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/pd_twitter_icon_small"
+                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <android.support.v7.widget.SwitchCompat
+                                android:id="@+id/pd_claim_instagram_switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:drawableLeft="@drawable/pd_instagram_icon_small"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/pd_instagram_icon_small"
+                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+
+                        </FrameLayout>
+
+                        <!--<Button-->
+                        <!--android:id="@+id/pd_facebook_share_option_button"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@android:color/white"-->
+                        <!--android:drawableLeft="@drawable/pd_fb_button_deselected"-->
+                        <!--android:drawablePadding="20dp"-->
+                        <!--android:drawableStart="@drawable/pd_fb_button_deselected"-->
+                        <!--android:gravity="start|center_vertical"-->
+                        <!--android:paddingEnd="1dp"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:paddingRight="1dp"-->
+                        <!--android:paddingStart="20dp"-->
+                        <!--android:text="@string/pd_claim_facebook_button_text" />-->
+
+                        <!--<View-->
+                        <!--android:layout_width="0.5dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="@color/pd_divider_color" />-->
+
+                        <!--<Button-->
+                        <!--android:id="@+id/pd_twitter_share_option_button"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@android:color/white"-->
+                        <!--android:drawableLeft="@drawable/pd_twitter_button_deselected"-->
+                        <!--android:drawablePadding="20dp"-->
+                        <!--android:drawableStart="@drawable/pd_twitter_button_deselected"-->
+                        <!--android:gravity="start|center_vertical"-->
+                        <!--android:paddingEnd="1dp"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:paddingRight="1dp"-->
+                        <!--android:paddingStart="20dp"-->
+                        <!--android:text="@string/pd_claim_twitter_button_text" />-->
 
                     </LinearLayout>
 
