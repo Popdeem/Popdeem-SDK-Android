@@ -7,6 +7,7 @@
     <string name="pd_empty_string" />
     <string name="pd_common_please_wait_text">Please wait</string>
     <string name="pd_common_sorry_text">Sorry</string>
+    <string name="pd_common_oops_text">Oops!</string>
     <string name="pd_common_something_wrong_text">Something went wrong. Please try again later.</string>
     <string name="pd_common_logout_text">Logout</string>
     <string name="pd_common_next_text">Next</string>
@@ -74,6 +75,7 @@
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
+    <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
 
     <!-- Claim Add Image Dialog -->
     <string name="pd_claim_add_photo_title_text">Add Photo</string>

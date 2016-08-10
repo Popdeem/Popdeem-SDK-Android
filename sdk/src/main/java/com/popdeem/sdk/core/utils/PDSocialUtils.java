@@ -203,8 +203,10 @@ public class PDSocialUtils {
         File file = new File(path);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
+        intent.setPackage("com.instagram.android");
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-        return Intent.createChooser(intent, "Share to");
+        return intent;
+//        return Intent.createChooser(intent, "Share to");
     }
 
 

@@ -40,7 +40,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
@@ -230,6 +233,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         hashTagTextView.setVisibility(View.INVISIBLE);
 
         if (!mInstagramSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -249,6 +253,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         hashTagTextView.setVisibility(View.INVISIBLE);
 
         if (!mTwitterSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -271,47 +276,51 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private void validateHashTag() {
         if (!mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
             mHashTagValidated = true;
             return;
         }
 
-        String hashTag = null;
+        String hashTagLowerCase = null;
         if (mTwitterSwitch.isChecked()) {
-            hashTag = mReward.getTweetOptions().getForcedTag();
+            hashTagLowerCase = mReward.getTweetOptions().getForcedTag().toLowerCase(Locale.getDefault());
         } else if (mInstagramSwitch.isChecked()) {
-            hashTag = mReward.getInstagramOptions().getForcedTag();
+            hashTagLowerCase = mReward.getInstagramOptions().getForcedTag().toLowerCase(Locale.getDefault());
         }
 
-        if (hashTag == null || hashTag.isEmpty()) {
+        if (hashTagLowerCase == null || hashTagLowerCase.isEmpty()) {
             mHashTagValidated = true;
             return;
         }
 
-        final String currentMessage = mMessageEditText.getText().toString();
-        if (currentMessage.isEmpty()) {
-            mHashTagValidated = true;
+        final String currentMessageLowerCase = mMessageEditText.getText().toString().toLowerCase(Locale.getDefault());
+        if (currentMessageLowerCase.isEmpty()) {
+            mHashTagValidated = false;
             return;
         }
 
-        if (currentMessage.toLowerCase(Locale.getDefault()).contains(hashTag.toLowerCase(Locale.getDefault())) && !mHashTagValidated) {
-//            mHashTagValidated = true;
-//            final int startIndex = currentMessage.toLowerCase(Locale.getDefault()).indexOf(hashTag.toLowerCase(Locale.getDefault()));
-//            Spannable span = new SpannableString(currentMessage);
-//            span.setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_color)), startIndex, startIndex + hashTag.length(), 0);
-//            span.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_text_color)), startIndex, startIndex + hashTag.length(), 0);
-//            mMessageEditText.setText(span);
-        } else {
-//            mHashTagValidated = false;
-//            ForegroundColorSpan[] fgSpans = mMessageEditText.getText().getSpans(0, mMessageEditText.getText().length(), ForegroundColorSpan.class);
-//            for (ForegroundColorSpan s : fgSpans) {
-//                mMessageEditText.getText().removeSpan(s);
-//            }
-//            BackgroundColorSpan[] bgSpans = mMessageEditText.getText().getSpans(0, mMessageEditText.getText().length(), BackgroundColorSpan.class);
-//            for (BackgroundColorSpan s : bgSpans) {
-//                mMessageEditText.getText().removeSpan(s);
-//            }
+        mHashTagValidated = currentMessageLowerCase.contains(hashTagLowerCase);
+        Spannable messageSpannable = mMessageEditText.getText();
+        if (mHashTagValidated) {
+            final int startIndex = currentMessageLowerCase.indexOf(hashTagLowerCase);
+            final int hashTagLength = hashTagLowerCase.length();
+            messageSpannable.setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_color)), startIndex, startIndex + hashTagLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            messageSpannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_text_color)), startIndex, startIndex + hashTagLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        mHashTagValidated = currentMessage.toLowerCase(Locale.getDefault()).contains(hashTag.toLowerCase(Locale.getDefault()));
+        if (!mHashTagValidated) {
+            removeHashTagSpans(messageSpannable);
+        }
+    }
+
+    private void removeHashTagSpans(Spannable messageSpannable) {
+        ForegroundColorSpan[] fgSpans = messageSpannable.getSpans(0, messageSpannable.length(), ForegroundColorSpan.class);
+        for (ForegroundColorSpan s : fgSpans) {
+            messageSpannable.removeSpan(s);
+        }
+        BackgroundColorSpan[] bgSpans = messageSpannable.getSpans(0, messageSpannable.length(), BackgroundColorSpan.class);
+        for (BackgroundColorSpan s : bgSpans) {
+            messageSpannable.removeSpan(s);
+        }
     }
 
     private int calculateTwitterCharsLeft() {
@@ -411,21 +420,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         textView.setText(actionStringBuilder.toString());
     }
 
-//    private void updateFacebookButton() {
-//        mFacebookButton.setTextColor(ContextCompat.getColor(this, mFacebookOptionEnabled ? R.color.pd_facebook_blue : R.color.pd_claim_network_button_off_text_color));
-//        mFacebookButton.setCompoundDrawablesWithIntrinsicBounds(mFacebookOptionEnabled ? R.drawable.pd_fb_button_selected : R.drawable.pd_fb_button_deselected, 0, 0, 0);
-//    }
-
-//    private void updateTwitterButton() {
-//        mTwitterButton.setTextColor(ContextCompat.getColor(this, mTwitterOptionEnabled ? R.color.pd_twitter_blue : R.color.pd_claim_network_button_off_text_color));
-//        mTwitterButton.setCompoundDrawablesWithIntrinsicBounds(mTwitterOptionEnabled ? R.drawable.pd_twitter_button_selected : R.drawable.pd_twitter_button_deselected, 0, 0, 0);
-//    }
-
-//    private boolean facebookShareForced() {
-//        List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
-//        return mediaTypes.size() == 1 && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK);
-//    }
-
     private boolean twitterShareForced() {
         List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
         return mediaTypes.size() == 1 && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER);
@@ -435,11 +429,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
         return mediaTypes.contains(network);
     }
-
-//    private boolean noShareMediaForced() {
-//        List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
-//        return mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK) && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER);
-//    }
 
     private String getEncodedImage() {
         String encodedImage = null;
@@ -460,18 +449,17 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private String getMessage() {
-        String message = mMessageEditText.getText().toString();
-        if (mTwitterSwitch.isChecked() && mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
-            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
-        } else if (mInstagramSwitch.isChecked() && mReward.getInstagramOptions() != null && mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
-            message = String.format("%1s %2s", message, mReward.getInstagramOptions().getForcedTag());
-        }
-        return message;
+        return mMessageEditText.getText().toString();
+//        if (mTwitterSwitch.isChecked() && mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
+//            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
+//        } else if (mInstagramSwitch.isChecked() && mReward.getInstagramOptions() != null && mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
+//            message = String.format("%1s %2s", message, mReward.getInstagramOptions().getForcedTag());
+//        }
+//        return message;
     }
 
     private void post(final boolean addImage) {
-        PDUIUtils.hideKeyboard(this, mMessageEditText);
-
+        // Check if user is suspended
         if (PDUtils.isUserSuspended()) {
             String suspendedUntil = PDUtils.getUserSuspendedUntil();
             long suspendedUntilTime = PDNumberUtils.toLong(suspendedUntil, -1);
@@ -484,95 +472,99 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             return;
         }
 
-        if (mInstagramSwitch.isChecked() && !PDSocialUtils.hasInstagramAppInstalled(getPackageManager())) {
-            showBasicOKAlertDialog(R.string.pd_common_sorry_text, "Instagram App is not installed.");
-            return;
-        }
-
-        if (calculateTwitterCharsLeft() < 0 && mTwitterSwitch.isChecked()/*mTwitterOptionEnabled*/) {
-            showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
-            return;
-        }
-
         // Check if at least one network is selected
         if (!mFacebookSwitch.isChecked() && !mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()/*!mFacebookOptionEnabled && !mTwitterOptionEnabled*/) {
             showBasicOKAlertDialog(R.string.pd_claim_no_network_selected_title_text, R.string.pd_claim_no_network_selected_message_text);
             return;
         }
 
-        // Check if user has given Facebook Publish permission
-        if (mFacebookSwitch.isChecked() && !PDSocialUtils.hasAllFacebookPublishPermissions()) {
-            LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    post(addImage);
-                }
-
-                @Override
-                public void onCancel() {
-                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onCancel:");
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
-                    new AlertDialog.Builder(PDUIClaimActivity.this)
-                            .setTitle(R.string.pd_common_sorry_text)
-                            .setMessage(error.getMessage())
-                            .setPositiveButton(android.R.string.ok, null)
-                            .create()
-                            .show();
-                }
-            });
-            LoginManager.getInstance().logInWithPublishPermissions(this, Arrays.asList(PDSocialUtils.FACEBOOK_PUBLISH_PERMISSIONS));
-            return;
+        // If posting to instagram
+        if (mInstagramSwitch.isChecked()) {
+            // Check if Instagram app is installed
+            if (!PDSocialUtils.hasInstagramAppInstalled(getPackageManager())) {
+                showBasicOKAlertDialog(R.string.pd_common_sorry_text, "Instagram App is not installed.");
+                return;
+            }
+            // Check if hashtag is present in message
+            if (!mHashTagValidated) {
+                String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getInstagramOptions().getForcedTag(), getString(R.string.pd_connect_instagram_title));
+                showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                return;
+            }
         }
 
-        // Check if Twitter share is enabled and Twitter is logged in
-        if (mTwitterSwitch.isChecked() && !PDSocialUtils.isTwitterLoggedIn()) {
-            PDSocialUtils.loginWithTwitter(this, new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    if (result.data != null) {
-                        connectTwitterAccount(result.data, addImage);
-                    }
-                }
+        // If posting to Twitter
+        if (mTwitterSwitch.isChecked()) {
+            // Check if over character limit
+            if (calculateTwitterCharsLeft() < 0) {
+                showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
+                return;
+            }
 
-                @Override
-                public void failure(TwitterException e) {
-                    showBasicOKAlertDialog(R.string.pd_claim_twitter_button_text, e.getMessage());
-                }
-            });
-            return;
+            // Check if hashtag is present in message
+            if (!mHashTagValidated && mReward.getTweetOptions().isForceTag()) {
+                String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getTweetOptions().getForcedTag(), getString(R.string.pd_connect_twitter_title));
+                showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                return;
+            }
+
+            // Check if Twitter is logged in
+            if (!PDSocialUtils.isTwitterLoggedIn()) {
+                PDSocialUtils.loginWithTwitter(this, new Callback<TwitterSession>() {
+                    @Override
+                    public void success(Result<TwitterSession> result) {
+                        if (result.data != null) {
+                            connectTwitterAccount(result.data, addImage);
+                        }
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+                        showBasicOKAlertDialog(R.string.pd_claim_twitter_button_text, e.getMessage());
+                    }
+                });
+                return;
+            }
+        }
+
+        // If posting to Facebook
+        if (mFacebookSwitch.isChecked()) {
+            // Check if user has given Facebook Publish permission
+            if (!PDSocialUtils.hasAllFacebookPublishPermissions()) {
+                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        post(addImage);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        PDLog.d(PDUIClaimActivity.class, "Facebook Login onCancel:");
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
+                        new AlertDialog.Builder(PDUIClaimActivity.this)
+                                .setTitle(R.string.pd_common_sorry_text)
+                                .setMessage(error.getMessage())
+                                .setPositiveButton(android.R.string.ok, null)
+                                .create()
+                                .show();
+                    }
+                });
+                LoginManager.getInstance().logInWithPublishPermissions(this, Arrays.asList(PDSocialUtils.FACEBOOK_PUBLISH_PERMISSIONS));
+                return;
+            }
         }
 
         String message = getMessage();
-        String encodedImage = null;
+        PDLog.d(PDUIClaimActivity.class, "message: " + message);
 
-//        if (!mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-//            message = mMessageEditText.getText().toString();
+        String encodedImage = null;
         if (addImage) {
             encodedImage = getEncodedImage();
-//            File imageFile = new File(mCurrentCroppedPhotoPath);
-//            if (imageFile.exists()) {
-//                Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, PDUIImageUtils.getOrientation(mCurrentPhotoPath));
-//                if (b != null) {
-//                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                    b.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
-//                    byte[] byteArray = outputStream.toByteArray();
-//
-//                    encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
-//                    b.recycle();
-//                    PDLog.d(PDUIClaimActivity.class, "image_upload->encodedImage: " + encodedImage);
-//                }
-//            }
         }
-//        }
-
-//        if (mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
-//            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
-//        }
-        PDLog.d(PDUIClaimActivity.class, "message: " + message);
 
         if (mInstagramSwitch.isChecked()) {
             postToInstagram(message, mCurrentCroppedPhotoPath);
