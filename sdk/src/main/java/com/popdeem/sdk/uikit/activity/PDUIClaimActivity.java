@@ -573,7 +573,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         PDLog.d(PDUIClaimActivity.class, "message: " + message);
 
         if (mInstagramSwitch.isChecked()) {
-            postToInstagram(message, mCurrentPhotoPath);
+            postToInstagram(message, mCurrentCroppedPhotoPath);
         } else {
             performClaimReward(message, encodedImage);
         }
