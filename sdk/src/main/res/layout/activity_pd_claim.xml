@@ -225,9 +225,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_facebook_icon_small"
+                                android:drawableLeft="@drawable/pd_facebook_switch_drawable"
                                 android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_facebook_icon_small"
+                                android:drawableStart="@drawable/pd_facebook_switch_drawable"
                                 app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
                         </FrameLayout>
@@ -243,9 +243,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_twitter_icon_small"
+                                android:drawableLeft="@drawable/pd_twitter_switch_drawable"
                                 android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_twitter_icon_small"
+                                android:drawableStart="@drawable/pd_twitter_switch_drawable"
                                 app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
                         </FrameLayout>
@@ -260,9 +260,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_instagram_icon_small"
+                                android:drawableLeft="@drawable/pd_instagram_switch_drawable"
                                 android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_instagram_icon_small"
+                                android:drawableStart="@drawable/pd_instagram_switch_drawable"
                                 app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
                         </FrameLayout>

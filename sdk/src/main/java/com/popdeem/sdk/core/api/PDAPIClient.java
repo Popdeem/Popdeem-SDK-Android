@@ -739,16 +739,8 @@ public class PDAPIClient {
         final String accessToken = userDetails.getUserInstagram().getAccessToken();
         realm.close();
 
-        JsonObject instagramObject = new JsonObject();
-        instagramObject.addProperty("reward_id", rewardId);
-        instagramObject.addProperty("access_token", accessToken);
-
-        JsonObject json = new JsonObject();
-        json.add("instagram", instagramObject);
-
-        TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.verifyInstagramPostForReward(body, callback);
+        api.verifyInstagramPostForReward("", accessToken, rewardId, callback);
     }
 
 

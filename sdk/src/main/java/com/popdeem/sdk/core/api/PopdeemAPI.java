@@ -175,7 +175,9 @@ public interface PopdeemAPI {
 
     @POST(PDAPIConfig.PD_REWARDS_PATH + "/verify")
     void verifyInstagramPostForReward(
-            @Body TypedInput body,
+            @Body String emptyBody,
+            @Query("instagram[access_token]") String accessToken,
+            @Query("instagram[reward_id]") String rewardId,
             Callback<JsonObject> callback);
 
 

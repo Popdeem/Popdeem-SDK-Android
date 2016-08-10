@@ -49,6 +49,7 @@ import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
@@ -99,6 +100,9 @@ public class PDUIWalletFragment extends Fragment {
                 public void onItemClick(View v) {
                     final int position = recyclerView.getChildAdapterPosition(v);
                     final PDReward reward = mRewards.get(position);
+                    if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM) && !reward.isInstagramVerified()) {
+                        return;
+                    }
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
@@ -140,6 +144,11 @@ public class PDUIWalletFragment extends Fragment {
                                 });
                         builder.create().show();
                     }
+                }
+
+                @Override
+                public void onVerifyClick(int position) {
+                    verifyReward(position);
                 }
             });
 
@@ -190,6 +199,38 @@ public class PDUIWalletFragment extends Fragment {
             @Override
             public void failure(int statusCode, Exception e) {
 //                PDLog.d(PDUIWalletFragment.class, "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
+            }
+        });
+    }
+
+    private void verifyReward(final int position) {
+        final PDReward reward = mRewards.get(position);
+        PDAPIClient.instance().verifyInstagramPostForReward(reward.getId(), new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                PDLog.d(PDUIWalletFragment.class, "verify success: " + jsonObject.toString());
+                boolean success = false;
+                if (jsonObject.has("data")) {
+                    JsonObject dataObject = jsonObject.getAsJsonObject("data");
+                    if (dataObject.has("status")) {
+                        success = dataObject.get("status").getAsString().equalsIgnoreCase("success");
+                    }
+                }
+                if (success) {
+                    reward.setInstagramVerified(true);
+                } else {
+                    String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
+                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
+                }
+                mAdapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
+                mAdapter.notifyItemChanged(position);
+                String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
+                PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
             }
         });
     }

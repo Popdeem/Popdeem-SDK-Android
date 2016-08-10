@@ -46,16 +46,66 @@
         android:scaleType="centerInside"
         android:src="@drawable/pd_ui_star_icon" />
 
-    <TextView
-        android:id="@+id/pd_wallet_reward_title_text_view"
+    <FrameLayout
+        android:id="@+id/pd_wallet_verify_container"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:minHeight="60dp"
+        android:minWidth="50dp">
+
+        <Button
+            android:id="@+id/pd_wallet_verify_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="60dp"
+            android:text="@string/pd_wallet_verify_button_text"
+            android:textAllCaps="false"
+            android:textColor="@color/pd_toolbar_color" />
+
+        <ProgressBar
+            android:id="@+id/pd_wallet_verify_progress_bar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/pd_wallet_brand_image_view"
+        android:layout_toLeftOf="@id/pd_wallet_verify_container"
         android:layout_toRightOf="@id/pd_wallet_brand_image_view"
-        android:ellipsize="end"
-        android:textColor="@color/pd_wallet_item_default_text_color"
-        android:textSize="16sp"
-        tools:text="This is a reward title" />
+        android:layout_toStartOf="@id/pd_wallet_verify_container"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/pd_wallet_reward_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/pd_wallet_item_default_text_color"
+            android:textSize="16sp"
+            tools:text="This is a reward title" />
+
+        <TextView
+            android:id="@+id/pd_wallet_reward_sub_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingTop="3dp"
+            android:textColor="@color/pd_wallet_item_sub_title_text_color"
+            android:textSize="12sp"
+            tools:text="@string/pd_wallet_redeem_text" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

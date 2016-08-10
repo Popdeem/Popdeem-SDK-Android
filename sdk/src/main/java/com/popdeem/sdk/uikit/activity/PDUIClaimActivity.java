@@ -160,7 +160,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         mMessageEditText.addTextChangedListener(MESSAGE_TEXT_WATCHER);
 
-//        toggleTwitterViews();
         addClickListenersToViews();
         updateEnabledStateOfViews();
     }
@@ -385,6 +384,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         // Rules
         textView = (TextView) findViewById(R.id.pd_reward_item_rules_text_view);
         textView.setText(mReward.getRules());
+        if (mReward.getRules() == null || mReward.getRules().isEmpty()) {
+            textView.setVisibility(View.GONE);
+        }
 
         StringBuilder actionStringBuilder = new StringBuilder("");
 
@@ -610,6 +612,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 new PDAPICallback<JsonObject>() {
                     @Override
                     public void success(JsonObject jsonObject) {
+                        PDLog.d(PDUIClaimActivity.class, "claim: " + jsonObject.toString());
                         progressBar.setVisibility(View.GONE);
                         shareButton.setEnabled(true);
                         shareButton.animate().alpha(1.0f);

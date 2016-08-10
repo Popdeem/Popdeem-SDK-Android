@@ -32,7 +32,7 @@
     <color name="pd_inbox_background_color">#ffffff</color>
     <color name="pd_inbox_no_messages_text_color">#000000</color>
     <!-- Inbox List Item Colors -->
-    <color name="pd_inbox_list_divider_color">#dba7ac</color>
+    <color name="pd_inbox_list_divider_color">#C0C0C0</color>
     <color name="pd_inbox_list_item_background_color">#ffffff</color>
     <color name="pd_inbox_list_item_body_text_color">#000000</color>
     <color name="pd_inbox_list_item_time_text_color">#A2A2A1</color>
@@ -52,7 +52,7 @@
     <color name="pd_rewards_background_color">#ffffff</color>
     <color name="pd_rewards_no_rewards_text_color">#000000</color>
     <!-- Rewards List Item Colors -->
-    <color name="pd_reward_list_divider_color">#dba7ac</color>
+    <color name="pd_reward_list_divider_color">#C0C0C0</color>
     <color name="pd_reward_list_background_color">#ffffff</color>
     <color name="pd_reward_list_item_title_text_color">#000000</color>
     <color name="pd_reward_list_item_subtitle_text_color">#000000</color>
@@ -63,7 +63,7 @@
     <color name="pd_feed_background">#ffffff</color>
     <color name="pd_feed_no_feed_text_color">#000000</color>
     <color name="pd_feed_list_background_color">#ffffff</color>
-    <color name="pd_feed_list_divider_color">#dba7ac</color>
+    <color name="pd_feed_list_divider_color">#C0C0C0</color>
     <color name="pd_feed_item_default_text_color">#A2A2A1</color>
     <color name="pd_feed_item_name_text_color">#000000</color>
     <color name="pd_feed_item_comment_text_color">#888888</color>
@@ -75,8 +75,9 @@
     <color name="pd_wallet_background_color">#ffffff</color>
     <color name="pd_wallet_no_rewards_text_color">#000000</color>
     <color name="pd_wallet_item_background_color">#ffffff</color>
-    <color name="pd_wallet_list_divider_color">#dba7ac</color>
+    <color name="pd_wallet_list_divider_color">#C0C0C0</color>
     <color name="pd_wallet_item_default_text_color">#000000</color>
+    <color name="pd_wallet_item_sub_title_text_color">@color/pd_toolbar_color</color>
 
 
     <!-- Redeem Colors -->
@@ -91,7 +92,7 @@
 
 
     <!-- Claim Colors -->
-    <color name="pd_claim_background_color">#C8C7CC</color>
+    <color name="pd_claim_background_color">#EBEBF2</color>
     <color name="pd_claim_over_character_limit_text_color">#ff0000</color>
     <color name="pd_claim_share_button_background_color">#3b5999</color>
     <color name="pd_claim_share_button_text_color">#ffffff</color>
@@ -134,7 +135,7 @@
 
     <color name="pd_connect_social_account_background_color">#aa000000</color>
 
-    <color name="pd_divider_color">#dba7ac</color>
+    <color name="pd_divider_color">#DCDCDF</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>

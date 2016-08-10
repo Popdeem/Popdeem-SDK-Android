@@ -96,6 +96,7 @@ public class PDReward {
     private float distanceFromUser;
 
     private boolean instagramVerified;
+    private ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks;
 
     public PDReward() {
     }
@@ -306,5 +307,25 @@ public class PDReward {
 
     public void setInstagramVerified(boolean instagramVerified) {
         this.instagramVerified = instagramVerified;
+    }
+
+    public ArrayList<PDRewardClaimingSocialNetwork> getClaimingSocialNetworks() {
+        return claimingSocialNetworks;
+    }
+
+    public void setClaimingSocialNetworks(ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks) {
+        this.claimingSocialNetworks = claimingSocialNetworks;
+    }
+
+    public boolean claimedUsingNetwork(@PDReward.PDSocialMediaType String network) {
+        if (this.claimingSocialNetworks == null) {
+            return false;
+        }
+        for (PDRewardClaimingSocialNetwork n : this.claimingSocialNetworks) {
+            if (n.getName().equalsIgnoreCase(network)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

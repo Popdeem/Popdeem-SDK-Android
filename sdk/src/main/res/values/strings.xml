@@ -107,6 +107,9 @@
     <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
     <string name="pd_redeem_sweepstake_reward_no_date_message_string">\n\n- There is no date set for this draw.</string>
     <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
+    <string name="pd_wallet_verify_button_text">Verify</string>
+    <string name="pd_wallet_reward_must_be_verified_text">This reward must be verified.</string>
+    <string name="pd_wallet_redeem_text">Redeem at the point of sale.</string>
 
 
     <!-- Feed -->
