@@ -272,7 +272,13 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             public void run() {
                 Location rewardLocation;
                 for (PDReward reward : mRewards) {
+                    if (reward.getLocations() == null) {
+                        continue;
+                    }
                     for (PDLocation loc : reward.getLocations()) {
+                        if (loc == null) {
+                            continue;
+                        }
                         double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
                         double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
 
