@@ -39,11 +39,11 @@ import com.popdeem.sdk.R;
 public class PDUIColorUtils {
 
     public static Drawable getBackButtonIcon(Context context) {
-        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_back_button_color, false);
+        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_back_button_color, true);
     }
 
     public static Drawable getSocialLoginBackButtonIcon(Context context) {
-        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_social_login_back_button_color, false);
+        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_social_login_back_button_color, true);
     }
 
     public static Drawable getInboxButtonIcon(Context context) {

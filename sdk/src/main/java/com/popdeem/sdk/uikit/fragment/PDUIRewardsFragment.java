@@ -90,6 +90,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
     private PDLocationManager mLocationManager;
     private Location mLocation = null;
+    private boolean mUpdatingDistances = false;
 
     public PDUIRewardsFragment() {
     }
@@ -250,7 +251,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 mRewards.clear();
                 mRewards.addAll(pdRewards);
                 mRecyclerViewAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
                 noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
 
                 if (mLocation == null) {
@@ -266,6 +266,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 if (mLocation != null) {
                     updateListDistances(mLocation);
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -276,9 +277,13 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void updateListDistances(final Location location) {
+        if (mUpdatingDistances) {
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
+                mUpdatingDistances = true;
                 Location rewardLocation;
                 for (PDReward reward : mRewards) {
                     if (reward.getLocations() == null) {
@@ -322,6 +327,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                         });
                     }
                 }
+                mUpdatingDistances = false;
             }
         }).start();
     }
@@ -368,7 +374,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             PDLog.d(getClass(), "location: " + location.toString());
             PDUtils.updateSavedUserLocation(location);
 
-            if (mRecyclerViewAdapter.getItemCount() > 0) {
+            if (mRecyclerViewAdapter.getItemCount() > 0 && !mSwipeRefreshLayout.isRefreshing()) {
                 updateListDistances(location);
             }
 
