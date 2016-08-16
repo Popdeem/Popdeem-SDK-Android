@@ -86,10 +86,10 @@ public interface PopdeemAPI {
             @Body TypedInput body,
             Callback<PDUser> callback);
 
-    @GET(PDAPIConfig.PD_INSTAGRAM_PATH + "/users/self")
-    void checkInstagramAccessToken(
-            @Query("access_token") String accessToken,
-            Callback<JsonObject> callback);
+    @POST(PDAPIConfig.PD_USERS_PATH + "/disconnect_social_account")
+    void disconnectSocialAccount(
+            @Body TypedInput body,
+            Callback<PDUser> callback);
 
     @PUT(PDAPIConfig.PD_USERS_PATH + "/{id}")
     void updateUserLocationAndDeviceToken(

@@ -65,7 +65,10 @@ public class PDUISettingsRecyclerViewAdapter extends RecyclerView.Adapter<PDUISe
         PDUISettingsActivity.PDSettingsSocialNetwork network = mItems.get(position);
         holder.networkTextView.setText(network.getName());
         holder.networkTextView.setCompoundDrawablesWithIntrinsicBounds(network.getDrawableRes(), 0, 0, 0);
+
+        holder.networkSwitch.setOnCheckedChangeListener(null);
         holder.networkSwitch.setChecked(network.isValidated());
+        holder.networkSwitch.setOnCheckedChangeListener(holder.checkedChangeListener);
     }
 
     @Override
@@ -77,19 +80,21 @@ public class PDUISettingsRecyclerViewAdapter extends RecyclerView.Adapter<PDUISe
 
         TextView networkTextView;
         SwitchCompat networkSwitch;
+        CompoundButton.OnCheckedChangeListener checkedChangeListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
             networkTextView = (TextView) itemView.findViewById(R.id.pd_settings_item_social_network_text_view);
             networkSwitch = (SwitchCompat) itemView.findViewById(R.id.pd_settings_item_switch);
-            networkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mCallback != null) {
                         mCallback.onSwitchCheckedChange(getLayoutPosition(), isChecked);
                     }
                 }
-            });
+            };
+            networkSwitch.setOnCheckedChangeListener(checkedChangeListener);
         }
     }
 

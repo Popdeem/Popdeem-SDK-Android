@@ -31,13 +31,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserInstagram;
+import com.popdeem.sdk.core.realm.PDRealmUserTwitter;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.adapter.PDUISettingsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
@@ -46,8 +52,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 
-public class PDUISettingsActivity extends PDBaseActivity {
+public class PDUISettingsActivity extends PDBaseActivity implements PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback {
 
     private ArrayList<PDSettingsSocialNetwork> mItems = new ArrayList<>();
     private PDUISettingsRecyclerViewAdapter mAdapter;
@@ -62,9 +69,14 @@ public class PDUISettingsActivity extends PDBaseActivity {
         setContentView(R.layout.activity_pd_settings);
 
         mFragmentManager = getSupportFragmentManager();
-
         mRealm = Realm.getDefaultInstance();
         mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+        mUser.addChangeListener(new RealmChangeListener<PDRealmUserDetails>() {
+            @Override
+            public void onChange(PDRealmUserDetails userDetails) {
+                mUser = userDetails;
+            }
+        });
 
         if (mUser != null) {
             TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
@@ -88,20 +100,82 @@ public class PDUISettingsActivity extends PDBaseActivity {
             }
         }
 
-        mAdapter = new PDUISettingsRecyclerViewAdapter(new PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback() {
-            @Override
-            public void onSwitchCheckedChange(int position, boolean isChecked) {
-                PDLog.d(PDUISettingsActivity.class, "onSwitchCheckedChange: " + position);
-            }
-        }, mItems);
+        mAdapter = new PDUISettingsRecyclerViewAdapter(this, mItems);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.pd_settings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-
-        addListItems();
+        refreshList();
     }
 
-    private void addListItems() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mRealm.removeAllChangeListeners();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mRealm != null) {
+            mRealm.close();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (!popBackStackIfNeeded()) {
+                finish();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //********************************************************************
+    //      Disconnect Social Account Methods
+    //********************************************************************
+
+    private void disconnectFacebook(final int position) {
+        // TODO Facebook
+    }
+
+    private void disconnectTwitter(PDRealmUserTwitter twitterParams, final int position) {
+        PDAPIClient.instance().disconnectTwitterAccount(twitterParams.getAccessToken(), twitterParams.getAccessSecret(), twitterParams.getTwitterId(), new PDAPICallback<PDUser>() {
+            @Override
+            public void success(PDUser user) {
+                PDUtils.updateSavedUser(user);
+                Toast.makeText(PDUISettingsActivity.this, "Twitter disconnected.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUISettingsActivity.class, "disconnectTwitter:error: " + statusCode + " msg: " + e.getLocalizedMessage());
+                mItems.get(position).setValidated(true);
+                mAdapter.notifyItemChanged(position);
+            }
+        });
+    }
+
+    private void disconnectInstagram(PDRealmUserInstagram instagramParams, final int position) {
+        PDAPIClient.instance().disconnectInstagramAccount(instagramParams.getAccessToken(), instagramParams.getInstagramId(), instagramParams.getScreenName(), new PDAPICallback<PDUser>() {
+            @Override
+            public void success(PDUser user) {
+                PDUtils.updateSavedUser(user);
+                Toast.makeText(PDUISettingsActivity.this, "Instagram disconnected.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUISettingsActivity.class, "disconnectInstagram:error: " + statusCode + " msg: " + e.getLocalizedMessage());
+                mItems.get(position).setValidated(true);
+                mAdapter.notifyItemChanged(position);
+            }
+        });
+    }
+
+    private void refreshList() {
+        mItems.clear();
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
@@ -109,9 +183,14 @@ public class PDUISettingsActivity extends PDBaseActivity {
 
         PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
             @Override
-            public void success(Boolean loggedIn) {
-                mItems.get(mItems.size() - 1).setValidated(loggedIn);
-                mAdapter.notifyItemChanged(mItems.size() - 1);
+            public void success(final Boolean loggedIn) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mItems.get(mItems.size() - 1).setValidated(loggedIn);
+                        mAdapter.notifyItemChanged(mItems.size() - 1);
+                    }
+                });
             }
 
             @Override
@@ -130,24 +209,28 @@ public class PDUISettingsActivity extends PDBaseActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (!popBackStackIfNeeded()) {
-                finish();
+    public void onSwitchCheckedChange(int position, boolean isChecked) {
+        PDLog.d(PDUISettingsActivity.class, "onSwitchCheckedChange:(" + position + ") " + isChecked);
+        PDSettingsSocialNetwork network = mItems.get(position);
+        if (!isChecked) {
+            if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK)) {
+                // TODO Facebook
+            } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER)) {
+                disconnectTwitter(mUser.getUserTwitter(), position);
+            } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
+                disconnectInstagram(mUser.getUserInstagram(), position);
             }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mRealm != null) {
-            mRealm.close();
+        } else {
+            network.setValidated(false);
+            mAdapter.notifyItemChanged(position);
+            // TODO connect social account
         }
     }
 
+
+    /**
+     * Class used to fill recycler view.
+     */
     public class PDSettingsSocialNetwork {
         private String name;
         private boolean validated;

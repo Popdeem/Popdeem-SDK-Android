@@ -367,6 +367,68 @@ public class PDAPIClient {
 
 
     /**
+     * Disconnect users Twitter account
+     *
+     * @param accessToken  Twitter access token
+     * @param accessSecret Twitter access secret
+     * @param twitterId    Users Twitter account ID
+     * @param callback     {@link PDAPICallback} for API result
+     */
+    public void disconnectTwitterAccount(String accessToken, String accessSecret, String twitterId, @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject twitterJson = new JsonObject();
+        twitterJson.addProperty("access_token", accessToken);
+        twitterJson.addProperty("access_secret", accessSecret);
+        twitterJson.addProperty("id", twitterId);
+
+        JsonObject userJson = new JsonObject();
+        userJson.add("twitter", twitterJson);
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.add("user", userJson);
+
+        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.disconnectSocialAccount(body, callback);
+    }
+
+
+    /**
+     * Disconnect users Instagram Account
+     *
+     * @param accessToken Instagram access token
+     * @param instagramId Users Instagram account ID
+     * @param screenName  Users Instagram screen name
+     * @param callback    {@link PDAPICallback} for API result
+     */
+    public void disconnectInstagramAccount(String accessToken, String instagramId, String screenName, @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject twitterJson = new JsonObject();
+        twitterJson.addProperty("access_token", accessToken);
+        twitterJson.addProperty("screen_name", screenName);
+        twitterJson.addProperty("id", instagramId);
+
+        JsonObject userJson = new JsonObject();
+        userJson.add("instagram", twitterJson);
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.add("user", userJson);
+
+        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.disconnectSocialAccount(body, callback);
+    }
+
+
+    /**
      * Update the Users Location and Device token
      *
      * @param id          - User ID
