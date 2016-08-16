@@ -53,6 +53,10 @@ public class PDBaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar == null) {
+            return;
+        }
+
         toolbar.setNavigationIcon(PDUIColorUtils.getBackButtonIcon(this));
         setSupportActionBar(toolbar);
 
@@ -64,22 +68,10 @@ public class PDBaseActivity extends AppCompatActivity {
 
     public void showBasicOKAlertDialog(@StringRes int titleRes, String message) {
         PDUIDialogUtils.showBasicOKAlertDialog(this, titleRes, message);
-//        new AlertDialog.Builder(this)
-//                .setTitle(titleRes)
-//                .setMessage(message)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .create()
-//                .show();
     }
 
     public void showBasicOKAlertDialog(@StringRes int titleRes, @StringRes int messageRes) {
         PDUIDialogUtils.showBasicOKAlertDialog(this, titleRes, messageRes);
-//        new AlertDialog.Builder(this)
-//                .setTitle(titleRes)
-//                .setMessage(messageRes)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .create()
-//                .show();
     }
 
 }

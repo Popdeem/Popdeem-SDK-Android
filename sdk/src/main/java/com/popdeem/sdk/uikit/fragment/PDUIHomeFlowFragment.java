@@ -33,9 +33,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
+import com.popdeem.sdk.uikit.activity.PDUISettingsActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIHomeFlowPagerAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
@@ -66,6 +68,15 @@ public class PDUIHomeFlowFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), PDUIInboxActivity.class));
+            }
+        });
+
+        ImageButton settingsButton = (ImageButton) view.findViewById(R.id.pd_home_flow_settings_image_button);
+        settingsButton.setImageDrawable(PDUIColorUtils.getSettingsIcon(getActivity()));
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), PDUISettingsActivity.class));
             }
         });
 

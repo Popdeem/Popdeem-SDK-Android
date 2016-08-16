@@ -32,6 +32,8 @@
     <dimen name="pd_feed_shared_image_dimen">100dp</dimen>
     <dimen name="pd_feed_profile_image_dimen">60dp</dimen>
 
+    <dimen name="pd_settings_image_dimen">90dp</dimen>
+
     <dimen name="pd_reward_item_image_dimen">60dp</dimen>
 
     <dimen name="pd_notification_dialog_image_dimen">100dp</dimen>

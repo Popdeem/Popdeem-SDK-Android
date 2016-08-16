@@ -31,6 +31,10 @@
     <string name="pd_home_banner_text">Share your Popdeem experience on social networks to earn more rewards.</string>
 
 
+    <!-- Settings -->
+    <string name="pd_settings_social_networks_heading_text">SOCIAL NETWORKS</string>
+
+
     <!-- Rewards -->
     <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
 

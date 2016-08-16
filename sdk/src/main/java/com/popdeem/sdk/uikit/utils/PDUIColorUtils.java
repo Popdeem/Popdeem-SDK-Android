@@ -58,6 +58,10 @@ public class PDUIColorUtils {
         return getTintedDrawable(context, R.drawable.pd_divider, color, true);
     }
 
+    public static Drawable getSettingsIcon(Context context) {
+        return getTintedDrawable(context, R.drawable.ic_pd_settings, R.color.pd_home_flow_settings_icon_color, false);
+    }
+
     public static Drawable getTintedDrawable(Context context, @DrawableRes int drawableRes, @ColorRes int colorRes, boolean mutate) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableRes);
         if (drawable == null) {

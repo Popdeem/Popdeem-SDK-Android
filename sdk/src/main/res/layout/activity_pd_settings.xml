@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2015 Popdeem
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.popdeem.sdk.uikit.activity.PDUISettingsActivity">
+
+    <include layout="@layout/pd_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pd_toolbar_color"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
+            android:id="@+id/pd_settings_user_image_view"
+            android:layout_width="@dimen/pd_settings_image_dimen"
+            android:layout_height="@dimen/pd_settings_image_dimen"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:maskDrawable="@drawable/circle_mask"
+            tools:src="@drawable/pd_ui_default_user" />
+
+        <TextView
+            android:id="@+id/pd_settings_user_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@color/pd_toolbar_text_color"
+            android:textSize="16sp"
+            tools:text="Users Name" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="@string/pd_settings_social_networks_heading_text"
+        android:textColor="@color/pd_settings_social_networks_header_color" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pd_settings_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

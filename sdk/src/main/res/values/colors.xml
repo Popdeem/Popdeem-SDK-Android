@@ -26,6 +26,11 @@
     <!-- Home Flow -->
     <color name="pd_home_flow_banner_text_color">#ffffff</color>
     <color name="pd_home_flow_banner_bg_color">#cc4752</color>
+    <color name="pd_home_flow_settings_icon_color">#ffffff</color>
+
+
+    <!-- Settings -->
+    <color name="pd_settings_social_networks_header_color">#56575c</color>
 
 
     <!-- Inbox / Message Center Colors -->
