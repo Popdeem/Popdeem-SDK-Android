@@ -386,6 +386,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     @Override
                     public void success(PDUser user) {
                         PDLog.d(PDUIRewardsFragment.class, "user: " + user.toString());
+                        PDUtils.updateSavedUser(user);
                     }
 
                     @Override

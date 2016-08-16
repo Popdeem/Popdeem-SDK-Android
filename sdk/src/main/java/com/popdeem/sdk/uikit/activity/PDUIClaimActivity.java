@@ -663,15 +663,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 session.getAuthToken().token, session.getAuthToken().secret, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
-                        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                        userDetails.setUid(0);
-
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealmOrUpdate(userDetails);
-                        realm.commitTransaction();
-                        realm.close();
-
+                        PDUtils.updateSavedUser(user);
                         post(addImage);
                     }
 
@@ -717,14 +709,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(), instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {
-                PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                userDetails.setUid(0);
-
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(userDetails);
-                realm.commitTransaction();
-                realm.close();
+                PDUtils.updateSavedUser(user);
             }
 
             @Override

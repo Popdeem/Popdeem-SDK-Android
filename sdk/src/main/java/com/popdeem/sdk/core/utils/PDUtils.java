@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 
 import com.popdeem.sdk.core.PopdeemSDK;
+import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 
@@ -144,6 +145,27 @@ public class PDUtils {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(userLocation);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+
+    /**
+     * Update the saved user details
+     *
+     * @param user New User data
+     */
+    public static void updateSavedUser(PDUser user) {
+        if (user == null) {
+            return;
+        }
+
+        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
+        userDetails.setUid(0);
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(userDetails);
         realm.commitTransaction();
         realm.close();
     }

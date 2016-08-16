@@ -253,14 +253,7 @@ public final class PopdeemSDK {
                 PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
-                        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                        userDetails.setUid(0);
-
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealmOrUpdate(userDetails);
-                        realm.commitTransaction();
-                        realm.close();
+                        PDUtils.updateSavedUser(user);
                     }
 
                     @Override
@@ -395,14 +388,7 @@ public final class PopdeemSDK {
             PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetailsRealm.getId(), gcmToken, String.valueOf(lat), String.valueOf(lng), new PDAPICallback<PDUser>() {
                 @Override
                 public void success(PDUser user) {
-                    PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                    userDetails.setUid(0);
-
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.copyToRealmOrUpdate(userDetails);
-                    realm.commitTransaction();
-                    realm.close();
+                    PDUtils.updateSavedUser(user);
                 }
 
                 @Override

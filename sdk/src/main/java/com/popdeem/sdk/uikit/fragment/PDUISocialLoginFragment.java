@@ -78,7 +78,7 @@ public class PDUISocialLoginFragment extends Fragment {
     private PDLocationManager mLocationManager;
 
     private ProgressBar mProgress;
-//    private TextView mHeaderTextView;
+    //    private TextView mHeaderTextView;
     private TextView mRewardsInfoTextView;
     private Button mContinueButton;
     //    private LoginButton mLoginButton;
@@ -171,39 +171,6 @@ public class PDUISocialLoginFragment extends Fragment {
             }
         });
 
-//        mLoginButton = (LoginButton) view.findViewById(R.id.pd_fb_login_button);
-//        mLoginButton.setReadPermissions(Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
-//        mLoginButton.setFragment(this);
-//        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
-//                checkForLocationPermissionAndStartLocationManager();
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
-//                new AlertDialog.Builder(getActivity())
-//                        .setTitle(R.string.pd_error_title_text)
-//                        .setMessage(R.string.pd_facebook_login_cancelled_error_message)
-//                        .setPositiveButton(android.R.string.ok, null)
-//                        .create()
-//                        .show();
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
-//                new AlertDialog.Builder(getActivity())
-//                        .setTitle(R.string.pd_error_title_text)
-//                        .setMessage(error.getMessage())
-//                        .setPositiveButton(android.R.string.ok, null)
-//                        .create()
-//                        .show();
-//            }
-//        });
-
         return view;
     }
 
@@ -272,15 +239,7 @@ public class PDUISocialLoginFragment extends Fragment {
             public void success(PDUser user) {
                 PDLog.d(PDUISocialLoginFragment.class, "registered with Facebook: " + user.toString());
 
-                PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                userDetails.setUid(0);
-
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(userDetails);
-                realm.commitTransaction();
-                realm.close();
-
+                PDUtils.updateSavedUser(user);
                 updateUser(location);
             }
 
@@ -323,14 +282,7 @@ public class PDUISocialLoginFragment extends Fragment {
             public void success(PDUser user) {
                 PDLog.d(PDUISocialLoginFragment.class, "update user: " + user);
 
-                PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                userDetails.setUid(0);
-
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(userDetails);
-                realm.commitTransaction();
-                realm.close();
+                PDUtils.updateSavedUser(user);
 
                 // Send broadcast to any registered receivers that user has logged in
                 getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
