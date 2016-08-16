@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
@@ -136,8 +137,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     //      Disconnect Social Account Methods
     //********************************************************************
 
-    private void disconnectFacebook(final int position) {
-        // TODO Facebook
+    private void disconnectFacebook() {
+        LoginManager.getInstance().logOut();
     }
 
     private void disconnectTwitter(PDRealmUserTwitter twitterParams, final int position) {
@@ -212,15 +213,15 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     public void onSwitchCheckedChange(int position, boolean isChecked) {
         PDLog.d(PDUISettingsActivity.class, "onSwitchCheckedChange:(" + position + ") " + isChecked);
         PDSettingsSocialNetwork network = mItems.get(position);
-        if (!isChecked) {
+        if (!isChecked) { // Disconnect
             if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK)) {
-                // TODO Facebook
+                disconnectFacebook();
             } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER)) {
                 disconnectTwitter(mUser.getUserTwitter(), position);
             } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
                 disconnectInstagram(mUser.getUserInstagram(), position);
             }
-        } else {
+        } else { // Connect
             network.setValidated(false);
             mAdapter.notifyItemChanged(position);
             // TODO connect social account
