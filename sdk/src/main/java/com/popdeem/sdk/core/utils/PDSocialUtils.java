@@ -302,6 +302,23 @@ public class PDSocialUtils {
         return isFabricInitialisedWithTwitter() && Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
     }
 
+    public static boolean userHasTwitterCredentials() {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+
+        boolean hasCreds = false;
+        if (userDetails != null && userDetails.getUserTwitter() != null) {
+            String accessToken = userDetails.getUserTwitter().getAccessToken();
+            String accessSecret = userDetails.getUserTwitter().getAccessSecret();
+            if (accessToken != null && !accessToken.isEmpty() && accessSecret != null && !accessSecret.isEmpty()) {
+                hasCreds = true;
+            }
+        }
+        realm.close();
+
+        return hasCreds;
+    }
+
     /**
      * Get Twitter Consumer Key from AndroidManifest Meta Data
      *

@@ -33,8 +33,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.adapter.PDUISettingsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
@@ -85,26 +88,36 @@ public class PDUISettingsActivity extends PDBaseActivity {
             }
         }
 
-        addListItems();
         mAdapter = new PDUISettingsRecyclerViewAdapter(new PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback() {
             @Override
             public void onSwitchCheckedChange(int position, boolean isChecked) {
-
+                PDLog.d(PDUISettingsActivity.class, "onSwitchCheckedChange: " + position);
             }
         }, mItems);
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.pd_settings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
+
+        addListItems();
     }
 
     private void addListItems() {
-        if (mItems == null) {
-            mItems = new ArrayList<>();
-        }
-        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, false, R.drawable.pd_facebook_icon_small));
-        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, false, R.drawable.pd_twitter_icon_small));
+        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
+        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
+        mAdapter.notifyDataSetChanged();
+
+        PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+            @Override
+            public void success(Boolean loggedIn) {
+                mItems.get(mItems.size() - 1).setValidated(loggedIn);
+                mAdapter.notifyItemChanged(mItems.size() - 1);
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+            }
+        });
     }
 
     private boolean popBackStackIfNeeded() {
