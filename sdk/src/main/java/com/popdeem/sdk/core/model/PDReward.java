@@ -98,7 +98,11 @@ public class PDReward {
     private boolean instagramVerified;
     private ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks;
 
+    // Only used for display purposes in wallet
+    private boolean verifying;
+
     public PDReward() {
+        verifying = false;
     }
 
     public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified) {
@@ -315,6 +319,14 @@ public class PDReward {
 
     public void setClaimingSocialNetworks(ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks) {
         this.claimingSocialNetworks = claimingSocialNetworks;
+    }
+
+    public boolean isVerifying() {
+        return verifying;
+    }
+
+    public void setVerifying(boolean verifying) {
+        this.verifying = verifying;
     }
 
     public boolean claimedUsingNetwork(@PDReward.PDSocialMediaType String network) {

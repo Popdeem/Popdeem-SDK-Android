@@ -132,8 +132,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
             if (!reward.isInstagramVerified()) {
                 holder.verifyContainer.setVisibility(View.VISIBLE);
-                holder.verifyProgress.setVisibility(View.INVISIBLE);
-                holder.verifyButton.setVisibility(View.VISIBLE);
+                holder.verifyProgress.setVisibility(reward.isVerifying() ? View.VISIBLE : View.INVISIBLE);
+                holder.verifyButton.setVisibility(reward.isVerifying() ? View.INVISIBLE : View.VISIBLE);
                 holder.subTitleTextView.setText(R.string.pd_wallet_reward_must_be_verified_text);
             }
         }
@@ -141,7 +141,11 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
     @Override
     public int getItemCount() {
-        return this.mItems == null ? 0 : this.mItems.size() + 1;
+        int count = 0;
+        if (this.mItems != null && this.mItems.size() > 0) {
+            count = this.mItems.size() + 1;
+        }
+        return count;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -179,8 +183,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        verifyProgress.setVisibility(View.VISIBLE);
-                        verifyButton.setVisibility(View.INVISIBLE);
+//                        verifyProgress.setVisibility(View.VISIBLE);
+//                        verifyButton.setVisibility(View.INVISIBLE);
                         mListener.onVerifyClick(getLayoutPosition());
                     }
                 }

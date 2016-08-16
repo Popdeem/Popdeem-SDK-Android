@@ -70,6 +70,8 @@ public class PDUIWalletFragment extends Fragment {
     private ArrayList<PDReward> mRewards = new ArrayList<>();
     private View mNoItemsInWalletView;
 
+    private String mAutoVerifyRewardId = null;
+
     public PDUIWalletFragment() {
     }
 
@@ -148,6 +150,9 @@ public class PDUIWalletFragment extends Fragment {
 
                 @Override
                 public void onVerifyClick(int position) {
+                    PDReward reward = mRewards.get(position);
+                    reward.setVerifying(true);
+                    mAdapter.notifyItemChanged(position);
                     verifyReward(position);
                 }
             });
@@ -170,6 +175,7 @@ public class PDUIWalletFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        PDLog.d(getClass(), "wallet_onResume");
         getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
     }
 
@@ -222,12 +228,14 @@ public class PDUIWalletFragment extends Fragment {
                     String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
                 }
+                reward.setVerifying(false);
                 mAdapter.notifyItemChanged(position);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
+                reward.setVerifying(false);
                 mAdapter.notifyItemChanged(position);
                 String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
                 PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
@@ -247,10 +255,18 @@ public class PDUIWalletFragment extends Fragment {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
                 // If a reward has been revoked, remove it from the users wallet
+                int verifyingRewardIndex = -1;
                 for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
                     PDReward r = iterator.next();
                     if (r.getRevoked().equalsIgnoreCase("true")) {
                         iterator.remove();
+                        continue;
+                    }
+
+                    if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
+                        r.setVerifying(true);
+                        verifyingRewardIndex = pdRewards.indexOf(r);
+                        mAutoVerifyRewardId = null;
                     }
                 }
 
@@ -259,6 +275,10 @@ public class PDUIWalletFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+                if (verifyingRewardIndex != -1) {
+                    verifyReward(verifyingRewardIndex);
+                }
             }
 
             @Override
@@ -266,6 +286,13 @@ public class PDUIWalletFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    public void autoVerifyReward(String rewardId) {
+        mAutoVerifyRewardId = rewardId;
+        if (!mSwipeRefreshLayout.isRefreshing()) {
+            refreshWallet();
+        }
     }
 
 }

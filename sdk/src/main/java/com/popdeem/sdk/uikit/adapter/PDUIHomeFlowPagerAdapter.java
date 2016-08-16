@@ -85,4 +85,11 @@ public class PDUIHomeFlowPagerAdapter extends FragmentStatePagerAdapter {
         return TITLES[position];
     }
 
+    public Fragment getFragmentAtPosition(int position) {
+        if (position > mFragments.size() - 1) {
+            return null;
+        }
+        return mFragments.get(position);
+    }
+
 }

@@ -77,6 +77,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -357,7 +358,9 @@ public class PDAPIClient {
 
             @Override
             public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                ResponseBody body = response.body();
                 callback.success(response.code() == 200);
+                body.close();
             }
         });
     }

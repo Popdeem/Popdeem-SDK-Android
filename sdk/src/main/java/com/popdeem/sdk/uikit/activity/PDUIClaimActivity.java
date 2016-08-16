@@ -473,7 +473,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         // Check if at least one network is selected
-        if (!mFacebookSwitch.isChecked() && !mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()/*!mFacebookOptionEnabled && !mTwitterOptionEnabled*/) {
+        if (!mFacebookSwitch.isChecked() && !mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()) {
             showBasicOKAlertDialog(R.string.pd_claim_no_network_selected_title_text, R.string.pd_claim_no_network_selected_message_text);
             return;
         }
@@ -617,6 +617,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent data = new Intent();
                                         data.putExtra("id", mReward.getId());
+                                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
                                         setResult(RESULT_OK, data);
                                         finish();
                                     }

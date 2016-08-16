@@ -27,6 +27,7 @@ package com.popdeem.sdk.uikit.fragment;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -209,7 +210,15 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.pd_claim_reward_claimed_text)
                             .setMessage(R.string.pd_claim_reward_claimed_success_text)
-                            .setPositiveButton(android.R.string.ok, null)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+                                        PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+                                        parent.switchToWallet();
+                                    }
+                                }
+                            })
                             .create()
                             .show();
                 }
@@ -340,6 +349,10 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                         break;
                     }
                 }
+            }
+            if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+                PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+                parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -44,11 +44,16 @@ import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
  */
 public class PDUIHomeFlowFragment extends Fragment {
 
-    public PDUIHomeFlowFragment() {
-    }
-
     public static PDUIHomeFlowFragment newInstance() {
         return new PDUIHomeFlowFragment();
+    }
+
+    private boolean mMoveToWallet = false;
+    private String mAutoVerifyRewardId = null;
+    private TabLayout mTabLayout;
+    private PDUIHomeFlowPagerAdapter mAdapter;
+
+    public PDUIHomeFlowFragment() {
     }
 
     @Override
@@ -64,12 +69,44 @@ public class PDUIHomeFlowFragment extends Fragment {
             }
         });
 
+        mAdapter = new PDUIHomeFlowPagerAdapter(getChildFragmentManager(), getActivity());
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
-        viewPager.setAdapter(new PDUIHomeFlowPagerAdapter(getChildFragmentManager(), getActivity()));
+        viewPager.setAdapter(mAdapter);
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
+        mTabLayout.setupWithViewPager(viewPager);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMoveToWallet) {
+            mMoveToWallet = false;
+            if (switchToWallet()) {
+                if (mAutoVerifyRewardId != null) {
+                    PDUIWalletFragment walletFragment = (PDUIWalletFragment) mAdapter.getFragmentAtPosition(mTabLayout.getTabCount() - 1);
+                    if (walletFragment != null) {
+                        walletFragment.autoVerifyReward(mAutoVerifyRewardId);
+                        mAutoVerifyRewardId = null;
+                    }
+                }
+            }
+        }
+    }
+
+    public void switchToWalletForVerify(boolean verificationNeeded, String rewardId) {
+        mMoveToWallet = true;
+        mAutoVerifyRewardId = verificationNeeded ? rewardId : null;
+    }
+
+    public boolean switchToWallet() {
+        TabLayout.Tab walletTab = mTabLayout.getTabAt(mTabLayout.getTabCount() - 1);
+        if (walletTab != null) {
+            walletTab.select();
+            return true;
+        }
+        return false;
     }
 
 }
