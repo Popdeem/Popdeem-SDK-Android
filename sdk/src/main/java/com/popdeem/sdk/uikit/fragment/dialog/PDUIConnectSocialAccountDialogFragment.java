@@ -24,163 +24,145 @@
 
 package com.popdeem.sdk.uikit.fragment.dialog;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.popdeem.sdk.R;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by mikenolan on 05/08/16.
  */
+@Deprecated
 public class PDUIConnectSocialAccountDialogFragment extends DialogFragment {
 
-    public interface ConnectSocialAccountCallback {
-        void connectClick();
-
-        void dialogDismissed();
-    }
-
-    @IntDef({PD_CONNECT_FACEBOOK_DIALOG, PD_CONNECT_TWITTER_DIALOG, PD_CONNECT_INSTAGRAM_DIALOG})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface PDConnectSocialAccountType {
-    }
-
-    public static final int PD_CONNECT_FACEBOOK_DIALOG = 0;
-    public static final int PD_CONNECT_TWITTER_DIALOG = 1;
-    public static final int PD_CONNECT_INSTAGRAM_DIALOG = 2;
-
-    public static void showDialog(FragmentManager fm, @PDConnectSocialAccountType int type, @NonNull ConnectSocialAccountCallback callback) {
-        Fragment prev = fm.findFragmentByTag(getName());
-        if (prev != null) {
-            fm.beginTransaction().remove(prev).addToBackStack(null).commit();
-        }
-
-        PDUIConnectSocialAccountDialogFragment dialog = PDUIConnectSocialAccountDialogFragment.newInstance(type, callback);
-        dialog.show(fm, getName());
-    }
-
-    public static PDUIConnectSocialAccountDialogFragment newInstance(@PDConnectSocialAccountType int type, @NonNull ConnectSocialAccountCallback callback) {
-        Bundle args = new Bundle();
-        args.putInt("type", type);
-
-        PDUIConnectSocialAccountDialogFragment fragment = new PDUIConnectSocialAccountDialogFragment();
-        fragment.setCallback(callback);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    private int mType = PD_CONNECT_FACEBOOK_DIALOG;
-    private ConnectSocialAccountCallback mCallback;
-    private boolean mUserClickConnect = false;
-
+    //    public interface ConnectSocialAccountCallback {
+//        void connectClick();
+//
+//        void dialogDismissed();
+//    }
+//
+////    @IntDef({PD_CONNECT_FACEBOOK_DIALOG, PD_CONNECT_TWITTER_DIALOG, PD_CONNECT_INSTAGRAM_DIALOG})
+////    @Retention(RetentionPolicy.SOURCE)
+////    public @interface PDConnectSocialAccountType {
+////    }
+////
+////    public static final int PD_CONNECT_FACEBOOK_DIALOG = 0;
+////    public static final int PD_CONNECT_TWITTER_DIALOG = 1;
+////    public static final int PD_CONNECT_INSTAGRAM_DIALOG = 2;
+//
+//    public static void showDialog(FragmentManager fm, /*@PDConnectSocialAccountType*/ int type, @NonNull ConnectSocialAccountCallback callback) {
+//        Fragment prev = fm.findFragmentByTag(getName());
+//        if (prev != null) {
+//            fm.beginTransaction().remove(prev).addToBackStack(null).commit();
+//        }
+//
+//        PDUIConnectSocialAccountDialogFragment dialog = PDUIConnectSocialAccountDialogFragment.newInstance(type, callback);
+//        dialog.show(fm, getName());
+//    }
+//
+//    public static PDUIConnectSocialAccountDialogFragment newInstance(/*@PDConnectSocialAccountType*/ int type, @NonNull ConnectSocialAccountCallback callback) {
+//        Bundle args = new Bundle();
+//        args.putInt("type", type);
+//
+//        PDUIConnectSocialAccountDialogFragment fragment = new PDUIConnectSocialAccountDialogFragment();
+//        fragment.setCallback(callback);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+//
+////    private int mType = PD_CONNECT_FACEBOOK_DIALOG;
+//    private ConnectSocialAccountCallback mCallback;
+//    private boolean mUserClickConnect = false;
+//
     public PDUIConnectSocialAccountDialogFragment() {
     }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            mType = args.getInt("type", PD_CONNECT_FACEBOOK_DIALOG);
-        }
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_pd_connect_social_account_dialog, null, false);
-        TextView messageTextView = (TextView) dialogView.findViewById(R.id.pd_connect_dialog_title_text_view);
-        messageTextView.setText(getMessageText());
-
-        ImageView imageView = (ImageView) dialogView.findViewById(R.id.pd_connect_dialog_network_image_view);
-        imageView.setImageResource(getImageViewDrawable());
-
-        final Button button = (Button) dialogView.findViewById(R.id.pd_connect_dialog_button);
-        button.setText(getButtonText());
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setView(dialogView);
-
-        final AlertDialog dialog = builder.create();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mUserClickConnect = true;
-                dialog.dismiss();
-                mCallback.connectClick();
-            }
-        });
-
-        return dialog;
-    }
-
-    public void setCallback(@NonNull ConnectSocialAccountCallback callback) {
-        this.mCallback = callback;
-    }
-
-    private String getMessageText() {
-        String network = "";
-        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
-            network = getString(R.string.pd_connect_facebook_title);
-        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
-            network = getString(R.string.pd_connect_twitter_title);
-        } else if (mType == PD_CONNECT_INSTAGRAM_DIALOG) {
-            network = getString(R.string.pd_connect_instagram_title);
-        }
-        return getString(R.string.pd_connect_dialog_message_text, network);
-    }
-
-    @DrawableRes
-    private int getImageViewDrawable() {
-        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
-            return R.drawable.pd_facebook_icon;
-        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
-            return R.drawable.pd_twitter_icon;
-        } else {
-            return R.drawable.pd_instagram_icon;
-        }
-    }
-
-    private String getButtonText() {
-        String network = "";
-        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
-            network = getString(R.string.pd_connect_facebook_title);
-        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
-            network = getString(R.string.pd_connect_twitter_title);
-        } else if (mType == PD_CONNECT_INSTAGRAM_DIALOG) {
-            network = getString(R.string.pd_connect_instagram_title);
-        }
-        return getString(R.string.pd_connect_dialog_button_text, network);
-    }
-
-    public static String getName() {
-        return PDUIConnectSocialAccountDialogFragment.class.getSimpleName();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (!mUserClickConnect) {
-            mCallback.dialogDismissed();
-        }
-    }
+//
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        Bundle args = getArguments();
+////        if (args != null) {
+////            mType = args.getInt("type", PD_CONNECT_FACEBOOK_DIALOG);
+////        }
+//    }
+//
+//    @NonNull
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+//        View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_pd_connect_social_account_dialog, null, false);
+//        TextView messageTextView = (TextView) dialogView.findViewById(R.id.pd_connect_dialog_title_text_view);
+//        messageTextView.setText(getMessageText());
+//
+//        ImageView imageView = (ImageView) dialogView.findViewById(R.id.pd_connect_dialog_network_image_view);
+//        imageView.setImageResource(getImageViewDrawable());
+//
+//        final Button button = (Button) dialogView.findViewById(R.id.pd_connect_dialog_button);
+//        button.setText(getButtonText());
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+//                .setView(dialogView);
+//
+//        final AlertDialog dialog = builder.create();
+//
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mUserClickConnect = true;
+//                dialog.dismiss();
+//                mCallback.connectClick();
+//            }
+//        });
+//
+//        return dialog;
+//    }
+//
+//    public void setCallback(@NonNull ConnectSocialAccountCallback callback) {
+//        this.mCallback = callback;
+//    }
+//
+//    private String getMessageText() {
+//        String network = "";
+////        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
+////            network = getString(R.string.pd_connect_facebook_title);
+////        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
+////            network = getString(R.string.pd_connect_twitter_title);
+////        } else if (mType == PD_CONNECT_INSTAGRAM_DIALOG) {
+////            network = getString(R.string.pd_connect_instagram_title);
+////        }
+//        return getString(R.string.pd_connect_dialog_message_text, network);
+//    }
+//
+//    @DrawableRes
+//    private int getImageViewDrawable() {
+////        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
+////            return R.drawable.pd_facebook_icon;
+////        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
+////            return R.drawable.pd_twitter_icon;
+////        } else {
+////            return R.drawable.pd_instagram_icon;
+////        }
+//        return 0;
+//    }
+//
+//    private String getButtonText() {
+//        String network = "";
+////        if (mType == PD_CONNECT_FACEBOOK_DIALOG) {
+////            network = getString(R.string.pd_connect_facebook_title);
+////        } else if (mType == PD_CONNECT_TWITTER_DIALOG) {
+////            network = getString(R.string.pd_connect_twitter_title);
+////        } else if (mType == PD_CONNECT_INSTAGRAM_DIALOG) {
+////            network = getString(R.string.pd_connect_instagram_title);
+////        }
+//        return getString(R.string.pd_connect_dialog_button_text, network);
+//    }
+//
+//    public static String getName() {
+//        return PDUIConnectSocialAccountDialogFragment.class.getSimpleName();
+//    }
+//
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        super.onDismiss(dialog);
+//        if (!mUserClickConnect) {
+//            mCallback.dialogDismissed();
+//        }
+//    }
 
 }

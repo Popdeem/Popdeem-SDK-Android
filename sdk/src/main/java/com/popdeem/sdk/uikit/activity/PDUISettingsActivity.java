@@ -24,8 +24,10 @@
 
 package com.popdeem.sdk.uikit.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,8 +48,11 @@ import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.adapter.PDUISettingsRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -139,6 +144,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
     private void disconnectFacebook() {
         LoginManager.getInstance().logOut();
+        Toast.makeText(PDUISettingsActivity.this, "Facebook disconnected.", Toast.LENGTH_SHORT).show();
     }
 
     private void disconnectTwitter(PDRealmUserTwitter twitterParams, final int position) {
@@ -146,6 +152,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             @Override
             public void success(PDUser user) {
                 PDUtils.updateSavedUser(user);
+                Twitter.getSessionManager().clearActiveSession();
+                Twitter.logOut();
                 Toast.makeText(PDUISettingsActivity.this, "Twitter disconnected.", Toast.LENGTH_SHORT).show();
             }
 
@@ -209,6 +217,20 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         return false;
     }
 
+    private void showConnectAccountDialog(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type, final int position) {
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(type, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
+            @Override
+            public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                mItems.get(position).setValidated(true);
+                mAdapter.notifyItemChanged(position);
+            }
+        });
+        mFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment, PDUIConnectSocialAccountFragment.getName())
+                .addToBackStack(PDUIConnectSocialAccountFragment.getName())
+                .commit();
+    }
+
     @Override
     public void onSwitchCheckedChange(int position, boolean isChecked) {
         PDLog.d(PDUISettingsActivity.class, "onSwitchCheckedChange:(" + position + ") " + isChecked);
@@ -224,10 +246,26 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         } else { // Connect
             network.setValidated(false);
             mAdapter.notifyItemChanged(position);
-            // TODO connect social account
+            if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK)) {
+                showConnectAccountDialog(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_FACEBOOK, position);
+            } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER)) {
+                showConnectAccountDialog(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_TWITTER, position);
+            } else if (network.getName().equalsIgnoreCase(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
+                showConnectAccountDialog(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM, position);
+            }
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            Fragment fragment = mFragmentManager.findFragmentByTag(PDUIConnectSocialAccountFragment.getName());
+            if (fragment != null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
 
     /**
      * Class used to fill recycler view.

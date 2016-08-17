@@ -69,7 +69,6 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.location.PDLocationValidator;
-import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -79,10 +78,10 @@ import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
+import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIInstagramLoginFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIInstagramShareFragment;
 import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
-import com.popdeem.sdk.uikit.fragment.dialog.PDUIConnectSocialAccountDialogFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
@@ -675,48 +674,17 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void showConnectToInstagramFragment() {
-        PDUIConnectSocialAccountDialogFragment.showDialog(mFragmentManager, PDUIConnectSocialAccountDialogFragment.PD_CONNECT_INSTAGRAM_DIALOG, new PDUIConnectSocialAccountDialogFragment.ConnectSocialAccountCallback() {
+        uncheckSwitchIfChecked(mInstagramSwitch);
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
             @Override
-            public void connectClick() {
-                PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
-                    @Override
-                    public void loggedIn(PDInstagramResponse response) {
-                        mFragmentManager.popBackStack(PDUIInstagramLoginFragment.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        connectInstagramAccount(response);
-                    }
-
-                    @Override
-                    public void error(String message) {
-                        uncheckSwitchIfChecked(mInstagramSwitch);
-                        showBasicOKAlertDialog(R.string.pd_common_sorry_text, message);
-                    }
-                });
-
-                mFragmentManager.beginTransaction()
-                        .replace(R.id.pd_claim_tag_friends_container, fragment, PDUIInstagramLoginFragment.getName())
-                        .addToBackStack(PDUIInstagramLoginFragment.getName())
-                        .commit();
-            }
-
-            @Override
-            public void dialogDismissed() {
-                uncheckSwitchIfChecked(mInstagramSwitch);
+            public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                mInstagramSwitch.setChecked(true);
             }
         });
-    }
-
-    private void connectInstagramAccount(PDInstagramResponse instagramResponse) {
-        PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(), instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), new PDAPICallback<PDUser>() {
-            @Override
-            public void success(PDUser user) {
-                PDUtils.updateSavedUser(user);
-            }
-
-            @Override
-            public void failure(int statusCode, Exception e) {
-                showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_common_something_wrong_text);
-            }
-        });
+        mFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment, PDUIConnectSocialAccountFragment.getName())
+                .addToBackStack(PDUIConnectSocialAccountFragment.getName())
+                .commit();
     }
 
     private File setUpPhotoFile() throws IOException {
@@ -813,6 +781,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             switchCompat.setChecked(false);
         }
     }
+
+//    private void checkSwitchIfNeeded(SwitchCompat switchCompat) {
+//        if (!switchCompat.isChecked()) {
+//            switchCompat.setOnCheckedChangeListener(null);
+//            switchCompat.setChecked(true);
+//            switchCompat.setOnCheckedChangeListener(this);
+//        }
+//    }
 
     /**
      * TextWatcher for message EditText
@@ -990,7 +966,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             checkIsHere(location);
             PDUtils.updateSavedUserLocation(location);
         }
-
         if (locationCounter >= 3) {
             mLocationManager.stop();
         }

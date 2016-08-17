@@ -33,6 +33,7 @@
 
     <!-- Settings -->
     <string name="pd_settings_social_networks_heading_text">SOCIAL NETWORKS</string>
+    <string name="pd_social_connect_connecting_button_text">Connecting…</string>
 
 
     <!-- Rewards -->

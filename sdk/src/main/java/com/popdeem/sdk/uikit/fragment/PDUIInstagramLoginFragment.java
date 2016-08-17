@@ -31,6 +31,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +115,16 @@ public class PDUIInstagramLoginFragment extends Fragment {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new InstagramWebViewClient());
 
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(R.string.pd_claim_connect_instagram_title);
+            }
+        }
+
         loadInstagramUrl();
 
         return view;
@@ -146,6 +160,9 @@ public class PDUIInstagramLoginFragment extends Fragment {
     }
 
     private void authenticateInstagram(String code) {
+        mProgress.setVisibility(View.VISIBLE);
+        mWebView.setVisibility(View.INVISIBLE);
+
         PDLog.d(getClass(), "code=" + code);
 
         OkHttpClient httpClient = new OkHttpClient();
@@ -163,21 +180,36 @@ public class PDUIInstagramLoginFragment extends Fragment {
 
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                PDLog.e(getClass(), "error:" + e.getLocalizedMessage());
-                mCallback.error(e.getLocalizedMessage());
+            public void onFailure(Call call, final IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            PDLog.e(getClass(), "error:" + e.getLocalizedMessage());
+                            mCallback.error(e.getLocalizedMessage());
+                            removeThisFragment();
+                        }
+                    });
+                }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseBody = response.body().string();
                 PDLog.d(getClass(), "response: " + responseBody);
-
-                Gson gson = new GsonBuilder()
-                        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                        .create();
-                PDInstagramResponse instagramResponse = gson.fromJson(responseBody, PDInstagramResponse.class);
-                mCallback.loggedIn(instagramResponse);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Gson gson = new GsonBuilder()
+                                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                                    .create();
+                            PDInstagramResponse instagramResponse = gson.fromJson(responseBody, PDInstagramResponse.class);
+                            mCallback.loggedIn(instagramResponse);
+                            removeThisFragment();
+                        }
+                    });
+                }
             }
         });
     }
@@ -210,5 +242,12 @@ public class PDUIInstagramLoginFragment extends Fragment {
 
     public static String getName() {
         return PDUIInstagramLoginFragment.class.getSimpleName();
+    }
+
+    public void removeThisFragment() {
+        if (!isAdded()) {
+            return;
+        }
+        getActivity().getSupportFragmentManager().popBackStack(getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
