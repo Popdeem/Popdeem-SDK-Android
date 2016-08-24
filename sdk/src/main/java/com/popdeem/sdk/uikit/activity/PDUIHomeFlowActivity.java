@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
 
 /**
@@ -45,6 +46,8 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.pd_home_fragment_container, PDUIHomeFlowFragment.newInstance())
                 .commit();
+
+        PDSocialUtils.refreshFacebookAccessToken();
     }
 
     @Override

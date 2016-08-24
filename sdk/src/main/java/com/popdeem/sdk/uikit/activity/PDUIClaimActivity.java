@@ -673,6 +673,20 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 });
     }
 
+    private void showConnectToFacebookFragment() {
+        uncheckSwitchIfChecked(mFacebookSwitch);
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_FACEBOOK, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
+            @Override
+            public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                mFacebookSwitch.setChecked(true);
+            }
+        });
+        mFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment, PDUIConnectSocialAccountFragment.getName())
+                .addToBackStack(PDUIConnectSocialAccountFragment.getName())
+                .commit();
+    }
+
     private void showConnectToInstagramFragment() {
         uncheckSwitchIfChecked(mInstagramSwitch);
         PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
@@ -846,6 +860,22 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             if (isChecked) {
                 uncheckSwitchIfChecked(mTwitterSwitch);
                 uncheckSwitchIfChecked(mInstagramSwitch);
+
+                // Check if Facebook Access token is valid and if not show connect fragment
+                PDSocialUtils.validateFacebookAccessToken(new PDAPICallback<Boolean>() {
+                    @Override
+                    public void success(Boolean valid) {
+                        PDLog.d(PDUIClaimActivity.class, "validateFacebookAccessToken:success:" + valid);
+                        if (!valid) {
+                            showConnectToFacebookFragment();
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+                        // unused
+                    }
+                });
             }
         } else if (id == R.id.pd_claim_twitter_switch) {
             if (isChecked) {
@@ -861,9 +891,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 // Check user is logged in to Instagram and if not show connect Fragment
                 PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
                     @Override
-                    public void success(Boolean success) {
-                        PDLog.d(PDUIClaimActivity.class, "Instagram access token " + (success ? "valid" : "expired"));
-                        if (!success) {
+                    public void success(Boolean valid) {
+                        PDLog.d(PDUIClaimActivity.class, "Instagram access token " + (valid ? "valid" : "expired"));
+                        if (!valid) {
                             showConnectToInstagramFragment();
                         }
                     }

@@ -32,6 +32,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
@@ -40,6 +42,8 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterSession;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -251,6 +255,36 @@ public class PDSocialUtils {
      */
     public static boolean isLoggedInToFacebook() {
         return AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired();
+    }
+
+
+    /**
+     * Refresh Facebook Access Token.
+     * According to Facebook's docs this may or may not extend the expiration date.
+     * Must be called from the UI Thread.
+     */
+    public static void refreshFacebookAccessToken() {
+        AccessToken.refreshCurrentAccessTokenAsync();
+    }
+
+
+    /**
+     * Check if Facebook Access Token is valid.
+     *
+     * @param callback {@link PDAPICallback} with boolean. Boolean is true if Access Token is valid, false otherwise.
+     */
+    public static void validateFacebookAccessToken(@NonNull final PDAPICallback<Boolean> callback) {
+        if (AccessToken.getCurrentAccessToken() == null) {
+            callback.success(false);
+            return;
+        }
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                callback.success(!object.has("error"));
+            }
+        });
+        request.executeAsync();
     }
 
 
