@@ -32,7 +32,7 @@ Fabric.with(this, PDSocialUtils.getTwitterKitForFabric(this));
 
 ***Fabric should be initialized BEFORE initializing the Popdeem SDK***
 
-Next, [Trigger Login Flow](login_flow.md "Login Flow")
+Next, [Instagram App Setup](instagram_app_setup.md "Login Flow")
 
 ---
 [Docs Home](./ "Docs Home")

@@ -33,22 +33,28 @@
             android:label="@string/pd_empty_string"
             android:screenOrientation="portrait"
             android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme" />
-        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".uikit.activity.PDUISettingsActivity"
+            android:label="@string/pd_empty_string"
+            android:screenOrientation="portrait"
+            android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />
 
         <receiver
-            android:name="com.popdeem.sdk.core.gcm.GCMBroadcastReceiver"
+            android:name=".core.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.popdeem.sdk.core.gcm.GCMIntentService" />
-
+        <service android:name=".core.gcm.GCMIntentService" />
     </application>
 
 </manifest>

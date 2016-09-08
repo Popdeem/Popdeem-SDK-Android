@@ -26,17 +26,31 @@ package com.popdeem.sdk.core.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
 
 /**
  * Created by mikenolan on 23/02/16.
@@ -51,6 +65,153 @@ public class PDSocialUtils {
 
     private static final String TWITTER_CONSUMER_KEY_META_KEY = "TwitterConsumerKey";
     private static final String TWITTER_CONSUMER_SECRET_META_KEY = "TwitterConsumerSecret";
+
+    private static final String INSTAGRAM_CLIENT_ID_KEY = "InstagramClientId";
+    private static final String INSTAGRAM_CLIENT_SECRET_KEY = "InstagramClientSecret";
+    private static final String INSTAGRAM_CALLBACK_URL_KEY = "InstagramCallbackUrl";
+
+    //------------------------------------------------------------------------
+    //                          Instagram Methods
+    //------------------------------------------------------------------------
+
+    /**
+     * Initialise Instagram config.
+     * This will gather the Instagram client ID, secret and callback URL to be used when authenticating an Instagram user.
+     *
+     * @param context Application Context
+     */
+    public static void initInstagram(Context context) {
+        final String clientId = getInstagramClientId(context);
+        final String clientSecret = getInstagramClientSecret(context);
+        final String callbackUrl = getInstagramCallbackUrl(context);
+
+        if (clientId == null || clientSecret == null || callbackUrl == null) {
+            PDLog.w(PDSocialUtils.class, "Could not initialise Instagram");
+            return;
+        }
+
+        PDRealmInstagramConfig config = new PDRealmInstagramConfig();
+        config.setUid(0);
+        config.setInstagramClientId(clientId);
+        config.setInstagramClientSecret(clientSecret);
+        config.setInstagramCallbackUrl(callbackUrl);
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(config);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    /**
+     * Get Instagram Client ID from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramClientId(Context context) {
+        final String clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
+        if (clientId == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client ID in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramClientId\" android:value=\"YOUR_INSTAGRAM_CLIENT_ID\" />");
+            return null;
+        }
+        return clientId;
+    }
+
+    /**
+     * Get Instagram Client Secret from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramClientSecret(Context context) {
+        final String clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
+        if (clientSecret == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramClientSecret\" android:value=\"YOUR_INSTAGRAM_CLIENT_SECRET\" />");
+            return null;
+        }
+        return clientSecret;
+    }
+
+    /**
+     * Get Instagram Client Secret from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getInstagramCallbackUrl(Context context) {
+        final String callbackUrl = PDUtils.getStringFromMetaData(context, INSTAGRAM_CALLBACK_URL_KEY);
+        if (callbackUrl == null) {
+            PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Callback URL in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"InstagramCallbackUrl\" android:value=\"YOUR_INSTAGRAM_CALLBACK_URL\" />");
+            return null;
+        }
+        return callbackUrl;
+    }
+
+
+    /**
+     * Check if user is logged in to Instagram
+     */
+    public static void isInstagramLoggedIn(@NonNull final PDAPICallback<Boolean> callback) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        String accessToken = null;
+        if (userDetails != null && userDetails.getUserInstagram() != null) {
+            accessToken = userDetails.getUserInstagram().getAccessToken();
+        }
+        realm.close();
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            callback.success(false);
+        } else {
+            PDAPIClient.instance().checkInstagramAccessToken(accessToken, new PDAPICallback<Boolean>() {
+                @Override
+                public void success(Boolean success) {
+                    callback.success(success);
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    callback.success(false);
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Check if user has Instagram installed
+     *
+     * @param pm PackageManger
+     * @return true if Instagram is installed, false if it is not
+     */
+    public static boolean hasInstagramAppInstalled(PackageManager pm) {
+        try {
+            pm.getPackageInfo("com.instagram.android", PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create a chooser Intent for sharing an Image file to Instagram
+     *
+     * @param path Path to Image file
+     * @return Chooser Intent
+     */
+    public static Intent createInstagramIntent(String path) {
+        File file = new File(path);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.setPackage("com.instagram.android");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        return intent;
+//        return Intent.createChooser(intent, "Share to");
+    }
 
 
     //------------------------------------------------------------------------
@@ -94,6 +255,36 @@ public class PDSocialUtils {
      */
     public static boolean isLoggedInToFacebook() {
         return AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired();
+    }
+
+
+    /**
+     * Refresh Facebook Access Token.
+     * According to Facebook's docs this may or may not extend the expiration date.
+     * Must be called from the UI Thread.
+     */
+    public static void refreshFacebookAccessToken() {
+        AccessToken.refreshCurrentAccessTokenAsync();
+    }
+
+
+    /**
+     * Check if Facebook Access Token is valid.
+     *
+     * @param callback {@link PDAPICallback} with boolean. Boolean is true if Access Token is valid, false otherwise.
+     */
+    public static void validateFacebookAccessToken(@NonNull final PDAPICallback<Boolean> callback) {
+        if (AccessToken.getCurrentAccessToken() == null) {
+            callback.success(false);
+            return;
+        }
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                callback.success(!object.has("error"));
+            }
+        });
+        request.executeAsync();
     }
 
 
@@ -143,6 +334,23 @@ public class PDSocialUtils {
 
     public static boolean isTwitterLoggedIn() {
         return isFabricInitialisedWithTwitter() && Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
+    }
+
+    public static boolean userHasTwitterCredentials() {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+
+        boolean hasCreds = false;
+        if (userDetails != null && userDetails.getUserTwitter() != null) {
+            String accessToken = userDetails.getUserTwitter().getAccessToken();
+            String accessSecret = userDetails.getUserTwitter().getAccessSecret();
+            if (accessToken != null && !accessToken.isEmpty() && accessSecret != null && !accessSecret.isEmpty()) {
+                hasCreds = true;
+            }
+        }
+        realm.close();
+
+        return hasCreds;
     }
 
     /**

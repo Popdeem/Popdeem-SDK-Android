@@ -27,6 +27,7 @@ package com.popdeem.sdk.uikit.fragment;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -89,6 +90,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
     private PDLocationManager mLocationManager;
     private Location mLocation = null;
+    private boolean mUpdatingDistances = false;
 
     public PDUIRewardsFragment() {
     }
@@ -185,7 +187,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
         realm.close();
 
-        PDAPIClient.instance().claimReward(getActivity(), null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
+        PDAPIClient.instance().claimReward(getActivity(), null, null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
                 progress.dismiss();
@@ -209,7 +211,15 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.pd_claim_reward_claimed_text)
                             .setMessage(R.string.pd_claim_reward_claimed_success_text)
-                            .setPositiveButton(android.R.string.ok, null)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+                                        PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+                                        parent.switchToWallet();
+                                    }
+                                }
+                            })
                             .create()
                             .show();
                 }
@@ -241,7 +251,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 mRewards.clear();
                 mRewards.addAll(pdRewards);
                 mRecyclerViewAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
                 noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
 
                 if (mLocation == null) {
@@ -257,6 +266,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 if (mLocation != null) {
                     updateListDistances(mLocation);
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -267,12 +277,22 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void updateListDistances(final Location location) {
+        if (mUpdatingDistances) {
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
+                mUpdatingDistances = true;
                 Location rewardLocation;
                 for (PDReward reward : mRewards) {
+                    if (reward.getLocations() == null) {
+                        continue;
+                    }
                     for (PDLocation loc : reward.getLocations()) {
+                        if (loc == null) {
+                            continue;
+                        }
                         double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
                         double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
 
@@ -307,6 +327,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                         });
                     }
                 }
+                mUpdatingDistances = false;
             }
         }).start();
     }
@@ -335,6 +356,10 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     }
                 }
             }
+            if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+                PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+                parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -349,7 +374,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             PDLog.d(getClass(), "location: " + location.toString());
             PDUtils.updateSavedUserLocation(location);
 
-            if (mRecyclerViewAdapter.getItemCount() > 0) {
+            if (mRecyclerViewAdapter.getItemCount() > 0 && !mSwipeRefreshLayout.isRefreshing()) {
                 updateListDistances(location);
             }
 
@@ -367,6 +392,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     @Override
                     public void success(PDUser user) {
                         PDLog.d(PDUIRewardsFragment.class, "user: " + user.toString());
+                        PDUtils.updateSavedUser(user);
                     }
 
                     @Override

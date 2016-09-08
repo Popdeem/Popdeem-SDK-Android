@@ -52,6 +52,7 @@ import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -69,12 +70,14 @@ import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -275,9 +278,11 @@ public class PDAPIClient {
 
 
     /**
-     * @param userID
-     * @param userToken
-     * @param userSecret
+     * Connect a users Twitter account
+     *
+     * @param userID     Twitter User ID
+     * @param userToken  Twitter User Token
+     * @param userSecret Twitter User Secret
      * @param callback   {@link PDAPICallback} for API result
      */
     public void connectWithTwitterAccount(@NonNull String userID, @NonNull String userToken, @NonNull String userSecret, @NonNull final PDAPICallback<PDUser> callback) {
@@ -300,6 +305,126 @@ public class PDAPIClient {
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.connectWithTwitterAccount(body, callback);
+    }
+
+
+    /**
+     * Connect a users Instagram Account
+     *
+     * @param userId      Instagram User ID
+     * @param accessToken Instagram Access Token
+     * @param screenName  Users Screen Name
+     * @param callback    {@link PDAPICallback} for API result
+     */
+    public void connectWithInstagramAccount(@NonNull String userId, @NonNull String accessToken, @NonNull String screenName, @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject instagramObject = new JsonObject();
+        instagramObject.addProperty("id", userId);
+        instagramObject.addProperty("access_token", accessToken);
+        instagramObject.addProperty("screen_name", screenName);
+
+        JsonObject userJson = new JsonObject();
+        userJson.add("instagram", instagramObject);
+
+        JsonObject json = new JsonObject();
+        json.add("user", userJson);
+
+        TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.connectWithInstagramAccount(body, callback);
+    }
+
+
+    /**
+     * Check if users Instagram access token is still valid
+     *
+     * @param accessToken Instagram Access token to check
+     * @param callback    {@link PDAPICallback} for API result
+     */
+    public void checkInstagramAccessToken(@NonNull String accessToken, @NonNull final PDAPICallback<Boolean> callback) {
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(PDAPIConfig.PD_INSTAGRAM_PATH + "/users/self?access_token=" + accessToken)
+                .get()
+                .build();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.failure(400, e);
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                ResponseBody body = response.body();
+                callback.success(response.code() == 200);
+                body.close();
+            }
+        });
+    }
+
+
+    /**
+     * Disconnect users Twitter account
+     *
+     * @param accessToken  Twitter access token
+     * @param accessSecret Twitter access secret
+     * @param twitterId    Users Twitter account ID
+     * @param callback     {@link PDAPICallback} for API result
+     */
+    public void disconnectTwitterAccount(String accessToken, String accessSecret, String twitterId, @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject twitterJson = new JsonObject();
+        twitterJson.addProperty("access_token", accessToken);
+        twitterJson.addProperty("access_secret", accessSecret);
+        twitterJson.addProperty("id", twitterId);
+
+        JsonObject userJson = new JsonObject();
+        userJson.add("twitter", twitterJson);
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.add("user", userJson);
+
+        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.disconnectSocialAccount(body, callback);
+    }
+
+
+    /**
+     * Disconnect users Instagram Account
+     *
+     * @param accessToken Instagram access token
+     * @param instagramId Users Instagram account ID
+     * @param screenName  Users Instagram screen name
+     * @param callback    {@link PDAPICallback} for API result
+     */
+    public void disconnectInstagramAccount(String accessToken, String instagramId, String screenName, @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject twitterJson = new JsonObject();
+        twitterJson.addProperty("access_token", accessToken);
+        twitterJson.addProperty("screen_name", screenName);
+        twitterJson.addProperty("id", instagramId);
+
+        JsonObject userJson = new JsonObject();
+        userJson.add("instagram", twitterJson);
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.add("user", userJson);
+
+        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.disconnectSocialAccount(body, callback);
     }
 
 
@@ -560,7 +685,7 @@ public class PDAPIClient {
      * @param latitude            - Current latitude for user
      * @param callback            {@link PDAPICallback} for API result
      */
-    public void claimReward(@NonNull final Context context, final String facebookAccessToken, final String twitterAuthToken, final String twitterSecret,
+    public void claimReward(@NonNull final Context context, final String facebookAccessToken, final String twitterAuthToken, final String twitterSecret, final String instagramAccessToken,
                             @NonNull final String rewardId, @NonNull final String message, ArrayList<String> taggedFriendsNames, ArrayList<String> taggedFriendsIds,
                             final String image, @NonNull final String longitude, @NonNull final String latitude, @NonNull final PDAPICallback<JsonObject> callback) {
         final Handler mainHandler = new Handler(context.getMainLooper());
@@ -587,6 +712,9 @@ public class PDAPIClient {
         if (twitterAuthToken != null) {
             bodyBuilder.add("twitter[access_token]", twitterAuthToken);
             bodyBuilder.add("twitter[access_secret]", twitterSecret);
+        }
+        if (instagramAccessToken != null) {
+            bodyBuilder.add("instagram[access_token]", instagramAccessToken);
         }
 
         if (image != null) {
@@ -661,6 +789,23 @@ public class PDAPIClient {
                 .create();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getRewardsInWallet(callback);
+    }
+
+
+    /**
+     * Verify that a user posted to Instagram to claim a reward.
+     *
+     * @param rewardId Reward ID to verify against
+     * @param callback {@link PDAPICallback} for API result
+     */
+    public void verifyInstagramPostForReward(@NonNull String rewardId, @NonNull final PDAPICallback<JsonObject> callback) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        final String accessToken = userDetails.getUserInstagram().getAccessToken();
+        realm.close();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.verifyInstagramPostForReward("", accessToken, rewardId, callback);
     }
 
 

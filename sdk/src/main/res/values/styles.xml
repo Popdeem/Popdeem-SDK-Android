@@ -32,4 +32,8 @@
         <item name="android:textColor">@color/pd_tab_unselected_text_color</item>
     </style>
 
+    <style name="PopdeemSDKTheme.ClaimSwitchStyle">
+        <item name="colorControlActivated">@color/pd_claim_switch_tint_color</item>
+    </style>
+
 </resources>

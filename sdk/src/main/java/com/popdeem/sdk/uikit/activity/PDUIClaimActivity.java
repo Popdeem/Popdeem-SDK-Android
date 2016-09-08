@@ -38,12 +38,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -68,10 +73,14 @@ import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
+import com.popdeem.sdk.core.utils.PDClipboardUtils;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
+import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
+import com.popdeem.sdk.uikit.fragment.PDUIInstagramLoginFragment;
+import com.popdeem.sdk.uikit.fragment.PDUIInstagramShareFragment;
 import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
@@ -99,20 +108,21 @@ import io.realm.Realm;
 /**
  * Created by mikenolan on 23/02/16.
  */
-public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickListener, LocationListener {
+public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickListener, LocationListener, CompoundButton.OnCheckedChangeListener {
 
     private FragmentManager mFragmentManager;
 
     private PDReward mReward;
 
     private EditText mMessageEditText;
-    private Button mFacebookButton;
-    private Button mTwitterButton;
+    private SwitchCompat mFacebookSwitch;
+    private SwitchCompat mTwitterSwitch;
+    private SwitchCompat mInstagramSwitch;
     private View mNotHereView;
 
     private boolean mIsHere = false;
-    private boolean mFacebookOptionEnabled = false;
-    private boolean mTwitterOptionEnabled = false;
+    private boolean mHashTagValidated = false;
+    private boolean mUserHasLeftForInstagram = false;
 
     private boolean mImageAdded = false;
     private String mCurrentPhotoPath;
@@ -142,34 +152,39 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         addRewardDetailsToUI();
 
         mMessageEditText = (EditText) findViewById(R.id.pd_claim_share_edit_text);
-        mFacebookButton = (Button) findViewById(R.id.pd_facebook_share_option_button);
-        mTwitterButton = (Button) findViewById(R.id.pd_twitter_share_option_button);
+        mFacebookSwitch = (SwitchCompat) findViewById(R.id.pd_claim_facebook_switch);
+        mTwitterSwitch = (SwitchCompat) findViewById(R.id.pd_claim_twitter_switch);
+        mInstagramSwitch = (SwitchCompat) findViewById(R.id.pd_claim_instagram_switch);
         mNotHereView = findViewById(R.id.pd_claim_not_here_container);
 
         ImageView notHereTickImageView = (ImageView) findViewById(R.id.pd_claim_not_here_tick_image_view);
         notHereTickImageView.setImageDrawable(PDUIColorUtils.getLocationVerificationTickIcon(this));
 
-        if (noShareMediaForced()) {
-            mFacebookOptionEnabled = true;
-            mTwitterOptionEnabled = false;
-        } else {
-            mFacebookOptionEnabled = facebookShareForced();
-            mTwitterOptionEnabled = twitterShareForced();
-        }
-
         mMessageEditText.addTextChangedListener(MESSAGE_TEXT_WATCHER);
 
-        performTwitterEnabledActions();
         addClickListenersToViews();
-        updateFacebookButton();
-        updateTwitterButton();
         updateEnabledStateOfViews();
     }
+
+    //*******************************************************
+    //          Activity Lifecycle Methods
+    //*******************************************************
 
     @Override
     protected void onStart() {
         super.onStart();
         mLocationManager.startLocationUpdates(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mUserHasLeftForInstagram) {
+            mUserHasLeftForInstagram = false;
+            PDLog.d(getClass(), "perform claim now, user returned from IG");
+            mFragmentManager.popBackStack(PDUIInstagramShareFragment.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            performClaimReward(getMessage(), getEncodedImage());
+        }
     }
 
     @Override
@@ -188,6 +203,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         super.onDestroy();
     }
 
+
+    /**
+     * Check if the user is at the Brands location
+     *
+     * @param location Users current location
+     */
     private void checkIsHere(final Location location) {
         new Thread(new Runnable() {
             @Override
@@ -204,13 +225,34 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }).start();
     }
 
-    private void performTwitterEnabledActions() {
+    private void toggleInstagramViews() {
         TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        twitterCharactersTextView.setVisibility(View.INVISIBLE);
+        hashTagTextView.setVisibility(View.INVISIBLE);
 
-        if (!mTwitterOptionEnabled) {
-            twitterCharactersTextView.setVisibility(View.INVISIBLE);
-            hashTagTextView.setVisibility(View.INVISIBLE);
+        if (!mInstagramSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
+            return;
+        }
+
+        if (mReward.getInstagramOptions() != null) {
+            if (mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
+                hashTagTextView.setText(mReward.getInstagramOptions().getForcedTag());
+                hashTagTextView.setVisibility(View.VISIBLE);
+            }
+        }
+        validateHashTag();
+    }
+
+    private void toggleTwitterViews() {
+        TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
+        TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        twitterCharactersTextView.setVisibility(View.INVISIBLE);
+        hashTagTextView.setVisibility(View.INVISIBLE);
+
+        if (!mTwitterSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -227,6 +269,56 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 hashTagTextView.setVisibility(View.VISIBLE);
             }
             mMessageEditText.setSelection(mMessageEditText.getText().length());
+        }
+        validateHashTag();
+    }
+
+    private void validateHashTag() {
+        if (!mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()) {
+            removeHashTagSpans(mMessageEditText.getText());
+            mHashTagValidated = true;
+            return;
+        }
+
+        String hashTagLowerCase = null;
+        if (mTwitterSwitch.isChecked()) {
+            hashTagLowerCase = mReward.getTweetOptions().getForcedTag().toLowerCase(Locale.getDefault());
+        } else if (mInstagramSwitch.isChecked()) {
+            hashTagLowerCase = mReward.getInstagramOptions().getForcedTag().toLowerCase(Locale.getDefault());
+        }
+
+        if (hashTagLowerCase == null || hashTagLowerCase.isEmpty()) {
+            mHashTagValidated = true;
+            return;
+        }
+
+        final String currentMessageLowerCase = mMessageEditText.getText().toString().toLowerCase(Locale.getDefault());
+        if (currentMessageLowerCase.isEmpty()) {
+            mHashTagValidated = false;
+            return;
+        }
+
+        mHashTagValidated = currentMessageLowerCase.contains(hashTagLowerCase);
+        Spannable messageSpannable = mMessageEditText.getText();
+        if (mHashTagValidated) {
+            final int startIndex = currentMessageLowerCase.indexOf(hashTagLowerCase);
+            final int hashTagLength = hashTagLowerCase.length();
+            messageSpannable.setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_color)), startIndex, startIndex + hashTagLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            messageSpannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.pd_toolbar_text_color)), startIndex, startIndex + hashTagLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        if (!mHashTagValidated) {
+            removeHashTagSpans(messageSpannable);
+        }
+    }
+
+    private void removeHashTagSpans(Spannable messageSpannable) {
+        ForegroundColorSpan[] fgSpans = messageSpannable.getSpans(0, messageSpannable.length(), ForegroundColorSpan.class);
+        for (ForegroundColorSpan s : fgSpans) {
+            messageSpannable.removeSpan(s);
+        }
+        BackgroundColorSpan[] bgSpans = messageSpannable.getSpans(0, messageSpannable.length(), BackgroundColorSpan.class);
+        for (BackgroundColorSpan s : bgSpans) {
+            messageSpannable.removeSpan(s);
         }
     }
 
@@ -249,16 +341,18 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void addClickListenersToViews() {
-        mFacebookButton.setOnClickListener(this);
-        mTwitterButton.setOnClickListener(this);
+        mFacebookSwitch.setOnCheckedChangeListener(this);
+        mTwitterSwitch.setOnCheckedChangeListener(this);
+        mInstagramSwitch.setOnCheckedChangeListener(this);
         findViewById(R.id.pd_claim_add_image_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_share_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_tag_friends_button).setOnClickListener(this);
     }
 
     private void updateEnabledStateOfViews() {
-        mFacebookButton.setEnabled(mIsHere);
-        mTwitterButton.setEnabled(mIsHere);
+        mFacebookSwitch.setEnabled(mIsHere && isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK));
+        mTwitterSwitch.setEnabled(mIsHere && isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER));
+        mInstagramSwitch.setEnabled(mIsHere && isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM));
         findViewById(R.id.pd_claim_add_image_button).setEnabled(mIsHere);
         findViewById(R.id.pd_claim_share_button).setEnabled(mIsHere);
         findViewById(R.id.pd_claim_tag_friends_button).setEnabled(mIsHere);
@@ -271,40 +365,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         textView.setTextColor(ContextCompat.getColor(PDUIClaimActivity.this, charsLeft < 1 ? R.color.pd_claim_over_character_limit_text_color : R.color.pd_twitter_blue));
         textView.setText(String.valueOf(charsLeft));
     }
-
-    private final TextWatcher MESSAGE_TEXT_WATCHER = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (mTwitterOptionEnabled) {
-                updateTwitterCharsLeft();
-            }
-        }
-    };
-
-    private FragmentManager.OnBackStackChangedListener BACK_STACK_CHANGED_LISTENER = new FragmentManager.OnBackStackChangedListener() {
-        @Override
-        public void onBackStackChanged() {
-            final int entryCount = mFragmentManager.getBackStackEntryCount();
-            if (entryCount == 0) {
-                setTitle(R.string.pd_claim_title);
-                return;
-            }
-
-            FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(entryCount - 1);
-            String name = entry.getName();
-            if (name.equalsIgnoreCase(PDUITagFriendsFragment.class.getSimpleName())) {
-                setTitle(R.string.pd_claim_choose_friends_title);
-            }
-        }
-    };
 
     private void addRewardDetailsToUI() {
         // Logo
@@ -332,6 +392,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         // Rules
         textView = (TextView) findViewById(R.id.pd_reward_item_rules_text_view);
         textView.setText(mReward.getRules());
+        if (mReward.getRules() == null || mReward.getRules().isEmpty()) {
+            textView.setVisibility(View.GONE);
+        }
 
         StringBuilder actionStringBuilder = new StringBuilder("");
 
@@ -356,34 +419,46 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         textView.setText(actionStringBuilder.toString());
     }
 
-    private void updateFacebookButton() {
-        mFacebookButton.setTextColor(ContextCompat.getColor(this, mFacebookOptionEnabled ? R.color.pd_facebook_blue : R.color.pd_claim_network_button_off_text_color));
-        mFacebookButton.setCompoundDrawablesWithIntrinsicBounds(mFacebookOptionEnabled ? R.drawable.pd_fb_button_selected : R.drawable.pd_fb_button_deselected, 0, 0, 0);
-    }
-
-    private void updateTwitterButton() {
-        mTwitterButton.setTextColor(ContextCompat.getColor(this, mTwitterOptionEnabled ? R.color.pd_twitter_blue : R.color.pd_claim_network_button_off_text_color));
-        mTwitterButton.setCompoundDrawablesWithIntrinsicBounds(mTwitterOptionEnabled ? R.drawable.pd_twitter_button_selected : R.drawable.pd_twitter_button_deselected, 0, 0, 0);
-    }
-
-    private boolean facebookShareForced() {
-        List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
-        return mediaTypes.size() == 1 && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK);
-    }
-
     private boolean twitterShareForced() {
         List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
         return mediaTypes.size() == 1 && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER);
     }
 
-    private boolean noShareMediaForced() {
+    private boolean isNetworkAvailableForShare(@PDReward.PDSocialMediaType String network) {
         List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
-        return mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK) && mediaTypes.contains(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER);
+        return mediaTypes.contains(network);
+    }
+
+    private String getEncodedImage() {
+        String encodedImage = null;
+        File imageFile = new File(mCurrentCroppedPhotoPath);
+        if (imageFile.exists()) {
+            Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, PDUIImageUtils.getOrientation(mCurrentPhotoPath));
+            if (b != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                b.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                byte[] byteArray = outputStream.toByteArray();
+
+                encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                b.recycle();
+                PDLog.d(PDUIClaimActivity.class, "image_upload->encodedImage: " + encodedImage);
+            }
+        }
+        return encodedImage;
+    }
+
+    private String getMessage() {
+        return mMessageEditText.getText().toString();
+//        if (mTwitterSwitch.isChecked() && mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
+//            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
+//        } else if (mInstagramSwitch.isChecked() && mReward.getInstagramOptions() != null && mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
+//            message = String.format("%1s %2s", message, mReward.getInstagramOptions().getForcedTag());
+//        }
+//        return message;
     }
 
     private void post(final boolean addImage) {
-        PDUIUtils.hideKeyboard(this, mMessageEditText);
-
+        // Check if user is suspended
         if (PDUtils.isUserSuspended()) {
             String suspendedUntil = PDUtils.getUserSuspendedUntil();
             long suspendedUntilTime = PDNumberUtils.toLong(suspendedUntil, -1);
@@ -396,91 +471,105 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             return;
         }
 
-        if (calculateTwitterCharsLeft() < 0 && mTwitterOptionEnabled) {
-            showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
-            return;
-        }
-
         // Check if at least one network is selected
-        if (!mFacebookOptionEnabled && !mTwitterOptionEnabled) {
+        if (!mFacebookSwitch.isChecked() && !mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked()) {
             showBasicOKAlertDialog(R.string.pd_claim_no_network_selected_title_text, R.string.pd_claim_no_network_selected_message_text);
             return;
         }
 
-        // Check if use has given Facebook Publish permission
-        if (mFacebookOptionEnabled && !PDSocialUtils.hasAllFacebookPublishPermissions()) {
-            LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    post(addImage);
-                }
-
-                @Override
-                public void onCancel() {
-                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onCancel:");
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-                    PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
-                    new AlertDialog.Builder(PDUIClaimActivity.this)
-                            .setTitle(R.string.pd_common_sorry_text)
-                            .setMessage(error.getMessage())
-                            .setPositiveButton(android.R.string.ok, null)
-                            .create()
-                            .show();
-                }
-            });
-            LoginManager.getInstance().logInWithPublishPermissions(this, Arrays.asList(PDSocialUtils.FACEBOOK_PUBLISH_PERMISSIONS));
-            return;
-        }
-
-        // Check if Twitter share is enabled and Twitter is logged in
-        if (mTwitterOptionEnabled && !PDSocialUtils.isTwitterLoggedIn()) {
-            PDSocialUtils.loginWithTwitter(this, new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    if (result.data != null) {
-                        connectTwitterAccount(result.data, addImage);
-                    }
-                }
-
-                @Override
-                public void failure(TwitterException e) {
-                    showBasicOKAlertDialog(R.string.pd_claim_twitter_button_text, e.getMessage());
-                }
-            });
-            return;
-        }
-
-        String message = "";
-        String encodedImage = null;
-
-        if (!mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-            message = mMessageEditText.getText().toString();
-            if (addImage) {
-                File imageFile = new File(mCurrentCroppedPhotoPath);
-                if (imageFile.exists()) {
-                    Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, PDUIImageUtils.getOrientation(mCurrentPhotoPath));
-                    if (b != null) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        b.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
-                        byte[] byteArray = outputStream.toByteArray();
-
-                        encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                        b.recycle();
-                        PDLog.d(PDUIClaimActivity.class, "image_upload->encodedImage: " + encodedImage);
-                    }
-                }
+        // If posting to instagram
+        if (mInstagramSwitch.isChecked()) {
+            // Check if Instagram app is installed
+            if (!PDSocialUtils.hasInstagramAppInstalled(getPackageManager())) {
+                showBasicOKAlertDialog(R.string.pd_common_sorry_text, "Instagram App is not installed.");
+                return;
+            }
+            // Check if hashtag is present in message
+            if (!mHashTagValidated) {
+                String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getInstagramOptions().getForcedTag(), getString(R.string.pd_connect_instagram_title));
+                showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                return;
             }
         }
 
-        if (mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
-            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
+        // If posting to Twitter
+        if (mTwitterSwitch.isChecked()) {
+            // Check if over character limit
+            if (calculateTwitterCharsLeft() < 0) {
+                showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
+                return;
+            }
+
+            // Check if hashtag is present in message
+            if (!mHashTagValidated && mReward.getTweetOptions().isForceTag()) {
+                String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getTweetOptions().getForcedTag(), getString(R.string.pd_connect_twitter_title));
+                showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                return;
+            }
+
+            // Check if Twitter is logged in
+            if (!PDSocialUtils.isTwitterLoggedIn()) {
+                PDSocialUtils.loginWithTwitter(this, new Callback<TwitterSession>() {
+                    @Override
+                    public void success(Result<TwitterSession> result) {
+                        if (result.data != null) {
+                            connectTwitterAccount(result.data, addImage);
+                        }
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+                        showBasicOKAlertDialog(R.string.pd_claim_twitter_button_text, e.getMessage());
+                    }
+                });
+                return;
+            }
         }
+
+        // If posting to Facebook
+        if (mFacebookSwitch.isChecked()) {
+            // Check if user has given Facebook Publish permission
+            if (!PDSocialUtils.hasAllFacebookPublishPermissions()) {
+                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        post(addImage);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        PDLog.d(PDUIClaimActivity.class, "Facebook Login onCancel:");
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        PDLog.d(PDUIClaimActivity.class, "Facebook Login onError(): " + error.getMessage());
+                        new AlertDialog.Builder(PDUIClaimActivity.this)
+                                .setTitle(R.string.pd_common_sorry_text)
+                                .setMessage(error.getMessage())
+                                .setPositiveButton(android.R.string.ok, null)
+                                .create()
+                                .show();
+                    }
+                });
+                LoginManager.getInstance().logInWithPublishPermissions(this, Arrays.asList(PDSocialUtils.FACEBOOK_PUBLISH_PERMISSIONS));
+                return;
+            }
+        }
+
+        String message = getMessage();
         PDLog.d(PDUIClaimActivity.class, "message: " + message);
 
-        performClaimReward(message, encodedImage);
+        String encodedImage = null;
+        if (addImage) {
+            encodedImage = getEncodedImage();
+        }
+
+        if (mInstagramSwitch.isChecked()) {
+            postToInstagram(message, mCurrentCroppedPhotoPath);
+        } else {
+            performClaimReward(message, encodedImage);
+        }
     }
 
     private void performClaimReward(String message, String encodedImage) {
@@ -493,7 +582,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         String twitterToken = null;
         String twitterSecret = null;
-        if (mTwitterOptionEnabled && PDSocialUtils.isTwitterLoggedIn() && Twitter.getSessionManager().getActiveSession().getAuthToken().token != null
+        if (mTwitterSwitch.isChecked() && PDSocialUtils.isTwitterLoggedIn() && Twitter.getSessionManager().getActiveSession().getAuthToken().token != null
                 && Twitter.getSessionManager().getActiveSession().getAuthToken().secret != null) {
             twitterToken = Twitter.getSessionManager().getActiveSession().getAuthToken().token;
             twitterSecret = Twitter.getSessionManager().getActiveSession().getAuthToken().secret;
@@ -502,12 +591,19 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
 
-        PDAPIClient.instance().claimReward(this, mFacebookOptionEnabled ? AccessToken.getCurrentAccessToken().getToken() : null,
-                twitterToken, twitterSecret, mReward.getId(), message, mTaggedNames, mTaggedIds, encodedImage,
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        String instagramAccessToken = null;
+        if (mInstagramSwitch.isChecked() && userDetails.getUserInstagram() != null && userDetails.getUserInstagram().getAccessToken() != null && !userDetails.getUserInstagram().getAccessToken().isEmpty()) {
+            instagramAccessToken = userDetails.getUserInstagram().getAccessToken();
+        }
+
+        PDAPIClient.instance().claimReward(this, mFacebookSwitch.isChecked() ? AccessToken.getCurrentAccessToken().getToken() : null,
+                twitterToken, twitterSecret, instagramAccessToken, mReward.getId(), message, mTaggedNames, mTaggedIds, encodedImage,
                 String.valueOf(userLocation.getLongitude()), String.valueOf(userLocation.getLatitude()),
                 new PDAPICallback<JsonObject>() {
                     @Override
                     public void success(JsonObject jsonObject) {
+                        PDLog.d(PDUIClaimActivity.class, "claim: " + jsonObject.toString());
                         progressBar.setVisibility(View.GONE);
                         shareButton.setEnabled(true);
                         shareButton.animate().alpha(1.0f);
@@ -520,6 +616,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent data = new Intent();
                                         data.putExtra("id", mReward.getId());
+                                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
                                         setResult(RESULT_OK, data);
                                         finish();
                                     }
@@ -540,20 +637,32 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         realm.close();
     }
 
+    private void postToInstagram(final String message, final String imagePath) {
+        PDClipboardUtils.copyTextToClipboard(this, message, message);
+        PDUIInstagramShareFragment fragment = PDUIInstagramShareFragment.newInstance(new PDUIInstagramShareFragment.PDInstagramShareCallback() {
+            @Override
+            public void onShareClick() {
+                mUserHasLeftForInstagram = true;
+                startActivity(PDSocialUtils.createInstagramIntent(imagePath));
+            }
+
+            @Override
+            public void onCancel() {
+                mFragmentManager.popBackStack(PDUIInstagramShareFragment.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        });
+        mFragmentManager.beginTransaction()
+                .replace(R.id.pd_claim_tag_friends_container, fragment, PDUIInstagramShareFragment.getName())
+                .addToBackStack(PDUIInstagramShareFragment.getName())
+                .commit();
+    }
+
     private void connectTwitterAccount(TwitterSession session, final boolean addImage) {
         PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
                 session.getAuthToken().token, session.getAuthToken().secret, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
-                        PDRealmUserDetails userDetails = new PDRealmUserDetails(user);
-                        userDetails.setUid(0);
-
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealmOrUpdate(userDetails);
-                        realm.commitTransaction();
-                        realm.close();
-
+                        PDUtils.updateSavedUser(user);
                         post(addImage);
                     }
 
@@ -562,6 +671,34 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_common_something_wrong_text);
                     }
                 });
+    }
+
+    private void showConnectToFacebookFragment() {
+        uncheckSwitchIfChecked(mFacebookSwitch);
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_FACEBOOK, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
+            @Override
+            public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                mFacebookSwitch.setChecked(true);
+            }
+        });
+        mFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment, PDUIConnectSocialAccountFragment.getName())
+                .addToBackStack(PDUIConnectSocialAccountFragment.getName())
+                .commit();
+    }
+
+    private void showConnectToInstagramFragment() {
+        uncheckSwitchIfChecked(mInstagramSwitch);
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
+            @Override
+            public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                mInstagramSwitch.setChecked(true);
+            }
+        });
+        mFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment, PDUIConnectSocialAccountFragment.getName())
+                .addToBackStack(PDUIConnectSocialAccountFragment.getName())
+                .commit();
     }
 
     private File setUpPhotoFile() throws IOException {
@@ -641,14 +778,227 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         final int ID = item.getItemId();
         if (ID == android.R.id.home) {
-            if (mFragmentManager.getBackStackEntryCount() > 0) {
-                mFragmentManager.popBackStack(PDUITagFriendsFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            final int backStackCount = mFragmentManager.getBackStackEntryCount();
+            if (backStackCount > 0) {
+                String name = mFragmentManager.getBackStackEntryAt(backStackCount - 1).getName();
+                mFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
                 finish();
             }
             return true;
         }
         return false;
+    }
+
+    private void uncheckSwitchIfChecked(SwitchCompat switchCompat) {
+        if (switchCompat.isChecked()) {
+            switchCompat.setChecked(false);
+        }
+    }
+
+//    private void checkSwitchIfNeeded(SwitchCompat switchCompat) {
+//        if (!switchCompat.isChecked()) {
+//            switchCompat.setOnCheckedChangeListener(null);
+//            switchCompat.setChecked(true);
+//            switchCompat.setOnCheckedChangeListener(this);
+//        }
+//    }
+
+    /**
+     * TextWatcher for message EditText
+     */
+    private final TextWatcher MESSAGE_TEXT_WATCHER = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (mTwitterSwitch.isChecked()) {
+                updateTwitterCharsLeft();
+                validateHashTag();
+            } else if (mInstagramSwitch.isChecked()) {
+                validateHashTag();
+            }
+        }
+    };
+
+    /**
+     * OnBackStackChangedListener to watch the FragmentManager back stack
+     */
+    private FragmentManager.OnBackStackChangedListener BACK_STACK_CHANGED_LISTENER = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            final int entryCount = mFragmentManager.getBackStackEntryCount();
+            if (entryCount == 0) {
+                setTitle(R.string.pd_claim_title);
+                return;
+            }
+
+            FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(entryCount - 1);
+            String name = entry.getName();
+            if (name.equalsIgnoreCase(PDUITagFriendsFragment.class.getSimpleName())) {
+                setTitle(R.string.pd_claim_choose_friends_title);
+            } else if (name.equalsIgnoreCase(PDUIInstagramLoginFragment.class.getSimpleName())) {
+                setTitle(R.string.pd_claim_connect_instagram_title);
+            }
+        }
+    };
+
+
+    /*
+     * Checked Changed listener for SwitchCompat
+     */
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        final int id = buttonView.getId();
+        if (id == R.id.pd_claim_facebook_switch) {
+            if (isChecked) {
+                uncheckSwitchIfChecked(mTwitterSwitch);
+                uncheckSwitchIfChecked(mInstagramSwitch);
+
+                // Check if Facebook Access token is valid and if not show connect fragment
+                PDSocialUtils.validateFacebookAccessToken(new PDAPICallback<Boolean>() {
+                    @Override
+                    public void success(Boolean valid) {
+                        PDLog.d(PDUIClaimActivity.class, "validateFacebookAccessToken:success:" + valid);
+                        if (!valid) {
+                            showConnectToFacebookFragment();
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+                        // unused
+                    }
+                });
+            }
+        } else if (id == R.id.pd_claim_twitter_switch) {
+            if (isChecked) {
+                uncheckSwitchIfChecked(mFacebookSwitch);
+                uncheckSwitchIfChecked(mInstagramSwitch);
+            }
+            toggleTwitterViews();
+        } else if (id == R.id.pd_claim_instagram_switch) {
+            if (isChecked) {
+                uncheckSwitchIfChecked(mFacebookSwitch);
+                uncheckSwitchIfChecked(mTwitterSwitch);
+
+                // Check user is logged in to Instagram and if not show connect Fragment
+                PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+                    @Override
+                    public void success(Boolean valid) {
+                        PDLog.d(PDUIClaimActivity.class, "Instagram access token " + (valid ? "valid" : "expired"));
+                        if (!valid) {
+                            showConnectToInstagramFragment();
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+                        showConnectToInstagramFragment();
+                    }
+                });
+            }
+            toggleInstagramViews();
+        }
+    }
+
+
+    /*
+     * On Click listener for buttons
+     */
+    @Override
+    public void onClick(View v) {
+        PDUIUtils.hideKeyboard(this, mMessageEditText);
+
+        final int ID = v.getId();
+        if (ID == R.id.pd_claim_share_button) {
+            if (!mIsHere) {
+                showBasicOKAlertDialog(R.string.pd_claim_verify_location_failed_title_text, R.string.pd_claim_verify_location_failed_text);
+                return;
+            }
+            if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
+                showBasicOKAlertDialog(R.string.pd_claim_photo_required_text, R.string.pd_claim_photo_required_message_text);
+            } else {
+                post(mImageAdded);
+            }
+        } else if (ID == R.id.pd_claim_add_image_button) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.pd_storage_permissions_title_string))
+                        .setMessage(getString(R.string.pd_storage_permission_rationale_string))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(PDUIClaimActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
+            } else {
+                showAddPictureChoiceDialog();
+            }
+        } else if (ID == R.id.pd_claim_tag_friends_button) {
+            mFragmentManager.beginTransaction()
+                    .add(R.id.pd_claim_tag_friends_container, PDUITagFriendsFragment.newInstance(new PDUITagFriendsFragment.TagFriendsConfirmedCallback() {
+                        @Override
+                        public void taggedFriendsUpdated(@NonNull ArrayList<String> taggedNames, @NonNull ArrayList<String> taggedIds) {
+                            mTaggedNames = taggedNames;
+                            mTaggedIds = taggedIds;
+
+                            boolean anyCheckBoxChecked = mTaggedIds.size() > 0;
+                            TextView textView = (TextView) findViewById(R.id.pd_claim_tagged_friends_count_text_view);
+                            textView.setVisibility(anyCheckBoxChecked ? View.VISIBLE : View.INVISIBLE);
+                            if (anyCheckBoxChecked) {
+                                if (mTaggedNames.size() == 1) {
+                                    textView.setText(String.format("With %1s", mTaggedNames.get(0)));
+                                } else {
+                                    textView.setText(String.format("With %1s and %2s", mTaggedNames.get(0), ((mTaggedNames.size() > 2) ? ((mTaggedNames.size() - 1) + " others") : "one other")));
+                                }
+                            } else {
+                                textView.setText("");
+                            }
+                        }
+                    }, mTaggedNames, mTaggedIds))
+                    .addToBackStack(PDUITagFriendsFragment.class.getSimpleName())
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 123) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PDLog.d(getClass(), "permissions");
+                showAddPictureChoiceDialog();
+            } else {
+                PDLog.d(getClass(), "no permissions");
+                Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private int locationCounter = 0;
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            if (mIsHere) {
+                locationCounter++;
+            }
+            checkIsHere(location);
+            PDUtils.updateSavedUserLocation(location);
+        }
+        if (locationCounter >= 3) {
+            mLocationManager.stop();
+        }
     }
 
     @Override
@@ -685,114 +1035,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             TwitterLoginButton loginButton = new TwitterLoginButton(this);
             loginButton.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        final int ID = v.getId();
-        if (ID == R.id.pd_facebook_share_option_button) {
-            if (mFacebookOptionEnabled && facebookShareForced()) {
-                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_text, R.string.pd_claim_facebook_forced_message_string);
-                return;
-            }
-            mFacebookOptionEnabled = !mFacebookOptionEnabled;
-            updateFacebookButton();
-        } else if (ID == R.id.pd_twitter_share_option_button) {
-            if (mTwitterOptionEnabled && twitterShareForced()) {
-                showBasicOKAlertDialog(R.string.pd_claim_cannot_deselect_text, R.string.pd_claim_twitter_forced_message_string);
-                return;
-            }
-            mTwitterOptionEnabled = !mTwitterOptionEnabled;
-            performTwitterEnabledActions();
-            updateTwitterButton();
-        } else if (ID == R.id.pd_claim_share_button) {
-            PDUIUtils.hideKeyboard(this, mMessageEditText);
-            if (!mIsHere) {
-                showBasicOKAlertDialog(R.string.pd_claim_verify_location_failed_title_text, R.string.pd_claim_verify_location_failed_text);
-                return;
-            }
-            if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
-                showBasicOKAlertDialog(R.string.pd_claim_photo_required_text, R.string.pd_claim_photo_required_message_text);
-            } else {
-                post(mImageAdded);
-            }
-        } else if (ID == R.id.pd_claim_add_image_button) {
-            PDUIUtils.hideKeyboard(this, mMessageEditText);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.pd_storage_permissions_title_string))
-                        .setMessage(getString(R.string.pd_storage_permission_rationale_string))
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(PDUIClaimActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null)
-                        .create()
-                        .show();
-            } else {
-                showAddPictureChoiceDialog();
-            }
-
-        } else if (ID == R.id.pd_claim_tag_friends_button) {
-            PDUIUtils.hideKeyboard(this, mMessageEditText);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.pd_claim_tag_friends_container, PDUITagFriendsFragment.newInstance(new PDUITagFriendsFragment.TagFriendsConfirmedCallback() {
-                        @Override
-                        public void taggedFriendsUpdated(@NonNull ArrayList<String> taggedNames, @NonNull ArrayList<String> taggedIds) {
-                            mTaggedNames = taggedNames;
-                            mTaggedIds = taggedIds;
-
-                            boolean anyCheckBoxChecked = mTaggedIds.size() > 0;
-                            TextView textView = (TextView) findViewById(R.id.pd_claim_tagged_friends_count_text_view);
-                            textView.setVisibility(anyCheckBoxChecked ? View.VISIBLE : View.INVISIBLE);
-                            if (anyCheckBoxChecked) {
-                                if (mTaggedNames.size() == 1) {
-                                    textView.setText(String.format("With %1s", mTaggedNames.get(0)));
-                                } else {
-                                    textView.setText(String.format("With %1s and %2s", mTaggedNames.get(0), ((mTaggedNames.size() > 2) ? ((mTaggedNames.size() - 1) + " others") : "one other")));
-                                }
-                            } else {
-                                textView.setText("");
-                            }
-                        }
-                    }, mTaggedNames, mTaggedIds))
-                    .addToBackStack(PDUITagFriendsFragment.class.getSimpleName())
-                    .commit();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 123) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                PDLog.d(getClass(), "permissions");
-                startCameraIntentWithImagePath();
-            } else {
-                PDLog.d(getClass(), "no permissions");
-                Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private int locationCounter = 0;
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            if (mIsHere) {
-                locationCounter++;
-            }
-            checkIsHere(location);
-            PDUtils.updateSavedUserLocation(location);
-        }
-
-        if (locationCounter >= 3) {
-            mLocationManager.stop();
         }
     }
 }

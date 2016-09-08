@@ -33,6 +33,7 @@ public class PDUserTwitter {
     private String accessToken;
     private String accessSecret;
     private String twitterId;
+    private boolean tester;
     private String twitterScreenName;
     private String profilePictureUrl;
     private long expirationTime;
@@ -40,11 +41,12 @@ public class PDUserTwitter {
     public PDUserTwitter() {
     }
 
-    public PDUserTwitter(long socialAccountId, String accessToken, String accessSecret, String twitterId, String twitterScreenName, String profilePictureUrl, long expirationTime) {
+    public PDUserTwitter(long socialAccountId, String accessToken, String accessSecret, String twitterId, boolean tester, String twitterScreenName, String profilePictureUrl, long expirationTime) {
         this.socialAccountId = socialAccountId;
         this.accessToken = accessToken;
         this.accessSecret = accessSecret;
         this.twitterId = twitterId;
+        this.tester = tester;
         this.twitterScreenName = twitterScreenName;
         this.profilePictureUrl = profilePictureUrl;
         this.expirationTime = expirationTime;
@@ -82,6 +84,14 @@ public class PDUserTwitter {
         this.twitterId = twitterId;
     }
 
+    public boolean isTester() {
+        return tester;
+    }
+
+    public void setTester(boolean tester) {
+        this.tester = tester;
+    }
+
     public String getTwitterScreenName() {
         return twitterScreenName;
     }
@@ -116,5 +126,4 @@ public class PDUserTwitter {
     private String value(String s) {
         return s == null ? "null" : s;
     }
-
 }

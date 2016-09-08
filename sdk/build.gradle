@@ -2,15 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '0.2.3'
+project.ext.popdeemSdkVersion = '0.3.0'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName popdeemSdkVersion
     }
@@ -33,30 +33,30 @@ dependencies {
     testCompile 'com.squareup.okhttp3:mockwebserver:3.1.2'
 
     // Google
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.google.code.gson:gson:2.6.1'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:design:24.2.0'
+    compile 'com.google.code.gson:gson:2.7'
 
     // Play Services
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-    compile 'com.google.android.gms:play-services-location:9.0.2'
+    compile 'com.google.android.gms:play-services-gcm:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
 
     // Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
 
     // Twitter
-    compile('com.twitter.sdk.android:twitter:1.12.1@aar') {
+    compile('com.twitter.sdk.android:twitter:2.0.0@aar') {
         transitive = true
     }
 
     // Third Party
-    compile 'joda-time:joda-time:2.9.2'
+    compile 'joda-time:joda-time:2.9.4'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
 
     // Square
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp3:okhttp:3.1.2'
-    compile 'com.jakewharton.retrofit:retrofit1-okhttp3-client:1.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
 

@@ -49,6 +49,7 @@ import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
@@ -68,6 +69,8 @@ public class PDUIWalletFragment extends Fragment {
     private PDUIWalletRecyclerViewAdapter mAdapter;
     private ArrayList<PDReward> mRewards = new ArrayList<>();
     private View mNoItemsInWalletView;
+
+    private String mAutoVerifyRewardId = null;
 
     public PDUIWalletFragment() {
     }
@@ -99,6 +102,9 @@ public class PDUIWalletFragment extends Fragment {
                 public void onItemClick(View v) {
                     final int position = recyclerView.getChildAdapterPosition(v);
                     final PDReward reward = mRewards.get(position);
+                    if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM) && !reward.isInstagramVerified()) {
+                        return;
+                    }
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
@@ -141,6 +147,14 @@ public class PDUIWalletFragment extends Fragment {
                         builder.create().show();
                     }
                 }
+
+                @Override
+                public void onVerifyClick(int position) {
+                    PDReward reward = mRewards.get(position);
+                    reward.setVerifying(true);
+                    mAdapter.notifyItemChanged(position);
+                    verifyReward(position);
+                }
             });
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(container.getContext());
@@ -161,6 +175,7 @@ public class PDUIWalletFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        PDLog.d(getClass(), "wallet_onResume");
         getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
     }
 
@@ -194,6 +209,40 @@ public class PDUIWalletFragment extends Fragment {
         });
     }
 
+    private void verifyReward(final int position) {
+        final PDReward reward = mRewards.get(position);
+        PDAPIClient.instance().verifyInstagramPostForReward(reward.getId(), new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                PDLog.d(PDUIWalletFragment.class, "verify success: " + jsonObject.toString());
+                boolean success = false;
+                if (jsonObject.has("data")) {
+                    JsonObject dataObject = jsonObject.getAsJsonObject("data");
+                    if (dataObject.has("status")) {
+                        success = dataObject.get("status").getAsString().equalsIgnoreCase("success");
+                    }
+                }
+                if (success) {
+                    reward.setInstagramVerified(true);
+                } else {
+                    String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
+                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
+                }
+                reward.setVerifying(false);
+                mAdapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
+                reward.setVerifying(false);
+                mAdapter.notifyItemChanged(position);
+                String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
+                PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
+            }
+        });
+    }
+
     private void refreshWallet() {
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
@@ -206,10 +255,18 @@ public class PDUIWalletFragment extends Fragment {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
                 // If a reward has been revoked, remove it from the users wallet
+                int verifyingRewardIndex = -1;
                 for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
                     PDReward r = iterator.next();
                     if (r.getRevoked().equalsIgnoreCase("true")) {
                         iterator.remove();
+                        continue;
+                    }
+
+                    if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
+                        r.setVerifying(true);
+                        verifyingRewardIndex = pdRewards.indexOf(r);
+                        mAutoVerifyRewardId = null;
                     }
                 }
 
@@ -218,6 +275,10 @@ public class PDUIWalletFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+                if (verifyingRewardIndex != -1) {
+                    verifyReward(verifyingRewardIndex);
+                }
             }
 
             @Override
@@ -225,6 +286,13 @@ public class PDUIWalletFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    public void autoVerifyReward(String rewardId) {
+        mAutoVerifyRewardId = rewardId;
+        if (!mSwipeRefreshLayout.isRefreshing()) {
+            refreshWallet();
+        }
     }
 
 }

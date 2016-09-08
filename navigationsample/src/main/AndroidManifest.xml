@@ -68,14 +68,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Popdeem -->
         <meta-data
             android:name="com.popdeem.sdk.ApiKey"
-            android:value="43507f68-eeab-49e7-abf0-da099b14f17f" />
+            android:value="26eb2fcb-06e5-4976-bff4-88c30cc58f58" />
 
         <meta-data
             android:name="GCMSenderID"
             android:value="@string/google_app_id" />
 
+        <!-- Twitter -->
         <meta-data
             android:name="TwitterConsumerKey"
             android:value="rAzr7Tn0wOVBs6Oij13AYecVA" />
@@ -84,10 +86,25 @@
             android:name="TwitterConsumerSecret"
             android:value="rHTmAWpw1gPCoCy7AzA43j9eMqb2GJb24qcMfIHeOvepARFsmt" />
 
+        <!-- Instagram -->
+        <meta-data
+            android:name="InstagramClientId"
+            android:value="1b9912d9b75f4f29bb6c60afd63d1b67" />
+
+        <meta-data
+            android:name="InstagramClientSecret"
+            android:value="12e0e2b5d1194389bc82c3018406c3dc" />
+
+        <meta-data
+            android:name="InstagramCallbackUrl"
+            android:value="tabbedtest://instagram" />
+
+        <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <!-- Play Services -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

@@ -49,6 +49,8 @@ public final class PDUser {
     private PDUserFacebook pdUserFacebook;
     @SerializedName("twitter")
     private PDUserTwitter pdUserTwitter;
+    @SerializedName("instagram")
+    private PDUserInstagram pdUserInstagram;
 
     // Score
 //    private float totalScore;
@@ -74,7 +76,7 @@ public final class PDUser {
         this.lastName = "";
     }
 
-    public PDUser(String userToken, String id, String firstName, String lastName, String sex, String college, String suspendUntil, String type, PDUserFacebook pdUserFacebook, PDUserTwitter pdUserTwitter, double latitude, double longitude, ArrayList<PDSocialMediaFriend> taggableFriends, int likesCount) {
+    public PDUser(String userToken, String id, String firstName, String lastName, String sex, String college, String suspendUntil, String type, PDUserFacebook pdUserFacebook, PDUserTwitter pdUserTwitter, PDUserInstagram pdUserInstagram, double latitude, double longitude, ArrayList<PDSocialMediaFriend> taggableFriends, int likesCount) {
         this.userToken = userToken;
         this.id = id;
         this.firstName = firstName;
@@ -85,6 +87,7 @@ public final class PDUser {
         this.type = type;
         this.pdUserFacebook = pdUserFacebook;
         this.pdUserTwitter = pdUserTwitter;
+        this.pdUserInstagram = pdUserInstagram;
         this.latitude = latitude;
         this.longitude = longitude;
         this.taggableFriends = taggableFriends;
@@ -169,6 +172,14 @@ public final class PDUser {
 
     public void setPdUserTwitter(PDUserTwitter pdUserTwitter) {
         this.pdUserTwitter = pdUserTwitter;
+    }
+
+    public PDUserInstagram getPdUserInstagram() {
+        return pdUserInstagram;
+    }
+
+    public void setPdUserInstagram(PDUserInstagram pdUserInstagram) {
+        this.pdUserInstagram = pdUserInstagram;
     }
 
     //    public float getTotalScore() {

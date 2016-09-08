@@ -29,12 +29,12 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
+import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -53,6 +53,10 @@ public class PDBaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar == null) {
+            return;
+        }
+
         toolbar.setNavigationIcon(PDUIColorUtils.getBackButtonIcon(this));
         setSupportActionBar(toolbar);
 
@@ -63,21 +67,11 @@ public class PDBaseActivity extends AppCompatActivity {
     }
 
     public void showBasicOKAlertDialog(@StringRes int titleRes, String message) {
-        new AlertDialog.Builder(this)
-                .setTitle(titleRes)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .create()
-                .show();
+        PDUIDialogUtils.showBasicOKAlertDialog(this, titleRes, message);
     }
 
     public void showBasicOKAlertDialog(@StringRes int titleRes, @StringRes int messageRes) {
-        new AlertDialog.Builder(this)
-                .setTitle(titleRes)
-                .setMessage(messageRes)
-                .setPositiveButton(android.R.string.ok, null)
-                .create()
-                .show();
+        PDUIDialogUtils.showBasicOKAlertDialog(this, titleRes, messageRes);
     }
 
 }

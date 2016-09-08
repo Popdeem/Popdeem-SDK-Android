@@ -29,7 +29,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.popdeem.sdk.R;
@@ -46,7 +49,12 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
     public interface OnItemClickListener {
         void onItemClick(View v);
+
+        void onVerifyClick(int position);
     }
+
+    private final int VIEW_TYPE_WALLET_ITEM = 0;
+    private final int VIEW_TYPE_FOOTER = 1;
 
     private OnItemClickListener mListener;
     private ArrayList<PDReward> mItems;
@@ -62,6 +70,15 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position == getItemCount() - 1) {
+            return VIEW_TYPE_FOOTER;
+        } else {
+            return VIEW_TYPE_WALLET_ITEM;
+        }
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mAddedTextString == null) {
             mAddedTextString = parent.getContext().getString(R.string.pd_wallet_credit_reward_text);
@@ -69,11 +86,21 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         if (mImageDimen == -1) {
             mImageDimen = (int) parent.getContext().getResources().getDimension(R.dimen.wallet_image_dimen);
         }
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet, parent, false), parent.getContext());
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet, parent, false), parent.getContext(), viewType == VIEW_TYPE_WALLET_ITEM);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (position == getItemCount() - 1) {
+            holder.brandImageView.setVisibility(View.INVISIBLE);
+            holder.titleTextView.setVisibility(View.INVISIBLE);
+            holder.verifyContainer.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        holder.brandImageView.setVisibility(View.VISIBLE);
+        holder.titleTextView.setVisibility(View.VISIBLE);
+
         final PDReward reward = this.mItems.get(position);
 
         String imageUrl = reward.getCoverImage();
@@ -99,11 +126,26 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         } else {
             holder.titleTextView.setText(reward.getDescription());
         }
+
+        holder.verifyContainer.setVisibility(View.INVISIBLE);
+        holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
+        if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
+            if (!reward.isInstagramVerified()) {
+                holder.verifyContainer.setVisibility(View.VISIBLE);
+                holder.verifyProgress.setVisibility(reward.isVerifying() ? View.VISIBLE : View.INVISIBLE);
+                holder.verifyButton.setVisibility(reward.isVerifying() ? View.INVISIBLE : View.VISIBLE);
+                holder.subTitleTextView.setText(R.string.pd_wallet_reward_must_be_verified_text);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
-        return this.mItems == null ? 0 : this.mItems.size();
+        int count = 0;
+        if (this.mItems != null && this.mItems.size() > 0) {
+            count = this.mItems.size() + 1;
+        }
+        return count;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -111,22 +153,42 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         Context context;
         ImageView brandImageView;
         TextView titleTextView;
+        TextView subTitleTextView;
+        FrameLayout verifyContainer;
+        Button verifyButton;
+        ProgressBar verifyProgress;
 
-        public ViewHolder(View itemView, Context context) {
+        public ViewHolder(View itemView, Context context, boolean clickable) {
             super(itemView);
-            itemView.setClickable(true);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        mListener.onItemClick(v);
+            if (clickable) {
+                itemView.setClickable(true);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.onItemClick(v);
+                        }
                     }
-                }
-            });
+                });
+            }
 
             this.context = context;
             this.brandImageView = (ImageView) itemView.findViewById(R.id.pd_wallet_brand_image_view);
             this.titleTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_title_text_view);
+            this.subTitleTextView = (TextView) itemView.findViewById(R.id.pd_wallet_reward_sub_title_text_view);
+            this.verifyContainer = (FrameLayout) itemView.findViewById(R.id.pd_wallet_verify_container);
+            this.verifyButton = (Button) itemView.findViewById(R.id.pd_wallet_verify_button);
+            this.verifyProgress = (ProgressBar) itemView.findViewById(R.id.pd_wallet_verify_progress_bar);
+            this.verifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+//                        verifyProgress.setVisibility(View.VISIBLE);
+//                        verifyButton.setVisibility(View.INVISIBLE);
+                        mListener.onVerifyClick(getLayoutPosition());
+                    }
+                }
+            });
         }
     }
 
