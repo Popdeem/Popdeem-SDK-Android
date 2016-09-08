@@ -58,7 +58,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 
 public class PDUISettingsActivity extends PDBaseActivity implements PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback {
 
@@ -76,41 +75,51 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
         mFragmentManager = getSupportFragmentManager();
         mRealm = Realm.getDefaultInstance();
-        mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
-        mUser.addChangeListener(new RealmChangeListener<PDRealmUserDetails>() {
-            @Override
-            public void onChange(PDRealmUserDetails userDetails) {
-                mUser = userDetails;
-            }
-        });
 
-        if (mUser != null) {
-            TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
-            textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
-
-            final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
-            if (mUser.getUserFacebook() != null && mUser.getUserFacebook().getProfilePictureUrl() != null && !mUser.getUserFacebook().getProfilePictureUrl().isEmpty()) {
-                Picasso.with(this)
-                        .load(mUser.getUserFacebook().getProfilePictureUrl())
-                        .centerCrop()
-                        .placeholder(R.drawable.pd_ui_default_user)
-                        .error(R.drawable.pd_ui_default_user)
-                        .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
-                        .into(imageView);
-            } else {
-                Picasso.with(this)
-                        .load(R.drawable.pd_ui_default_user)
-                        .centerCrop()
-                        .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
-                        .into(imageView);
-            }
-        }
+        updateUserFromRealm();
+        displayUserDetails();
 
         mAdapter = new PDUISettingsRecyclerViewAdapter(this, mItems);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.pd_settings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         refreshList();
+    }
+
+    private void updateUserFromRealm() {
+        mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+    }
+
+    private void displayUserDetails() {
+        if (mUser == null) {
+            displayDefaultUserImage();
+            return;
+        }
+
+        TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
+        textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
+
+        if (mUser.getUserFacebook() != null && mUser.getUserFacebook().getProfilePictureUrl() != null && !mUser.getUserFacebook().getProfilePictureUrl().isEmpty()) {
+            final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
+            Picasso.with(this)
+                    .load(mUser.getUserFacebook().getProfilePictureUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.pd_ui_default_user)
+                    .error(R.drawable.pd_ui_default_user)
+                    .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
+                    .into(imageView);
+        } else {
+            displayDefaultUserImage();
+        }
+    }
+
+    private void displayDefaultUserImage() {
+        final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
+        Picasso.with(this)
+                .load(R.drawable.pd_ui_default_user)
+                .centerCrop()
+                .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
+                .into(imageView);
     }
 
     @Override
@@ -221,6 +230,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(type, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
             @Override
             public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                updateUserFromRealm();
+                displayUserDetails();
                 mItems.get(position).setValidated(true);
                 mAdapter.notifyItemChanged(position);
             }
@@ -275,9 +286,6 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         private boolean validated;
         @DrawableRes
         private int drawableRes;
-
-        public PDSettingsSocialNetwork() {
-        }
 
         public PDSettingsSocialNetwork(String name, boolean validated, int drawableRes) {
             this.name = name;
