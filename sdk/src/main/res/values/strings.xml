@@ -102,7 +102,7 @@
     <string name="pd_inbox_message_date_tag_text">Date:</string>
     <string name="pd_inbox_message_body_tag_text">Body:</string>
     <string name="pd_inbox_message_title_tag_text">Title:</string>
-    <string name="pd_inbox_no_messages_text">You have no message right now…</string>
+    <string name="pd_inbox_no_messages_text">You have no messages right now…</string>
 
 
     <!-- Wallet -->
