@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.FacebookSdk;
@@ -438,6 +439,23 @@ public final class PopdeemSDK {
 
         // Broadcast to update rewards / wallet / etc
         context.sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+    }
+
+
+    /**
+     * Check if Notifications are enabled for the app.
+     * Uses NotificationManagerCompat.areNotificationsEnabled()
+     *
+     * @return true by default, otherwise returns the result of NotificationManagerCompat.areNotificationsEnabled()
+     */
+    public static boolean areNotificationsEnabledForApp() {
+        if (sApplication != null) {
+            return NotificationManagerCompat.from(sApplication).areNotificationsEnabled();
+        }
+        if (sCurrentActivity != null) {
+            return NotificationManagerCompat.from(sCurrentActivity).areNotificationsEnabled();
+        }
+        return true;
     }
 
 

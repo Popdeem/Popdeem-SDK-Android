@@ -297,7 +297,7 @@ public class PDAPIClient {
         JsonObject json = new JsonObject();
         json.add("user", userJson);
 
-        TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
@@ -328,7 +328,7 @@ public class PDAPIClient {
         JsonObject json = new JsonObject();
         json.add("user", userJson);
 
-        TypedInput body = new TypedByteArray("application/json", json.toString().getBytes());
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
                 .create();
@@ -386,7 +386,7 @@ public class PDAPIClient {
         JsonObject jsonBody = new JsonObject();
         jsonBody.add("user", userJson);
 
-        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
@@ -417,7 +417,7 @@ public class PDAPIClient {
         JsonObject jsonBody = new JsonObject();
         jsonBody.add("user", userJson);
 
-        TypedInput body = new TypedByteArray("application/json", jsonBody.toString().getBytes());
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
