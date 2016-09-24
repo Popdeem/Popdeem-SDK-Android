@@ -39,6 +39,9 @@ import com.facebook.login.LoginManager;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -84,6 +87,15 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         refreshList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //AbraLogEvent(ABRA_EVENT_PAGE_VIEWED, @{ABRA_PROPERTYNAME_SOURCE_PAGE : ABRA_PROPERTYVALUE_PAGE_SETTINGS});
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_VIEWED_SETTINGS)
+                .create());
     }
 
     private void updateUserFromRealm() {
@@ -147,6 +159,13 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         return super.onOptionsItemSelected(item);
     }
 
+    private void abraLog(String eventName, String network) {
+        PDAbraLogEvent.log(eventName, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, network)
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_SOURCE_PAGE_SETTINGS)
+                .create());
+    }
+
     //********************************************************************
     //      Disconnect Social Account Methods
     //********************************************************************
@@ -154,6 +173,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     private void disconnectFacebook() {
         LoginManager.getInstance().logOut();
         Toast.makeText(PDUISettingsActivity.this, "Facebook disconnected.", Toast.LENGTH_SHORT).show();
+        abraLog(PDAbraConfig.ABRA_EVENT_LOGOUT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_FACEBOOK);
     }
 
     private void disconnectTwitter(PDRealmUserTwitter twitterParams, final int position) {
@@ -164,6 +184,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
                 Twitter.getSessionManager().clearActiveSession();
                 Twitter.logOut();
                 Toast.makeText(PDUISettingsActivity.this, "Twitter disconnected.", Toast.LENGTH_SHORT).show();
+                abraLog(PDAbraConfig.ABRA_EVENT_DISCONNECT_SOCIAL_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_TWITTER);
             }
 
             @Override
@@ -181,6 +202,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             public void success(PDUser user) {
                 PDUtils.updateSavedUser(user);
                 Toast.makeText(PDUISettingsActivity.this, "Instagram disconnected.", Toast.LENGTH_SHORT).show();
+                abraLog(PDAbraConfig.ABRA_EVENT_DISCONNECT_SOCIAL_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_INSTAGRAM);
             }
 
             @Override
@@ -234,6 +256,18 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
                 displayUserDetails();
                 mItems.get(position).setValidated(true);
                 mAdapter.notifyItemChanged(position);
+
+                switch (type) {
+                    case PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_FACEBOOK:
+                        abraLog(PDAbraConfig.ABRA_EVENT_CONNECTED_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_FACEBOOK);
+                        break;
+                    case PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_TWITTER:
+                        abraLog(PDAbraConfig.ABRA_EVENT_CONNECTED_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_TWITTER);
+                        break;
+                    case PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM:
+                        abraLog(PDAbraConfig.ABRA_EVENT_CONNECTED_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_INSTAGRAM);
+                        break;
+                }
             }
         });
         mFragmentManager.beginTransaction()

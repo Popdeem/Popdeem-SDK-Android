@@ -49,6 +49,8 @@ import com.facebook.login.LoginResult;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -195,6 +197,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
             @Override
             public void onCancel() {
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CANCELLED_FACEBOOK_LOGIN, null);
 //                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
 //                if (getActivity() != null) {
 //                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_common_facebook_login_cancelled_title_text, R.string.pd_common_facebook_login_cancelled_message_text);
@@ -331,22 +334,27 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                 break;
 
             case PD_CONNECT_TYPE_INSTAGRAM:
-                PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
-                    @Override
-                    public void loggedIn(PDInstagramResponse response) {
-                        connectInstagramAccount(response);
-                    }
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_SIGN_IN_INSTAGRAM, null);
+                if (PDSocialUtils.canUseInstagram()) {
+                    PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
+                        @Override
+                        public void loggedIn(PDInstagramResponse response) {
+                            connectInstagramAccount(response);
+                        }
 
-                    @Override
-                    public void error(String message) {
-                        showGenericAlert();
-                    }
-                });
-                final int containerId = ((ViewGroup) getView().getParent()).getId();
-                getFragmentManager().beginTransaction()
-                        .add(containerId, fragment, PDUIInstagramLoginFragment.getName())
-                        .addToBackStack(PDUIInstagramLoginFragment.getName())
-                        .commit();
+                        @Override
+                        public void error(String message) {
+                            showGenericAlert();
+                        }
+                    });
+                    final int containerId = ((ViewGroup) getView().getParent()).getId();
+                    getFragmentManager().beginTransaction()
+                            .add(containerId, fragment, PDUIInstagramLoginFragment.getName())
+                            .addToBackStack(PDUIInstagramLoginFragment.getName())
+                            .commit();
+                } else {
+                    PDLog.w(PDUIConnectSocialAccountFragment.class, "Could not initialise Instagram");
+                }
                 break;
         }
     }

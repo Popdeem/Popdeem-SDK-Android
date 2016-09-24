@@ -44,6 +44,9 @@ import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
@@ -193,18 +196,20 @@ public class PDUIWalletFragment extends Fragment {
         }
     };
 
-    private void redeemReward(PDReward reward, final int position) {
+    private void redeemReward(final PDReward reward, final int position) {
         PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
-//                PDLog.d(PDUIWalletFragment.class, "redeem success: " + jsonObject.toString());
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_REDEEMED_REWARD, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_NAME, reward.getDescription())
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_ID, reward.getId())
+                        .create());
                 mRewards.remove(position);
                 mAdapter.notifyItemRemoved(position);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-//                PDLog.d(PDUIWalletFragment.class, "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
             }
         });
     }

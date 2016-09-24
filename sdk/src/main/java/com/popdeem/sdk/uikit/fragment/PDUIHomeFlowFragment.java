@@ -36,6 +36,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
 import com.popdeem.sdk.uikit.activity.PDUISettingsActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIHomeFlowPagerAdapter;
@@ -84,6 +87,8 @@ public class PDUIHomeFlowFragment extends Fragment {
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
         viewPager.setAdapter(mAdapter);
 
+        // TODO page changed for Abra
+
         mTabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
         return view;
@@ -92,6 +97,10 @@ public class PDUIHomeFlowFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME)
+                .create());
+
         if (mMoveToWallet) {
             mMoveToWallet = false;
             if (switchToWallet()) {

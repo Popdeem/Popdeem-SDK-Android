@@ -55,6 +55,9 @@ import com.google.android.gms.location.LocationListener;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
@@ -112,6 +115,7 @@ public class PDUISocialLoginFragment extends Fragment {
 
             @Override
             public void onCancel() {
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CANCELLED_FACEBOOK_LOGIN, null);
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.pd_common_facebook_login_cancelled_title_text)
@@ -139,6 +143,9 @@ public class PDUISocialLoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mProgress.getVisibility() == View.GONE) {
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_CLOSE_LOGIN_TAKEOVER, new PDAbraProperties.Builder()
+                            .add("Source", "Dismiss Button")
+                            .create());
                     removeThisFragment();
                 }
             }
@@ -172,6 +179,14 @@ public class PDUISocialLoginFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_LOGINTAKEOVER)
+                .create());
     }
 
     private void updateViewAfterLogin() {
@@ -241,6 +256,11 @@ public class PDUISocialLoginFragment extends Fragment {
 
                 PDUtils.updateSavedUser(user);
                 updateUser(location);
+
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_LOGIN, new PDAbraProperties.Builder()
+                        .add("Source", "Login Takeover")
+                        .create());
+                PDAbraLogEvent.onboardUser();
             }
 
             @Override
@@ -320,6 +340,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 } else {
                     // Permission was not given
                     PDLog.d(getClass(), "permission for location not granted");
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_DENIED_LOCATION, null);
                     if (mAskForPermission) {
                         mAskForPermission = false;
                         new AlertDialog.Builder(getActivity())

@@ -29,6 +29,9 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.uikit.fragment.PDUIInboxFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIInboxMessageFragment;
@@ -51,6 +54,14 @@ public class PDUIInboxActivity extends PDBaseActivity {
         mFragmentManager.beginTransaction()
                 .replace(R.id.pd_inbox_fragment_container, PDUIInboxFragment.newInstance(mInboxItemClickListener))
                 .commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_VIEWED_INBOX)
+                .create());
     }
 
     private final PDUIInboxFragment.InboxItemClickListener mInboxItemClickListener = new PDUIInboxFragment.InboxItemClickListener() {
