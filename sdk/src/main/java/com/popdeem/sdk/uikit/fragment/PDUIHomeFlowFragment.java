@@ -86,12 +86,44 @@ public class PDUIHomeFlowFragment extends Fragment {
         mAdapter = new PDUIHomeFlowPagerAdapter(getChildFragmentManager(), getActivity());
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
         viewPager.setAdapter(mAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-        // TODO page changed for Abra
+            @Override
+            public void onPageSelected(int position) {
+                logTabPageView(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         mTabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
         return view;
+    }
+
+    private void logTabPageView(int position) {
+        switch (position) {
+            case 0: // Rewards
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME)
+                        .create());
+                break;
+            case 1: // Activity
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_ACTIVITY_FEED)
+                        .create());
+                break;
+            case 2: // Wallet
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_WALLET)
+                        .create());
+                break;
+        }
     }
 
     @Override
