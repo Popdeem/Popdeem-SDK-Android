@@ -281,12 +281,17 @@ public final class PopdeemSDK {
                 public void success(PDBasicResponse response) {
                     PDLog.d(PopdeemSDK.class, "registerNonSocialUser: " + response.toString());
                     if (response.isSuccess() && !token.isEmpty()) {
-                        PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+
+                        PDRealmNonSocialUID uidReam = realm.where(PDRealmNonSocialUID.class).findFirst();
+                        if (uidReam == null) {
+                            uidReam = new PDRealmNonSocialUID();
+                            uidReam.setUid(uid.getUid());
+                        }
                         uidReam.setId(0);
                         uidReam.setRegistered(true);
 
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
                         realm.copyToRealmOrUpdate(uidReam);
                         realm.commitTransaction();
                         realm.close();

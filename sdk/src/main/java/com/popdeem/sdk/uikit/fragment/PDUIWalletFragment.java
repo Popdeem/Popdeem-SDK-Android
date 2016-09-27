@@ -49,7 +49,6 @@ import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDLog;
-import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
@@ -111,15 +110,15 @@ public class PDUIWalletFragment extends Fragment {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);
-                        String availabilityString;
-                        if (availableUntil <= 0) {
-                            availabilityString = getString(R.string.pd_redeem_sweepstake_reward_no_date_message_string);
-                        } else {
-                            availabilityString = String.format(Locale.getDefault(), "\n\n- Draw in %1s", PDUIUtils.timeUntil(availableUntil, false, true));
-                        }
-
-                        String message = String.format(Locale.getDefault(), "%1s%2s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string), availabilityString);
+//                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);
+//                        String availabilityString;
+//                        if (availableUntil <= 0) {
+//                            availabilityString = getString(R.string.pd_redeem_sweepstake_reward_no_date_message_string);
+//                        } else {
+//                            availabilityString = String.format(Locale.getDefault(), "\n\n- Draw in %1s", PDUIUtils.timeUntil(availableUntil, false, true));
+//                        }
+//                        String message = String.format(Locale.getDefault(), "%1s%2s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string), availabilityString);
+                        String message = String.format(Locale.getDefault(), "%1s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string));
 
                         builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)
                                 .setMessage(message)

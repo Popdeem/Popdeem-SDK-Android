@@ -117,18 +117,19 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                     .into(holder.brandImageView);
         }
 
+        holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
+        holder.titleTextView.setText(reward.getDescription());
         if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
             holder.titleTextView.setText(String.format(
                     Locale.getDefault(),
                     "%1s %2s",
                     reward.getCredit() == null ? "Credit" : reward.getCredit(),
                     mAddedTextString));
-        } else {
-            holder.titleTextView.setText(reward.getDescription());
+        } else if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+            holder.subTitleTextView.setText(R.string.pd_wallet_sweepstakes_text);
         }
 
         holder.verifyContainer.setVisibility(View.INVISIBLE);
-        holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
         if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
             if (!reward.isInstagramVerified()) {
                 holder.verifyContainer.setVisibility(View.VISIBLE);

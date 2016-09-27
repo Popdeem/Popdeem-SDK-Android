@@ -134,7 +134,7 @@ public class PDUIUtils {
      * @return String in timer format
      */
     public static String millisecondsToTimer(long millis) {
-        return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis),
+        return String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis),
                 TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
 

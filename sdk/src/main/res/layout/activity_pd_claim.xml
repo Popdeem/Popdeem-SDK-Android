@@ -125,7 +125,6 @@
                             android:gravity="top|start"
                             android:hint="@string/pd_claim_message_placeholder_text"
                             android:inputType="textCapSentences|textMultiLine"
-                            android:singleLine="false"
                             android:textSize="13sp" />
 
                         <TextView

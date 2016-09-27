@@ -117,6 +117,7 @@
     <string name="pd_wallet_verify_button_text">Verify</string>
     <string name="pd_wallet_reward_must_be_verified_text">This reward must be verified.</string>
     <string name="pd_wallet_redeem_text">Redeem at the point of sale.</string>
+    <string name="pd_wallet_sweepstakes_text">You have been entered into the draw.</string>
 
 
     <!-- Feed -->
