@@ -39,22 +39,29 @@ import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 public class PDUIDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
+    private boolean mDrawLastDivider = true;
 
     public PDUIDividerItemDecoration(Context context, @ColorRes int color) {
         mDivider = PDUIColorUtils.getListDivider(context, color);
-//        mDivider = ContextCompat.getDrawable(context, R.drawable.pd_divider);
+    }
+
+    public PDUIDividerItemDecoration(Context context, @ColorRes int color, boolean drawLastDivider) {
+        this.mDrawLastDivider = drawLastDivider;
+        mDivider = PDUIColorUtils.getListDivider(context, color);
     }
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mDivider != null) {
-            int left = parent.getPaddingLeft();
-            int right = parent.getWidth() - parent.getPaddingRight();
+            final int left = parent.getPaddingLeft();
+            final int right = parent.getWidth() - parent.getPaddingRight();
+            final int childCount = parent.getChildCount();
 
-            int childCount = parent.getChildCount();
             for (int i = 0; i < childCount; i++) {
+                if (!mDrawLastDivider && i == childCount - 1) {
+                    continue;
+                }
                 View child = parent.getChildAt(i);
-
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
 
                 int top = child.getBottom() + params.bottomMargin;

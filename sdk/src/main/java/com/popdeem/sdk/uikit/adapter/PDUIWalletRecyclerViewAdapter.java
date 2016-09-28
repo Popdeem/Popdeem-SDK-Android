@@ -159,7 +159,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         Button verifyButton;
         ProgressBar verifyProgress;
 
-        public ViewHolder(View itemView, Context context, boolean clickable) {
+        ViewHolder(View itemView, Context context, boolean clickable) {
             super(itemView);
             if (clickable) {
                 itemView.setClickable(true);
