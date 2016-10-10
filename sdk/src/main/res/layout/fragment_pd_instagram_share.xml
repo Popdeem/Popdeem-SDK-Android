@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/pd_connect_dialog_background"
+        android:clickable="true"
         android:clipChildren="true">
 
         <LinearLayout
@@ -63,10 +64,26 @@
                 android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:minHeight="150dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/pd_insta_step_one" />
+
+            </FrameLayout>
+
             <Button
                 android:id="@+id/pd_instagram_share_next_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/pd_rounded_border_button_background"
                 android:minHeight="35dp"
                 android:text="@string/pd_common_next_text"
@@ -103,10 +120,26 @@
                 android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:minHeight="150dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/pd_insta_step_two" />
+
+            </FrameLayout>
+
             <Button
                 android:id="@+id/pd_instagram_share_okay_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@color/pd_toolbar_color"
                 android:minHeight="35dp"
                 android:text="Okay, Gotcha"

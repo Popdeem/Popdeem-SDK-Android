@@ -45,7 +45,7 @@
     <string name="pd_activity_title">Activity</string>
     <string name="pd_wallet_title">Wallet</string>
     <string-array name="home_flow_tab_titles">
-        <item>@string/pd_redeem_title</item>
+        <item>@string/pd_rewards_title</item>
         <item>@string/pd_activity_title</item>
         <item>@string/pd_wallet_title</item>
     </string-array>

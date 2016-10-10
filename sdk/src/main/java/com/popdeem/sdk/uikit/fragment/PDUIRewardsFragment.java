@@ -263,9 +263,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     }
                     realm.close();
                 }
-                if (mLocation != null) {
-                    updateListDistances(mLocation);
-                }
+
+                updateListDistances(mLocation);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 
@@ -277,7 +276,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void updateListDistances(final Location location) {
-        if (mUpdatingDistances) {
+        if (location == null || mUpdatingDistances) {
             return;
         }
         new Thread(new Runnable() {
