@@ -248,6 +248,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         PDAPIClient.instance().getAllRewards(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
+                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
                 mRewards.clear();
                 mRewards.addAll(pdRewards);
                 mRecyclerViewAdapter.notifyDataSetChanged();
@@ -264,7 +265,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     realm.close();
                 }
 
-                Collections.sort(mRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
                 updateListDistances(mLocation);
                 mSwipeRefreshLayout.setRefreshing(false);
             }

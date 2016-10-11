@@ -99,12 +99,12 @@ public class PDRewardComparator implements Comparator<PDReward> {
      */
     private int compareCreatedAt(PDReward lhs, PDReward rhs) {
         // Check if time is not 0
-        if (lhs.getCreatedAt() <= 0) {
+        if (rhs.getCreatedAt() <= 0) {
             return 1;
-        } else if (rhs.getCreatedAt() <= 0) {
+        } else if (lhs.getCreatedAt() <= 0) {
             return -1;
         }
-        return (int) (lhs.getCreatedAt() - rhs.getCreatedAt());
+        return (int) (rhs.getCreatedAt() - lhs.getCreatedAt());
     }
 
 
@@ -117,11 +117,11 @@ public class PDRewardComparator implements Comparator<PDReward> {
      */
     private int compareClaimedAt(PDReward lhs, PDReward rhs) {
         // Check if time is not 0
-        if (lhs.getClaimedAt() <= 0) {
+        if (rhs.getClaimedAt() <= 0) {
             return 1;
-        } else if (rhs.getClaimedAt() <= 0) {
+        } else if (lhs.getClaimedAt() <= 0) {
             return -1;
         }
-        return (int) (lhs.getClaimedAt() - rhs.getClaimedAt());
+        return (int) (rhs.getClaimedAt() - lhs.getClaimedAt());
     }
 }

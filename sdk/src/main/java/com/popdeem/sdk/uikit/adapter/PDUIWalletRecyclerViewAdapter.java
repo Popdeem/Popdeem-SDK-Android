@@ -135,7 +135,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                 holder.verifyContainer.setVisibility(View.VISIBLE);
                 holder.verifyProgress.setVisibility(reward.isVerifying() ? View.VISIBLE : View.INVISIBLE);
                 holder.verifyButton.setVisibility(reward.isVerifying() ? View.INVISIBLE : View.VISIBLE);
-                holder.subTitleTextView.setText(R.string.pd_wallet_reward_must_be_verified_text);
+                holder.subTitleTextView.setText(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_wallet_sweepstake_must_be_verified_text : R.string.pd_wallet_reward_must_be_verified_text);
             }
         }
     }

@@ -983,13 +983,23 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     public void success(Boolean valid) {
                         PDLog.d(PDUIClaimActivity.class, "Instagram access token " + (valid ? "valid" : "expired"));
                         if (!valid) {
-                            showConnectToInstagramFragment();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showConnectToInstagramFragment();
+                                }
+                            });
                         }
                     }
 
                     @Override
                     public void failure(int statusCode, Exception e) {
-                        showConnectToInstagramFragment();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showConnectToInstagramFragment();
+                            }
+                        });
                     }
                 });
             }
