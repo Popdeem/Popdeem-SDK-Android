@@ -51,6 +51,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -240,8 +241,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void toggleInstagramViews() {
         TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagTextView.setVisibility(View.INVISIBLE);
+        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mInstagramSwitch.isChecked()) {
             removeHashTagSpans(mMessageEditText.getText());
@@ -251,7 +253,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         if (mReward.getInstagramOptions() != null) {
             if (mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
                 hashTagTextView.setText(mReward.getInstagramOptions().getForcedTag());
-                hashTagTextView.setVisibility(View.VISIBLE);
+                hashTagContainer.setVisibility(View.VISIBLE);
             }
         }
         validateHashTag();
@@ -260,8 +262,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void toggleTwitterViews() {
         TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagTextView.setVisibility(View.INVISIBLE);
+        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mTwitterSwitch.isChecked()) {
             removeHashTagSpans(mMessageEditText.getText());
@@ -278,7 +281,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             }
             if (mReward.getTweetOptions().isForceTag()) {
                 hashTagTextView.setText(mReward.getTweetOptions().getForcedTag());
-                hashTagTextView.setVisibility(View.VISIBLE);
+                hashTagContainer.setVisibility(View.VISIBLE);
             }
             mMessageEditText.setSelection(mMessageEditText.getText().length());
         }
@@ -359,6 +362,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         findViewById(R.id.pd_claim_add_image_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_share_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_tag_friends_button).setOnClickListener(this);
+        findViewById(R.id.pd_claim_add_hashtag_button).setOnClickListener(this);
     }
 
     private void updateEnabledStateOfViews() {
@@ -1070,6 +1074,21 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     }, mTaggedNames, mTaggedIds))
                     .addToBackStack(PDUITagFriendsFragment.class.getSimpleName())
                     .commit();
+        } else if (ID == R.id.pd_claim_add_hashtag_button) {
+            String hashTag = null;
+            if (mInstagramSwitch.isChecked()) {
+                hashTag = mReward.getInstagramOptions().getForcedTag();
+            } else if (mTwitterSwitch.isChecked()) {
+                hashTag = mReward.getTweetOptions().getForcedTag();
+            }
+            if (hashTag != null) {
+                String currentMessage = mMessageEditText.getText().toString();
+                if (!currentMessage.toLowerCase(Locale.getDefault()).contains(hashTag.toLowerCase(Locale.getDefault()))) {
+                    currentMessage = String.format(Locale.getDefault(), "%1s %2s", currentMessage.trim(), hashTag).trim();
+                    mMessageEditText.setText(currentMessage);
+                    mMessageEditText.setSelection(mMessageEditText.getText().length());
+                }
+            }
         }
     }
 

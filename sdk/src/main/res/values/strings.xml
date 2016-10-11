@@ -78,6 +78,7 @@
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
+    <string name="pd_add_text">Add</string>
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
     <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
