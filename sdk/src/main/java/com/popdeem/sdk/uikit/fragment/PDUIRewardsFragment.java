@@ -49,7 +49,7 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
-import com.popdeem.sdk.core.comparator.PDRewardDistanceComparator;
+import com.popdeem.sdk.core.comparator.PDRewardComparator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDLocation;
 import com.popdeem.sdk.core.model.PDReward;
@@ -264,6 +264,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     realm.close();
                 }
 
+                Collections.sort(mRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
                 updateListDistances(mLocation);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -314,7 +315,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 }
 
                 synchronized (mRewards) {
-                    Collections.sort(mRewards, new PDRewardDistanceComparator());
+//                    Collections.sort(mRewards, new PDRewardComparator(PDRewardComparator.DISTANCE_COMPARATOR));
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override

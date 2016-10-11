@@ -24,6 +24,8 @@
 
 package com.popdeem.sdk.core.comparator;
 
+import android.support.annotation.IntDef;
+
 import com.popdeem.sdk.core.model.PDReward;
 
 import java.util.Comparator;
@@ -31,10 +33,44 @@ import java.util.Comparator;
 /**
  * Created by mikenolan on 11/03/16.
  */
-public class PDRewardDistanceComparator implements Comparator<PDReward> {
+public class PDRewardComparator implements Comparator<PDReward> {
+
+    public static final int DISTANCE_COMPARATOR = 0;
+    public static final int CREATED_AT_COMPARATOR = 1;
+    public static final int CLAIMED_AT_COMPARATOR = 2;
+
+    @IntDef({DISTANCE_COMPARATOR, CREATED_AT_COMPARATOR, CLAIMED_AT_COMPARATOR})
+    public @interface ComparatorType {
+    }
+
+    @PDRewardComparator.ComparatorType
+    private final int mType;
+
+
+    public PDRewardComparator(@PDRewardComparator.ComparatorType int type) {
+        this.mType = type;
+    }
 
     @Override
     public int compare(PDReward lhs, PDReward rhs) {
+        if (mType == DISTANCE_COMPARATOR) {
+            return compareDistance(lhs, rhs);
+        } else if (mType == CLAIMED_AT_COMPARATOR) {
+            return compareClaimedAt(lhs, rhs);
+        } else {
+            return compareCreatedAt(lhs, rhs);
+        }
+    }
+
+
+    /**
+     * Compare {@link PDReward} by distance
+     *
+     * @param lhs Left reward
+     * @param rhs Right reward
+     * @return int
+     */
+    private int compareDistance(PDReward lhs, PDReward rhs) {
         // Check if Location Verification is disabled
         if (lhs.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE)) {
             return -1;
@@ -53,4 +89,39 @@ public class PDRewardDistanceComparator implements Comparator<PDReward> {
         return (int) (lhs.getDistanceFromUser() - rhs.getDistanceFromUser());
     }
 
+
+    /**
+     * Compare {@link PDReward} by created_at
+     *
+     * @param lhs Left reward
+     * @param rhs Right reward
+     * @return int
+     */
+    private int compareCreatedAt(PDReward lhs, PDReward rhs) {
+        // Check if time is not 0
+        if (lhs.getCreatedAt() <= 0) {
+            return 1;
+        } else if (rhs.getCreatedAt() <= 0) {
+            return -1;
+        }
+        return (int) (lhs.getCreatedAt() - rhs.getCreatedAt());
+    }
+
+
+    /**
+     * Compare {@link PDReward} by claimed_at
+     *
+     * @param lhs Left reward
+     * @param rhs Right reward
+     * @return int
+     */
+    private int compareClaimedAt(PDReward lhs, PDReward rhs) {
+        // Check if time is not 0
+        if (lhs.getClaimedAt() <= 0) {
+            return 1;
+        } else if (rhs.getClaimedAt() <= 0) {
+            return -1;
+        }
+        return (int) (lhs.getClaimedAt() - rhs.getClaimedAt());
+    }
 }

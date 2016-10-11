@@ -47,6 +47,7 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.comparator.PDRewardComparator;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
@@ -57,6 +58,7 @@ import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -258,6 +260,9 @@ public class PDUIWalletFragment extends Fragment {
         PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
+                // Sort rewards
+                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CLAIMED_AT_COMPARATOR));
+
                 // If a reward has been revoked, remove it from the users wallet
                 int verifyingRewardIndex = -1;
                 for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
