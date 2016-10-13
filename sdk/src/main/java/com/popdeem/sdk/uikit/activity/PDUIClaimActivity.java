@@ -130,6 +130,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private boolean mUserHasLeftForInstagram = false;
 
     private boolean mImageAdded = false;
+    private boolean mImageFromCamera = false;
     private String mCurrentPhotoPath;
     private String mCurrentResizedPhotoPath;
     private String mCurrentCroppedPhotoPath;
@@ -478,7 +479,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         String encodedImage = null;
         File imageFile = new File(mCurrentCroppedPhotoPath);
         if (imageFile.exists()) {
-            Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, PDUIImageUtils.getOrientation(mCurrentPhotoPath));
+            Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, mImageFromCamera ? -1 : PDUIImageUtils.getOrientation(mCurrentPhotoPath));
             if (b != null) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 b.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
@@ -795,7 +796,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void handleCroppedPhoto() {
-        int orientation = PDUIImageUtils.getOrientation(mCurrentPhotoPath);
+        int orientation = mImageFromCamera ? -1 : PDUIImageUtils.getOrientation(mCurrentPhotoPath);
         PDLog.d(PDUIClaimActivity.class, "orientation: " + orientation);
         setPic(mCurrentCroppedPhotoPath, orientation);
     }
@@ -1132,6 +1133,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 //                PDLog.d(PDUIImageUtils.class, "processImage");
                 try {
                     // reduce image size and use resized file path
+                    mImageFromCamera = true;
                     setUpResizedPhotoFile();
                     PDUIImageUtils.reduceImageSizeAndSaveToPath(mCurrentPhotoPath, mCurrentResizedPhotoPath, 500, 500);
                     showCropView(Uri.fromFile(new File(mCurrentResizedPhotoPath)));
@@ -1147,6 +1149,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (requestCode == PDUIImageUtils.PD_GALLERY_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 try {
+                    mImageFromCamera = false;
                     showCropView(data.getData());
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_ADDED_CLAIM_CONTENT, new PDAbraProperties.Builder()
                             .add(PDAbraConfig.ABRA_PROPERTYNAME_PHOTO, "Yes")
