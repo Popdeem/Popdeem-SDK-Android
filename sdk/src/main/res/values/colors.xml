@@ -107,6 +107,7 @@
     <color name="pd_claim_location_verification_tick_color">#777777</color>
     <color name="pd_claim_switch_tint_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_add_hashtag_button_text_color">@color/pd_toolbar_color</color>
+    <color name="pd_claim_add_hashtag_text_color">#A2A2A1</color>
 
     <color name="pd_tag_friends_background_color">#ffffff</color>
 

@@ -253,7 +253,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         if (mReward.getInstagramOptions() != null) {
             if (mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
-                hashTagTextView.setText(mReward.getInstagramOptions().getForcedTag());
+                hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getInstagramOptions().getForcedTag()));
                 hashTagContainer.setVisibility(View.VISIBLE);
             }
         }
@@ -281,7 +281,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 PDLog.d(PDUIClaimActivity.class, mReward.getTweetOptions().getPrefilledMessage());
             }
             if (mReward.getTweetOptions().isForceTag()) {
-                hashTagTextView.setText(mReward.getTweetOptions().getForcedTag());
+                hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getTweetOptions().getForcedTag()));
                 hashTagContainer.setVisibility(View.VISIBLE);
             }
             mMessageEditText.setSelection(mMessageEditText.getText().length());
@@ -315,6 +315,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         mHashTagValidated = currentMessageLowerCase.contains(hashTagLowerCase);
+
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
+        hashTagContainer.setVisibility(mHashTagValidated ? View.INVISIBLE : View.VISIBLE);
+
         Spannable messageSpannable = mMessageEditText.getText();
         if (mHashTagValidated) {
             final int startIndex = currentMessageLowerCase.indexOf(hashTagLowerCase);
@@ -495,12 +499,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private String getMessage() {
         return mMessageEditText.getText().toString();
-//        if (mTwitterSwitch.isChecked() && mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
-//            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
-//        } else if (mInstagramSwitch.isChecked() && mReward.getInstagramOptions() != null && mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
-//            message = String.format("%1s %2s", message, mReward.getInstagramOptions().getForcedTag());
-//        }
-//        return message;
     }
 
     private void post(final boolean addImage) {
@@ -883,14 +881,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             switchCompat.setChecked(false);
         }
     }
-
-//    private void checkSwitchIfNeeded(SwitchCompat switchCompat) {
-//        if (!switchCompat.isChecked()) {
-//            switchCompat.setOnCheckedChangeListener(null);
-//            switchCompat.setChecked(true);
-//            switchCompat.setOnCheckedChangeListener(this);
-//        }
-//    }
 
     /**
      * TextWatcher for message EditText

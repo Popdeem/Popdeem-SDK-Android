@@ -187,7 +187,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="2dp"
-                                android:textColor="@color/pd_twitter_blue"
+                                android:textColor="@color/pd_claim_add_hashtag_text_color"
                                 android:textSize="13sp"
                                 tools:text="#hashtaghere" />
 

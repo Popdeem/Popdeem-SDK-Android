@@ -84,6 +84,7 @@
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
     <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
+    <string name="pd_claim_required_hashtag_text">%1s Required</string>
 
     <!-- Claim Add Image Dialog -->
     <string name="pd_claim_add_photo_title_text">Add Photo</string>
