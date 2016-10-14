@@ -122,7 +122,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
                         PDReward reward = mRewards.get(position);
                         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-                            claimNoActionReward(position, reward.getId());
+                            claimNoActionReward(position, reward);
                         } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
                             Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
                             intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
@@ -175,7 +175,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
     }
 
-    private void claimNoActionReward(final int position, String rewardId) {
+    private void claimNoActionReward(final int position, final PDReward reward) {
         final PDUIProgressDialogFragment progress = PDUIProgressDialogFragment.showProgressDialog(getChildFragmentManager(), getString(R.string.pd_common_please_wait_text), getString(R.string.pd_claim_claiming_reward_text), false, null);
         String lat = "", lng = "";
 
@@ -187,7 +187,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
         realm.close();
 
-        PDAPIClient.instance().claimReward(getActivity(), null, null, null, null, rewardId, "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
+        PDAPIClient.instance().claimReward(getActivity(), null, null, null, null, reward.getId(), "", null, null, null, lng, lat, new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
                 progress.dismiss();
@@ -210,8 +210,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     mRecyclerViewAdapter.notifyItemRemoved(position);
                     new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.pd_claim_reward_claimed_text)
-                            .setMessage(R.string.pd_claim_reward_claimed_success_text)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            .setMessage(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
+                            .setPositiveButton(R.string.pd_go_to_wallet_text, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {

@@ -189,7 +189,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             mUserHasLeftForInstagram = false;
             PDLog.d(getClass(), "perform claim now, user returned from IG");
             mFragmentManager.popBackStack(PDUIInstagramShareFragment.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            performClaimReward(getMessage(), getEncodedImage());
+            performClaimReward(getMessage(), getEncodedImage(), true);
         }
 
         PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
@@ -623,11 +623,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         if (mInstagramSwitch.isChecked()) {
             postToInstagram(message, mCurrentCroppedPhotoPath);
         } else {
-            performClaimReward(message, encodedImage);
+            performClaimReward(message, encodedImage, false);
         }
     }
 
-    private void performClaimReward(String message, String encodedImage) {
+    private void performClaimReward(String message, String encodedImage, final boolean fromInstagram) {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pd_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -676,21 +676,25 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                                 .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_TYPE, PDAbraUtils.keyForRewardType(mReward.getRewardType()))
                                 .create());
 
-                        new AlertDialog.Builder(PDUIClaimActivity.this)
-                                .setTitle(R.string.pd_claim_reward_claimed_text)
-                                .setMessage(R.string.pd_claim_reward_claimed_success_text)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent data = new Intent();
-                                        data.putExtra("id", mReward.getId());
-                                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
-                                        setResult(RESULT_OK, data);
-                                        finish();
-                                    }
-                                })
-                                .create()
-                                .show();
+                        if (fromInstagram) {
+                            finishActivityAfterClaim();
+                        } else {
+                            new AlertDialog.Builder(PDUIClaimActivity.this)
+                                    .setTitle(R.string.pd_claim_reward_claimed_text)
+                                    .setMessage(mReward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
+                                    .setPositiveButton(R.string.pd_go_to_wallet_text, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent data = new Intent();
+                                            data.putExtra("id", mReward.getId());
+                                            data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
                     }
 
                     @Override
@@ -723,6 +727,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 .replace(R.id.pd_claim_tag_friends_container, fragment, PDUIInstagramShareFragment.getName())
                 .addToBackStack(PDUIInstagramShareFragment.getName())
                 .commit();
+    }
+
+    private void finishActivityAfterClaim() {
+        Intent data = new Intent();
+        data.putExtra("id", mReward.getId());
+        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     private void connectTwitterAccount(TwitterSession session, final boolean addImage) {

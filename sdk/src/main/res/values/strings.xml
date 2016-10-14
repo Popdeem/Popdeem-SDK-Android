@@ -64,7 +64,8 @@
     <string name="pd_claim_twitter_forced_message_string">This reward must be claimed with a Twitter post. You can also post to Facebook if you wish.</string>
 
     <string name="pd_claim_reward_claimed_text">Reward Claimed!</string>
-    <string name="pd_claim_reward_claimed_success_text">You can view your reward in your wallet</string>
+    <string name="pd_claim_sweepstakes_claimed_success_text">Congratulations! You have been entered into the competition.</string>
+    <string name="pd_claim_reward_claimed_success_text">Congratulations! You have unlocked your reward.</string>
     <string name="pd_claim_claiming_reward_text">Claiming your reward</string>
     <string name="pd_claim_tweet_too_long_text">You are over the character limit for Twitter. Please edit your message.</string>
     <string name="pd_claim_no_network_selected_title_text">No Network Selected</string>
@@ -79,6 +80,7 @@
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
     <string name="pd_add_text">Add</string>
+    <string name="pd_go_to_wallet_text">Go to Wallet</string>
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
     <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
