@@ -45,7 +45,7 @@ public class PDBaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.pd_toolbar_color_dark));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.pd_toolbar_color));
         }
     }
 

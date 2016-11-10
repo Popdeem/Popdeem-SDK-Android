@@ -98,9 +98,11 @@ public class PDUIInstagramLoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Realm realm = Realm.getDefaultInstance();
         PDRealmInstagramConfig config = realm.where(PDRealmInstagramConfig.class).findFirst();
-        mClientId = config.getInstagramClientId();
-        mClientSecret = config.getInstagramClientSecret();
-        mCallbackUrl = config.getInstagramCallbackUrl();
+        if (config != null) {
+            mClientId = config.getInstagramClientId();
+            mClientSecret = config.getInstagramClientSecret();
+            mCallbackUrl = config.getInstagramCallbackUrl();
+        }
         realm.close();
     }
 

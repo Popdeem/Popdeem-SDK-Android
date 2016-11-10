@@ -44,9 +44,12 @@ import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.comparator.PDRewardComparator;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDLog;
-import com.popdeem.sdk.core.utils.PDNumberUtils;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
@@ -55,6 +58,7 @@ import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -108,15 +112,15 @@ public class PDUIWalletFragment extends Fragment {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);
-                        String availabilityString;
-                        if (availableUntil <= 0) {
-                            availabilityString = getString(R.string.pd_redeem_sweepstake_reward_no_date_message_string);
-                        } else {
-                            availabilityString = String.format(Locale.getDefault(), "\n\n- Draw in %1s", PDUIUtils.timeUntil(availableUntil, false, true));
-                        }
-
-                        String message = String.format(Locale.getDefault(), "%1s%2s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string), availabilityString);
+//                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);
+//                        String availabilityString;
+//                        if (availableUntil <= 0) {
+//                            availabilityString = getString(R.string.pd_redeem_sweepstake_reward_no_date_message_string);
+//                        } else {
+//                            availabilityString = String.format(Locale.getDefault(), "\n\n- Draw in %1s", PDUIUtils.timeUntil(availableUntil, false, true));
+//                        }
+//                        String message = String.format(Locale.getDefault(), "%1s%2s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string), availabilityString);
+                        String message = String.format(Locale.getDefault(), "%1s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string));
 
                         builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)
                                 .setMessage(message)
@@ -161,7 +165,7 @@ public class PDUIWalletFragment extends Fragment {
             mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
 
             recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color));
+            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color, false));
             recyclerView.setAdapter(mAdapter);
 
             refreshWallet();
@@ -193,18 +197,20 @@ public class PDUIWalletFragment extends Fragment {
         }
     };
 
-    private void redeemReward(PDReward reward, final int position) {
+    private void redeemReward(final PDReward reward, final int position) {
         PDAPIClient.instance().redeemReward(reward.getId(), new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
-//                PDLog.d(PDUIWalletFragment.class, "redeem success: " + jsonObject.toString());
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_REDEEMED_REWARD, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_NAME, reward.getDescription())
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_ID, reward.getId())
+                        .create());
                 mRewards.remove(position);
                 mAdapter.notifyItemRemoved(position);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
-//                PDLog.d(PDUIWalletFragment.class, "redeem failed: code=" + statusCode + ", message=" + e.getMessage());
             }
         });
     }
@@ -254,6 +260,9 @@ public class PDUIWalletFragment extends Fragment {
         PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
+                // Sort rewards
+                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CLAIMED_AT_COMPARATOR));
+
                 // If a reward has been revoked, remove it from the users wallet
                 int verifyingRewardIndex = -1;
                 for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {

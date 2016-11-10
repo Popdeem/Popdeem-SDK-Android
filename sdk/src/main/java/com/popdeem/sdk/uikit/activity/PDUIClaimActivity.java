@@ -51,6 +51,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,10 @@ import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.api.abra.PDAbraUtils;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.location.PDLocationValidator;
 import com.popdeem.sdk.core.model.PDReward;
@@ -125,6 +130,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private boolean mUserHasLeftForInstagram = false;
 
     private boolean mImageAdded = false;
+    private boolean mImageFromCamera = false;
     private String mCurrentPhotoPath;
     private String mCurrentResizedPhotoPath;
     private String mCurrentCroppedPhotoPath;
@@ -183,8 +189,16 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             mUserHasLeftForInstagram = false;
             PDLog.d(getClass(), "perform claim now, user returned from IG");
             mFragmentManager.popBackStack(PDUIInstagramShareFragment.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            performClaimReward(getMessage(), getEncodedImage());
+            performClaimReward(getMessage(), getEncodedImage(), true);
         }
+
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_VIEWED_CLAIM)
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_TYPE, PDAbraUtils.keyForRewardType(mReward.getRewardType()))
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_ACTION, PDAbraUtils.keyForRewardAction(mReward.getAction()))
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_NETWORKS_AVAILABLE, readableMediaTypedAvailable())
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_NAME, mReward.getDescription())
+                .create());
     }
 
     @Override
@@ -228,8 +242,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void toggleInstagramViews() {
         TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagTextView.setVisibility(View.INVISIBLE);
+        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mInstagramSwitch.isChecked()) {
             removeHashTagSpans(mMessageEditText.getText());
@@ -238,8 +253,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         if (mReward.getInstagramOptions() != null) {
             if (mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
-                hashTagTextView.setText(mReward.getInstagramOptions().getForcedTag());
-                hashTagTextView.setVisibility(View.VISIBLE);
+                hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getInstagramOptions().getForcedTag()));
+                hashTagContainer.setVisibility(View.VISIBLE);
             }
         }
         validateHashTag();
@@ -248,8 +263,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void toggleTwitterViews() {
         TextView twitterCharactersTextView = (TextView) findViewById(R.id.pd_claim_twitter_characters_text_view);
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagTextView.setVisibility(View.INVISIBLE);
+        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mTwitterSwitch.isChecked()) {
             removeHashTagSpans(mMessageEditText.getText());
@@ -265,8 +281,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 PDLog.d(PDUIClaimActivity.class, mReward.getTweetOptions().getPrefilledMessage());
             }
             if (mReward.getTweetOptions().isForceTag()) {
-                hashTagTextView.setText(mReward.getTweetOptions().getForcedTag());
-                hashTagTextView.setVisibility(View.VISIBLE);
+                hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getTweetOptions().getForcedTag()));
+                hashTagContainer.setVisibility(View.VISIBLE);
             }
             mMessageEditText.setSelection(mMessageEditText.getText().length());
         }
@@ -299,6 +315,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
         mHashTagValidated = currentMessageLowerCase.contains(hashTagLowerCase);
+
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
+        hashTagContainer.setVisibility(mHashTagValidated ? View.INVISIBLE : View.VISIBLE);
+
         Spannable messageSpannable = mMessageEditText.getText();
         if (mHashTagValidated) {
             final int startIndex = currentMessageLowerCase.indexOf(hashTagLowerCase);
@@ -347,6 +367,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         findViewById(R.id.pd_claim_add_image_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_share_button).setOnClickListener(this);
         findViewById(R.id.pd_claim_tag_friends_button).setOnClickListener(this);
+        findViewById(R.id.pd_claim_add_hashtag_button).setOnClickListener(this);
     }
 
     private void updateEnabledStateOfViews() {
@@ -429,11 +450,40 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         return mediaTypes.contains(network);
     }
 
+    private String readableMediaTypedAvailable() {
+        List<String> mediaTypes = Arrays.asList(mReward.getSocialMediaTypes());
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0, size = mediaTypes.size(); i < size; i++) {
+            if (i > 0) {
+                builder.append(i == (size - 1) ? " & " : ", ");
+            }
+            String type = mediaTypes.get(i);
+            builder.append(type);
+        }
+        return builder.toString();
+    }
+
+    private String readableNetworksChosen() {
+        StringBuilder builder = new StringBuilder("");
+        if (mFacebookSwitch.isChecked()) {
+            builder.append(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK);
+        }
+        if (mTwitterSwitch.isChecked()) {
+            builder.append(" ");
+            builder.append(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER);
+        }
+        if (mInstagramSwitch.isChecked()) {
+            builder.append(" ");
+            builder.append(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM);
+        }
+        return builder.toString();
+    }
+
     private String getEncodedImage() {
         String encodedImage = null;
         File imageFile = new File(mCurrentCroppedPhotoPath);
         if (imageFile.exists()) {
-            Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, PDUIImageUtils.getOrientation(mCurrentPhotoPath));
+            Bitmap b = PDUIImageUtils.getResizedBitmap(imageFile.getAbsolutePath(), 500, 500, mImageFromCamera ? -1 : PDUIImageUtils.getOrientation(mCurrentPhotoPath));
             if (b != null) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 b.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
@@ -449,12 +499,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private String getMessage() {
         return mMessageEditText.getText().toString();
-//        if (mTwitterSwitch.isChecked() && mReward.getTweetOptions() != null && mReward.getTweetOptions().isForceTag() && mReward.getTweetOptions().getForcedTag() != null) {
-//            message = String.format("%1s %2s", message, mReward.getTweetOptions().getForcedTag());
-//        } else if (mInstagramSwitch.isChecked() && mReward.getInstagramOptions() != null && mReward.getInstagramOptions().getForcedTag() != null && !mReward.getInstagramOptions().getForcedTag().isEmpty()) {
-//            message = String.format("%1s %2s", message, mReward.getInstagramOptions().getForcedTag());
-//        }
-//        return message;
     }
 
     private void post(final boolean addImage) {
@@ -488,6 +532,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             if (!mHashTagValidated) {
                 String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getInstagramOptions().getForcedTag(), getString(R.string.pd_connect_instagram_title));
                 showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_RECEIVED_ERROR_ON_CLAIM, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_ERROR, PDAbraConfig.ABRA_PROPERTYVALUE_ERROR_HASHTAG)
+                        .create());
                 return;
             }
         }
@@ -497,6 +544,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             // Check if over character limit
             if (calculateTwitterCharsLeft() < 0) {
                 showBasicOKAlertDialog(R.string.pd_common_sorry_text, R.string.pd_claim_tweet_too_long_text);
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_RECEIVED_ERROR_ON_CLAIM, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_ERROR, PDAbraConfig.ABRA_PROPERTYVALUE_ERROR_TOOMANYCHARS)
+                        .create());
                 return;
             }
 
@@ -504,6 +554,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             if (!mHashTagValidated && mReward.getTweetOptions().isForceTag()) {
                 String errorMessage = getString(R.string.pd_claim_required_hashtag_not_present_message_text, mReward.getTweetOptions().getForcedTag(), getString(R.string.pd_connect_twitter_title));
                 showBasicOKAlertDialog(R.string.pd_common_oops_text, errorMessage);
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_RECEIVED_ERROR_ON_CLAIM, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_ERROR, PDAbraConfig.ABRA_PROPERTYVALUE_ERROR_HASHTAG)
+                        .create());
                 return;
             }
 
@@ -568,11 +621,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         if (mInstagramSwitch.isChecked()) {
             postToInstagram(message, mCurrentCroppedPhotoPath);
         } else {
-            performClaimReward(message, encodedImage);
+            performClaimReward(message, encodedImage, false);
         }
     }
 
-    private void performClaimReward(String message, String encodedImage) {
+    private void performClaimReward(String message, String encodedImage, final boolean fromInstagram) {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pd_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -597,6 +650,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             instagramAccessToken = userDetails.getUserInstagram().getAccessToken();
         }
 
+        if (mTaggedNames.size() == 0) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_ADDED_CLAIM_CONTENT, new PDAbraProperties.Builder()
+                    .add(PDAbraConfig.ABRA_PROPERTYNAME_TAGGED_FRIENDS, "Yes")
+                    .add("Friends Count", String.valueOf(mTaggedNames.size()))
+                    .create());
+        }
+
         PDAPIClient.instance().claimReward(this, mFacebookSwitch.isChecked() ? AccessToken.getCurrentAccessToken().getToken() : null,
                 twitterToken, twitterSecret, instagramAccessToken, mReward.getId(), message, mTaggedNames, mTaggedIds, encodedImage,
                 String.valueOf(userLocation.getLongitude()), String.valueOf(userLocation.getLatitude()),
@@ -608,21 +668,31 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         shareButton.setEnabled(true);
                         shareButton.animate().alpha(1.0f);
 
-                        new AlertDialog.Builder(PDUIClaimActivity.this)
-                                .setTitle(R.string.pd_claim_reward_claimed_text)
-                                .setMessage(R.string.pd_claim_reward_claimed_success_text)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent data = new Intent();
-                                        data.putExtra("id", mReward.getId());
-                                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
-                                        setResult(RESULT_OK, data);
-                                        finish();
-                                    }
-                                })
-                                .create()
-                                .show();
+                        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLAIMED, new PDAbraProperties.Builder()
+                                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORKS, readableNetworksChosen())
+                                .add(PDAbraConfig.ABRA_PROPERTYNAME_PHOTO, mImageAdded ? "YES" : "NO")
+                                .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_TYPE, PDAbraUtils.keyForRewardType(mReward.getRewardType()))
+                                .create());
+
+                        if (fromInstagram) {
+                            finishActivityAfterClaim();
+                        } else {
+                            new AlertDialog.Builder(PDUIClaimActivity.this)
+                                    .setTitle(R.string.pd_claim_reward_claimed_text)
+                                    .setMessage(mReward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
+                                    .setPositiveButton(R.string.pd_go_to_wallet_text, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent data = new Intent();
+                                            data.putExtra("id", mReward.getId());
+                                            data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
                     }
 
                     @Override
@@ -657,11 +727,23 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 .commit();
     }
 
+    private void finishActivityAfterClaim() {
+        Intent data = new Intent();
+        data.putExtra("id", mReward.getId());
+        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     private void connectTwitterAccount(TwitterSession session, final boolean addImage) {
         PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
                 session.getAuthToken().token, session.getAuthToken().secret, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
+                        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CONNECTED_ACCOUNT, new PDAbraProperties.Builder()
+                                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_TWITTER)
+                                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_VIEWED_CLAIM)
+                                .create());
                         PDUtils.updateSavedUser(user);
                         post(addImage);
                     }
@@ -692,6 +774,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(PDUIConnectSocialAccountFragment.PD_CONNECT_TYPE_INSTAGRAM, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
             @Override
             public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CONNECTED_ACCOUNT, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_INSTAGRAM)
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_VIEWED_CLAIM)
+                        .create());
                 mInstagramSwitch.setChecked(true);
             }
         });
@@ -720,7 +806,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void handleCroppedPhoto() {
-        int orientation = PDUIImageUtils.getOrientation(mCurrentPhotoPath);
+        int orientation = mImageFromCamera ? -1 : PDUIImageUtils.getOrientation(mCurrentPhotoPath);
         PDLog.d(PDUIClaimActivity.class, "orientation: " + orientation);
         setPic(mCurrentCroppedPhotoPath, orientation);
     }
@@ -796,14 +882,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
     }
 
-//    private void checkSwitchIfNeeded(SwitchCompat switchCompat) {
-//        if (!switchCompat.isChecked()) {
-//            switchCompat.setOnCheckedChangeListener(null);
-//            switchCompat.setChecked(true);
-//            switchCompat.setOnCheckedChangeListener(this);
-//        }
-//    }
-
     /**
      * TextWatcher for message EditText
      */
@@ -857,6 +935,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         final int id = buttonView.getId();
         if (id == R.id.pd_claim_facebook_switch) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_TOGGLED_SOCIAL_BUTTON,
+                    new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_FACEBOOK)
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_BUTTON_STATE, isChecked ? PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_ON : PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_OFF)
+                            .create());
+
             if (isChecked) {
                 uncheckSwitchIfChecked(mTwitterSwitch);
                 uncheckSwitchIfChecked(mInstagramSwitch);
@@ -878,12 +962,24 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 });
             }
         } else if (id == R.id.pd_claim_twitter_switch) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_TOGGLED_SOCIAL_BUTTON,
+                    new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_TWITTER)
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_BUTTON_STATE, isChecked ? PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_ON : PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_OFF)
+                            .create());
+
             if (isChecked) {
                 uncheckSwitchIfChecked(mFacebookSwitch);
                 uncheckSwitchIfChecked(mInstagramSwitch);
             }
             toggleTwitterViews();
         } else if (id == R.id.pd_claim_instagram_switch) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_TOGGLED_SOCIAL_BUTTON,
+                    new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORK, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_INSTAGRAM)
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_BUTTON_STATE, isChecked ? PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_ON : PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_BUTTON_STATE_OFF)
+                            .create());
+
             if (isChecked) {
                 uncheckSwitchIfChecked(mFacebookSwitch);
                 uncheckSwitchIfChecked(mTwitterSwitch);
@@ -894,13 +990,23 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     public void success(Boolean valid) {
                         PDLog.d(PDUIClaimActivity.class, "Instagram access token " + (valid ? "valid" : "expired"));
                         if (!valid) {
-                            showConnectToInstagramFragment();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showConnectToInstagramFragment();
+                                }
+                            });
                         }
                     }
 
                     @Override
                     public void failure(int statusCode, Exception e) {
-                        showConnectToInstagramFragment();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showConnectToInstagramFragment();
+                            }
+                        });
                     }
                 });
             }
@@ -924,6 +1030,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             }
             if (!mImageAdded && mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
                 showBasicOKAlertDialog(R.string.pd_claim_photo_required_text, R.string.pd_claim_photo_required_message_text);
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_RECEIVED_ERROR_ON_CLAIM, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_ERROR, PDAbraConfig.ABRA_PROPERTYNAME_NO_PHOTO)
+                        .create());
             } else {
                 post(mImageAdded);
             }
@@ -968,6 +1077,21 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     }, mTaggedNames, mTaggedIds))
                     .addToBackStack(PDUITagFriendsFragment.class.getSimpleName())
                     .commit();
+        } else if (ID == R.id.pd_claim_add_hashtag_button) {
+            String hashTag = null;
+            if (mInstagramSwitch.isChecked()) {
+                hashTag = mReward.getInstagramOptions().getForcedTag();
+            } else if (mTwitterSwitch.isChecked()) {
+                hashTag = mReward.getTweetOptions().getForcedTag();
+            }
+            if (hashTag != null) {
+                String currentMessage = mMessageEditText.getText().toString();
+                if (!currentMessage.toLowerCase(Locale.getDefault()).contains(hashTag.toLowerCase(Locale.getDefault()))) {
+                    currentMessage = String.format(Locale.getDefault(), "%1s %2s", currentMessage.trim(), hashTag).trim();
+                    mMessageEditText.setText(currentMessage);
+                    mMessageEditText.setSelection(mMessageEditText.getText().length());
+                }
+            }
         }
     }
 
@@ -1008,13 +1132,18 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         if (requestCode == PDUIImageUtils.PD_TAKE_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (mCurrentPhotoPath != null) {
-                PDLog.d(PDUIImageUtils.class, "processImage");
+//                PDLog.d(PDUIImageUtils.class, "processImage");
                 try {
                     // reduce image size and use resized file path
+                    mImageFromCamera = true;
                     setUpResizedPhotoFile();
                     PDUIImageUtils.reduceImageSizeAndSaveToPath(mCurrentPhotoPath, mCurrentResizedPhotoPath, 500, 500);
-
                     showCropView(Uri.fromFile(new File(mCurrentResizedPhotoPath)));
+
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_ADDED_CLAIM_CONTENT, new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_PHOTO, "Yes")
+                            .add("Source", "Camera")
+                            .create());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1022,7 +1151,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (requestCode == PDUIImageUtils.PD_GALLERY_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 try {
+                    mImageFromCamera = false;
                     showCropView(data.getData());
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_ADDED_CLAIM_CONTENT, new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_PHOTO, "Yes")
+                            .add("Source", "Photo Library")
+                            .create());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1030,7 +1164,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 // Error picking image
             }
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
-            PDLog.d(PDUIImageUtils.class, "handle cropped image");
+//            PDLog.d(PDUIImageUtils.class, "handle cropped image");
             handleCroppedPhoto();
         } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             TwitterLoginButton loginButton = new TwitterLoginButton(this);

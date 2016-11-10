@@ -64,6 +64,14 @@ public class PDUniqueIdentifierUtils {
         return uid;
     }
 
+    public static String getUIDString() {
+        PDNonSocialUID nonSocialUID = getUID();
+        if (nonSocialUID == null) {
+            return null;
+        }
+        return nonSocialUID.getUid();
+    }
+
     public static boolean isRegistered() {
         Realm realm = Realm.getDefaultInstance();
         PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();

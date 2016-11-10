@@ -45,7 +45,7 @@
     <string name="pd_activity_title">Activity</string>
     <string name="pd_wallet_title">Wallet</string>
     <string-array name="home_flow_tab_titles">
-        <item>@string/pd_redeem_title</item>
+        <item>@string/pd_rewards_title</item>
         <item>@string/pd_activity_title</item>
         <item>@string/pd_wallet_title</item>
     </string-array>
@@ -64,7 +64,8 @@
     <string name="pd_claim_twitter_forced_message_string">This reward must be claimed with a Twitter post. You can also post to Facebook if you wish.</string>
 
     <string name="pd_claim_reward_claimed_text">Reward Claimed!</string>
-    <string name="pd_claim_reward_claimed_success_text">You can view your reward in your wallet</string>
+    <string name="pd_claim_sweepstakes_claimed_success_text">Congratulations! You have been entered into the competition.</string>
+    <string name="pd_claim_reward_claimed_success_text">Congratulations! You have unlocked your reward.</string>
     <string name="pd_claim_claiming_reward_text">Claiming your reward</string>
     <string name="pd_claim_tweet_too_long_text">You are over the character limit for Twitter. Please edit your message.</string>
     <string name="pd_claim_no_network_selected_title_text">No Network Selected</string>
@@ -78,9 +79,12 @@
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
+    <string name="pd_add_text">Add</string>
+    <string name="pd_go_to_wallet_text">Go to Wallet</string>
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
     <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
+    <string name="pd_claim_required_hashtag_text">%1s Required</string>
 
     <!-- Claim Add Image Dialog -->
     <string name="pd_claim_add_photo_title_text">Add Photo</string>
@@ -102,7 +106,7 @@
     <string name="pd_inbox_message_date_tag_text">Date:</string>
     <string name="pd_inbox_message_body_tag_text">Body:</string>
     <string name="pd_inbox_message_title_tag_text">Title:</string>
-    <string name="pd_inbox_no_messages_text">You have no message right now…</string>
+    <string name="pd_inbox_no_messages_text">You have no messages right now…</string>
 
 
     <!-- Wallet -->
@@ -115,8 +119,10 @@
     <string name="pd_redeem_sweepstake_reward_no_date_message_string">\n\n- There is no date set for this draw.</string>
     <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
     <string name="pd_wallet_verify_button_text">Verify</string>
-    <string name="pd_wallet_reward_must_be_verified_text">This reward must be verified.</string>
+    <string name="pd_wallet_reward_must_be_verified_text">Press verify to claim your reward.</string>
+    <string name="pd_wallet_sweepstake_must_be_verified_text">Press verify to enter into the competition.</string>
     <string name="pd_wallet_redeem_text">Redeem at the point of sale.</string>
+    <string name="pd_wallet_sweepstakes_text">You have been entered into the draw.</string>
 
 
     <!-- Feed -->

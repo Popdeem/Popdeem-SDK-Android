@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.FacebookSdk;
@@ -280,12 +281,17 @@ public final class PopdeemSDK {
                 public void success(PDBasicResponse response) {
                     PDLog.d(PopdeemSDK.class, "registerNonSocialUser: " + response.toString());
                     if (response.isSuccess() && !token.isEmpty()) {
-                        PDRealmNonSocialUID uidReam = new PDRealmNonSocialUID();
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+
+                        PDRealmNonSocialUID uidReam = realm.where(PDRealmNonSocialUID.class).findFirst();
+                        if (uidReam == null) {
+                            uidReam = new PDRealmNonSocialUID();
+                            uidReam.setUid(uid.getUid());
+                        }
                         uidReam.setId(0);
                         uidReam.setRegistered(true);
 
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
                         realm.copyToRealmOrUpdate(uidReam);
                         realm.commitTransaction();
                         realm.close();
@@ -340,7 +346,7 @@ public final class PopdeemSDK {
         }
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
-        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getSimpleName());
+        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getName());
     }
 
 
@@ -442,13 +448,30 @@ public final class PopdeemSDK {
 
 
     /**
+     * Check if Notifications are enabled for the app.
+     * Uses NotificationManagerCompat.areNotificationsEnabled()
+     *
+     * @return true by default, otherwise returns the result of NotificationManagerCompat.areNotificationsEnabled()
+     */
+    public static boolean areNotificationsEnabledForApp() {
+        if (sApplication != null) {
+            return NotificationManagerCompat.from(sApplication).areNotificationsEnabled();
+        }
+        if (sCurrentActivity != null) {
+            return NotificationManagerCompat.from(sCurrentActivity).areNotificationsEnabled();
+        }
+        return true;
+    }
+
+
+    /**
      * Used to keep track of the current Activity.
      */
     private static final Application.ActivityLifecycleCallbacks PD_ACTIVITY_LIFECYCLE_CALLBACKS = new Application.ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             // Show social login if needed
-            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
                     && PDSocialUtils.shouldShowSocialLogin(activity)) {
                 PDLog.i(PopdeemSDK.class, "showing social login");
                 PDPreferencesUtils.incrementLoginUsesCount(activity);

@@ -117,24 +117,25 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
                     .into(holder.brandImageView);
         }
 
+        holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
+        holder.titleTextView.setText(reward.getDescription());
         if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
             holder.titleTextView.setText(String.format(
                     Locale.getDefault(),
                     "%1s %2s",
                     reward.getCredit() == null ? "Credit" : reward.getCredit(),
                     mAddedTextString));
-        } else {
-            holder.titleTextView.setText(reward.getDescription());
+        } else if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+            holder.subTitleTextView.setText(R.string.pd_wallet_sweepstakes_text);
         }
 
         holder.verifyContainer.setVisibility(View.INVISIBLE);
-        holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
         if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
             if (!reward.isInstagramVerified()) {
                 holder.verifyContainer.setVisibility(View.VISIBLE);
                 holder.verifyProgress.setVisibility(reward.isVerifying() ? View.VISIBLE : View.INVISIBLE);
                 holder.verifyButton.setVisibility(reward.isVerifying() ? View.INVISIBLE : View.VISIBLE);
-                holder.subTitleTextView.setText(R.string.pd_wallet_reward_must_be_verified_text);
+                holder.subTitleTextView.setText(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_wallet_sweepstake_must_be_verified_text : R.string.pd_wallet_reward_must_be_verified_text);
             }
         }
     }
@@ -158,7 +159,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
         Button verifyButton;
         ProgressBar verifyProgress;
 
-        public ViewHolder(View itemView, Context context, boolean clickable) {
+        ViewHolder(View itemView, Context context, boolean clickable) {
             super(itemView);
             if (clickable) {
                 itemView.setClickable(true);

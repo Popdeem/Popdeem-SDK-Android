@@ -34,6 +34,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 
 /**
  * Created by mikenolan on 09/08/16.
@@ -77,6 +80,9 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
         });
         mView.findViewById(R.id.pd_instagram_share_next_button).setOnClickListener(this);
         mView.findViewById(R.id.pd_instagram_share_okay_button).setOnClickListener(this);
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_ONE)
+                .create());
         return mView;
     }
 
@@ -84,6 +90,10 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
     public void onClick(View v) {
         final int ID = v.getId();
         if (ID == R.id.pd_instagram_share_next_button) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                    .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_TWO)
+                    .create());
+
             final LinearLayout firstView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_first_view);
             final LinearLayout secondView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_second_view);
 
@@ -117,6 +127,7 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
 //            });
 //            set.start();
         } else if (ID == R.id.pd_instagram_share_okay_button) {
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_NEXT_INSTAGRAM_TUTORIAL, null);
             mCallback.onShareClick();
         }
     }

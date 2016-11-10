@@ -32,34 +32,47 @@
 
     <include layout="@layout/pd_toolbar" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/pd_toolbar_color"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="@dimen/pd_home_flow_banner_height"
+        android:background="@color/pd_toolbar_color">
 
-        <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
-            android:id="@+id/pd_settings_user_image_view"
-            android:layout_width="@dimen/pd_settings_image_dimen"
-            android:layout_height="@dimen/pd_settings_image_dimen"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            app:maskDrawable="@drawable/circle_mask"
-            tools:src="@drawable/pd_ui_default_user" />
+            android:src="@drawable/pd_home_banner" />
 
-        <TextView
-            android:id="@+id/pd_settings_user_name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="5dp"
-            android:textColor="@color/pd_toolbar_text_color"
-            android:textSize="16sp"
-            tools:text="Users Name" />
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    </LinearLayout>
+            <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
+                android:id="@+id/pd_settings_user_image_view"
+                android:layout_width="@dimen/pd_settings_image_dimen"
+                android:layout_height="@dimen/pd_settings_image_dimen"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:maskDrawable="@drawable/circle_mask"
+                tools:src="@drawable/pd_ui_default_user" />
+
+            <TextView
+                android:id="@+id/pd_settings_user_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/pd_toolbar_text_color"
+                android:textSize="16sp"
+                tools:text="Users Name" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"

@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 /*
  * The MIT License (MIT)
  *
@@ -31,44 +22,48 @@ buildscript {
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+package com.popdeem.sdk.core.api.abra;
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
+import android.support.v4.util.Pair;
 
+import java.util.ArrayList;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+/**
+ * Created by mikenolan on 22/09/2016.
+ */
 
-    defaultConfig {
-        applicationId "com.popdeem.navigationsample"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 6
-        versionName "1.3.2"
+public class PDAbraProperties {
+
+    private ArrayList<Pair<String, String>> mProperties;
+
+    private PDAbraProperties(ArrayList<Pair<String, String>> properties) {
+        this.mProperties = properties;
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    ArrayList<Pair<String, String>> getProperties() {
+        return mProperties;
+    }
+
+
+    /**
+     * Builder class for Abra Insights properties
+     */
+    public static class Builder {
+
+        private ArrayList<Pair<String, String>> mProperties;
+
+        public Builder() {
+            this.mProperties = new ArrayList<>();
+        }
+
+        public Builder add(String propertyName, String propertyValue) {
+            this.mProperties.add(Pair.create(propertyName, propertyValue));
+            return this;
+        }
+
+        public PDAbraProperties create() {
+            return new PDAbraProperties(this.mProperties);
         }
     }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-
-    // Live
-//    compile 'com.popdeem.sdk:sdk:1.1.0'
-    // Dev
-    compile 'com.popdeem.sdk:sdk:1.2.1-STAGING'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
-    }
 }

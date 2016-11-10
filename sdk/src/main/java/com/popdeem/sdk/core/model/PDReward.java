@@ -73,6 +73,7 @@ public class PDReward {
     private int remainingCount;
     private String status;
     private String action;
+    private long createdAt;
 
     @SerializedName("available_until")
     private String availableUntilInSeconds;
@@ -98,6 +99,8 @@ public class PDReward {
     private boolean instagramVerified;
     private ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks;
 
+    private long claimedAt;
+
     // Only used for display purposes in wallet
     private boolean verifying;
 
@@ -105,7 +108,7 @@ public class PDReward {
         verifying = false;
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, long createdAt, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified, long claimedAt) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -116,6 +119,7 @@ public class PDReward {
         this.remainingCount = remainingCount;
         this.status = status;
         this.action = action;
+        this.createdAt = createdAt;
         this.availableUntilInSeconds = availableUntilInSeconds;
         this.availableNextInSeconds = availableNextInSeconds;
         this.revoked = revoked;
@@ -127,6 +131,7 @@ public class PDReward {
         this.locations = locations;
         this.countdownTimer = countdownTimer;
         this.instagramVerified = instagramVerified;
+        this.claimedAt = claimedAt;
     }
 
     public String getId() {
@@ -207,6 +212,14 @@ public class PDReward {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getAvailableUntilInSeconds() {
@@ -319,6 +332,14 @@ public class PDReward {
 
     public void setClaimingSocialNetworks(ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks) {
         this.claimingSocialNetworks = claimingSocialNetworks;
+    }
+
+    public long getClaimedAt() {
+        return claimedAt;
+    }
+
+    public void setClaimedAt(long claimedAt) {
+        this.claimedAt = claimedAt;
     }
 
     public boolean isVerifying() {

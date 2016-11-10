@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.1.0'
+project.ext.popdeemSdkVersion = '1.2.2-STAGING'
 
 android {
     compileSdkVersion 24
@@ -13,12 +13,13 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName popdeemSdkVersion
+        consumerProguardFiles 'consumer-proguard-rules.pro'
     }
     buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+//        release {
+//            minifyEnabled false
+//            consumerProguardFiles 'consumer-proguard-rules.pro'
+//        }
     }
     testOptions {
         unitTests.returnDefaultValues = true

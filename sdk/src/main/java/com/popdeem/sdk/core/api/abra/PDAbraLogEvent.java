@@ -22,35 +22,22 @@
  * SOFTWARE.
  */
 
-package com.popdeem.sdk.core.comparator;
-
-import com.popdeem.sdk.core.model.PDReward;
-
-import java.util.Comparator;
+package com.popdeem.sdk.core.api.abra;
 
 /**
- * Created by mikenolan on 11/03/16.
+ * Created by mikenolan on 22/09/2016.
  */
-public class PDRewardDistanceComparator implements Comparator<PDReward> {
 
-    @Override
-    public int compare(PDReward lhs, PDReward rhs) {
-        // Check if Location Verification is disabled
-        if (lhs.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE)) {
-            return -1;
-        } else if (rhs.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE)) {
-            return 1;
-        }
+public class PDAbraLogEvent {
 
-        // Check if reward has a distance
-        if (lhs.getDistanceFromUser() <= 0) {
-            return 1;
-        } else if (rhs.getDistanceFromUser() <= 0) {
-            return -1;
-        }
-
-        // Then compare the distances
-        return (int) (lhs.getDistanceFromUser() - rhs.getDistanceFromUser());
+    private PDAbraLogEvent() {
     }
 
+    public static void log(String eventName, PDAbraProperties properties) {
+        PDAbraAPIClient.instance().logEvent(eventName, properties);
+    }
+
+    public static void onboardUser() {
+        PDAbraAPIClient.instance().onboardUser();
+    }
 }

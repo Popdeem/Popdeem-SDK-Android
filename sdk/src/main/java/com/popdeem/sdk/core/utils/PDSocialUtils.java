@@ -103,6 +103,20 @@ public class PDSocialUtils {
         realm.close();
     }
 
+
+    /**
+     * Is Instagram config available for use
+     *
+     * @return true if available, false if not
+     */
+    public static boolean canUseInstagram() {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmInstagramConfig config = realm.where(PDRealmInstagramConfig.class).findFirst();
+        boolean foundInstagramConfig = config != null;
+        realm.close();
+        return foundInstagramConfig;
+    }
+
     /**
      * Get Instagram Client ID from AndroidManifest Meta Data
      *

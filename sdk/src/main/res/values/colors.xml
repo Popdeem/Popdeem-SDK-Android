@@ -3,30 +3,30 @@
 
     <!-- Toolbar Colors -->
     <color name="pd_toolbar_color">#da4d59</color>
-    <color name="pd_toolbar_color_dark">#cc4752</color>
+    <!--<color name="pd_toolbar_color_dark">#cc4752</color>-->
     <color name="pd_toolbar_text_color">#ffffff</color>
     <color name="pd_accent">#dba7ac</color>
-    <color name="pd_back_button_color">#ffffff</color>
+    <color name="pd_back_button_color">@color/pd_toolbar_text_color</color>
     <!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
     <color name="pd_social_login_back_button_color">@color/pd_back_button_color</color>
 
 
     <!-- Inbox Floating Action Button Colors -->
-    <color name="pd_inbox_button_bg_color">#da4d59</color>
-    <color name="pd_inbox_button_icon_color">#ffffff</color>
+    <color name="pd_inbox_button_bg_color">@color/pd_toolbar_color</color>
+    <color name="pd_inbox_button_icon_color">@color/pd_toolbar_text_color</color>
 
 
     <!-- TabLayout Colors -->
-    <color name="pd_tab_background_color">#da4d59</color>
-    <color name="pd_tab_selected_text_color">#ffffff</color>
-    <color name="pd_tab_unselected_text_color">#aaaaaa</color>
-    <color name="pd_tab_indicator_color">#dba7ac</color>
+    <color name="pd_tab_background_color">@color/pd_toolbar_color</color>
+    <color name="pd_tab_selected_text_color">@color/pd_toolbar_text_color</color>
+    <color name="pd_tab_unselected_text_color">@color/pd_accent</color>
+    <color name="pd_tab_indicator_color">@color/pd_accent</color>
 
 
     <!-- Home Flow -->
-    <color name="pd_home_flow_banner_text_color">#ffffff</color>
-    <color name="pd_home_flow_banner_bg_color">#cc4752</color>
-    <color name="pd_home_flow_settings_icon_color">#ffffff</color>
+    <color name="pd_home_flow_banner_text_color">@color/pd_toolbar_text_color</color>
+    <color name="pd_home_flow_banner_bg_color">@color/pd_toolbar_color</color>
+    <color name="pd_home_flow_settings_icon_color">@color/pd_toolbar_text_color</color>
 
 
     <!-- Settings -->
@@ -73,7 +73,7 @@
     <color name="pd_feed_item_name_text_color">#000000</color>
     <color name="pd_feed_item_comment_text_color">#888888</color>
     <color name="pd_feed_item_time_text_color">#A2A2A1</color>
-    <color name="pd_feed_item_title_text_color">#da4d59</color>
+    <color name="pd_feed_item_title_text_color">@color/pd_toolbar_color</color>
 
 
     <!-- Wallet List Item Colors -->
@@ -89,9 +89,9 @@
     <color name="pd_redeem_background_colour">#dddddd</color>
     <color name="pd_redeem_content_background_colour">#ffffff</color>
     <color name="pd_redeem_content_border_colour">#aaaaaa</color>
-    <color name="pd_redeem_done_button_background_colour">#da4d59</color>
+    <color name="pd_redeem_done_button_background_colour">@color/pd_toolbar_color</color>
     <color name="pd_redeem_done_button_text_colour">#ffffff</color>
-    <color name="pd_redeem_timer_text_colour">#da4d59</color>
+    <color name="pd_redeem_timer_text_colour">@color/pd_toolbar_color</color>
     <color name="pd_redeem_title_text_colour">#000000</color>
     <color name="pd_redeem_description_text_colour">#000000</color>
 
@@ -101,11 +101,13 @@
     <color name="pd_claim_over_character_limit_text_color">#ff0000</color>
     <color name="pd_claim_share_button_background_color">#3b5999</color>
     <color name="pd_claim_share_button_text_color">#ffffff</color>
-    <color name="pd_claim_tagged_friends_text_color">#da4d59</color>
+    <color name="pd_claim_tagged_friends_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_location_verification_background_color">#d8d8d8</color>
     <color name="pd_claim_location_verification_text_color">#000000</color>
     <color name="pd_claim_location_verification_tick_color">#777777</color>
     <color name="pd_claim_switch_tint_color">@color/pd_toolbar_color</color>
+    <color name="pd_claim_add_hashtag_button_text_color">@color/pd_toolbar_color</color>
+    <color name="pd_claim_add_hashtag_text_color">#A2A2A1</color>
 
     <color name="pd_tag_friends_background_color">#ffffff</color>
 
@@ -115,7 +117,7 @@
 
 
     <!-- Horizontal Progress Colors -->
-    <color name="pd_horizontal_progress_color">#bb4f53</color>
+    <color name="pd_horizontal_progress_color">@color/pd_toolbar_color</color>
     <color name="pd_horizontal_progress_background_color">#dba7ac</color>
 
 
@@ -143,14 +145,14 @@
     <color name="pd_divider_color">#DCDCDF</color>
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
-    <color name="colorPrimaryDark">@color/pd_toolbar_color_dark</color>
+    <color name="colorPrimaryDark">@color/pd_toolbar_color</color>
     <color name="colorAccent">@color/pd_accent</color>
 
     <color name="pd_image_border_color">#efeff4</color>
 
     <color name="pd_rainbow_color_1">#eac34b</color>
     <color name="pd_rainbow_color_2">#3e96a7</color>
-    <color name="pd_rainbow_color_3">#bb4f53</color>
+    <color name="pd_rainbow_color_3">@color/pd_toolbar_color</color>
     <color name="pd_rainbow_color_4">#668c3d</color>
     <!--<color name="pd_social_login_background_color">#bb000000</color>-->
 

@@ -26,6 +26,7 @@ package com.popdeem.sdk.uikit.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -45,7 +46,7 @@ import com.squareup.picasso.Picasso;
 public class PDUIRedeemActivity extends PDBaseActivity {
 
     private PDUICountDownTimer mCountDownTimer;
-    private boolean timerFinished = false;
+    private boolean mTimerFinished = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,11 @@ public class PDUIRedeemActivity extends PDBaseActivity {
         findViewById(R.id.pd_redeem_done_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkIfRedeemed();
+                if (mTimerFinished) {
+                    finish();
+                } else {
+                    checkIfRedeemed();
+                }
             }
         });
 
@@ -89,14 +94,13 @@ public class PDUIRedeemActivity extends PDBaseActivity {
 
         final TextView countdownTextView = (TextView) findViewById(R.id.pd_redeem_countdown_timer_text_view);
         if (isSweepstakes) {
-            timerFinished = true;
+            mTimerFinished = true;
             TextView instructionsTextView = (TextView) findViewById(R.id.pd_redeem_instructions_text_view);
             instructionsTextView.setText(R.string.pd_draw_takes_place_in_string);
 
             long timeInSeconds = PDNumberUtils.toLong(getIntent().getStringExtra("time"), 0);
             countdownTextView.setText(PDUIUtils.timeUntil(timeInSeconds, false, true));
         } else {
-//            final long REDEMPTION_TIMER = 1000 * 60 * 10 + 500;
             final long REDEMPTION_TIMER = (getIntent().getLongExtra("countdown", 300) * 1000) + 500;
             final long COUNTDOWN_INTERVAL_IN_MILLIS = 1000;
 
@@ -109,9 +113,15 @@ public class PDUIRedeemActivity extends PDBaseActivity {
 
                 @Override
                 public void onFinish() {
-                    timerFinished = true;
+                    mTimerFinished = true;
                     countdownTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                     countdownTextView.setText(R.string.pd_redeem_timer_finished_text);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    }, 500);
                 }
             };
             mCountDownTimer.start();
@@ -125,7 +135,7 @@ public class PDUIRedeemActivity extends PDBaseActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!timerFinished && mCountDownTimer != null) {
+                        if (!mTimerFinished && mCountDownTimer != null) {
                             mCountDownTimer.cancel();
                         }
                         finish();
@@ -139,7 +149,11 @@ public class PDUIRedeemActivity extends PDBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            checkIfRedeemed();
+            if (mTimerFinished) {
+                finish();
+            } else {
+                checkIfRedeemed();
+            }
             return true;
         }
         return false;
@@ -147,10 +161,10 @@ public class PDUIRedeemActivity extends PDBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!timerFinished) {
-            checkIfRedeemed();
-        } else {
+        if (mTimerFinished) {
             super.onBackPressed();
+        } else {
+            checkIfRedeemed();
         }
     }
 }

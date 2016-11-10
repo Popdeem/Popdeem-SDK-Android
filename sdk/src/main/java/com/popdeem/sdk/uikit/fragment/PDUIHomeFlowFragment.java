@@ -36,6 +36,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.abra.PDAbraConfig;
+import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
 import com.popdeem.sdk.uikit.activity.PDUISettingsActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIHomeFlowPagerAdapter;
@@ -83,15 +86,53 @@ public class PDUIHomeFlowFragment extends Fragment {
         mAdapter = new PDUIHomeFlowPagerAdapter(getChildFragmentManager(), getActivity());
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pd_home_view_pager);
         viewPager.setAdapter(mAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                logTabPageView(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         mTabLayout = (TabLayout) view.findViewById(R.id.pd_home_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
         return view;
     }
 
+    private void logTabPageView(int position) {
+        switch (position) {
+            case 0: // Rewards
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME)
+                        .create());
+                break;
+            case 1: // Activity
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_ACTIVITY_FEED)
+                        .create());
+                break;
+            case 2: // Wallet
+                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                        .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_WALLET)
+                        .create());
+                break;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME)
+                .create());
+
         if (mMoveToWallet) {
             mMoveToWallet = false;
             if (switchToWallet()) {
