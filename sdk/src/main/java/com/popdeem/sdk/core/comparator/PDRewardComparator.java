@@ -28,6 +28,8 @@ import android.support.annotation.IntDef;
 
 import com.popdeem.sdk.core.model.PDReward;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Comparator;
 
 /**
@@ -40,6 +42,7 @@ public class PDRewardComparator implements Comparator<PDReward> {
     public static final int CLAIMED_AT_COMPARATOR = 2;
 
     @IntDef({DISTANCE_COMPARATOR, CREATED_AT_COMPARATOR, CLAIMED_AT_COMPARATOR})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ComparatorType {
     }
 

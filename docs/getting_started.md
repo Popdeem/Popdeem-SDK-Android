@@ -6,7 +6,13 @@ The Popdeem Android SDK is available through jcenter and mavenCentral.
 Add the following line to the `dependencies` block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
 
 ```java
-compile 'com.popdeem.sdk:sdk:1.1.0'
+compile 'com.popdeem.sdk:sdk:1.2.2'
+```
+
+To test against the staging environment append `-STAGING` to the dependency:
+
+```java
+compile 'com.popdeem.sdk:sdk:1.2.2-STAGING'
 ```
 
 ---

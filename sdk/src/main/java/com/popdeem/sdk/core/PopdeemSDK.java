@@ -346,7 +346,7 @@ public final class PopdeemSDK {
         }
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
-        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getSimpleName());
+        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getName());
     }
 
 
@@ -471,7 +471,7 @@ public final class PopdeemSDK {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             // Show social login if needed
-            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getSimpleName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
                     && PDSocialUtils.shouldShowSocialLogin(activity)) {
                 PDLog.i(PopdeemSDK.class, "showing social login");
                 PDPreferencesUtils.incrementLoginUsesCount(activity);
