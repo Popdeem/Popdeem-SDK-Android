@@ -88,8 +88,8 @@ ext {
 
 if(project.rootProject.file(propertiesFileName).exists()) {
     println("Popdeem SDK Properties file found.")
-    apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/install.gradle'
-    apply from: 'https://raw.githubusercontent.com/mobamike/JCenter/master/bintray.gradle'
+    apply from: 'https://raw.githubusercontent.com/mike-nolan/JCenter/master/install.gradle'
+    apply from: 'https://raw.githubusercontent.com/mike-nolan/JCenter/master/bintray.gradle'
 }
 else {
     println("Popdeem SDK Properties file is missing. Ignore this is you are not pushing a release of the SDK.")
