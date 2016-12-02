@@ -37,6 +37,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.popdeem.sdk.core.theme.PDTheme;
+import com.popdeem.sdk.core.theme.PDThemeManager;
 import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
         if (tabLayout != null) {
             tabLayout.setupWithViewPager(viewPager);
         }
+
+        PDThemeManager.getInstance().setup(getApplicationContext(), "theme.json");
+
+        tabLayout.setBackgroundColor(PDThemeManager.getInstance().getPrimaryAppColor());
 
     }
 
