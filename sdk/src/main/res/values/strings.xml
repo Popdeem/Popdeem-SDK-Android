@@ -160,6 +160,11 @@
     <string name="pd_storage_permission_rationale_string">We need permission to save the image you take to your phone. Would you like to give permission?</string>
     <string name="pd_storage_permissions_denied_string">This app needs access to your storage to share an image.</string>
 
+    <!--Camera Permission-->
+    <string name="pd_camera_permissions_title_string">Camera Permission</string>
+    <string name="pd_camera_permissions_rationale_string">We need permission to access the camera on your phone. Would you like to give permission?</string>
+    <string name="pd_camera_permissions_denied_string">This app needs access to your camera to take an image</string>
+
 
     <!-- Suspended Account -->
     <string name="pd_suspended_title_string">Suspended</string>

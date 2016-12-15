@@ -257,6 +257,7 @@ public class PDUISocialLoginFragment extends Fragment {
                 PDUtils.updateSavedUser(user);
                 updateUser(location);
 
+
                 PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_LOGIN, new PDAbraProperties.Builder()
                         .add("Source", "Login Takeover")
                         .create());

@@ -25,8 +25,10 @@
 package com.popdeem.sdk.uikit.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -81,6 +83,7 @@ import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDClipboardUtils;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
+import com.popdeem.sdk.core.utils.PDPermissionHelper;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
@@ -824,13 +827,44 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void startCameraIntentWithImagePath() {
+
+        /*first we need to check of client app has the Camera Permission*/
+        if (PDPermissionHelper.hasPermissionInManifest(this, Manifest.permission.CAMERA))
+        {
+            //ask for camera permission
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.pd_camera_permissions_title_string))
+                        .setMessage(getString(R.string.pd_camera_permissions_rationale_string))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(PDUIClaimActivity.this, new String[]{Manifest.permission.CAMERA}, 321);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
+            } else {
+                startCamera();
+            }
+        }
+        else
+        {
+            //we can continue as normal
+            startCamera();
+        }
+    }
+
+    private void startCamera()
+    {
         try {
             File f = setUpPhotoFile();
             mCurrentPhotoPath = f.getAbsolutePath();
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-            startActivityForResult(takePictureIntent, PDUIImageUtils.PD_TAKE_PHOTO_REQUEST_CODE);
+            startActivityForResult(takePictureIntent, PDUIImageUtils.PD_TAKE_PHOTO_REQUEST_CODE); /*this line causes a crash if client app has camera permission - need to ask for camera permission of it exists*/
         } catch (IOException e) {
             e.printStackTrace();
             mCurrentPhotoPath = null;
@@ -1105,6 +1139,19 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             } else {
                 PDLog.d(getClass(), "no permissions");
                 Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == 321) /*camera permission*/
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                PDLog.d(getClass(), "permissions");
+                startCamera();
+            }
+            else
+            {
+                PDLog.d(getClass(), "no camera permissions");
+                Toast.makeText(this, getString(R.string.pd_camera_permissions_denied_string), Toast.LENGTH_SHORT).show();
             }
         }
     }

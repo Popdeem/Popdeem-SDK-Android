@@ -60,7 +60,7 @@
         </activity>
         <meta-data
             android:name="com.popdeem.sdk.ApiKey"
-            android:value="43507f68-eeab-49e7-abf0-da099b14f17f" />
+            android:value="26eb2fcb-06e5-4976-bff4-88c30cc58f58" />
 
         <meta-data
             android:name="GCMSenderID"
