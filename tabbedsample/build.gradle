@@ -67,7 +67,8 @@ dependencies {
     // Live
 //    compile 'com.popdeem.sdk:sdk:1.2.2'
     // Dev
-    compile 'com.popdeem.sdk:sdk:1.2.2-STAGING'
+//    compile 'com.popdeem.sdk:sdk:1.2.2-STAGING'
+    compile 'com.popdeem.sdk:sdk:1.2.4'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }

@@ -29,4 +29,10 @@
 
     <!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
     <color name="pd_social_login_back_button_color">#000000</color>
+
+
+    <color name="pd_toolbar_color">#FF4081</color>
+    <color name="pd_toolbar_text_color">#ffffff </color>
+    <color name="pd_toolbar_color_dark">#FF4081</color>
+    <color name="pd_accent">#ffffff </color>
 </resources>

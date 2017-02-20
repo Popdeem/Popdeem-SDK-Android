@@ -26,4 +26,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <!--Overwriting Popdeem Colors-->
+    <color name="pd_social_login_back_button_color">#000000</color>
+
+
+    <color name="pd_toolbar_color">#3F51B5</color>
+    <color name="pd_toolbar_text_color">#ffffff </color>
+    <color name="pd_toolbar_color_dark">#303F9F</color>
+    <color name="pd_accent">#ffffff </color>
+
 </resources>
