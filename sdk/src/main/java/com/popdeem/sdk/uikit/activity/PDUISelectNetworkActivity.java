@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
-import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;

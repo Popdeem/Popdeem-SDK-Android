@@ -96,9 +96,11 @@
             android:name="InstagramClientSecret"
             android:value="12e0e2b5d1194389bc82c3018406c3dc" />
 
+        <!--Old - tabbedtest://instagram-->
+        <!--New - https://www.popdeem.com/igredirect-->
         <meta-data
             android:name="InstagramCallbackUrl"
-            android:value="tabbedtest://instagram" />
+            android:value="https://www.popdeem.com/igredirect" />
 
         <!-- Facebook -->
         <meta-data
