@@ -54,6 +54,8 @@
     <!-- Claim -->
     <string name="pd_claim_title">Claim</string>
     <string name="pd_claim_get_reward_text">Share and Redeem</string>
+    <string name="pd_claim_get_already_shared_text" formatted="false">I\'ve already shared with %s</string>
+    <string name="pd_claim_already_shared_default">I\'ve already shared</string>
     <string name="pd_claim_verify_location_failed_title_text">Not at location</string>
     <string name="pd_claim_verify_location_failed_text">You must be at this location to claim this reward.\nPlease come back later.</string>
 

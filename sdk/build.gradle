@@ -2,15 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.2.4'
+project.ext.popdeemSdkVersion = '1.2.5'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName popdeemSdkVersion
         consumerProguardFiles 'consumer-proguard-rules.pro'
@@ -34,13 +34,13 @@ dependencies {
     testCompile 'com.squareup.okhttp3:mockwebserver:3.1.2'
 
     // Google
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.google.code.gson:gson:2.7'
 
     // Play Services
-    compile 'com.google.android.gms:play-services-gcm:9.4.0'
-    compile 'com.google.android.gms:play-services-location:9.4.0'
+    compile 'com.google.android.gms:play-services-gcm:10.2.1'
+    compile 'com.google.android.gms:play-services-location:10.2.1'
 
     // Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'

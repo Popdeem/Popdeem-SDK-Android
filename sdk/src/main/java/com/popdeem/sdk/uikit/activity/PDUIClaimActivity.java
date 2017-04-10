@@ -25,15 +25,14 @@
 package com.popdeem.sdk.uikit.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -230,7 +229,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
+                // TODO: 06/04/2017 Make sure to uncomment the actual check below
+//                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
+                mIsHere = true;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -441,6 +442,16 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         textView = (TextView) findViewById(R.id.pd_reward_request_text_view);
         textView.setText(actionStringBuilder.toString());
+
+
+        //already shared button
+        Button alreadySharedButton = (Button) findViewById(R.id.pd_claim_already_shared_button);
+        if (mReward.getInstagramOptions() != null && !mReward.getInstagramOptions().getForcedTag().equalsIgnoreCase(""))
+        {
+            alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getInstagramOptions().getForcedTag()));
+        } else {
+            alreadySharedButton.setText(R.string.pd_claim_already_shared_default);
+        }
     }
 
     private boolean twitterShareForced() {

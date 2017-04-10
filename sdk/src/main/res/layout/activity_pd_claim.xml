@@ -330,10 +330,11 @@
 
                     <include layout="@layout/view_pd_divider" />
 
-                    <FrameLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp">
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
                         <Button
                             android:id="@+id/pd_claim_share_button"
@@ -344,6 +345,18 @@
                             android:text="@string/pd_claim_get_reward_text"
                             android:textAllCaps="false"
                             android:textColor="@color/pd_claim_share_button_text_color"
+                            android:textSize="18sp"
+                            android:layout_marginBottom="10dp"/>
+
+                        <Button
+                            android:id="@+id/pd_claim_already_shared_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/pd_rounded_border_button_background"
+                            android:padding="10dp"
+                            android:text="@string/pd_claim_get_already_shared_text"
+                            android:textAllCaps="false"
+                            android:textColor="@color/pd_toolbar_color"
                             android:textSize="18sp" />
 
                         <ProgressBar
@@ -356,7 +369,7 @@
                             android:progressDrawable="@drawable/pd_progress_drawable"
                             android:visibility="gone" />
 
-                    </FrameLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
