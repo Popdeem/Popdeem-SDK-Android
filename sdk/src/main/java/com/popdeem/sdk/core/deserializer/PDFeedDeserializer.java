@@ -60,7 +60,7 @@ public class PDFeedDeserializer implements JsonDeserializer<PDFeed> {
         // Reward
         if (feedObject.has("reward")) {
             JsonObject brandObject = feedObject.getAsJsonObject("reward");
-            feed.setRewardTypeString(brandObject.get("type").getAsString());
+//            feed.setRewardTypeString(brandObject.get("type").getAsString());
             feed.setDescriptionString(brandObject.get("description").getAsString());
         }
 
