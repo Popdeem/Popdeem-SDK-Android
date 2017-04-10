@@ -46,6 +46,7 @@ import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -446,6 +447,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         //already shared button
         Button alreadySharedButton = (Button) findViewById(R.id.pd_claim_already_shared_button);
+        alreadySharedButton.setOnClickListener(this);
         if (mReward.getInstagramOptions() != null && !mReward.getInstagramOptions().getForcedTag().equalsIgnoreCase(""))
         {
             alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getInstagramOptions().getForcedTag()));
@@ -1137,6 +1139,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     mMessageEditText.setSelection(mMessageEditText.getText().length());
                 }
             }
+        } else if (ID == R.id.pd_claim_already_shared_button) {
+            Log.i("Claim Activity", mReward.getInstagramOptions().getForcedTag());
+            Intent intent = new Intent(this, PDUISelectNetworkActivity.class);
+            startActivity(intent);
         }
     }
 

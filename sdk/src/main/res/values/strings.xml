@@ -191,6 +191,16 @@
     <!-- Misc Strings -->
     <string name="facebook_url_scheme">sdkscheme</string>
 
+    <!--Scan-->
+    <string name="pd_scan_facebook">Scan Facebook</string>
+    <string name="pd_connect_facebook">Connect to Facebook</string>
+    <string name="pd_scan_twitter">Scan Twitter</string>
+    <string name="pd_connect_twitter">Connect to Twitter</string>
+    <string name="pd_scan_instagram">Scan Instagram</string>
+    <string name="pd_connect_instagram">Connect to Instagram</string>
+    <string name="pd_scan_title_label" formatted="false">Choose what network you shared your experience with %s to claim your reward:</string>
+    <string name="pd_scan_note" formatted="false">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
+
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
     <!--<string name="title_activity_pduifeed_image">Image</string>-->
     <!--<string name="pd_app_update_text">App Update</string>-->
