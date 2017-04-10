@@ -192,6 +192,7 @@
     <string name="facebook_url_scheme">sdkscheme</string>
 
     <!--Scan-->
+    <string name="pd_scan_title">Scan</string>
     <string name="pd_scan_facebook">Scan Facebook</string>
     <string name="pd_connect_facebook">Connect to Facebook</string>
     <string name="pd_scan_twitter">Scan Twitter</string>

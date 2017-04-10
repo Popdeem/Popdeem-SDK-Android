@@ -46,6 +46,7 @@
             >
 
             <TextView
+                android:id="@+id/title_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pd_scan_title_label"
@@ -99,6 +100,7 @@
             >
 
             <TextView
+                android:id="@+id/note_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pd_scan_note"
