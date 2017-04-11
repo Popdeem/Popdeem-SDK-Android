@@ -1143,11 +1143,12 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else if (ID == R.id.pd_claim_already_shared_button) {
             Log.i("Claim Activity", mReward.getInstagramOptions().getForcedTag());
             Intent intent = new Intent(this, PDUISelectNetworkActivity.class);
-            if (mReward.getInstagramOptions() != null){
-                intent.putExtra("forcedTag", mReward.getInstagramOptions().getForcedTag()); // TODO 1: 10/04/2017 see top of File
-            } else {
-                intent.putExtra("forcedTag", "testing");
-            }
+            intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
+//            if (mReward.getInstagramOptions() != null){
+//                intent.putExtra("forcedTag", mReward.getInstagramOptions().getForcedTag()); // TODO 1: 10/04/2017 see top of File
+//            } else {
+//                intent.putExtra("forcedTag", "testing");
+//            }
             startActivity(intent);
         }
     }

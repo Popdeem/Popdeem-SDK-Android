@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -24,7 +26,6 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 public class PDUISelectNetworkActivity extends PDBaseActivity implements View.OnClickListener {
 
     private static String TAG = PDUISelectNetworkActivity.class.getSimpleName();
-    private String scannableHashTag = "";
     private boolean isFacebookLoggedIn, isTwitterLoggedIn, isInstagramLoggedIn;
 
     private FragmentManager mFragmentManager;
@@ -34,6 +35,8 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
     private Button btnTwitter;
     private Button btnInstagram;
 
+    private PDReward mReward;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +45,7 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
         mFragmentManager = getSupportFragmentManager();
 
-        scannableHashTag = getIntent().getStringExtra("forcedTag");
-        Log.i(TAG, "onCreate: " + scannableHashTag);
-
+        mReward = new Gson().fromJson(getIntent().getStringExtra("reward"), PDReward.class);
 
         populateUIWithTag();
         checkSocialAccounts();
@@ -64,10 +65,10 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
     private void populateUIWithTag() {
         TextView titleLabel = (TextView) findViewById(R.id.title_label);
-        titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), scannableHashTag));
+        titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), mReward.getInstagramOptions().getForcedTag()));
 
         TextView noteLabel = (TextView) findViewById(R.id.note_label);
-        noteLabel.setText(String.format(getString(R.string.pd_scan_note), scannableHashTag));
+        noteLabel.setText(String.format(getString(R.string.pd_scan_note), mReward.getInstagramOptions().getForcedTag()));
     }
 
     private void checkSocialAccounts() {
@@ -99,11 +100,21 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
             @Override
             public void success(Boolean aBoolean) {
                 if (aBoolean) {
-                    btnInstagram.setText(R.string.pd_scan_instagram);
-                    isInstagramLoggedIn = true;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnInstagram.setText(R.string.pd_scan_instagram);
+                            isInstagramLoggedIn = true;
+                        }
+                    });
                 } else {
-                    btnInstagram.setText(R.string.pd_connect_instagram);
-                    isInstagramLoggedIn = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnInstagram.setText(R.string.pd_connect_instagram);
+                            isInstagramLoggedIn = false;
+                        }
+                    });
                 }
             }
 
