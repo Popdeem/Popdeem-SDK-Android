@@ -216,4 +216,15 @@ public interface PopdeemAPI {
                    @Query("trigger_action") String moment,
                    Callback<PDBasicResponse> callback);
 
+
+    //****************************************
+    // Background Scan API Calls
+    //****************************************
+
+    @POST(PDAPIConfig.PD_AUTODISCOVERY_PATH + "/{rewardId}/autodiscovery")
+    void scanSocialNetwork(
+            @Body TypedInput body,
+            @Path("rewardId") String rewardID,
+            Callback<JsonObject>callback
+    );
 }

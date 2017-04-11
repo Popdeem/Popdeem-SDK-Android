@@ -62,4 +62,9 @@ public class PDAPIConfig {
     public static final String REQUEST_HEADER_API_KEY = "Api-Key";
     public static final String REQUEST_HEADER_USER_TOKEN = "User-Token";
 
+    /** The Scan Feature
+     * /api/v2/rewards/:ID/autodiscovery
+     Where :ID is the id of reward being scanned **/
+    public static final String PD_AUTODISCOVERY_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
+
 }

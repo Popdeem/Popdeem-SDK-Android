@@ -48,6 +48,12 @@
             android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
+        <activity android:name=".uikit.activity.PDUIScanActivity"
+            android:label="@string/pd_empty_string"
+            android:screenOrientation="portrait"
+            android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
 
         <meta-data
             android:name="io.fabric.ApiKey"

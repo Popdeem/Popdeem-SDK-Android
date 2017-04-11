@@ -202,6 +202,9 @@
     <string name="pd_scan_title_label" formatted="false">Choose what network you shared your experience with %s to claim your reward:</string>
     <string name="pd_scan_note" formatted="false">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
 
+    <string name="pd_scan_top_label" formatted="false">Scanning for stories that include %s</string>
+    <string name="pd_scan_bottom_label">This usually takes a few moments. Please wait…</string>
+
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
     <!--<string name="title_activity_pduifeed_image">Image</string>-->
     <!--<string name="pd_app_update_text">App Update</string>-->
