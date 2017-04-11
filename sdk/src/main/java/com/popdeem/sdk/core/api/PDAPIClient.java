@@ -927,4 +927,20 @@ public class PDAPIClient {
         return adapterBuilder.build();
     }
 
+    /**
+     * Background Scan
+     *
+     * @param rewardID - id of reward user is scanning for
+     * @param network  - String of the network the user is scanning (facebook, instagram, twitter)
+     * @param callback {@link PDAPICallback} for API result
+     */
+    public void scanSocialNetwork(String rewardID, String network, @NonNull final PDAPICallback<JsonObject> callback) {
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.addProperty("network", network);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.scanSocialNetwork(body, rewardID, callback);
+    }
 }
