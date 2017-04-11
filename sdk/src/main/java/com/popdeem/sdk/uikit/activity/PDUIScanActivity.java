@@ -2,6 +2,7 @@ package com.popdeem.sdk.uikit.activity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.wang.avi.AVLoadingIndicatorView;
 
 /**
  * Created by dave on 11/04/2017.
@@ -24,6 +26,7 @@ public class PDUIScanActivity extends PDBaseActivity {
     private String mNetwork;
 
     private LinearLayout PDScanView, PDScanSuccess, PDScanFailure;
+    private AVLoadingIndicatorView indicatorView;
 
 
     @Override
@@ -41,6 +44,11 @@ public class PDUIScanActivity extends PDBaseActivity {
 
 
         populateUIWithTag();
+
+
+        indicatorView = (AVLoadingIndicatorView) PDScanView.findViewById(R.id.av_indicator);
+        indicatorView.smoothToShow();
+
         scan();
     }
 
@@ -54,12 +62,26 @@ public class PDUIScanActivity extends PDBaseActivity {
             @Override
             public void success(JsonObject jsonObject) {
                 Log.i(TAG, "success: " + jsonObject.toString());
+                indicatorView.hide();
+                parseResponse(jsonObject);
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 Log.e(TAG, e.toString());
+                indicatorView.hide();
             }
         });
+    }
+
+    private void parseResponse(JsonObject response){
+        boolean isValidated = response.get("validated").getAsBoolean();
+        if (isValidated){
+            Log.i(TAG, "parseResponse: User has shared, show success view");
+            PDScanView.setVisibility(View.GONE);
+            PDScanSuccess.setVisibility(View.VISIBLE);
+        } else {
+            Log.i(TAG, "parseResponse: User has not shared, show failure view");
+        }
     }
 }
