@@ -163,7 +163,19 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
     private void scan(int ID) {
         Log.i(TAG, "scan: Jumping to Scan");
-        // TODO: 10/04/2017 Jump to Scan Activity with hashTag
+        String network = "";
+        if (ID == R.id.btn_facebook){
+            network = "facebook";
+        } else if (ID == R.id.btn_twitter) {
+            network = "twitter";
+        } else if (ID == R.id.btn_instagram){
+            network = "instagram";
+        }
+
+        Intent intent = new Intent(this, PDUIScanActivity.class);
+        intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
+        intent.putExtra("network", network);
+        startActivity(intent);
     }
 
     private void connect(int ID) {
