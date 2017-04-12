@@ -86,6 +86,7 @@ public class PDUIScanActivity extends PDBaseActivity {
             showSuccessView(response);
         } else {
             Log.i(TAG, "parseResponse: User has not shared, show failure view");
+            showFailView(response);
         }
     }
 
@@ -127,5 +128,20 @@ public class PDUIScanActivity extends PDBaseActivity {
                 .fit()
                 .into(mediaImage);
     }
+
+    /**
+     * Failure View
+     */
+    private void showFailView(JsonObject response){
+        PDScanView.setVisibility(View.GONE);
+        PDScanFailure.setVisibility(View.VISIBLE);
+
+
+        String socialName = response.get("social_name").getAsString();
+
+        TextView topLabel = (TextView) PDScanFailure.findViewById(R.id.pd_scan_label_fail);
+        topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), socialName, mNetwork, mReward.getInstagramOptions().getForcedTag()));
+    }
+
 
 }
