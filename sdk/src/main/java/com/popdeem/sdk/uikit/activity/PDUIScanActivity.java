@@ -3,6 +3,7 @@ package com.popdeem.sdk.uikit.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +13,11 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
+import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by dave on 11/04/2017.
@@ -78,10 +83,49 @@ public class PDUIScanActivity extends PDBaseActivity {
         boolean isValidated = response.get("validated").getAsBoolean();
         if (isValidated){
             Log.i(TAG, "parseResponse: User has shared, show success view");
-            PDScanView.setVisibility(View.GONE);
-            PDScanSuccess.setVisibility(View.VISIBLE);
+            showSuccessView(response);
         } else {
             Log.i(TAG, "parseResponse: User has not shared, show failure view");
         }
     }
+
+    /**
+     * Show Success View
+     */
+    private void showSuccessView(JsonObject response){
+        PDScanView.setVisibility(View.GONE);
+        PDScanSuccess.setVisibility(View.VISIBLE);
+
+        String socialName = response.get("social_name").getAsString();
+        String mediaUrl = response.get("media_url").getAsString();
+        String profilePicUrl = response.get("profile_picture_url").getAsString();
+
+        TextView topLabel = (TextView) PDScanSuccess.findViewById(R.id.pd_success_title);
+        topLabel.setText(String.format(getString(R.string.pd_scan_success_label), socialName, mReward.getInstagramOptions().getForcedTag()));
+
+
+        //profile photo
+        PDUIBezelImageView userProfilePicture = (PDUIBezelImageView) PDScanSuccess.findViewById(R.id.pd_scan_success_user_image_view);
+        Picasso.with(this)
+                .load(profilePicUrl)
+                .centerCrop()
+                .placeholder(R.drawable.pd_ui_default_user)
+                .error(R.drawable.pd_ui_default_user)
+                .resizeDimen(R.dimen.pd_scan_profile_image_dimen, R.dimen.pd_scan_profile_image_dimen)
+                .into(userProfilePicture);
+
+
+        //user name
+        TextView userSocialName = (TextView) PDScanSuccess.findViewById(R.id.pd_social_user_name);
+        userSocialName.setText(socialName);
+
+
+        //media image
+        ImageView mediaImage = (ImageView) PDScanSuccess.findViewById(R.id.image_media_url);
+        Picasso.with(this)
+                .load(mediaUrl)
+                .fit()
+                .into(mediaImage);
+    }
+
 }
