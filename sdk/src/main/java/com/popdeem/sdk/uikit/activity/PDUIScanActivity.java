@@ -18,8 +18,6 @@ import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by dave on 11/04/2017.
  * Project: Popdeem-SDK-Android
@@ -80,9 +78,9 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         });
     }
 
-    private void parseResponse(JsonObject response){
+    private void parseResponse(JsonObject response) {
         boolean isValidated = response.get("validated").getAsBoolean();
-        if (isValidated){
+        if (isValidated) {
             Log.i(TAG, "parseResponse: User has shared, show success view");
             showSuccessView(response);
         } else {
@@ -94,7 +92,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
     /**
      * Show Success View
      */
-    private void showSuccessView(JsonObject response){
+    private void showSuccessView(JsonObject response) {
         PDScanView.setVisibility(View.GONE);
         PDScanSuccess.setVisibility(View.VISIBLE);
 
@@ -137,7 +135,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
     /**
      * Failure View
      */
-    private void showFailView(JsonObject response){
+    private void showFailView(JsonObject response) {
         PDScanView.setVisibility(View.GONE);
         PDScanFailure.setVisibility(View.VISIBLE);
 
@@ -157,9 +155,13 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
     public void onClick(View v) {
         final int ID = v.getId();
 
-        if (ID == R.id.btn_claim){
+        if (ID == R.id.btn_claim) {
             //claim reward
-        } else if (ID == R.id.btn_return || ID == R.id.btn_return_fail){
+            Log.i(TAG, "onClick: Claiming Reward");
+
+
+
+        } else if (ID == R.id.btn_return || ID == R.id.btn_return_fail) {
             //return to reward screen
             finish();
         }
