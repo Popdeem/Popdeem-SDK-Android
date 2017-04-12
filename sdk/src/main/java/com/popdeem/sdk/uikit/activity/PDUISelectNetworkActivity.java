@@ -176,6 +176,7 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
         intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
         intent.putExtra("network", network);
         startActivity(intent);
+        finish();
     }
 
     private void connect(int ID) {

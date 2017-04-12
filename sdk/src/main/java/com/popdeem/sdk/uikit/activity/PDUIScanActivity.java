@@ -3,6 +3,7 @@ package com.popdeem.sdk.uikit.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import org.w3c.dom.Text;
  * Project: Popdeem-SDK-Android
  */
 
-public class PDUIScanActivity extends PDBaseActivity {
+public class PDUIScanActivity extends PDBaseActivity implements View.OnClickListener {
 
     private static String TAG = PDUIScanActivity.class.getSimpleName();
     private PDReward mReward;
@@ -127,6 +128,10 @@ public class PDUIScanActivity extends PDBaseActivity {
                 .load(mediaUrl)
                 .fit()
                 .into(mediaImage);
+
+
+        Button returnButton = (Button) PDScanSuccess.findViewById(R.id.btn_return);
+        returnButton.setOnClickListener(this);
     }
 
     /**
@@ -141,7 +146,22 @@ public class PDUIScanActivity extends PDBaseActivity {
 
         TextView topLabel = (TextView) PDScanFailure.findViewById(R.id.pd_scan_label_fail);
         topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), socialName, mNetwork, mReward.getInstagramOptions().getForcedTag()));
+
+
+        Button returnButton = (Button) PDScanFailure.findViewById(R.id.btn_return_fail);
+        returnButton.setOnClickListener(this);
+
     }
 
+    @Override
+    public void onClick(View v) {
+        final int ID = v.getId();
 
+        if (ID == R.id.btn_claim){
+            //claim reward
+        } else if (ID == R.id.btn_return || ID == R.id.btn_return_fail){
+            //return to reward screen
+            finish();
+        }
+    }
 }
