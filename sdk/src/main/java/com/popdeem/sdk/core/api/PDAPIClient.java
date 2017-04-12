@@ -38,12 +38,14 @@ import com.google.gson.JsonParser;
 import com.jakewharton.retrofit.Ok3Client;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
+import com.popdeem.sdk.core.deserializer.PDBGScanResponseDeserializer;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDMessagesDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
+import com.popdeem.sdk.core.model.PDBGScanResponseModel;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDMessage;
@@ -942,5 +944,58 @@ public class PDAPIClient {
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.scanSocialNetwork(body, rewardID, callback);
+    }
+
+    /**
+     * Claim Discovery
+     */
+    public void claimDiscovery(PDBGScanResponseModel post,
+                               String facebookAccessToken,
+                               String twitterAccessToken, String twitterAccessSecret,
+                               String instagramAccessToken,
+                               String latitude, String longitude, String locationID,
+                               String rewardID,
+                               @NonNull final PDAPICallback<JsonObject> callback) {
+
+
+        JsonObject jsonBody = new JsonObject();
+
+        //message
+        jsonBody.addProperty("message", post.getText());
+
+        //file
+        jsonBody.addProperty("file", post.getMediaUrl());
+
+        //post_key
+        jsonBody.addProperty("post_key", post.getObjectID());
+
+        //social network keys
+        if (post.getNetwork().equalsIgnoreCase("facebook")){
+            JsonObject facebookObject = new JsonObject();
+            facebookObject.addProperty("access_token", facebookAccessToken);
+            jsonBody.add("facebook", facebookObject);
+        } else if (post.getNetwork().equalsIgnoreCase("twitter")){
+            JsonObject twitterObject = new JsonObject();
+            twitterObject.addProperty("access_token", twitterAccessToken);
+            twitterObject.addProperty("access_secret", twitterAccessSecret);
+            jsonBody.add("twitter", twitterObject);
+        } else if (post.getNetwork().equalsIgnoreCase("instagram")){
+            JsonObject instagramObject = new JsonObject();
+            instagramObject.addProperty("access_token", instagramAccessToken);
+            jsonBody.add("instagram", instagramObject);
+        }
+
+        //location
+        JsonObject locationObject = new JsonObject();
+        locationObject.addProperty("latitude", latitude);
+        locationObject.addProperty("longitude", longitude);
+        locationObject.addProperty("id", locationID);
+
+        jsonBody.add("location", locationObject);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.claimDiscovery(body, rewardID, callback);
     }
 }

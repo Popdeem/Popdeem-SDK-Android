@@ -227,4 +227,15 @@ public interface PopdeemAPI {
             @Path("rewardId") String rewardID,
             Callback<JsonObject>callback
     );
+
+    //****************************************
+    // Claim Discovery Calls
+    //****************************************
+
+    @POST(PDAPIConfig.PD_CLAIM_DISCOVERY_PATH + "/{rewardId}/claim_discovered")
+    void claimDiscovery(
+            @Body TypedInput body,
+            @Path("rewardId") String rewardID,
+            Callback<JsonObject>callback
+    );
 }

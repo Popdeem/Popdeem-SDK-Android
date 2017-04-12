@@ -63,8 +63,15 @@ public class PDAPIConfig {
     public static final String REQUEST_HEADER_USER_TOKEN = "User-Token";
 
     /** The Scan Feature
-     * /api/v2/rewards/:ID/autodiscovery
-     Where :ID is the id of reward being scanned **/
+     * /api/v2/rewards/{rewardID}/autodiscovery
+     Where {rewardID} is the id of reward being scanned **/
     public static final String PD_AUTODISCOVERY_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
+
+    /**
+     * The Claim Discovery Path
+     * /api/v2/rewards/{rewardID}/claim_discovered
+     * Used in the Post Scan Success Screen (PDScanSuccessView)
+     */
+    public static final String PD_CLAIM_DISCOVERY_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
 
 }
