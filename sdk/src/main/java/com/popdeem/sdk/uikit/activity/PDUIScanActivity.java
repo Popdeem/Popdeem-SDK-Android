@@ -1,6 +1,9 @@
 package com.popdeem.sdk.uikit.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
+import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.Twitter;
@@ -202,15 +206,46 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
             realm1.close();
         }
 
-        PDAPIClient.instance().claimDiscovery(pdbgScanResponseModel, facebookAccessToken, twitterAccessToken, twitterAccessSecret, instagramAccessToken, lat, lng, id, mReward.getId(), new PDAPICallback<JsonObject>() {
+        PDAPIClient.instance().claimDiscovery(pdbgScanResponseModel, facebookAccessToken, twitterAccessToken, twitterAccessSecret, instagramAccessToken, lat, lng, id, mReward.getId(), this, new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
                 Log.i(TAG, "success: " + jsonObject.toString());
+                if (jsonObject.has("error")) {
+                    new AlertDialog.Builder(PDUIScanActivity.this)
+                            .setTitle(R.string.pd_common_sorry_text)
+                            .setMessage(jsonObject.get("error").getAsString())
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                } else {
+                    //reward claimed
+                    new AlertDialog.Builder(PDUIScanActivity.this)
+                            .setTitle(R.string.pd_claim_reward_claimed_text)
+                            .setMessage(mReward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
+                            .setPositiveButton(R.string.pd_ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.i(TAG, "onClick: Back to Rewards");
+                                    Intent intent = new Intent(PDUIScanActivity.this, PDUIHomeFlowActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            })
+                            .create()
+                            .show();
+                }
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 Log.e(TAG, e.toString());
+                new AlertDialog.Builder(PDUIScanActivity.this)
+                        .setTitle(R.string.pd_common_sorry_text)
+                        .setMessage(R.string.pd_common_something_wrong_text)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
             }
         });
     }
