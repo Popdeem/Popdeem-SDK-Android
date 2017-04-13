@@ -65,10 +65,10 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
     private void populateUIWithTag() {
         TextView titleLabel = (TextView) findViewById(R.id.title_label);
-        titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), mReward.getInstagramOptions().getForcedTag()));
+        titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), mReward.getGlobalHashtag()));
 
         TextView noteLabel = (TextView) findViewById(R.id.note_label);
-        noteLabel.setText(String.format(getString(R.string.pd_scan_note), mReward.getInstagramOptions().getForcedTag()));
+        noteLabel.setText(String.format(getString(R.string.pd_scan_note), mReward.getGlobalHashtag()));
     }
 
     private void checkSocialAccounts() {

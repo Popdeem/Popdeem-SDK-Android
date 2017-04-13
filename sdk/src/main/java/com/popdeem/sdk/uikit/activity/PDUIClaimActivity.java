@@ -449,9 +449,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         //already shared button
         Button alreadySharedButton = (Button) findViewById(R.id.pd_claim_already_shared_button);
         alreadySharedButton.setOnClickListener(this);
-        if (mReward.getInstagramOptions() != null && !mReward.getInstagramOptions().getForcedTag().equalsIgnoreCase("")) // TODO 1: 10/04/2017 see top of File
+        if (mReward.getGlobalHashtag() != null && !mReward.getGlobalHashtag().equalsIgnoreCase(""))
         {
-            alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getInstagramOptions().getForcedTag()));
+            alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getGlobalHashtag()));
         } else {
             alreadySharedButton.setText(R.string.pd_claim_already_shared_default);
         }
@@ -1141,14 +1141,9 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 }
             }
         } else if (ID == R.id.pd_claim_already_shared_button) {
-            Log.i("Claim Activity", mReward.getInstagramOptions().getForcedTag());
+            Log.i("Claim Activity", mReward.getGlobalHashtag());
             Intent intent = new Intent(this, PDUISelectNetworkActivity.class);
             intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
-//            if (mReward.getInstagramOptions() != null){
-//                intent.putExtra("forcedTag", mReward.getInstagramOptions().getForcedTag()); // TODO 1: 10/04/2017 see top of File
-//            } else {
-//                intent.putExtra("forcedTag", "testing");
-//            }
             startActivity(intent);
         }
     }

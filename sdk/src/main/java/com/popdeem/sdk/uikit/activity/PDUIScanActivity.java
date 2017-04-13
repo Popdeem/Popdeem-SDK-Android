@@ -71,7 +71,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
     private void populateUIWithTag() {
         TextView topLabel = (TextView) findViewById(R.id.scan_top_label);
-        topLabel.setText(String.format(getString(R.string.pd_scan_top_label), mReward.getInstagramOptions().getForcedTag()));
+        topLabel.setText(String.format(getString(R.string.pd_scan_top_label), mReward.getGlobalHashtag()));
     }
 
     private void scan() {
@@ -111,7 +111,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         PDScanSuccess.setVisibility(View.VISIBLE);
 
         TextView topLabel = (TextView) PDScanSuccess.findViewById(R.id.pd_success_title);
-        topLabel.setText(String.format(getString(R.string.pd_scan_success_label), pdbgScanResponseModel.getSocialName(), mReward.getInstagramOptions().getForcedTag()));
+        topLabel.setText(String.format(getString(R.string.pd_scan_success_label), pdbgScanResponseModel.getSocialName(), mReward.getGlobalHashtag()));
 
 
         //profile photo
@@ -153,7 +153,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         PDScanFailure.setVisibility(View.VISIBLE);
 
         TextView topLabel = (TextView) PDScanFailure.findViewById(R.id.pd_scan_label_fail);
-        topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), pdbgScanResponseModel.getSocialName(), mNetwork, mReward.getInstagramOptions().getForcedTag()));
+        topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), pdbgScanResponseModel.getSocialName(), mNetwork, mReward.getGlobalHashtag()));
 
 
         Button returnButton = (Button) PDScanFailure.findViewById(R.id.btn_return_fail);
