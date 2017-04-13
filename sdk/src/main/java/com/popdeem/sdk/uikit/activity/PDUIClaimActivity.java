@@ -116,7 +116,6 @@ import io.realm.Realm;
 /**
  * Created by mikenolan on 23/02/16.
  */
-// TODO 1: 10/04/2017 Remove InstagramOptions and replace with appropriate key in order to get the required hashtag
 public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickListener, LocationListener, CompoundButton.OnCheckedChangeListener {
 
     private FragmentManager mFragmentManager;
@@ -282,11 +281,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         twitterCharactersTextView.setText(String.valueOf(calculateTwitterCharsLeft()));
 
         if (mReward.getTweetOptions() != null) {
+            Log.i("Twitter Hashtag", "TweetOptions NOT NULL");
             if (mReward.getTweetOptions().isPrefill() && mReward.getTweetOptions().getPrefilledMessage() != null) {
                 mMessageEditText.setText(mReward.getTweetOptions().getPrefilledMessage());
                 PDLog.d(PDUIClaimActivity.class, mReward.getTweetOptions().getPrefilledMessage());
             }
-            if (mReward.getTweetOptions().isForceTag()) {
+            if (mReward.getTweetOptions().getForcedTag() != null && !mReward.getTweetOptions().getForcedTag().isEmpty()) {
+                Log.i("Twitter Hashtag", "Forced Tag NOt NULL");
                 hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getTweetOptions().getForcedTag()));
                 hashTagContainer.setVisibility(View.VISIBLE);
             }
