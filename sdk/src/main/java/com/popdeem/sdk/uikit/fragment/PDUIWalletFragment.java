@@ -55,6 +55,7 @@ import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
+import com.popdeem.sdk.uikit.widget.PDUILinearLayoutManager;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
 import java.util.ArrayList;
@@ -156,12 +157,14 @@ public class PDUIWalletFragment extends Fragment {
                 public void onVerifyClick(int position) {
                     PDReward reward = mRewards.get(position);
                     reward.setVerifying(true);
-                    mAdapter.notifyItemChanged(position);
+//                    mAdapter.notifyItemChanged(position);
+                    mAdapter.notifyDataSetChanged();
                     verifyReward(position);
                 }
             });
 
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(container.getContext());
+//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(container.getContext());
+            PDUILinearLayoutManager linearLayoutManager = new PDUILinearLayoutManager(container.getContext());
             mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
 
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -235,14 +238,16 @@ public class PDUIWalletFragment extends Fragment {
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
                 }
                 reward.setVerifying(false);
-                mAdapter.notifyItemChanged(position);
+//                mAdapter.notifyItemChanged(position);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
                 reward.setVerifying(false);
-                mAdapter.notifyItemChanged(position);
+//                mAdapter.notifyItemChanged(position);
+                mAdapter.notifyDataSetChanged();
                 String dialogMessage = String.format(Locale.getDefault(), "Please ensure your Instagram post includes the required hashtag '%1s'. You may edit the post and come back here to verify. Unverified rewards expire in 24 hours.", reward.getInstagramOptions().getForcedTag());
                 PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Instagram post not verified", dialogMessage);
             }
