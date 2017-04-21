@@ -66,6 +66,7 @@ import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
+import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
 
 import java.net.HttpURLConnection;
 
@@ -332,6 +333,17 @@ public final class PopdeemSDK {
     }
 
     /**
+     * Show multi-login flow
+     * @param activity FragmentActivity / AppCompatActivity initiating the social multi-login flow
+     */
+    public static void showSocialMultiLogin(final FragmentActivity activity){
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+        pushSocialMultiLoginFragmentToActivity(activity);
+    }
+
+    /**
      * Enable social login flow for a given Activity.
      * <p>
      * When this activity is presented to the user, the Popdeem Social Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
@@ -347,6 +359,26 @@ public final class PopdeemSDK {
 
         PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
         PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getName());
+        PDPreferencesUtils.setMultiLoginEnabled(sApplication, false);
+    }
+
+    /**
+     * Enable social multi login for a given activity
+     * <p>
+     * When this activity is presented to the user, the Popdeem Social Multi Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
+     * Works very much like the normal Social Login Flow
+     * </p>
+     *
+     * @param activityClass
+     * @param numberOfPrompts
+     */
+    public static void enableSocialMultiLogin(@NonNull Class activityClass, final int numberOfPrompts){
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+        PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
+        PDPreferencesUtils.setSocialLoginActivityName(sApplication, activityClass.getName());
+        PDPreferencesUtils.setMultiLoginEnabled(sApplication, true);
     }
 
 
@@ -421,6 +453,19 @@ public final class PopdeemSDK {
                 .commit();
     }
 
+    /**
+     * Push the Social Multi-Login Flow Fragment to the supplied Activity
+     *
+     * @param activity FragmentActivity / AppCompatActivity to show social login flow in
+     */
+    public static void pushSocialMultiLoginFragmentToActivity(final FragmentActivity activity){
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(android.R.id.content, PDUISocialMultiLoginFragment.newInstance())
+                .addToBackStack(PDUISocialMultiLoginFragment.class.getSimpleName())
+                .commit();
+    }
+
 
     public static void logout(@NonNull Context context) {
         // Facebook Logout
@@ -475,7 +520,10 @@ public final class PopdeemSDK {
                     && PDSocialUtils.shouldShowSocialLogin(activity)) {
                 PDLog.i(PopdeemSDK.class, "showing social login");
                 PDPreferencesUtils.incrementLoginUsesCount(activity);
-                showSocialLogin((FragmentActivity) activity);
+                if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+                    showSocialLogin((FragmentActivity) activity);
+                else
+                    showSocialMultiLogin((FragmentActivity) activity);
             }
 
             // Check if intent was started from a Popdeem Notification click and show dialog if it was

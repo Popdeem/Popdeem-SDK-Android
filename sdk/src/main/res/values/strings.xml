@@ -20,7 +20,7 @@
     <string name="pd_social_login_success_text">Connected!</string>
     <string name="pd_social_login_success_description_text">Rewards are now unlocked. You will be notified when new rewards are available.</string>
     <string name="pd_social_login_heading_text">Connect your Facebook to earn additional Rewards</string>
-    <string name="pd_social_login_body_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
+    <string name="pd_social_login_body_text">Connect your social account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
     <string name="pd_social_login_footer_text">Powered by Popdeem</string>
     <string name="pd_social_login_continue_text">Continue to app</string>
     <string name="pd_social_login_tagline_text">New: Social Rewards</string>
@@ -177,6 +177,8 @@
 
     <!-- Social Strings -->
     <string name="pd_log_in_with_facebook_text">Sign in with Facebook</string>
+    <string name="pd_log_in_with_twitter_text">Sign in with Twitter</string>
+    <string name="pd_log_in_with_instagram_text">Sign in with Instagram</string>
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>

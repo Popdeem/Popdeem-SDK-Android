@@ -42,6 +42,7 @@ public class NavSampleApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics(), PDSocialUtils.getTwitterKitForFabric(this));
         PopdeemSDK.initializeSDK(this);
-        PopdeemSDK.enableSocialLogin(MainActivity.class, 3);
+//        PopdeemSDK.enableSocialLogin(MainActivity.class, 3);
+        PopdeemSDK.enableSocialMultiLogin(MainActivity.class, 3);
     }
 }

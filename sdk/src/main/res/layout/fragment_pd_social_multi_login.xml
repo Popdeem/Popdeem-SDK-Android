@@ -21,6 +21,7 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -60,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="@dimen/social_login_padding">
@@ -73,17 +74,6 @@
             android:textColor="@color/pd_login_tagline_text_color"
             android:textSize="@dimen/social_login_header_text_size"
             android:textStyle="bold" />
-
-        <!--<TextView-->
-        <!--android:id="@+id/pd_social_login_header_text_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="15dp"-->
-        <!--android:minLines="2"-->
-        <!--android:text="@string/pd_social_login_heading_text"-->
-        <!--android:textColor="@color/pd_login_heading_text_color"-->
-        <!--android:textSize="16sp"-->
-        <!--android:visibility="gone" />-->
 
         <TextView
             android:id="@+id/pd_social_rewards_info_text_view"
@@ -99,16 +89,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginBottom="10dp">
-
-            <Button
-                android:id="@+id/pd_social_continue_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@color/pd_login_continue_button_background_color"
-                android:text="@string/pd_social_login_continue_text"
-                android:textColor="@color/pd_login_continue_button_text_color"
-                android:visibility="gone" />
 
             <Button
                 android:id="@+id/pd_facebook_login_button"
@@ -138,13 +118,81 @@
 
         </FrameLayout>
 
-        <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/pd_social_login_terms_text"
-        android:textColor="@color/pd_login_terms_text_color"
-        android:textSize="@dimen/social_login_terms_text_size" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/pd_twitter_login_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/pd_rounded_twitter"
+                android:paddingEnd="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:text="@string/pd_log_in_with_twitter_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/social_login_sign_in_button_text_size"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/pd_progress_bar_twitter"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:progressDrawable="@drawable/pd_progress_drawable"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/pd_social_continue_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/pd_login_continue_button_background_color"
+                android:text="@string/pd_social_login_continue_text"
+                android:textColor="@color/pd_login_continue_button_text_color"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/pd_instagram_login_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/pd_insta_button"
+                android:paddingEnd="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingStart="15dp"
+                android:text="@string/pd_log_in_with_instagram_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/social_login_sign_in_button_text_size"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/pd_progress_bar_instagram"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:progressDrawable="@drawable/pd_progress_drawable"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
     </LinearLayout>
 
