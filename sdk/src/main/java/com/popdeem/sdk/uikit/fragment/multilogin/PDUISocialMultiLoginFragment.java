@@ -508,12 +508,14 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
     private void updateViewAfterLogin(){
         mProgressFacebook.setVisibility(View.GONE);
+        mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
         mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
 
         mFacebookLoginButton.setVisibility(View.GONE);
         mTwitterLoginButton.setVisibility(View.GONE);
         mInstaLoginButton.setVisibility(View.GONE);
 
+        mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
         mContinueButton.setVisibility(View.VISIBLE);
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -526,6 +528,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());
             loginButton.onActivityResult(requestCode, resultCode, data);
