@@ -24,9 +24,12 @@
 
 package com.popdeem.navigationsample;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.popdeem.sdk.core.PopdeemSDK;
@@ -34,8 +37,13 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
+import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,5 +77,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void thirdPartyTokenClick(View view) {
         PopdeemSDK.setThirdPartyToken("thirdPartyTokenTest");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            //issue: fragment is NULL when it gets here, so we'll never be able to continue the Twitter Login Process
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PDUISocialMultiLoginFragment.getName());
+            if (fragment != null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            } else {
+                Log.e(TAG, "onActivityResult: Fragment is NULL");
+            }
+        }
     }
 }

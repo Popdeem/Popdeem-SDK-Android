@@ -280,11 +280,12 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
      */
 
     private void loginTwitter() {
-
+        Log.i(TAG, "loginTwitter: Activity = " + getActivity().getClass().getSimpleName());
         PDSocialUtils.loginWithTwitter(getActivity(), new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 if (result.data != null) {
+                    Log.i(TAG, "success: Twitter Data present");
                     connectTwitterAccount(result.data);
                 } else {
                     showGenericAlert();
@@ -528,10 +529,16 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "onActivityResult");
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            Log.i(TAG, "onActivityResult: twitter Auth Config");
             TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());
             loginButton.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public static String getName() {
+        return PDUISocialMultiLoginFragment.class.getSimpleName();
     }
 }

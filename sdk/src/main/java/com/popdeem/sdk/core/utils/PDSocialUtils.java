@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -342,6 +343,7 @@ public class PDSocialUtils {
 
     public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
         if (isFabricInitialisedWithTwitter()) {
+            Log.i("PDSocialUtils", "loginWithTwitter: Fabric is initialized with Twitter");
             Twitter.logIn(activity, callback);
         }
     }
