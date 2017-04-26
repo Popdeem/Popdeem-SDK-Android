@@ -609,7 +609,7 @@ public class PDAPIClient {
      */
     public void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
                                                @NonNull String twitterID,
-                                               @NonNull PDAPICallback<PDUser> callback) {
+                                               @NonNull PDAPICallback<JsonObject> callback) {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDUserDeserializer())

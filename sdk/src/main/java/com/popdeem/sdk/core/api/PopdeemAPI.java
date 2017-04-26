@@ -71,7 +71,7 @@ public interface PopdeemAPI {
     @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithTwitterParams(
             @Body TypedInput body,
-            Callback<PDUser> callback);
+            Callback<JsonObject> callback);
 
     @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithFacebook(
