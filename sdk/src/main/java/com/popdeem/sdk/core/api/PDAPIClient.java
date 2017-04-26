@@ -605,16 +605,42 @@ public class PDAPIClient {
      * @param twitterAccessToken  - Twitter access token
      * @param twitterAccessSecret - Twitter access  secret
      * @param twitterID           - Twitter ID
-     * @param screenName          - Twitter user screen name
      * @param callback            {@link PDAPICallback} for API result
      */
-    private void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
-                                               @NonNull String twitterID, @NonNull String screenName,
-                                               @NonNull PDAPICallback<JsonObject> callback) {
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.registerUserWithTwitterParams(twitterAccessToken, twitterAccessSecret, twitterID, screenName, callback);
-    }
+    public void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
+                                               @NonNull String twitterID,
+                                               @NonNull PDAPICallback<PDUser> callback) {
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
+        JsonObject jsonBody = new JsonObject();
+
+        JsonObject userBody = new JsonObject();
+
+        JsonObject twitterBody = new JsonObject();
+        twitterBody.addProperty("id", twitterID);
+        twitterBody.addProperty("access_token", twitterAccessToken);
+        twitterBody.addProperty("access_secret", twitterAccessSecret);
+
+        userBody.add("twitter", twitterBody);
+
+        userBody.addProperty("unique_identifier", uidString);
+
+        jsonBody.add("user", userBody);
+
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+
+        api.registerUserWithTwitterParams(body, callback);
+    }
 
     /**
      * Get Popdeem Friends
@@ -998,71 +1024,5 @@ public class PDAPIClient {
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.claimDiscovery(body, rewardID, callback);
-
-
-        //I need to get the response code in order to know if it was a successful claim or not
-
-//        final Handler mainHandler = new Handler(context.getMainLooper());
-//        final String url = PDAPIConfig.PD_API_ENDPOINT + PDAPIConfig.PD_REWARDS_PATH + "/" + rewardID + "/claim_discovered";
-//
-//
-//        final OkHttpClient client = new OkHttpClient();
-//
-//
-//        FormBody.Builder bodyBuilder = new FormBody.Builder()
-//                .add("message", post.getText())
-//                .add("file", post.getMediaUrl())
-//                .add("post_key", post.getObjectID())
-//                .add("location[latitude]", latitude)
-//                .add("location[longitude]", longitude)
-//                .add("location[id]", locationID);
-//
-//
-//        //social network keys
-//        if (post.getNetwork().equalsIgnoreCase("facebook")){
-//            bodyBuilder.add("facebook[access_token]", facebookAccessToken);
-//        } else if (post.getNetwork().equalsIgnoreCase("twitter")){
-//            bodyBuilder.add("twitter[access_token]", twitterAccessToken);
-//            bodyBuilder.add("twitter[access_secret]", twitterAccessSecret);
-//        } else if (post.getNetwork().equalsIgnoreCase("instagram")){
-//            bodyBuilder.add("instagram[access_token]", instagramAccessToken);
-//        }
-//
-//        RequestBody body = bodyBuilder.build();
-//
-//        final Request request = new Request.Builder()
-//                .url(url)
-//                .addHeader(PDAPIConfig.REQUEST_HEADER_API_KEY, PopdeemSDK.getPopdeemAPIKey())
-//                .addHeader(PDAPIConfig.REQUEST_HEADER_USER_TOKEN, PDUtils.getUserToken())
-//                .post(body)
-//                .build();
-//
-//        client.newCall(request).enqueue(new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                callback.failure(RetrofitError.networkError(url, new IOException("Unexpected code " + e)));
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, final okhttp3.Response response) throws IOException {
-//                // Convert OkHTTP response to Retrofit Response
-//                final String responseBody = response.body().string();
-//                final JsonElement object = new JsonParser().parse(responseBody);
-//                final TypedInput bodyTypedInput = new TypedString(responseBody);
-//                final ArrayList<Header> headers = new ArrayList<>();
-//
-//                Headers responseHeaders = response.headers();
-//                for (int i = 0; i < responseHeaders.size(); i++) {
-//                    headers.add(new Header(responseHeaders.name(i), responseHeaders.value(i)));
-//                }
-//
-//                mainHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        callback.success(object.isJsonNull() ? null : object.getAsJsonObject(), new Response(response.request().url().toString(), response.networkResponse().code(), response.networkResponse().message(), headers, bodyTypedInput));
-//                    }
-//                });
-//            }
-//        });
     }
 }

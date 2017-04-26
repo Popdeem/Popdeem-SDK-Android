@@ -37,7 +37,6 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.utils.PDLog;
-import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
@@ -84,12 +83,19 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             //issue: fragment is NULL when it gets here, so we'll never be able to continue the Twitter Login Process
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PDUISocialMultiLoginFragment.getName());
+//            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PDUISocialMultiLoginFragment.getName());
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("PDUISocialMultiLoginFragment");
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             } else {
                 Log.e(TAG, "onActivityResult: Fragment is NULL");
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: In on Pause");
     }
 }

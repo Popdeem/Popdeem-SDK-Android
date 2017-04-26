@@ -461,8 +461,9 @@ public final class PopdeemSDK {
     public static void pushSocialMultiLoginFragmentToActivity(final FragmentActivity activity){
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(android.R.id.content, PDUISocialMultiLoginFragment.newInstance())
-                .addToBackStack(PDUISocialMultiLoginFragment.class.getSimpleName())
+                .add(android.R.id.content, PDUISocialMultiLoginFragment.newInstance(), "PDUISocialMultiLoginFragment")
+//                .addToBackStack(PDUISocialMultiLoginFragment.class.getSimpleName())
+                .addToBackStack("PDUISocialMultiLoginFragment")
                 .commit();
     }
 

@@ -60,13 +60,18 @@ public interface PopdeemAPI {
             @Query("platform") String platform,
             Callback<PDBasicResponse> callback);
 
-    @GET(PDAPIConfig.PD_USERS_PATH)
+//    @GET(PDAPIConfig.PD_USERS_PATH)
+//    void registerUserWithTwitterParams(
+//            @Query("user[twitter][access_token]") String twitterAccessToken,
+//            @Query("user[twitter][access_secret]") String twitterAccessSecret,
+//            @Query("user[twitter][id]") String twitterID,
+//            @Query("user[twitter][**]") String screenName,
+//            Callback<PDUser> callback);
+
+    @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithTwitterParams(
-            @Query("user[twitter][access_token]") String twitterAccessToken,
-            @Query("user[twitter][access_secret]") String twitterAccessSecret,
-            @Query("user[twitter][id]") String twitterID,
-            @Query("user[twitter][**]") String screenName,
-            Callback<JsonObject> callback);
+            @Body TypedInput body,
+            Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithFacebook(

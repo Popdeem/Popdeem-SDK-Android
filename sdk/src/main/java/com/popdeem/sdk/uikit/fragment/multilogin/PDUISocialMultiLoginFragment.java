@@ -28,6 +28,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.LocationListener;
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
@@ -302,8 +303,14 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     private void connectTwitterAccount(TwitterSession session) {
-        PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
-                session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+//        PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
+//                session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+
+        PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
+                session.getAuthToken().secret,
+                String.valueOf(session.getUserId()), PD_API_CALLBACK);
+
+
     }
 
 
