@@ -252,7 +252,7 @@ public final class PopdeemSDK {
                     lng = String.valueOf(userLocation.getLongitude());
                 }
 
-                PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
+                PDAPIClient.instance().updateUserLocationAndDeviceToken("", userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
                         PDUtils.updateSavedUser(user);
@@ -423,7 +423,7 @@ public final class PopdeemSDK {
                 lng = userLocationRealm.getLongitude();
             }
 
-            PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetailsRealm.getId(), gcmToken, String.valueOf(lat), String.valueOf(lng), new PDAPICallback<PDUser>() {
+            PDAPIClient.instance().updateUserLocationAndDeviceToken("", userDetailsRealm.getId(), gcmToken, String.valueOf(lat), String.valueOf(lng), new PDAPICallback<PDUser>() {
                 @Override
                 public void success(PDUser user) {
                     PDUtils.updateSavedUser(user);

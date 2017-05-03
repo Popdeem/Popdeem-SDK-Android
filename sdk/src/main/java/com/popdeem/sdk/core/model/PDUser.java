@@ -33,6 +33,7 @@ import java.util.ArrayList;
  */
 public final class PDUser {
 
+    @SerializedName("user_token")
     private String userToken;
 
     // User detail

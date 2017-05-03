@@ -388,7 +388,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             realm.close();
 
             if (id != null) {
-                PDAPIClient.instance().updateUserLocationAndDeviceToken(id, token, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+                PDAPIClient.instance().updateUserLocationAndDeviceToken("", id, token, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
                         PDLog.d(PDUIRewardsFragment.class, "user: " + user.toString());

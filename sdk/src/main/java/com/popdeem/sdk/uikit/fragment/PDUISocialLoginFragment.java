@@ -298,7 +298,7 @@ public class PDUISocialLoginFragment extends Fragment {
             return;
         }
 
-        PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+        PDAPIClient.instance().updateUserLocationAndDeviceToken(PDSocialUtils.SOCIAL_TYPE_FACEBOOK, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {
                 PDLog.d(PDUISocialLoginFragment.class, "update user: " + user);

@@ -139,16 +139,6 @@
                 android:textStyle="bold"
                 android:visibility="visible" />
 
-            <ProgressBar
-                android:id="@+id/pd_progress_bar_twitter"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:progressDrawable="@drawable/pd_progress_drawable"
-                android:visibility="gone" />
-
         </FrameLayout>
 
         <FrameLayout
@@ -181,16 +171,6 @@
                 android:textSize="@dimen/social_login_sign_in_button_text_size"
                 android:textStyle="bold"
                 android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/pd_progress_bar_instagram"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:progressDrawable="@drawable/pd_progress_drawable"
-                android:visibility="gone" />
 
         </FrameLayout>
 

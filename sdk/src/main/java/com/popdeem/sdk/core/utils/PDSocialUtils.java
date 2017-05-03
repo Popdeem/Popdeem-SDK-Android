@@ -71,6 +71,10 @@ public class PDSocialUtils {
     private static final String INSTAGRAM_CLIENT_SECRET_KEY = "InstagramClientSecret";
     private static final String INSTAGRAM_CALLBACK_URL_KEY = "InstagramCallbackUrl";
 
+    public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
+    public static final String SOCIAL_TYPE_TWITTER = "twitter";
+    public static final String SOCIAL_TYPE_INSTAGRAM = "instagram";
+
     //------------------------------------------------------------------------
     //                          Instagram Methods
     //------------------------------------------------------------------------

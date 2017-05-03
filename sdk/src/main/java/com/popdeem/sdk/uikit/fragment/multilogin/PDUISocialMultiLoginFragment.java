@@ -76,8 +76,6 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     private PDLocationManager mLocationManager;
 
     private ProgressBar mProgressFacebook;
-    private ProgressBar mProgressTwitter;
-    private ProgressBar mProgressInstagram;
 
     private TextView mRewardsInfoTextView;
 
@@ -204,57 +202,6 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         }
     };
 
-    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER = new PDAPICallback<JsonObject>() {
-        @Override
-        public void success(JsonObject jsonObject) {
-            PDLog.d(PDUISocialMultiLoginFragment.class, "registered with Social A/C: " + jsonObject.toString());
-
-            JsonObject userObject = jsonObject.getAsJsonObject("user");
-            if (userObject != null) {
-                Log.i(TAG, "success: " + userObject.toString());
-                Gson gson = new Gson();
-                PDUser user = gson.fromJson(userObject.toString(), PDUser.class);
-
-                if (user == null){
-                    Log.e(TAG, "success: User is NULL");
-                }
-
-                PDUtils.updateSavedUser(user);
-                updateUser();
-
-                PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_LOGIN, new PDAbraProperties.Builder()
-                        .add("Source", "Login Takeover")
-                        .create());
-                PDAbraLogEvent.onboardUser();
-            } else {
-                Log.e(TAG, "User is NULL");
-            }
-        }
-
-        @Override
-        public void failure(int statusCode, Exception e) {
-            PDLog.d(PDUISocialMultiLoginFragment.class, "failed register with social a/c: statusCode=" + statusCode + ", message=" + e.getMessage());
-
-            if (isFacebook)
-                LoginManager.getInstance().logOut();
-
-            mProgressFacebook.setVisibility(View.GONE);
-            mFacebookLoginButton.setVisibility(View.VISIBLE);
-            mTwitterLoginButton.setVisibility(View.VISIBLE);
-            mInstaLoginButton.setVisibility(View.VISIBLE);
-            mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
-            mTwitterLoginButton.setText(R.string.pd_log_in_with_twitter_text);
-            mFacebookLoginButton.setText(R.string.pd_log_in_with_instagram_text);
-
-            new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.pd_common_sorry_text)
-                    .setMessage("An error occurred while registering. Please try again")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .create()
-                    .show();
-        }
-    };
-
     ////////////////////////////////////////////////////
     // Social Login Buttons
     ///////////////////////////////////////////////////
@@ -268,8 +215,6 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         mInstaLoginButton.setOnClickListener(this);
 
         mProgressFacebook = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
-        mProgressTwitter = (ProgressBar) view.findViewById(R.id.pd_progress_bar_twitter);
-        mProgressInstagram = (ProgressBar) view.findViewById(R.id.pd_progress_bar_instagram);
     }
 
 
@@ -340,7 +285,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             public void success(Result<TwitterSession> result) {
                 if (result.data != null) {
                     Log.i(TAG, "success: Twitter Data present");
-                    connectTwitterAccount(result.data);
+                    registerTwitterAccount(result.data);
                 } else {
                     showGenericAlert();
                 }
@@ -355,7 +300,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         });
     }
 
-    private void connectTwitterAccount(TwitterSession session) {
+    private void registerTwitterAccount(TwitterSession session) {
 //        PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
 //                session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
 
@@ -365,6 +310,57 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
 
     }
+
+    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER = new PDAPICallback<JsonObject>() {
+        @Override
+        public void success(JsonObject jsonObject) {
+            PDLog.d(PDUISocialMultiLoginFragment.class, "registered with Social A/C: " + jsonObject.toString());
+
+            JsonObject userObject = jsonObject.getAsJsonObject("user");
+            if (userObject != null) {
+                Log.i(TAG, "success: " + userObject.toString());
+                Gson gson = new Gson();
+                PDUser user = gson.fromJson(userObject.toString(), PDUser.class);
+
+                if (user == null) {
+                    Log.e(TAG, "User is NULL");
+                } else {
+                    Log.i(TAG, "success: User ID = " + user.getId());
+                    Log.i(TAG, "success: User Token = " + user.getUserToken());
+
+                    PDUtils.updateSavedUser(user);
+                    updateUser();
+
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_LOGIN, new PDAbraProperties.Builder()
+                            .add("Source", "Login Takeover")
+                            .create());
+                    PDAbraLogEvent.onboardUser();
+                }
+            } else {
+                Log.e(TAG, "User is NULL");
+            }
+        }
+
+        @Override
+        public void failure(int statusCode, Exception e) {
+            PDLog.d(PDUISocialMultiLoginFragment.class, "failed register with social a/c: statusCode=" + statusCode + ", message=" + e.getMessage());
+
+            mProgressFacebook.setVisibility(View.GONE);
+            mFacebookLoginButton.setVisibility(View.VISIBLE);
+            mTwitterLoginButton.setVisibility(View.VISIBLE);
+            mInstaLoginButton.setVisibility(View.VISIBLE);
+            mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
+            mTwitterLoginButton.setText(R.string.pd_log_in_with_twitter_text);
+            mFacebookLoginButton.setText(R.string.pd_log_in_with_instagram_text);
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.pd_common_sorry_text)
+                    .setMessage("An error occurred while registering. Please try again")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .create()
+                    .show();
+        }
+    };
 
 
     /**
@@ -386,7 +382,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mProgressFacebook.getVisibility() == View.GONE && mProgressTwitter.getVisibility() == View.GONE && mProgressInstagram.getVisibility() == View.GONE) {
+                if (mProgressFacebook.getVisibility() == View.GONE) {
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_CLOSE_LOGIN_TAKEOVER, new PDAbraProperties.Builder()
                             .add("Source", "Dismiss Button")
                             .create());
@@ -434,12 +430,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     private void startLocationManagerAfterLogin() {
-        if (isFacebook)
-            mProgressFacebook.setVisibility(View.VISIBLE);
-        if (isTwitter)
-            mProgressTwitter.setVisibility(View.VISIBLE);
-        if (isInstagram)
-            mProgressInstagram.setVisibility(View.VISIBLE);
+        mProgressFacebook.setVisibility(View.VISIBLE);
 
         mFacebookLoginButton.setVisibility(View.INVISIBLE);
         mTwitterLoginButton.setVisibility(View.INVISIBLE);
@@ -533,9 +524,15 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             return;
         }
 
-        // TODO: 26/04/2017 Fix Fail Big that is occuring below
+        String socialType = "";
+        if (isFacebook)
+            socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
+        if (isTwitter)
+            socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
+        if (isInstagram)
+            socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
 
-        PDAPIClient.instance().updateUserLocationAndDeviceToken(userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {
                 PDLog.d(PDUISocialMultiLoginFragment.class, "update user: " + user);
@@ -551,6 +548,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             @Override
             public void failure(int statusCode, Exception e) {
                 PDLog.d(PDUISocialMultiLoginFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
+                // Send broadcast to any registered receivers that user has logged in
                 updateViewAfterLogin();
             }
         });

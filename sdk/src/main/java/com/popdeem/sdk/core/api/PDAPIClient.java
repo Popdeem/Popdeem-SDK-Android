@@ -29,6 +29,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +44,7 @@ import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDMessagesDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDTwitterUserDeserializer;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.model.PDBGScanResponseModel;
@@ -55,6 +57,7 @@ import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -105,6 +108,7 @@ public class PDAPIClient {
     private static final Interceptor PD_API_KEY_INTERCEPTOR = new Interceptor() {
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
+            Log.i("Popdeem API Key", "intercept: " + PopdeemSDK.getPopdeemAPIKey());
             return chain.proceed(chain.request().newBuilder()
                     .addHeader(PDAPIConfig.REQUEST_HEADER_API_KEY, PopdeemSDK.getPopdeemAPIKey())
                     .build());
@@ -439,12 +443,28 @@ public class PDAPIClient {
      * @param longitude   - Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
      */
-    public void updateUserLocationAndDeviceToken(@NonNull String id, @NonNull String deviceToken,
+    public void updateUserLocationAndDeviceToken(@NonNull String socialType, @NonNull String id, @NonNull String deviceToken,
                                                  @NonNull String latitude, @NonNull String longitude,
                                                  @NonNull final PDAPICallback<PDUser> callback) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
-                .create();
+        Gson gson;
+        if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_FACEBOOK)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                    .create();
+        } else if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_TWITTER)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
+                    .create();
+        } else if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_INSTAGRAM)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
+                    .create();
+        } else {
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                    .create();
+        }
+
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
 
         // Realm Instance
@@ -499,7 +519,7 @@ public class PDAPIClient {
      * @param latitude    Current latitude for user
      * @param longitude   Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
-     * @deprecated use {@link #updateUserLocationAndDeviceToken(String, String, String, String, PDAPICallback)} instead.
+     * @deprecated use {@link #updateUserLocationAndDeviceToken(String, String, String, String, String, PDAPICallback)} instead.
      */
     @Deprecated
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
@@ -896,6 +916,7 @@ public class PDAPIClient {
      */
     private Interceptor getUserTokenInterceptor() {
         final String userToken = PDUtils.getUserToken();
+        Log.i("User Token", "getUserTokenInterceptor: " + userToken);
         if (userToken == null) {
             return null;
         }
