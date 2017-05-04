@@ -37,6 +37,13 @@ public class PDUserInstagram {
     private String screenName;
     private String profilePictureUrl;
 
+    private String influenceReachScore;
+    private String influenceEngagementScore;
+    private String influenceFrequencyScore;
+    private int advocacyScore;
+    private String[] favouriteBrandIds;
+    private String totalScore;
+
     public PDUserInstagram() {
     }
 
@@ -104,5 +111,57 @@ public class PDUserInstagram {
 
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public boolean isTester() {
+        return tester;
+    }
+
+    public String getInfluenceReachScore() {
+        return influenceReachScore;
+    }
+
+    public void setInfluenceReachScore(String influenceReachScore) {
+        this.influenceReachScore = influenceReachScore;
+    }
+
+    public String getInfluenceEngagementScore() {
+        return influenceEngagementScore;
+    }
+
+    public void setInfluenceEngagementScore(String influenceEngagementScore) {
+        this.influenceEngagementScore = influenceEngagementScore;
+    }
+
+    public String getInfluenceFrequencyScore() {
+        return influenceFrequencyScore;
+    }
+
+    public void setInfluenceFrequencyScore(String influenceFrequencyScore) {
+        this.influenceFrequencyScore = influenceFrequencyScore;
+    }
+
+    public int getAdvocacyScore() {
+        return advocacyScore;
+    }
+
+    public void setAdvocacyScore(int advocacyScore) {
+        this.advocacyScore = advocacyScore;
+    }
+
+    public String[] getFavouriteBrandIds() {
+        return favouriteBrandIds;
+    }
+
+    public void setFavouriteBrandIds(String[] favouriteBrandIds) {
+        this.favouriteBrandIds = favouriteBrandIds;
+    }
+
+    public String getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(String totalScore) {
+        this.totalScore = totalScore;
     }
 }

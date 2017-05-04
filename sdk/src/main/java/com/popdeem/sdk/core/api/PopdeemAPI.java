@@ -91,6 +91,11 @@ public interface PopdeemAPI {
             @Body TypedInput body,
             Callback<PDUser> callback);
 
+    @POST(PDAPIConfig.PD_USERS_PATH)
+    void registerUserWithInstagram(
+            @Body TypedInput body,
+            Callback<JsonObject> callback);
+
     @POST(PDAPIConfig.PD_USERS_PATH + "/disconnect_social_account")
     void disconnectSocialAccount(
             @Body TypedInput body,

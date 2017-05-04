@@ -42,6 +42,7 @@ import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.deserializer.PDBGScanResponseDeserializer;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDInstagramUserDeserializer;
 import com.popdeem.sdk.core.deserializer.PDMessagesDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDTwitterUserDeserializer;
@@ -343,6 +344,54 @@ public class PDAPIClient {
         api.connectWithInstagramAccount(body, callback);
     }
 
+    /**
+     *
+     * @param instagramId       Instagram User ID
+     * @param accessToken       Instagram Access Token
+     * @param fullname          User's Full Name
+     * @param userName          User's Screen Name
+     * @param profilePicture    User's Profile Picture
+     * @param callback          {@link PDAPICallback} for API Result
+     */
+    public void registerWithInstagramId(@NonNull String instagramId,
+                                        @NonNull String accessToken,
+                                        @NonNull String fullname,
+                                        @NonNull String userName,
+                                        @NonNull String profilePicture,
+                                        @NonNull final PDAPICallback<JsonObject> callback){
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
+        JsonObject jsonBody = new JsonObject();
+
+        JsonObject userBody = new JsonObject();
+
+        JsonObject instaBody = new JsonObject();
+        instaBody.addProperty("id", instagramId);
+        instaBody.addProperty("access_token", accessToken);
+        instaBody.addProperty("full_name", fullname);
+        instaBody.addProperty("profile_picture", profilePicture);
+
+        userBody.add("instagram", instaBody);
+
+        userBody.addProperty("unique_identifier", uidString);
+
+        jsonBody.add("user", userBody);
+
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+
+        api.registerUserWithInstagram(body, callback);
+
+    }
+
 
     /**
      * Check if users Instagram access token is still valid
@@ -457,7 +506,7 @@ public class PDAPIClient {
                     .create();
         } else if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_INSTAGRAM)){
             gson = new GsonBuilder()
-                    .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
+                    .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
                     .create();
         } else {
             gson = new GsonBuilder()

@@ -39,12 +39,14 @@ import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
+import com.popdeem.sdk.uikit.fragment.PDUIInstagramLoginFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
@@ -123,7 +125,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     ////////////////////////////////////////////////////
-    // Callbacks
+    // Facebook Callbacks
     //////////////////////////////////////////////////
 
     private void registerCallBacks() {
@@ -306,12 +308,12 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
         PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
                 session.getAuthToken().secret,
-                String.valueOf(session.getUserId()), PD_API_CALLBACK_TWITTER);
+                String.valueOf(session.getUserId()), PD_API_CALLBACK_TWITTER_INSTA);
 
 
     }
 
-    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER = new PDAPICallback<JsonObject>() {
+    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER_INSTA = new PDAPICallback<JsonObject>() {
         @Override
         public void success(JsonObject jsonObject) {
             PDLog.d(PDUISocialMultiLoginFragment.class, "registered with Social A/C: " + jsonObject.toString());
@@ -368,7 +370,38 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
      */
 
     private void loginInstagram() {
+        if (PDSocialUtils.canUseInstagram()) {
+            PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
+                @Override
+                public void loggedIn(PDInstagramResponse response) {
+                    Log.i(TAG, "loggedIn: Instagram Logged In");
+                    registerInstagramAccount(response);
+                }
 
+                @Override
+                public void error(String message) {
+                    showGenericAlert();
+                }
+            });
+            getFragmentManager().beginTransaction()
+                    .add(android.R.id.content, fragment, PDUIInstagramLoginFragment.getName())
+                    .addToBackStack(PDUIInstagramLoginFragment.getName())
+                    .commit();
+        } else {
+            PDLog.w(getClass(), "Could not initialise Instagram");
+        }
+    }
+
+    private void registerInstagramAccount(PDInstagramResponse instagramResponse) {
+//        PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
+//                instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+
+        PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
+                instagramResponse.getAccessToken(),
+                instagramResponse.getUser().getFullName(),
+                instagramResponse.getUser().getUsername(),
+                instagramResponse.getUser().getProfilePicture(),
+                PD_API_CALLBACK_TWITTER_INSTA);
     }
 
 
