@@ -182,6 +182,7 @@
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
+    <string name="pd_log_out">Log Out</string>
 
     <!-- Connect Social Account Dialog -->
     <string name="pd_connect_facebook_title">Facebook</string>

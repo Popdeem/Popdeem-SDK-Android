@@ -31,7 +31,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +67,7 @@ import io.realm.Realm;
 
 public class PDUISettingsActivity extends PDBaseActivity implements PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback {
 
+    private static  String TAG = PDUISettingsActivity.class.getSimpleName();
     private ArrayList<PDSettingsSocialNetwork> mItems = new ArrayList<>();
     private PDUISettingsRecyclerViewAdapter mAdapter;
     private PDRealmUserDetails mUser;
@@ -87,6 +91,16 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         refreshList();
+
+        /*Log Out*/
+        Button btnLogOut = (Button) findViewById(R.id.pd_button_log_out);
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: LogOut");
+                // TODO: 05/05/2017 Implement
+            }
+        });
     }
 
     @Override
