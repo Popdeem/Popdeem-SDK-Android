@@ -230,7 +230,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO: 06/04/2017 Make sure to uncomment the actual check below
+                // TODO: 06/04/2017 Make sure to uncomment the actual check below and remove mIsHere = true
 //                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
                 mIsHere = true;
                 runOnUiThread(new Runnable() {
