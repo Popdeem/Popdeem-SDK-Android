@@ -230,9 +230,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO: 06/04/2017 Make sure to uncomment the actual check below and remove mIsHere = true
-//                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
-                mIsHere = true;
+                mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
+//                mIsHere = true;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -450,8 +449,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         //already shared button
         Button alreadySharedButton = (Button) findViewById(R.id.pd_claim_already_shared_button);
         alreadySharedButton.setOnClickListener(this);
-        if (mReward.getGlobalHashtag() != null && !mReward.getGlobalHashtag().equalsIgnoreCase(""))
-        {
+        if (mReward.getGlobalHashtag() != null && !mReward.getGlobalHashtag().equalsIgnoreCase("")) {
             alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getGlobalHashtag()));
         } else {
             alreadySharedButton.setText(R.string.pd_claim_already_shared_default);
@@ -844,8 +842,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void startCameraIntentWithImagePath() {
 
         /*first we need to check of client app has the Camera Permission*/
-        if (PDPermissionHelper.hasPermissionInManifest(this, Manifest.permission.CAMERA))
-        {
+        if (PDPermissionHelper.hasPermissionInManifest(this, Manifest.permission.CAMERA)) {
             //ask for camera permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 new AlertDialog.Builder(this)
@@ -863,16 +860,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             } else {
                 startCamera();
             }
-        }
-        else
-        {
+        } else {
             //we can continue as normal
             startCamera();
         }
     }
 
-    private void startCamera()
-    {
+    private void startCamera() {
         try {
             File f = setUpPhotoFile();
             mCurrentPhotoPath = f.getAbsolutePath();
@@ -1161,15 +1155,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == 321) /*camera permission*/
-        {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == 321) /*camera permission*/ {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 PDLog.d(getClass(), "permissions");
                 startCamera();
-            }
-            else
-            {
+            } else {
                 PDLog.d(getClass(), "no camera permissions");
                 Toast.makeText(this, getString(R.string.pd_camera_permissions_denied_string), Toast.LENGTH_SHORT).show();
             }
