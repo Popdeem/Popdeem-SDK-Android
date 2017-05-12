@@ -24,11 +24,13 @@
 
 package com.popdeem.sdk.uikit.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,6 +42,7 @@ import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
@@ -99,6 +102,19 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             public void onClick(View v) {
                 Log.i(TAG, "onClick: LogOut");
                 // TODO: 05/05/2017 Implement
+                new AlertDialog.Builder(PDUISettingsActivity.this)
+                        .setTitle(R.string.pd_common_logout_text)
+                        .setMessage(R.string.pd_common_logout_message_text)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PopdeemSDK.logout(PDUISettingsActivity.this);
+                                PDUISettingsActivity.this.finish();
+                            }
+                        })
+                        .create()
+                        .show();
             }
         });
     }
