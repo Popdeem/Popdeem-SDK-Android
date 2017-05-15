@@ -32,6 +32,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +48,18 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -68,10 +75,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
+import io.realm.Realm;
+
 /**
  * Created by mikenolan on 16/08/16.
  */
 public class PDUIConnectSocialAccountFragment extends Fragment implements View.OnClickListener {
+
+    private static String TAG = PDUIConnectSocialAccountCallback.class.getSimpleName();
+
+    private Realm realm;
 
     /**
      * Callback for result
@@ -240,6 +253,35 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         }
     };
 
+    /**
+     * Twitter and Instagram Register is different than the connects, and requires a slightly different callback
+     */
+    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER_INSTA = new PDAPICallback<JsonObject>() {
+        @Override
+        public void success(JsonObject jsonObject) {
+            JsonObject userObject = jsonObject.getAsJsonObject("user");
+            if (userObject != null) {
+                Gson gson = new Gson();
+                PDUser user = gson.fromJson(userObject.toString(), PDUser.class);
+
+                if (user == null) {
+                    Log.e(TAG, "User is NULL");
+                } else {
+                    PDUtils.updateSavedUser(user);
+                    getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+                    triggerCallbackAfterSuccessfulConnect();
+                    toggleProgress(false);
+                }
+            }
+        }
+
+        @Override
+        public void failure(int statusCode, Exception e) {
+            toggleProgress(false);
+            showGenericAlert();
+        }
+    };
+
 
     /**
      * Connect Facebook Account
@@ -252,14 +294,27 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
 
     /**
-     * Connect Instagram Account
+     * Connect / Register Instagram Account
      *
      * @param instagramResponse Response from Instagram WebView login
      */
     private void connectInstagramAccount(PDInstagramResponse instagramResponse) {
         toggleProgress(true);
-        PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
-                instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null){
+            //register
+            PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
+                    instagramResponse.getAccessToken(),
+                    instagramResponse.getUser().getFullName(),
+                    instagramResponse.getUser().getUsername(),
+                    instagramResponse.getUser().getProfilePicture(),
+                    PD_API_CALLBACK_TWITTER_INSTA);
+        } else {
+            //connect
+            PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
+                    instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+        }
     }
 
 
@@ -270,8 +325,19 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
      */
     private void connectTwitterAccount(TwitterSession session) {
         toggleProgress(true);
-        PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
-                session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            //register
+            PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
+                    session.getAuthToken().secret,
+                    String.valueOf(session.getUserId()),
+                    PD_API_CALLBACK_TWITTER_INSTA);
+        } else {
+            //connect
+            PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
+                    session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+        }
     }
 
 
@@ -373,4 +439,60 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         return PDUIConnectSocialAccountFragment.class.getSimpleName();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (realm == null) {
+            realm = Realm.getDefaultInstance();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+            realm = null;
+        }
+    }
+
+//    private void updateUser() {
+//        Realm realm = Realm.getDefaultInstance();
+//
+//        PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
+//        String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
+//
+//        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+//
+//        if (userDetails == null) {
+//            realm.close();
+//            return;
+//        }
+//
+//        String socialType = "";
+//        if (mType == PD_CONNECT_TYPE_FACEBOOK)
+//            socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
+//        if (mType == PD_CONNECT_TYPE_TWITTER)
+//            socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
+//        if (mType == PD_CONNECT_TYPE_INSTAGRAM)
+//            socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
+//
+//        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+//            @Override
+//            public void success(PDUser user) {
+//                PDLog.d(PDUIConnectSocialAccountFragment.class, "update user: " + user);
+//
+//                PDUtils.updateSavedUser(user);
+//
+//                // Send broadcast to any registered receivers that user has logged in
+//                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+//            }
+//
+//            @Override
+//            public void failure(int statusCode, Exception e) {
+//                PDLog.d(PDUIConnectSocialAccountFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
+//            }
+//        });
+//        realm.close();
+//    }
 }

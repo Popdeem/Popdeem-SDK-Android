@@ -101,7 +101,6 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick: LogOut");
-                // TODO: 05/05/2017 Implement
                 new AlertDialog.Builder(PDUISettingsActivity.this)
                         .setTitle(R.string.pd_common_logout_text)
                         .setMessage(R.string.pd_common_logout_message_text)

@@ -282,4 +282,10 @@ public final class PDUser {
         return s == null ? "null" : s;
     }
 
+    /**
+     * @return a boolean as to whether the userToken is NULL
+     */
+    public boolean isRegistered(){
+        return userToken != null;
+    }
 }
