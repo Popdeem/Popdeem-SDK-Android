@@ -24,17 +24,24 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by mikenolan on 05/08/16.
  */
 public class PDUserInstagram {
 
+    @SerializedName("social_account_id")
     private long socialAccountId;
+    @SerializedName("instagram_id")
     private String instagramId;
     private boolean tester;
+    @SerializedName("access_token")
     private String accessToken;
+    @SerializedName("access_secret")
     private String accessSecret;
     private String screenName;
+    @SerializedName("profile_picture_url")
     private String profilePictureUrl;
 
     private String influenceReachScore;

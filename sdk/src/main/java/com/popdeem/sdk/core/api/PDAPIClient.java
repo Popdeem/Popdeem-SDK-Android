@@ -360,7 +360,7 @@ public class PDAPIClient {
                                         @NonNull String profilePicture,
                                         @NonNull final PDAPICallback<JsonObject> callback){
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
                 .create();
 
         Realm realm = Realm.getDefaultInstance();
@@ -681,7 +681,7 @@ public class PDAPIClient {
                                                @NonNull PDAPICallback<JsonObject> callback) {
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
                 .create();
 
         Realm realm = Realm.getDefaultInstance();

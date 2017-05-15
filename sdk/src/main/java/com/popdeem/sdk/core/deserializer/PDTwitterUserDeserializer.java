@@ -24,6 +24,7 @@ public class PDTwitterUserDeserializer implements JsonDeserializer<PDUser> {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(long.class, new PDLongDeserializer())
                 .registerTypeAdapter(int.class, new PDIntDeserializer())
+                .registerTypeAdapter(String.class, new PDStringDeserializer())
                 .registerTypeAdapter(PDUserTwitter.class, new PDSocialAccountTwitterDeserializer())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();

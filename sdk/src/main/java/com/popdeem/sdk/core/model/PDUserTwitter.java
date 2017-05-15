@@ -24,17 +24,24 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Popdeem User Twitter Model Class
  */
 public class PDUserTwitter {
 
+    @SerializedName("social_account_id")
     private long socialAccountId;
+    @SerializedName("access_token")
     private String accessToken;
+    @SerializedName("access_secret")
     private String accessSecret;
+    @SerializedName("twitter_id")
     private String twitterId;
     private boolean tester;
     private String twitterScreenName;
+    @SerializedName("profile_picture_url")
     private String profilePictureUrl;
     private long expirationTime;
 

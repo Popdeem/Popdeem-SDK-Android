@@ -262,11 +262,14 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             JsonObject userObject = jsonObject.getAsJsonObject("user");
             if (userObject != null) {
                 Gson gson = new Gson();
+                Log.i(TAG, "success: user Object = " + userObject.toString());
+
                 PDUser user = gson.fromJson(userObject.toString(), PDUser.class);
 
                 if (user == null) {
                     Log.e(TAG, "User is NULL");
                 } else {
+                    Log.i(TAG, "success: User insta = " + user.getPdUserInstagram().toString());
                     PDUtils.updateSavedUser(user);
                     getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
                     triggerCallbackAfterSuccessfulConnect();
@@ -302,8 +305,9 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         toggleProgress(true);
 
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-        if (userDetails == null){
+        if (userDetails == null) {
             //register
+            Log.i(TAG, "connectInstagramAccount: Registering user via Instagram");
             PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
                     instagramResponse.getAccessToken(),
                     instagramResponse.getUser().getFullName(),
@@ -312,6 +316,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     PD_API_CALLBACK_TWITTER_INSTA);
         } else {
             //connect
+            Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
             PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
                     instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
         }
@@ -329,12 +334,14 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
         if (userDetails == null) {
             //register
+            Log.i(TAG, "connectInstagramAccount: Registering user via Twitter");
             PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
                     session.getAuthToken().secret,
                     String.valueOf(session.getUserId()),
                     PD_API_CALLBACK_TWITTER_INSTA);
         } else {
             //connect
+            Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
             PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
                     session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
         }
@@ -455,44 +462,4 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             realm = null;
         }
     }
-
-//    private void updateUser() {
-//        Realm realm = Realm.getDefaultInstance();
-//
-//        PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
-//        String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
-//
-//        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-//
-//        if (userDetails == null) {
-//            realm.close();
-//            return;
-//        }
-//
-//        String socialType = "";
-//        if (mType == PD_CONNECT_TYPE_FACEBOOK)
-//            socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
-//        if (mType == PD_CONNECT_TYPE_TWITTER)
-//            socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
-//        if (mType == PD_CONNECT_TYPE_INSTAGRAM)
-//            socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
-//
-//        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
-//            @Override
-//            public void success(PDUser user) {
-//                PDLog.d(PDUIConnectSocialAccountFragment.class, "update user: " + user);
-//
-//                PDUtils.updateSavedUser(user);
-//
-//                // Send broadcast to any registered receivers that user has logged in
-//                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
-//            }
-//
-//            @Override
-//            public void failure(int statusCode, Exception e) {
-//                PDLog.d(PDUIConnectSocialAccountFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
-//            }
-//        });
-//        realm.close();
-//    }
 }
