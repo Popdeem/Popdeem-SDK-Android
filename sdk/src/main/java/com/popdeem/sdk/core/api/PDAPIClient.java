@@ -358,7 +358,7 @@ public class PDAPIClient {
                                         @NonNull String fullname,
                                         @NonNull String userName,
                                         @NonNull String profilePicture,
-                                        @NonNull final PDAPICallback<JsonObject> callback){
+                                        @NonNull final PDAPICallback<PDUser> callback){
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
                 .create();
@@ -391,7 +391,6 @@ public class PDAPIClient {
         api.registerUserWithInstagram(body, callback);
 
     }
-
 
     /**
      * Check if users Instagram access token is still valid
@@ -678,7 +677,7 @@ public class PDAPIClient {
      */
     public void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
                                                @NonNull String twitterID,
-                                               @NonNull PDAPICallback<JsonObject> callback) {
+                                               @NonNull PDAPICallback<PDUser> callback) {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())

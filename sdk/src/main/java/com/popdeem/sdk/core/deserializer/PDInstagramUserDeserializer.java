@@ -25,7 +25,6 @@ public class PDInstagramUserDeserializer implements JsonDeserializer<PDUser> {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(long.class, new PDLongDeserializer())
                 .registerTypeAdapter(int.class, new PDIntDeserializer())
-                .registerTypeAdapter(String.class, new PDStringDeserializer())
                 .registerTypeAdapter(PDUserInstagram.class, new PDSocialAccountInstagramDeserializer())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();

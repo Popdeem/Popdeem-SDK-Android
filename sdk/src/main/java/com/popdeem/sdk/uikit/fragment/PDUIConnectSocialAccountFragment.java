@@ -236,7 +236,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         @Override
         public void success(PDUser user) {
             PDUtils.updateSavedUser(user);
-            if (mType == PD_CONNECT_TYPE_FACEBOOK && getActivity() != null) {
+            if ((mType == PD_CONNECT_TYPE_FACEBOOK || mType == PD_CONNECT_TYPE_INSTAGRAM || mType == PD_CONNECT_TYPE_TWITTER) && getActivity() != null) {
                 getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
             }
             triggerCallbackAfterSuccessfulConnect();
@@ -313,7 +313,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     instagramResponse.getUser().getFullName(),
                     instagramResponse.getUser().getUsername(),
                     instagramResponse.getUser().getProfilePicture(),
-                    PD_API_CALLBACK_TWITTER_INSTA);
+                    PD_API_CALLBACK);
         } else {
             //connect
             Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
@@ -338,7 +338,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
                     session.getAuthToken().secret,
                     String.valueOf(session.getUserId()),
-                    PD_API_CALLBACK_TWITTER_INSTA);
+                    PD_API_CALLBACK);
         } else {
             //connect
             Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");

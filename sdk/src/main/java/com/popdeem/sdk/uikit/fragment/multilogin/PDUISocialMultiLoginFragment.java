@@ -359,7 +359,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
         PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
                 session.getAuthToken().secret,
-                String.valueOf(session.getUserId()), PD_API_CALLBACK_TWITTER_INSTA);
+                String.valueOf(session.getUserId()), PD_API_CALLBACK);
 
 
     }
@@ -397,7 +397,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 instagramResponse.getUser().getFullName(),
                 instagramResponse.getUser().getUsername(),
                 instagramResponse.getUser().getProfilePicture(),
-                PD_API_CALLBACK_TWITTER_INSTA);
+                PD_API_CALLBACK);
     }
 
 
