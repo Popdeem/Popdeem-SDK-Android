@@ -204,57 +204,6 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         }
     };
 
-    private final PDAPICallback<JsonObject> PD_API_CALLBACK_TWITTER_INSTA = new PDAPICallback<JsonObject>() {
-        @Override
-        public void success(JsonObject jsonObject) {
-            PDLog.d(PDUISocialMultiLoginFragment.class, "registered with Social A/C: " + jsonObject.toString());
-
-            JsonObject userObject = jsonObject.getAsJsonObject("user");
-            if (userObject != null) {
-                Log.i(TAG, "success: " + userObject.toString());
-                Gson gson = new Gson();
-                PDUser user = gson.fromJson(userObject.toString(), PDUser.class);
-
-                if (user == null) {
-                    Log.e(TAG, "User is NULL");
-                } else {
-                    Log.i(TAG, "success: User ID = " + user.getId());
-                    Log.i(TAG, "success: User Token = " + user.getUserToken());
-
-                    PDUtils.updateSavedUser(user);
-                    updateUser();
-
-                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_LOGIN, new PDAbraProperties.Builder()
-                            .add("Source", "Login Takeover")
-                            .create());
-                    PDAbraLogEvent.onboardUser();
-                }
-            } else {
-                Log.e(TAG, "User is NULL");
-            }
-        }
-
-        @Override
-        public void failure(int statusCode, Exception e) {
-            PDLog.d(PDUISocialMultiLoginFragment.class, "failed register with social a/c: statusCode=" + statusCode + ", message=" + e.getMessage());
-
-            mProgressFacebook.setVisibility(View.GONE);
-            mFacebookLoginButton.setVisibility(View.VISIBLE);
-            mTwitterLoginButton.setVisibility(View.VISIBLE);
-            mInstaLoginButton.setVisibility(View.VISIBLE);
-            mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
-            mTwitterLoginButton.setText(R.string.pd_log_in_with_twitter_text);
-            mFacebookLoginButton.setText(R.string.pd_log_in_with_instagram_text);
-
-            new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.pd_common_sorry_text)
-                    .setMessage("An error occurred while registering. Please try again")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .create()
-                    .show();
-        }
-    };
-
     ////////////////////////////////////////////////////
     // Social Login Buttons
     ///////////////////////////////////////////////////
