@@ -1136,9 +1136,15 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             }
         } else if (ID == R.id.pd_claim_already_shared_button) {
             Log.i("Claim Activity", mReward.getGlobalHashtag());
+            if (!mIsHere) {
+                showBasicOKAlertDialog(R.string.pd_claim_verify_location_failed_title_text, R.string.pd_claim_verify_location_failed_text);
+                return;
+            }
             Intent intent = new Intent(this, PDUISelectNetworkActivity.class);
             intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
             startActivity(intent);
+
+
         }
     }
 
