@@ -30,6 +30,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,9 @@ import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
 import com.popdeem.sdk.uikit.activity.PDUISettingsActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIHomeFlowPagerAdapter;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -161,4 +165,16 @@ public class PDUIHomeFlowFragment extends Fragment {
         return false;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            List<Fragment> fragments = getChildFragmentManager().getFragments();
+            if (fragments != null) {
+                for (Fragment fragment : fragments) {
+                    fragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
+    }
 }

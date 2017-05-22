@@ -38,6 +38,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,8 @@ import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,27 +120,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(final View view) {
-                    if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn())&& PDUtils.getUserToken() != null) {
-//                        final int position = recyclerView.getChildAdapterPosition(view);
-//
-//                        if (position == RecyclerView.NO_POSITION) {
-//                            return;
-//                        }
-//
-//                        PDReward reward = mRewards.get(position);
-//                        if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-//                            claimNoActionReward(position, reward);
-//                        } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
-//                            Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
-//                            intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-//                            startActivityForResult(intent, PD_CLAIM_REWARD_REQUEST_CODE);
-//                        }
+//                    performRewardClick(view);
+                    if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn()) && PDUtils.getUserToken() != null) {
                         performRewardClick(view);
                     } else {
                         PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
                             @Override
                             public void success(Boolean aBoolean) {
-                                if (aBoolean && PDUtils.getUserToken() != null){
+                                if (aBoolean && PDUtils.getUserToken() != null) {
                                     performRewardClick(view);
                                 } else {
                                     if (PDPreferencesUtils.getIsMultiLoginEnabled(getActivity())) {
@@ -197,7 +187,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
     }
 
-    private void performRewardClick(View view){
+    private void performRewardClick(View view) {
         final int position = recyclerView.getChildAdapterPosition(view);
 
         if (position == RecyclerView.NO_POSITION) {
@@ -383,6 +373,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("Rewards Fragment", "onActivityResult: Rewards Fragment");
         if (requestCode == PD_CLAIM_REWARD_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             // Reward claimed successfully. Remove from list.
             String id = data.getStringExtra("id");
@@ -401,6 +392,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
                 parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
             }
+        } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());
+            loginButton.onActivityResult(requestCode, resultCode, data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

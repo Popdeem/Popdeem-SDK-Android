@@ -27,7 +27,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".uikit.fragment.PDUIHomeFlowFragment">
+    tools:context=".uikit.fragment.PDUIHomeFlowFragment"
+    android:id="@+id/fragment_pd_home_flow">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"

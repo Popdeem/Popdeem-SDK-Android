@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
-            //issue: fragment is NULL when it gets here, so we'll never be able to continue the Twitter Login Process
-//            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PDUISocialMultiLoginFragment.getName());
             Fragment fragment = getSupportFragmentManager().findFragmentByTag("PDUISocialMultiLoginFragment");
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
