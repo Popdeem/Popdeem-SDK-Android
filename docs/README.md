@@ -12,6 +12,6 @@
 1. [Home Flow](home_flow.md "Home Flow")
 1. [Theme](theme.md "Theme")
 1. [Strings](strings.md "Strings")
-1. [MultiLogin Flow](sMultiLoginFlow.md "MultiLogin Flow")
+1. [MultiLogin Flow](MultiLoginFlow.md "MultiLogin Flow")
 
 ---
