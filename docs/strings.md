@@ -146,5 +146,7 @@ The list of strings that can be changed are as follows:
 <string name="pd_suspended_message_with_date_string">You have been suspended. Your account will become active on %1s</string>
 ```
 
+Next, [MultiLogin Flow](MultiLoginFlow.md "MultiLogin Flow")
+
 ---
 [Docs Home](./ "Docs Home")
