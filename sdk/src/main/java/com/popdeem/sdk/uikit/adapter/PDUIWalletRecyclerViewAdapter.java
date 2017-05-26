@@ -206,7 +206,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
             }
             return expiresString;
         }
-        return "";
+        return "You will be notified if you are the winner.";
     }
 
     @Override
