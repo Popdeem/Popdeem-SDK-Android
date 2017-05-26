@@ -223,7 +223,7 @@ public interface PopdeemAPI {
     //****************************************
 
     @GET(PDAPIConfig.PD_FEEDS_PATH)
-    void getFeeds(@Query("limit") String limit, Callback<ArrayList<PDFeed>> callback);
+    void getFeeds(Callback<ArrayList<PDFeed>> callback);
 
 
     @POST(PDAPIConfig.PD_MOMENTS_PATH)

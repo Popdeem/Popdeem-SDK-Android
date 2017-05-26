@@ -144,12 +144,21 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         }
 
         TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
-        textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
-
+        if (mUser.getFirstName() != null && mUser.getLastName() != null) {
+            textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
+        }
+        String profileUrl = "";
         if (mUser.getUserFacebook() != null && mUser.getUserFacebook().getProfilePictureUrl() != null && !mUser.getUserFacebook().getProfilePictureUrl().isEmpty()) {
+            profileUrl = mUser.getUserFacebook().getProfilePictureUrl();
+        } else if (mUser.getUserTwitter() != null && mUser.getUserTwitter().getProfilePictureUrl() != null && !mUser.getUserTwitter().getProfilePictureUrl().isEmpty()) {
+            profileUrl = mUser.getUserTwitter().getProfilePictureUrl();
+        } else if (mUser.getUserInstagram() != null && mUser.getUserInstagram().getProfilePictureUrl() != null && !mUser.getUserInstagram().getProfilePictureUrl().isEmpty()){
+            profileUrl = mUser.getUserInstagram().getProfilePictureUrl();
+        }
+        if (profileUrl.length() > 0) {
             final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
             Picasso.with(this)
-                    .load(mUser.getUserFacebook().getProfilePictureUrl())
+                    .load(profileUrl)
                     .centerCrop()
                     .placeholder(R.drawable.pd_ui_default_user)
                     .error(R.drawable.pd_ui_default_user)

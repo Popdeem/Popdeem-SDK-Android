@@ -941,7 +941,7 @@ public class PDAPIClient {
                 .registerTypeAdapter(PDFeedsDeserializer.FEEDS_TYPE, new PDFeedsDeserializer())
                 .create();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
-        api.getFeeds("20", callback);
+        api.getFeeds(callback);
     }
 
 
