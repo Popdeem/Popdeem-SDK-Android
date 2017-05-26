@@ -72,7 +72,7 @@
         <!-- Popdeem -->
         <meta-data
             android:name="com.popdeem.sdk.ApiKey"
-            android:value="2c40177a-2ed7-4427-bda4-40fea1f84129" />
+            android:value="2c40177a-2ed7-4427-bda4-40fea1f84129 " />
 
         <meta-data
             android:name="GCMSenderID"

@@ -116,6 +116,8 @@
     <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
     <string name="pd_wallet_sweepstake_redeem_text">You will be notified if you are the winner.</string>
     <string name="pd_wallet_credit_reward_text">was added to your account on</string>
+    <string name="pd_wallet_recurs_monthly">Draw takes place monthly.</string>
+    <string name="pd_wallet_recurs_day">Draw takes place on</string>
     <string name="pd_wallet_coupon_info_message_text">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
     <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
     <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
