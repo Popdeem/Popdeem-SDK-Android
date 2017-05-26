@@ -80,11 +80,16 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 import io.realm.Realm;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by mikenolan on 16/08/16.
@@ -266,6 +271,28 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             toggleProgress(false);
             if (mType == PD_CONNECT_TYPE_FACEBOOK) {
                 LoginManager.getInstance().logOut();
+            }
+            //Attecmpt to see if the error is an already connected account
+            //New constraint - social account can be connected to one user only
+            RetrofitError err = (RetrofitError)e;
+            if (err.getResponse() != null && err.getResponse().getBody() != null) {
+                String json =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                try {
+                    JSONObject jsobj = new JSONObject(json);
+                    if (jsobj.get("error") != null) {
+                        if (jsobj.getString("error") != null) {
+                            if (jsobj.getString("error").contains("social account is already connected")) {
+                                if (getActivity() != null) {
+                                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Sorry - Wrong Account", "This social account has been linked to another user.");
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } catch (JSONException jse) {
+                    showGenericAlert();
+                    return;
+                }
             }
             showGenericAlert();
         }
