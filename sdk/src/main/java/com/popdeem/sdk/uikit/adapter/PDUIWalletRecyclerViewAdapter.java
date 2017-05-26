@@ -39,7 +39,10 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDReward;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -119,12 +122,19 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
 
         holder.subTitleTextView.setText(R.string.pd_wallet_redeem_text);
         holder.titleTextView.setText(reward.getDescription());
-        if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
-            holder.titleTextView.setText(String.format(
+
+        //Credit reward type is no more. Now check for creditString to determine
+        if (reward.getCredit().length() > 0) {
+            DateFormat formatter = new SimpleDateFormat("d MMM y");
+            Date claimed = new Date(reward.getClaimedAt());
+            String claimedString = formatter.format(claimed);
+
+            holder.subTitleTextView.setText(String.format(
                     Locale.getDefault(),
-                    "%1s %2s",
+                    "%1s %2s %3s",
                     reward.getCredit() == null ? "Credit" : reward.getCredit(),
-                    mAddedTextString));
+                    mAddedTextString,
+                    claimedString));
         } else if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
             holder.subTitleTextView.setText(R.string.pd_wallet_sweepstakes_text);
         }
