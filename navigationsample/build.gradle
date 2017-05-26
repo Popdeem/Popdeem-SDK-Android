@@ -62,13 +62,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
+
 
     // Live
 //    compile 'com.popdeem.sdk:sdk:1.2.2'
     // Dev
 //    compile 'com.popdeem.sdk:sdk:1.2.2-STAGING'
-    compile 'com.popdeem.sdk:sdk:1.2.7.1'
+//    compile 'com.popdeem.sdk:sdk:1.2.7.1'
+    compile project(path: ':sdk')
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;

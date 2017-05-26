@@ -1,29 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ The MIT License (MIT)
-  ~
-  ~ Copyright (c) 2015 Popdeem
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
-  ~ of this software and associated documentation files (the "Software"), to deal
-  ~ in the Software without restriction, including without limitation the rights
-  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  ~ copies of the Software, and to permit persons to whom the Software is
-  ~ furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all
-  ~ copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ~ SOFTWARE.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.popdeem.navigationsample">
+          package="com.niallquinn.onezinedemo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -42,37 +19,25 @@
     <uses-permission android:name="com.popdeem.navigationsample.permission.C2D_MESSAGE" />
 
     <application
-        android:name=".NavSampleApplication"
+        android:name = ".MyApplication"
         android:allowBackup="true"
-        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".MainActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="@string/facebook_url_scheme" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <!-- Popdeem -->
         <meta-data
             android:name="com.popdeem.sdk.ApiKey"
-            android:value="2c40177a-2ed7-4427-bda4-40fea1f84129" />
+            android:value="26eb2fcb-06e5-4976-bff4-88c30cc58f58" />
 
         <meta-data
             android:name="GCMSenderID"
@@ -81,26 +46,24 @@
         <!-- Twitter -->
         <meta-data
             android:name="TwitterConsumerKey"
-            android:value="YuD6eTyLWpyfzjJZYKlTGa1Wt" />
+            android:value="rAzr7Tn0wOVBs6Oij13AYecVA" />
 
         <meta-data
             android:name="TwitterConsumerSecret"
-            android:value="DGDAgAEzuWQW0vQBnUhl2IBIQp9sGPgLqSpiRIbuLoB9adBHyW" />
+            android:value="rHTmAWpw1gPCoCy7AzA43j9eMqb2GJb24qcMfIHeOvepARFsmt" />
 
         <!-- Instagram -->
         <meta-data
             android:name="InstagramClientId"
-            android:value="721403853f784eea86023a9e96ccde44" />
+            android:value="1b9912d9b75f4f29bb6c60afd63d1b67" />
 
         <meta-data
             android:name="InstagramClientSecret"
-            android:value="0b14e780896e42be88cefcddb3ac64dc" />
+            android:value="12e0e2b5d1194389bc82c3018406c3dc" />
 
-        <!--Old - tabbedtest://instagram-->
-        <!--New - https://www.popdeem.com/igredirect-->
         <meta-data
             android:name="InstagramCallbackUrl"
-            android:value="https://www.popdeem.com/igredirect" />
+            android:value="tabbedtest://instagram" />
 
         <!-- Facebook -->
         <meta-data
