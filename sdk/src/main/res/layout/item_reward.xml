@@ -56,8 +56,9 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/pd_reward_list_item_title_text_color"
-            android:textSize="15sp"
-            tools:text="$0.40c off pampers" />
+            android:textSize="14sp"
+            tools:text="Reward Title"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/pd_reward_item_rules_text_view"
@@ -67,8 +68,8 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/pd_reward_list_item_subtitle_text_color"
-            android:textSize="13sp"
-            tools:text="Remaining" />
+            android:textSize="12sp"
+            tools:text="Reward Rules" />
 
         <TextView
             android:id="@+id/pd_reward_request_text_view"
@@ -76,9 +77,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:maxLines="2"
-            android:textColor="@color/pd_reward_list_item_info_text_color"
+            android:textColor="@color/pd_accent"
             android:textSize="12sp"
-            tools:text="3 Days Remaining" />
+            tools:text="3 Days Remaining"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

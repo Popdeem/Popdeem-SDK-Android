@@ -37,7 +37,7 @@
 
 
     <!-- Rewards -->
-    <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
+    <string name="pd_rewards_not_available_text">There are no rewards available right now\nPlease check back later.</string>
 
 
     <!-- Tab Titles -->
@@ -77,7 +77,7 @@
 
     <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
     <string name="pd_claim_action_photo">Photo required</string>
-    <string name="pd_claim_action_none">Instant Coupon</string>
+    <string name="pd_claim_action_none">No Action Required</string>
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
@@ -113,7 +113,7 @@
 
 
     <!-- Wallet -->
-    <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
+    <string name="pd_wallet_no_items_text">There is nothing in your history right now.\nPlease check back later.</string>
     <string name="pd_wallet_sweepstake_redeem_text">You will be notified if you are the winner.</string>
     <string name="pd_wallet_credit_reward_text">was added to your account on</string>
     <string name="pd_wallet_recurs_monthly">Draw takes place monthly.</string>
@@ -131,7 +131,7 @@
 
 
     <!-- Feed -->
-    <string name="pd_feed_no_items_text">There is no Feed available right now. Please check back later.</string>
+    <string name="pd_feed_no_items_text">There is nothing in the feed right now.\nPlease check back later.</string>
 
 
     <!-- Redeem -->
@@ -220,7 +220,7 @@
     <string name="pd_back_to_reward">Back to Reward</string>
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
-    <!--<string name="title_activity_pduifeed_image">Image</string>-->
+    <!--<string name="title_activity_pduiwallet_image">Image</string>-->
     <!--<string name="pd_app_update_text">App Update</string>-->
     <!--<string name="pd_rewards_now_available_text">Rewards Now Available</string>-->
     <!--<string name="pd_default_error_text">An error has occurred. Please try again.</string>-->
