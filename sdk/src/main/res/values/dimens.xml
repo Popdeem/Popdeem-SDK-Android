@@ -36,7 +36,7 @@
 
     <dimen name="pd_scan_profile_image_dimen">60dp</dimen>
 
-    <dimen name="pd_reward_item_image_dimen">60dp</dimen>
+    <dimen name="pd_reward_item_image_dimen">50dp</dimen>
 
     <dimen name="pd_notification_dialog_image_dimen">100dp</dimen>
 

@@ -132,7 +132,7 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<PDUIWall
             String drawString = drawString(reward);
             holder.subTitleTextView.setText(drawString);
         } else if (reward.getCredit() != null && reward.getCredit().length() > 0) {
-            DateFormat formatter = new SimpleDateFormat("d MMM y");
+            DateFormat formatter = new SimpleDateFormat("d MMM");
             Date claimed = new Date(reward.getClaimedAt());
             String claimedString = formatter.format(claimed);
 

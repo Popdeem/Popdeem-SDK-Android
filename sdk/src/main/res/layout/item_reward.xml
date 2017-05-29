@@ -38,6 +38,8 @@
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:src="@drawable/pd_ui_star_icon" />
 
     <LinearLayout
