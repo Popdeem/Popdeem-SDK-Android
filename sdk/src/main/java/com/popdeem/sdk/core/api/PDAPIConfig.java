@@ -36,6 +36,7 @@ public class PDAPIConfig {
 
     public static final String PD_PROD_API_ENDPOINT = "https://api.popdeem.com";         // Production API Endpoint
     public static final String PD_STAGING_API_ENDPOINT = "http://api.staging.popdeem.com";  // Staging API Endpoint
+    public static final String PD_LOCAL_API_ENDPOINT = "http://87f3a997.ngrok.io";
 
     public static final String PD_API_ENDPOINT = PD_STAGING_API_ENDPOINT;
 

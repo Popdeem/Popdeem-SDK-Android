@@ -111,6 +111,10 @@ public class PDUIWalletFragment extends Fragment {
                         return;
                     }
 
+                    if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+                        return;
+                    }
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
 //                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);

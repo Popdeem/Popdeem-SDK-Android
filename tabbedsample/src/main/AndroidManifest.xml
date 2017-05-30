@@ -60,7 +60,7 @@
         </activity>
         <meta-data
             android:name="com.popdeem.sdk.ApiKey"
-            android:value="26eb2fcb-06e5-4976-bff4-88c30cc58f58" />
+            android:value="2c40177a-2ed7-4427-bda4-40fea1f84129" />
 
         <meta-data
             android:name="GCMSenderID"
@@ -68,11 +68,20 @@
 
         <meta-data
             android:name="TwitterConsumerKey"
-            android:value="rAzr7Tn0wOVBs6Oij13AYecVA" />
+            android:value="YuD6eTyLWpyfzjJZYKlTGa1Wt" />
 
         <meta-data
             android:name="TwitterConsumerSecret"
-            android:value="rHTmAWpw1gPCoCy7AzA43j9eMqb2GJb24qcMfIHeOvepARFsmt" />
+            android:value="DGDAgAEzuWQW0vQBnUhl2IBIQp9sGPgLqSpiRIbuLoB9adBHyW" />
+
+        <!-- Instagram -->
+        <meta-data
+            android:name="InstagramClientId"
+            android:value="721403853f784eea86023a9e96ccde44" />
+
+        <meta-data
+            android:name="InstagramClientSecret"
+            android:value="0b14e780896e42be88cefcddb3ac64dc" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
