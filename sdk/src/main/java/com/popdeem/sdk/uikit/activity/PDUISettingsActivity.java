@@ -81,6 +81,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     private PDUISettingsRecyclerViewAdapter mAdapter;
     private PDRealmUserDetails mUser;
     private Realm mRealm;
+    private Button mBtnLogout;
 
     private FragmentManager mFragmentManager;
 
@@ -102,8 +103,14 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         refreshList();
 
         /*Log Out*/
-        Button btnLogOut = (Button) findViewById(R.id.pd_button_log_out);
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
+        //Dont show the logout button if user is not logged in
+        mBtnLogout = (Button) findViewById(R.id.pd_button_log_out);
+        if (mUser == null || mUser.getUserToken() == null) {
+            mBtnLogout.setVisibility(View.INVISIBLE);
+        } else {
+            mBtnLogout.setVisibility(View.VISIBLE);
+        }
+        mBtnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick: LogOut");
@@ -135,6 +142,12 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
     private void updateUserFromRealm() {
         mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+        //Reshow the logout button if necessary
+        if (mUser != null && mUser.getUserToken() != null) {
+            if (mBtnLogout != null) {
+                mBtnLogout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void displayUserDetails() {
