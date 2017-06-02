@@ -311,7 +311,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
         } else {
             //connect
-            PDAPIClient.instance().connectFacebookAccount(Integer.parseInt(AccessToken.getCurrentAccessToken().getUserId()),
+            PDAPIClient.instance().connectFacebookAccount(Long.parseLong(AccessToken.getCurrentAccessToken().getUserId()),
                     AccessToken.getCurrentAccessToken().getToken(), PD_API_CALLBACK);
         }
     }

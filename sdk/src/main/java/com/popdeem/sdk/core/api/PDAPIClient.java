@@ -289,7 +289,7 @@ public class PDAPIClient {
      * @param userID
      * @param accessToken
      */
-    public void connectFacebookAccount(@NonNull int userID, @NonNull String accessToken, @NonNull final PDAPICallback<PDUser> callback){
+    public void connectFacebookAccount(@NonNull long userID, @NonNull String accessToken, @NonNull final PDAPICallback<PDUser> callback){
         JsonObject facebookObject = new JsonObject();
         facebookObject.addProperty("id", userID);
         facebookObject.addProperty("access_token", accessToken);
