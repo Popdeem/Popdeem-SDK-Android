@@ -36,6 +36,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.comparator.PDRewardComparator;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
@@ -63,12 +65,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
+import io.realm.Realm;
+
 /**
  * Created by mikenolan on 19/02/16.
  */
 public class PDUIWalletFragment extends Fragment {
 
     private View mView;
+    private Realm realm;
 
     private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIWalletRecyclerViewAdapter mAdapter;
@@ -175,7 +180,7 @@ public class PDUIWalletFragment extends Fragment {
             recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color, false));
             recyclerView.setAdapter(mAdapter);
 
-            refreshWallet();
+//            refreshWallet();
         } else {
             container.removeView(mView);
         }
@@ -188,6 +193,7 @@ public class PDUIWalletFragment extends Fragment {
         super.onResume();
         PDLog.d(getClass(), "wallet_onResume");
         getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+        refreshWallet();
     }
 
     @Override
@@ -259,6 +265,7 @@ public class PDUIWalletFragment extends Fragment {
     }
 
     private void refreshWallet() {
+        Log.i("PDUIWalletFragment", "Refreshing Wallet");
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -266,50 +273,84 @@ public class PDUIWalletFragment extends Fragment {
             }
         });
 
-        PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
-            @Override
-            public void success(ArrayList<PDReward> pdRewards) {
-                // Sort rewards
-                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CLAIMED_AT_COMPARATOR));
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            Log.i("PDUIWalletFragment", "refreshWallet: user is Null, clearing list");
+            mRewards.clear();
+            mAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+            mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i("PDUIWalletFragment", "Removing refresh");
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        } else {
+            Log.i("PDUIWalletFragment", "refreshWallet: user exists");
+            PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
+                @Override
+                public void success(ArrayList<PDReward> pdRewards) {
+                    // Sort rewards
+                    Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CLAIMED_AT_COMPARATOR));
 
-                // If a reward has been revoked, remove it from the users wallet
-                int verifyingRewardIndex = -1;
-                for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
-                    PDReward r = iterator.next();
-                    if (r.getRevoked().equalsIgnoreCase("true")) {
-                        iterator.remove();
-                        continue;
+                    // If a reward has been revoked, remove it from the users wallet
+                    int verifyingRewardIndex = -1;
+                    for (Iterator<PDReward> iterator = pdRewards.iterator(); iterator.hasNext(); ) {
+                        PDReward r = iterator.next();
+                        if (r.getRevoked().equalsIgnoreCase("true")) {
+                            iterator.remove();
+                            continue;
+                        }
+
+                        if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
+                            r.setVerifying(true);
+                            verifyingRewardIndex = pdRewards.indexOf(r);
+                            mAutoVerifyRewardId = null;
+                        }
                     }
 
-                    if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
-                        r.setVerifying(true);
-                        verifyingRewardIndex = pdRewards.indexOf(r);
-                        mAutoVerifyRewardId = null;
+                    mRewards.clear();
+                    mRewards.addAll(pdRewards);
+                    mAdapter.notifyDataSetChanged();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+                    if (verifyingRewardIndex != -1) {
+                        verifyReward(verifyingRewardIndex);
                     }
                 }
 
-                mRewards.clear();
-                mRewards.addAll(pdRewards);
-                mAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
-                mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
-
-                if (verifyingRewardIndex != -1) {
-                    verifyReward(verifyingRewardIndex);
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
-            }
-
-            @Override
-            public void failure(int statusCode, Exception e) {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+            });
+        }
     }
 
     public void autoVerifyReward(String rewardId) {
         mAutoVerifyRewardId = rewardId;
         if (!mSwipeRefreshLayout.isRefreshing()) {
             refreshWallet();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (realm == null) {
+            realm = Realm.getDefaultInstance();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+            realm = null;
         }
     }
 
