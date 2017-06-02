@@ -283,6 +283,33 @@ public class PDAPIClient {
         }).start();
     }
 
+    /**
+     * Connects a user's Facebook account - if already registered with another social medium
+     *
+     * @param userID
+     * @param accessToken
+     */
+    public void connectFacebookAccount(@NonNull int userID, @NonNull String accessToken, @NonNull final PDAPICallback<PDUser> callback){
+        JsonObject facebookObject = new JsonObject();
+        facebookObject.addProperty("id", userID);
+        facebookObject.addProperty("access_token", accessToken);
+
+        JsonObject userObject = new JsonObject();
+        userObject.add("facebook", facebookObject);
+
+        JsonObject json = new JsonObject();
+        json.add("user", userObject);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.connectFacebookAccount(body, callback);
+    }
+
 
     /**
      * Connect a users Twitter account

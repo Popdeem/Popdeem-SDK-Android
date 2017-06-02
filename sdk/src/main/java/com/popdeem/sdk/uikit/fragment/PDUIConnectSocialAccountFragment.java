@@ -303,8 +303,17 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
      */
     private void connectFacebookAccount() {
         toggleProgress(true);
-        PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(),
-                AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            //register
+            PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(),
+                    AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
+        } else {
+            //connect
+            PDAPIClient.instance().connectFacebookAccount(Integer.parseInt(AccessToken.getCurrentAccessToken().getUserId()),
+                    AccessToken.getCurrentAccessToken().getToken(), PD_API_CALLBACK);
+        }
     }
 
 

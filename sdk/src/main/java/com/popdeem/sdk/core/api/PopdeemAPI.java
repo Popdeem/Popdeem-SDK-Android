@@ -82,6 +82,11 @@ public interface PopdeemAPI {
             Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
+    void connectFacebookAccount(
+            @Body TypedInput body,
+            Callback<PDUser> callback);
+
+    @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
     void connectWithTwitterAccount(
             @Body TypedInput body,
             Callback<PDUser> callback);
