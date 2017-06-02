@@ -67,6 +67,14 @@ public class PDPreferencesUtils {
         return getSharedPreferences(context).getInt("loginUsesCount", 0);
     }
 
+    public static void setMultiLoginEnabled(Context context, boolean isEnabled){
+        getSharedPreferences(context).edit().putBoolean("isMultiLoginEnabled", isEnabled).apply();
+    }
+
+    public static boolean getIsMultiLoginEnabled(Context context){
+        return getSharedPreferences(context).getBoolean("isMultiLoginEnabled", false);
+    }
+
 
     /**
      * Clear com.popdeem.sdk.preferences

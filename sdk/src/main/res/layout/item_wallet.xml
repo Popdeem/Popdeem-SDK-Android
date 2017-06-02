@@ -27,7 +27,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/pd_wallet_item_background_color"
-    android:minHeight="60dp"
+    android:minHeight="90dp"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -92,8 +92,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="@color/pd_wallet_item_default_text_color"
-            android:textSize="16sp"
-            tools:text="This is a reward title" />
+            android:textSize="14sp"
+            tools:text="This is a reward title"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/pd_wallet_reward_sub_title_text_view"

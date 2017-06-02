@@ -30,6 +30,6 @@
     <dimen name="social_login_sign_in_button_text_size">15sp</dimen>
     <dimen name="social_login_terms_text_size">8dp</dimen>
     <dimen name="social_login_body_text_size">12sp</dimen>
-    <dimen name="social_login_header_text_size">20sp</dimen>
+    <dimen name="social_login_header_text_size">15sp</dimen>
 
 </resources>

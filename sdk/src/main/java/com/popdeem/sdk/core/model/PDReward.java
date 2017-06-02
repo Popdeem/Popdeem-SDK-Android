@@ -62,6 +62,8 @@ public class PDReward {
     public static final String PD_REWARD_STATUS_LIVE = "live";
     public static final String PD_REWARD_STATUS_EXPIRED = "expired";
 
+    public static final String PD_REWARD_RECURRENCE_MONTHLY = "Monthly";
+
 
     private String id;
     private String rewardType;
@@ -100,15 +102,20 @@ public class PDReward {
     private ArrayList<PDRewardClaimingSocialNetwork> claimingSocialNetworks;
 
     private long claimedAt;
+    private String recurrence;
 
     // Only used for display purposes in wallet
     private boolean verifying;
+
+    //the New Global Hashtag
+    @SerializedName("global_hashtag")
+    private String globalHashtag;
 
     public PDReward() {
         verifying = false;
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, long createdAt, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified, long claimedAt) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, long createdAt, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified, long claimedAt, String globalHashtag, String recurrence) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -132,6 +139,8 @@ public class PDReward {
         this.countdownTimer = countdownTimer;
         this.instagramVerified = instagramVerified;
         this.claimedAt = claimedAt;
+        this.globalHashtag = globalHashtag;
+        this.recurrence = recurrence;
     }
 
     public String getId() {
@@ -350,6 +359,14 @@ public class PDReward {
         this.verifying = verifying;
     }
 
+    public String getGlobalHashtag() {
+        return globalHashtag;
+    }
+
+    public void setGlobalHashtag(String globalHashtag) {
+        this.globalHashtag = globalHashtag;
+    }
+
     public boolean claimedUsingNetwork(@PDReward.PDSocialMediaType String network) {
         if (this.claimingSocialNetworks == null) {
             return false;
@@ -360,5 +377,13 @@ public class PDReward {
             }
         }
         return false;
+    }
+
+    public String getRecurrence() {
+        return this.recurrence;
+    }
+
+    public void setRecurrence(String recurrence) {
+        this.recurrence = recurrence;
     }
 }

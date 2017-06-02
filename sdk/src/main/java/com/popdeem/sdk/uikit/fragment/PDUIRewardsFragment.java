@@ -38,6 +38,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDNumberUtils;
+import com.popdeem.sdk.core.utils.PDPreferencesUtils;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
@@ -66,6 +68,8 @@ import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,6 +86,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     private final int PD_CLAIM_REWARD_REQUEST_CODE = 65;
 
     private View mView;
+    private RecyclerView recyclerView;
 
     private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private View noItemsView;
@@ -91,6 +96,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     private PDLocationManager mLocationManager;
     private Location mLocation = null;
     private boolean mUpdatingDistances = false;
+
+    private boolean isSocialAccountLoggedIn = false;
 
     public PDUIRewardsFragment() {
     }
@@ -107,29 +114,34 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
             noItemsView = mView.findViewById(R.id.pd_rewards_no_items_view);
 
-            final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.pd_rewards_recycler_view);
+            recyclerView = (RecyclerView) mView.findViewById(R.id.pd_rewards_recycler_view);
 
             mRecyclerViewAdapter = new PDUIRewardsRecyclerViewAdapter(mRewards);
             mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(View view) {
-                    if (PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) {
-                        final int position = recyclerView.getChildAdapterPosition(view);
-
-                        if (position == RecyclerView.NO_POSITION) {
-                            return;
-                        }
-
-                        PDReward reward = mRewards.get(position);
-                        if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-                            claimNoActionReward(position, reward);
-                        } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
-                            Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
-                            intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
-                            startActivityForResult(intent, PD_CLAIM_REWARD_REQUEST_CODE);
-                        }
+                public void onItemClick(final View view) {
+//                    performRewardClick(view);
+                    if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn()) && PDUtils.getUserToken() != null) {
+                        performRewardClick(view);
                     } else {
-                        PopdeemSDK.showSocialLogin(getActivity());
+                        PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+                            @Override
+                            public void success(Boolean aBoolean) {
+                                if (aBoolean && PDUtils.getUserToken() != null) {
+                                    performRewardClick(view);
+                                } else {
+                                    if (PDPreferencesUtils.getIsMultiLoginEnabled(getActivity())) {
+                                        PopdeemSDK.showSocialMultiLogin(getActivity());
+                                    } else
+                                        PopdeemSDK.showSocialLogin(getActivity());
+                                }
+                            }
+
+                            @Override
+                            public void failure(int statusCode, Exception e) {
+
+                            }
+                        });
                     }
                 }
             });
@@ -174,6 +186,24 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             mLocationManager.stop();
         }
     }
+
+    private void performRewardClick(View view) {
+        final int position = recyclerView.getChildAdapterPosition(view);
+
+        if (position == RecyclerView.NO_POSITION) {
+            return;
+        }
+
+        PDReward reward = mRewards.get(position);
+        if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
+            claimNoActionReward(position, reward);
+        } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
+            Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
+            intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
+            startActivityForResult(intent, PD_CLAIM_REWARD_REQUEST_CODE);
+        }
+    }
+
 
     private void claimNoActionReward(final int position, final PDReward reward) {
         final PDUIProgressDialogFragment progress = PDUIProgressDialogFragment.showProgressDialog(getChildFragmentManager(), getString(R.string.pd_common_please_wait_text), getString(R.string.pd_claim_claiming_reward_text), false, null);
@@ -337,11 +367,13 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         public void onReceive(Context context, Intent intent) {
             PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
             refreshRewards();
+            isSocialAccountLoggedIn = true;
         }
     };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("Rewards Fragment", "onActivityResult: Rewards Fragment");
         if (requestCode == PD_CLAIM_REWARD_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             // Reward claimed successfully. Remove from list.
             String id = data.getStringExtra("id");
@@ -360,6 +392,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
                 parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
             }
+        } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());
+            loginButton.onActivityResult(requestCode, resultCode, data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -388,7 +423,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             realm.close();
 
             if (id != null) {
-                PDAPIClient.instance().updateUserLocationAndDeviceToken(id, token, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+                PDAPIClient.instance().updateUserLocationAndDeviceToken("", id, token, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
                     @Override
                     public void success(PDUser user) {
                         PDLog.d(PDUIRewardsFragment.class, "user: " + user.toString());

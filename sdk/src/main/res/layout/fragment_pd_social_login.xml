@@ -114,9 +114,7 @@
                 android:id="@+id/pd_facebook_login_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/pd_facebook_blue"
-                android:drawableLeft="@drawable/pd_facebook_button_icon"
-                android:drawableStart="@drawable/pd_facebook_button_icon"
+                android:background="@drawable/pd_rounded_facebook"
                 android:paddingEnd="15dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
@@ -141,12 +139,12 @@
         </FrameLayout>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/pd_social_login_terms_text"
-            android:textColor="@color/pd_login_terms_text_color"
-            android:textSize="@dimen/social_login_terms_text_size" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/pd_social_login_terms_text"
+        android:textColor="@color/pd_login_terms_text_color"
+        android:textSize="@dimen/social_login_terms_text_size" />
 
     </LinearLayout>
 

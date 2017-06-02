@@ -60,7 +60,7 @@ public class PDFeedDeserializer implements JsonDeserializer<PDFeed> {
         // Reward
         if (feedObject.has("reward")) {
             JsonObject brandObject = feedObject.getAsJsonObject("reward");
-            feed.setRewardTypeString(brandObject.get("type").getAsString());
+//            feed.setRewardTypeString(brandObject.get("type").getAsString());
             feed.setDescriptionString(brandObject.get("description").getAsString());
         }
 
@@ -74,8 +74,12 @@ public class PDFeedDeserializer implements JsonDeserializer<PDFeed> {
             if (socialObject.has("user")) {
                 JsonObject userObject = socialObject.getAsJsonObject("user");
                 feed.setUserId(userObject.get("id").getAsInt());
-                feed.setUserFirstName(userObject.get("first_name").getAsString());
-                feed.setUserLastName(userObject.get("last_name").getAsString());
+                if (userObject.has("first_name") && !userObject.get("first_name").isJsonNull()) {
+                    feed.setUserFirstName(userObject.get("first_name").getAsString());
+                }
+                if (userObject.has("last_name") && !userObject.get("last_name").isJsonNull()) {
+                    feed.setUserLastName(userObject.get("last_name").getAsString());
+                }
             }
         }
 

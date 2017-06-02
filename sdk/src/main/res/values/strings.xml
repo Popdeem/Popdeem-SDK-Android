@@ -20,7 +20,7 @@
     <string name="pd_social_login_success_text">Connected!</string>
     <string name="pd_social_login_success_description_text">Rewards are now unlocked. You will be notified when new rewards are available.</string>
     <string name="pd_social_login_heading_text">Connect your Facebook to earn additional Rewards</string>
-    <string name="pd_social_login_body_text">Connect your Facebook account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
+    <string name="pd_social_login_body_text">Connect your social account to turn social features on. This will give you access to exclusive content and new social rewards.</string>
     <string name="pd_social_login_footer_text">Powered by Popdeem</string>
     <string name="pd_social_login_continue_text">Continue to app</string>
     <string name="pd_social_login_tagline_text">New: Social Rewards</string>
@@ -37,7 +37,7 @@
 
 
     <!-- Rewards -->
-    <string name="pd_rewards_not_available_text">There are no rewards available right now. Please check back later.</string>
+    <string name="pd_rewards_not_available_text">There are no rewards available right now\nPlease check back later.</string>
 
 
     <!-- Tab Titles -->
@@ -54,6 +54,8 @@
     <!-- Claim -->
     <string name="pd_claim_title">Claim</string>
     <string name="pd_claim_get_reward_text">Share and Redeem</string>
+    <string name="pd_claim_get_already_shared_text" formatted="false">I\'ve already shared with %s</string>
+    <string name="pd_claim_already_shared_default">I\'ve already shared</string>
     <string name="pd_claim_verify_location_failed_title_text">Not at location</string>
     <string name="pd_claim_verify_location_failed_text">You must be at this location to claim this reward.\nPlease come back later.</string>
 
@@ -75,12 +77,13 @@
 
     <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
     <string name="pd_claim_action_photo">Photo required</string>
-    <string name="pd_claim_action_none">Instant Coupon</string>
+    <string name="pd_claim_action_none">No Action Required</string>
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
     <string name="pd_add_text">Add</string>
     <string name="pd_go_to_wallet_text">Go to Wallet</string>
+    <string name="pd_ok">OK</string>
 
     <string name="pd_claim_connect_instagram_title">Connect Instagram</string>
     <string name="pd_claim_required_hashtag_not_present_message_text">Looks like you have forgotten to add the required hashtag %1$s, please add this to your message before posting to %2$s</string>
@@ -110,9 +113,11 @@
 
 
     <!-- Wallet -->
-    <string name="pd_wallet_no_items_text">You have no items in your Wallet right now.</string>
+    <string name="pd_wallet_no_items_text">There is nothing in your history right now.\nPlease check back later.</string>
     <string name="pd_wallet_sweepstake_redeem_text">You will be notified if you are the winner.</string>
-    <string name="pd_wallet_credit_reward_text">was added to your balance.</string>
+    <string name="pd_wallet_credit_reward_text">was added to your account on</string>
+    <string name="pd_wallet_recurs_monthly">Draw takes place monthly.</string>
+    <string name="pd_wallet_recurs_day">Draw takes place on</string>
     <string name="pd_wallet_coupon_info_message_text">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
     <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
     <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
@@ -126,7 +131,7 @@
 
 
     <!-- Feed -->
-    <string name="pd_feed_no_items_text">There is no Feed available right now. Please check back later.</string>
+    <string name="pd_feed_no_items_text">There is nothing in the feed right now.\nPlease check back later.</string>
 
 
     <!-- Redeem -->
@@ -174,9 +179,12 @@
 
     <!-- Social Strings -->
     <string name="pd_log_in_with_facebook_text">Sign in with Facebook</string>
+    <string name="pd_log_in_with_twitter_text">Sign in with Twitter</string>
+    <string name="pd_log_in_with_instagram_text">Sign in with Instagram</string>
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
+    <string name="pd_log_out">Log Out</string>
 
     <!-- Connect Social Account Dialog -->
     <string name="pd_connect_facebook_title">Facebook</string>
@@ -189,8 +197,30 @@
     <!-- Misc Strings -->
     <string name="facebook_url_scheme">sdkscheme</string>
 
+    <!--Scan-->
+    <string name="pd_scan_title">Scan</string>
+    <string name="pd_scan_facebook">Scan Facebook</string>
+    <string name="pd_connect_facebook">Connect to Facebook</string>
+    <string name="pd_scan_twitter">Scan Twitter</string>
+    <string name="pd_connect_twitter">Connect to Twitter</string>
+    <string name="pd_scan_instagram">Scan Instagram</string>
+    <string name="pd_connect_instagram">Connect to Instagram</string>
+    <string name="pd_scan_title_label" formatted="false">Choose what network you shared your experience with %s to claim your reward:</string>
+    <string name="pd_scan_note" formatted="false">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
+
+    <string name="pd_scan_top_label" formatted="false">Scanning for stories that include %s</string>
+    <string name="pd_scan_bottom_label">This usually takes a few moments. Please wait…</string>
+
+    <string name="pd_scan_success_label" formatted="false">Hey %s, we found your post with %s. Thanks for sharing, you have unlocked your reward!</string>
+    <string name="pd_scan_fail_label" formatted="false">Whoops! Sorry %s, we could not find any posts on %s from the last 48 hours with %s. </string>
+    <string name="pd_scan_fail_detail_label">Please ensure you\'ve shared from the correct social media account and try again</string>
+    <string name="pd_scan_success_user_name">Dave Hannan</string>
+
+    <string name="pd_claim_text">Claim Reward</string>
+    <string name="pd_back_to_reward">Back to Reward</string>
+
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
-    <!--<string name="title_activity_pduifeed_image">Image</string>-->
+    <!--<string name="title_activity_pduiwallet_image">Image</string>-->
     <!--<string name="pd_app_update_text">App Update</string>-->
     <!--<string name="pd_rewards_now_available_text">Rewards Now Available</string>-->
     <!--<string name="pd_default_error_text">An error has occurred. Please try again.</string>-->

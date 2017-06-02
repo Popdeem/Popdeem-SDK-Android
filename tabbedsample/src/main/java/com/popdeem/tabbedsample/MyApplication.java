@@ -44,6 +44,6 @@ public class MyApplication extends Application {
 
         // Initialise Popdeem SDK
         PopdeemSDK.initializeSDK(this);
-        PopdeemSDK.enableSocialLogin(MainActivity.class, 5);
+        PopdeemSDK.enableSocialMultiLogin(MainActivity.class, 5);
     }
 }

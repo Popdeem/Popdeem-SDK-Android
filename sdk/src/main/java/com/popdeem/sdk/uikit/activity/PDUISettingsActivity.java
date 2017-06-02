@@ -24,24 +24,36 @@
 
 package com.popdeem.sdk.uikit.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -64,10 +76,12 @@ import io.realm.Realm;
 
 public class PDUISettingsActivity extends PDBaseActivity implements PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback {
 
+    private static  String TAG = PDUISettingsActivity.class.getSimpleName();
     private ArrayList<PDSettingsSocialNetwork> mItems = new ArrayList<>();
     private PDUISettingsRecyclerViewAdapter mAdapter;
     private PDRealmUserDetails mUser;
     private Realm mRealm;
+    private Button mBtnLogout;
 
     private FragmentManager mFragmentManager;
 
@@ -87,6 +101,34 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         refreshList();
+
+        /*Log Out*/
+        //Dont show the logout button if user is not logged in
+        mBtnLogout = (Button) findViewById(R.id.pd_button_log_out);
+        if (mUser == null || mUser.getUserToken() == null) {
+            mBtnLogout.setVisibility(View.INVISIBLE);
+        } else {
+            mBtnLogout.setVisibility(View.VISIBLE);
+        }
+        mBtnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: LogOut");
+                new AlertDialog.Builder(PDUISettingsActivity.this)
+                        .setTitle(R.string.pd_common_logout_text)
+                        .setMessage(R.string.pd_common_logout_message_text)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PopdeemSDK.logout(PDUISettingsActivity.this);
+                                PDUISettingsActivity.this.finish();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        });
     }
 
     @Override
@@ -100,6 +142,12 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
     private void updateUserFromRealm() {
         mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+        //Reshow the logout button if necessary
+        if (mUser != null && mUser.getUserToken() != null) {
+            if (mBtnLogout != null) {
+                mBtnLogout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void displayUserDetails() {
@@ -109,12 +157,21 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         }
 
         TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
-        textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
-
+        if (mUser.getFirstName() != null && mUser.getLastName() != null) {
+            textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
+        }
+        String profileUrl = "";
         if (mUser.getUserFacebook() != null && mUser.getUserFacebook().getProfilePictureUrl() != null && !mUser.getUserFacebook().getProfilePictureUrl().isEmpty()) {
+            profileUrl = mUser.getUserFacebook().getProfilePictureUrl();
+        } else if (mUser.getUserTwitter() != null && mUser.getUserTwitter().getProfilePictureUrl() != null && !mUser.getUserTwitter().getProfilePictureUrl().isEmpty()) {
+            profileUrl = mUser.getUserTwitter().getProfilePictureUrl();
+        } else if (mUser.getUserInstagram() != null && mUser.getUserInstagram().getProfilePictureUrl() != null && !mUser.getUserInstagram().getProfilePictureUrl().isEmpty()){
+            profileUrl = mUser.getUserInstagram().getProfilePictureUrl();
+        }
+        if (profileUrl.length() > 0) {
             final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
             Picasso.with(this)
-                    .load(mUser.getUserFacebook().getProfilePictureUrl())
+                    .load(profileUrl)
                     .centerCrop()
                     .placeholder(R.drawable.pd_ui_default_user)
                     .error(R.drawable.pd_ui_default_user)

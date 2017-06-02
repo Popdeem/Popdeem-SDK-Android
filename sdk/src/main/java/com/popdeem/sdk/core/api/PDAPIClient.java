@@ -29,6 +29,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,12 +39,16 @@ import com.google.gson.JsonParser;
 import com.jakewharton.retrofit.Ok3Client;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
+import com.popdeem.sdk.core.deserializer.PDBGScanResponseDeserializer;
 import com.popdeem.sdk.core.deserializer.PDBrandsDeserializer;
 import com.popdeem.sdk.core.deserializer.PDFeedsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDInstagramUserDeserializer;
 import com.popdeem.sdk.core.deserializer.PDMessagesDeserializer;
 import com.popdeem.sdk.core.deserializer.PDRewardsDeserializer;
+import com.popdeem.sdk.core.deserializer.PDTwitterUserDeserializer;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
+import com.popdeem.sdk.core.model.PDBGScanResponseModel;
 import com.popdeem.sdk.core.model.PDBrand;
 import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDMessage;
@@ -53,6 +58,7 @@ import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
 import com.popdeem.sdk.core.realm.PDRealmThirdPartyToken;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 
 import java.io.BufferedReader;
@@ -103,6 +109,7 @@ public class PDAPIClient {
     private static final Interceptor PD_API_KEY_INTERCEPTOR = new Interceptor() {
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
+            Log.i("Popdeem API Key", "intercept: " + PopdeemSDK.getPopdeemAPIKey());
             return chain.proceed(chain.request().newBuilder()
                     .addHeader(PDAPIConfig.REQUEST_HEADER_API_KEY, PopdeemSDK.getPopdeemAPIKey())
                     .build());
@@ -276,6 +283,33 @@ public class PDAPIClient {
         }).start();
     }
 
+    /**
+     * Connects a user's Facebook account - if already registered with another social medium
+     *
+     * @param userID
+     * @param accessToken
+     */
+    public void connectFacebookAccount(@NonNull long userID, @NonNull String accessToken, @NonNull final PDAPICallback<PDUser> callback){
+        JsonObject facebookObject = new JsonObject();
+        facebookObject.addProperty("id", userID);
+        facebookObject.addProperty("access_token", accessToken);
+
+        JsonObject userObject = new JsonObject();
+        userObject.add("facebook", facebookObject);
+
+        JsonObject json = new JsonObject();
+        json.add("user", userObject);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.connectFacebookAccount(body, callback);
+    }
+
 
     /**
      * Connect a users Twitter account
@@ -337,6 +371,53 @@ public class PDAPIClient {
         api.connectWithInstagramAccount(body, callback);
     }
 
+    /**
+     *
+     * @param instagramId       Instagram User ID
+     * @param accessToken       Instagram Access Token
+     * @param fullname          User's Full Name
+     * @param userName          User's Screen Name
+     * @param profilePicture    User's Profile Picture
+     * @param callback          {@link PDAPICallback} for API Result
+     */
+    public void registerWithInstagramId(@NonNull String instagramId,
+                                        @NonNull String accessToken,
+                                        @NonNull String fullname,
+                                        @NonNull String userName,
+                                        @NonNull String profilePicture,
+                                        @NonNull final PDAPICallback<PDUser> callback){
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
+                .create();
+
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
+        JsonObject jsonBody = new JsonObject();
+
+        JsonObject userBody = new JsonObject();
+
+        JsonObject instaBody = new JsonObject();
+        instaBody.addProperty("id", instagramId);
+        instaBody.addProperty("access_token", accessToken);
+        instaBody.addProperty("full_name", fullname);
+        instaBody.addProperty("profile_picture", profilePicture);
+
+        userBody.add("instagram", instaBody);
+
+        userBody.addProperty("unique_identifier", uidString);
+
+        jsonBody.add("user", userBody);
+
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+
+        api.registerUserWithInstagram(body, callback);
+
+    }
 
     /**
      * Check if users Instagram access token is still valid
@@ -437,12 +518,28 @@ public class PDAPIClient {
      * @param longitude   - Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
      */
-    public void updateUserLocationAndDeviceToken(@NonNull String id, @NonNull String deviceToken,
+    public void updateUserLocationAndDeviceToken(@NonNull String socialType, @NonNull String id, @NonNull String deviceToken,
                                                  @NonNull String latitude, @NonNull String longitude,
                                                  @NonNull final PDAPICallback<PDUser> callback) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
-                .create();
+        Gson gson;
+        if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_FACEBOOK)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                    .create();
+        } else if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_TWITTER)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
+                    .create();
+        } else if (socialType.equalsIgnoreCase(PDSocialUtils.SOCIAL_TYPE_INSTAGRAM)){
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
+                    .create();
+        } else {
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                    .create();
+        }
+
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
 
         // Realm Instance
@@ -497,7 +594,7 @@ public class PDAPIClient {
      * @param latitude    Current latitude for user
      * @param longitude   Current longitude for user
      * @param callback    {@link PDAPICallback} for API result
-     * @deprecated use {@link #updateUserLocationAndDeviceToken(String, String, String, String, PDAPICallback)} instead.
+     * @deprecated use {@link #updateUserLocationAndDeviceToken(String, String, String, String, String, PDAPICallback)} instead.
      */
     @Deprecated
     public void updateUserLocationAndDeviceToken(@NonNull final Context context, @NonNull final String id, @NonNull final String deviceToken,
@@ -603,16 +700,42 @@ public class PDAPIClient {
      * @param twitterAccessToken  - Twitter access token
      * @param twitterAccessSecret - Twitter access  secret
      * @param twitterID           - Twitter ID
-     * @param screenName          - Twitter user screen name
      * @param callback            {@link PDAPICallback} for API result
      */
-    private void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
-                                               @NonNull String twitterID, @NonNull String screenName,
-                                               @NonNull PDAPICallback<JsonObject> callback) {
-        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
-        api.registerUserWithTwitterParams(twitterAccessToken, twitterAccessSecret, twitterID, screenName, callback);
-    }
+    public void registerUserwithTwitterParams(@NonNull String twitterAccessToken, @NonNull String twitterAccessSecret,
+                                               @NonNull String twitterID,
+                                               @NonNull PDAPICallback<PDUser> callback) {
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
+                .create();
+
+        Realm realm = Realm.getDefaultInstance();
+        final PDRealmNonSocialUID uid = realm.where(PDRealmNonSocialUID.class).findFirst();
+        final String uidString = uid == null ? null : uid.getUid();
+        realm.close();
+
+        JsonObject jsonBody = new JsonObject();
+
+        JsonObject userBody = new JsonObject();
+
+        JsonObject twitterBody = new JsonObject();
+        twitterBody.addProperty("id", twitterID);
+        twitterBody.addProperty("access_token", twitterAccessToken);
+        twitterBody.addProperty("access_secret", twitterAccessSecret);
+
+        userBody.add("twitter", twitterBody);
+
+        userBody.addProperty("unique_identifier", uidString);
+
+        jsonBody.add("user", userBody);
+
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+
+        api.registerUserWithTwitterParams(body, callback);
+    }
 
     /**
      * Get Popdeem Friends
@@ -845,7 +968,7 @@ public class PDAPIClient {
                 .registerTypeAdapter(PDFeedsDeserializer.FEEDS_TYPE, new PDFeedsDeserializer())
                 .create();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
-        api.getFeeds("20", callback);
+        api.getFeeds(callback);
     }
 
 
@@ -868,6 +991,7 @@ public class PDAPIClient {
      */
     private Interceptor getUserTokenInterceptor() {
         final String userToken = PDUtils.getUserToken();
+        Log.i("User Token", "getUserTokenInterceptor: " + userToken);
         if (userToken == null) {
             return null;
         }
@@ -927,4 +1051,74 @@ public class PDAPIClient {
         return adapterBuilder.build();
     }
 
+    /**
+     * Background Scan
+     *
+     * @param rewardID - id of reward user is scanning for
+     * @param network  - String of the network the user is scanning (facebook, instagram, twitter)
+     * @param callback {@link PDAPICallback} for API result
+     */
+    public void scanSocialNetwork(String rewardID, String network, @NonNull final PDAPICallback<JsonObject> callback) {
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.addProperty("network", network);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.scanSocialNetwork(body, rewardID, callback);
+    }
+
+    /**
+     * Claim Discovery
+     */
+    public void claimDiscovery(PDBGScanResponseModel post,
+                               String facebookAccessToken,
+                               String twitterAccessToken, String twitterAccessSecret,
+                               String instagramAccessToken,
+                               String latitude, String longitude, String locationID,
+                               String rewardID,
+                               Context context,
+                               @NonNull final PDAPICallback<JsonObject> callback) {
+
+
+        JsonObject jsonBody = new JsonObject();
+
+        //message
+        jsonBody.addProperty("message", post.getText());
+
+        //file
+        jsonBody.addProperty("file", post.getMediaUrl());
+
+        //post_key
+        jsonBody.addProperty("post_key", post.getObjectID());
+
+        //social network keys
+        if (post.getNetwork().equalsIgnoreCase("facebook")){
+            JsonObject facebookObject = new JsonObject();
+            facebookObject.addProperty("access_token", facebookAccessToken);
+            jsonBody.add("facebook", facebookObject);
+        } else if (post.getNetwork().equalsIgnoreCase("twitter")){
+            JsonObject twitterObject = new JsonObject();
+            twitterObject.addProperty("access_token", twitterAccessToken);
+            twitterObject.addProperty("access_secret", twitterAccessSecret);
+            jsonBody.add("twitter", twitterObject);
+        } else if (post.getNetwork().equalsIgnoreCase("instagram")){
+            JsonObject instagramObject = new JsonObject();
+            instagramObject.addProperty("access_token", instagramAccessToken);
+            jsonBody.add("instagram", instagramObject);
+        }
+
+        //location
+        JsonObject locationObject = new JsonObject();
+        locationObject.addProperty("latitude", latitude);
+        locationObject.addProperty("longitude", longitude);
+        locationObject.addProperty("id", locationID);
+
+        jsonBody.add("location", locationObject);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.claimDiscovery(body, rewardID, callback);
+    }
 }

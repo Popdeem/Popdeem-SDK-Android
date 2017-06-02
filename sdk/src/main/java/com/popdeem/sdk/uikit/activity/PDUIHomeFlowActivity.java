@@ -24,13 +24,17 @@
 
 package com.popdeem.sdk.uikit.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -45,7 +49,7 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.pd_home_fragment_container, PDUIHomeFlowFragment.newInstance())
+                .add(R.id.pd_home_fragment_container, PDUIHomeFlowFragment.newInstance(), "PDUIHomeFlowFragment")
                 .commit();
 
         PDSocialUtils.refreshFacebookAccessToken();
@@ -61,4 +65,14 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("PDUIHomeFlowFragment");
+            if (fragment != null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
 }

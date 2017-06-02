@@ -24,19 +24,33 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Popdeem User Twitter Model Class
  */
 public class PDUserTwitter {
 
+    @SerializedName("social_account_id")
     private long socialAccountId;
+    @SerializedName("access_token")
     private String accessToken;
+    @SerializedName("access_secret")
     private String accessSecret;
+    @SerializedName("twitter_id")
     private String twitterId;
     private boolean tester;
     private String twitterScreenName;
+    @SerializedName("profile_picture_url")
     private String profilePictureUrl;
     private long expirationTime;
+
+    private String influenceReachScore;
+    private String influenceEngagementScore;
+    private String influenceFrequencyScore;
+    private int advocacyScore;
+    private String[] favouriteBrandIds;
+    private String totalScore;
 
     public PDUserTwitter() {
     }
@@ -114,6 +128,54 @@ public class PDUserTwitter {
 
     public void setExpirationTime(long expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public String getInfluenceReachScore() {
+        return influenceReachScore;
+    }
+
+    public void setInfluenceReachScore(String influenceReachScore) {
+        this.influenceReachScore = influenceReachScore;
+    }
+
+    public String getInfluenceEngagementScore() {
+        return influenceEngagementScore;
+    }
+
+    public void setInfluenceEngagementScore(String influenceEngagementScore) {
+        this.influenceEngagementScore = influenceEngagementScore;
+    }
+
+    public String getInfluenceFrequencyScore() {
+        return influenceFrequencyScore;
+    }
+
+    public void setInfluenceFrequencyScore(String influenceFrequencyScore) {
+        this.influenceFrequencyScore = influenceFrequencyScore;
+    }
+
+    public int getAdvocacyScore() {
+        return advocacyScore;
+    }
+
+    public void setAdvocacyScore(int advocacyScore) {
+        this.advocacyScore = advocacyScore;
+    }
+
+    public String[] getFavouriteBrandIds() {
+        return favouriteBrandIds;
+    }
+
+    public void setFavouriteBrandIds(String[] favouriteBrandIds) {
+        this.favouriteBrandIds = favouriteBrandIds;
+    }
+
+    public String getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(String totalScore) {
+        this.totalScore = totalScore;
     }
 
     @Override

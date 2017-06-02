@@ -21,20 +21,14 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-
-    <!--Overwriting Popdeem Colors-->
     <color name="pd_social_login_back_button_color">#000000</color>
-
-
-    <color name="pd_toolbar_color">#3F51B5</color>
-    <color name="pd_toolbar_text_color">#ffffff </color>
-    <color name="pd_toolbar_color_dark">#303F9F</color>
-    <color name="pd_accent">#ffffff </color>
-
+    <color name="pd_toolbar_color">#31241C</color>
+    <color name="pd_toolbar_text_color">#FFD530 </color>
+    <color name="pd_toolbar_color_dark">#31241C</color>
+    <color name="pd_accent">#FFD530 </color>
+    <color name="pd_tab_selected_text_color">#FFFFFF</color>
+    <color name="pd_tab_unselected_text_color">#FFFFFF</color>
+    <color name="pd_home_flow_banner_text_color">#FFFFFF</color>
+    <color name="pd_home_flow_settings_icon_color">#FFFFFF</color>
 </resources>

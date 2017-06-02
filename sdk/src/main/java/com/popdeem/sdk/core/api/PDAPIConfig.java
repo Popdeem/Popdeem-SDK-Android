@@ -35,7 +35,8 @@ public class PDAPIConfig {
     public static final String PD_JSON_MIME_TYPE = "application/json";
 
     public static final String PD_PROD_API_ENDPOINT = "https://api.popdeem.com";         // Production API Endpoint
-    public static final String PD_STAGING_API_ENDPOINT = "https://api.staging.popdeem.com";  // Staging API Endpoint
+    public static final String PD_STAGING_API_ENDPOINT = "http://api.staging.popdeem.com";  // Staging API Endpoint
+    public static final String PD_LOCAL_API_ENDPOINT = "http://87f3a997.ngrok.io";
 
     public static final String PD_API_ENDPOINT = PD_PROD_API_ENDPOINT;
 
@@ -61,5 +62,17 @@ public class PDAPIConfig {
 
     public static final String REQUEST_HEADER_API_KEY = "Api-Key";
     public static final String REQUEST_HEADER_USER_TOKEN = "User-Token";
+
+    /** The Scan Feature
+     * /api/v2/rewards/{rewardID}/autodiscovery
+     Where {rewardID} is the id of reward being scanned **/
+    public static final String PD_AUTODISCOVERY_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
+
+    /**
+     * The Claim Discovery Path
+     * /api/v2/rewards/{rewardID}/claim_discovered
+     * Used in the Post Scan Success Screen (PDScanSuccessView)
+     */
+    public static final String PD_CLAIM_DISCOVERY_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
 
 }

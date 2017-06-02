@@ -33,6 +33,7 @@ import java.util.ArrayList;
  */
 public final class PDUser {
 
+    @SerializedName("user_token")
     private String userToken;
 
     // User detail
@@ -281,4 +282,10 @@ public final class PDUser {
         return s == null ? "null" : s;
     }
 
+    /**
+     * @return a boolean as to whether the userToken is NULL
+     */
+    public boolean isRegistered(){
+        return userToken != null;
+    }
 }

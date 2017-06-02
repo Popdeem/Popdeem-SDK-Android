@@ -34,7 +34,9 @@
 
     <dimen name="pd_settings_image_dimen">90dp</dimen>
 
-    <dimen name="pd_reward_item_image_dimen">60dp</dimen>
+    <dimen name="pd_scan_profile_image_dimen">60dp</dimen>
+
+    <dimen name="pd_reward_item_image_dimen">50dp</dimen>
 
     <dimen name="pd_notification_dialog_image_dimen">100dp</dimen>
 
@@ -47,6 +49,6 @@
     <dimen name="social_login_sign_in_button_text_size">17sp</dimen>
     <dimen name="social_login_terms_text_size">9dp</dimen>
     <dimen name="social_login_body_text_size">13sp</dimen>
-    <dimen name="social_login_header_text_size">25sp</dimen>
+    <dimen name="social_login_header_text_size">20sp</dimen>
 
 </resources>

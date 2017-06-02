@@ -60,13 +60,18 @@ public interface PopdeemAPI {
             @Query("platform") String platform,
             Callback<PDBasicResponse> callback);
 
-    @GET(PDAPIConfig.PD_USERS_PATH)
+//    @GET(PDAPIConfig.PD_USERS_PATH)
+//    void registerUserWithTwitterParams(
+//            @Query("user[twitter][access_token]") String twitterAccessToken,
+//            @Query("user[twitter][access_secret]") String twitterAccessSecret,
+//            @Query("user[twitter][id]") String twitterID,
+//            @Query("user[twitter][**]") String screenName,
+//            Callback<PDUser> callback);
+
+    @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithTwitterParams(
-            @Query("user[twitter][access_token]") String twitterAccessToken,
-            @Query("user[twitter][access_secret]") String twitterAccessSecret,
-            @Query("user[twitter][id]") String twitterID,
-            @Query("user[twitter][**]") String screenName,
-            Callback<JsonObject> callback);
+            @Body TypedInput body,
+            Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_USERS_PATH)
     void registerUserWithFacebook(
@@ -77,12 +82,22 @@ public interface PopdeemAPI {
             Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
+    void connectFacebookAccount(
+            @Body TypedInput body,
+            Callback<PDUser> callback);
+
+    @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
     void connectWithTwitterAccount(
             @Body TypedInput body,
             Callback<PDUser> callback);
 
     @POST(PDAPIConfig.PD_CONNECT_SOCIAL_ACCOUNT)
     void connectWithInstagramAccount(
+            @Body TypedInput body,
+            Callback<PDUser> callback);
+
+    @POST(PDAPIConfig.PD_USERS_PATH)
+    void registerUserWithInstagram(
             @Body TypedInput body,
             Callback<PDUser> callback);
 
@@ -208,7 +223,7 @@ public interface PopdeemAPI {
     //****************************************
 
     @GET(PDAPIConfig.PD_FEEDS_PATH)
-    void getFeeds(@Query("limit") String limit, Callback<ArrayList<PDFeed>> callback);
+    void getFeeds(Callback<ArrayList<PDFeed>> callback);
 
 
     @POST(PDAPIConfig.PD_MOMENTS_PATH)
@@ -216,4 +231,26 @@ public interface PopdeemAPI {
                    @Query("trigger_action") String moment,
                    Callback<PDBasicResponse> callback);
 
+
+    //****************************************
+    // Background Scan API Calls
+    //****************************************
+
+    @POST(PDAPIConfig.PD_AUTODISCOVERY_PATH + "/{rewardId}/autodiscovery")
+    void scanSocialNetwork(
+            @Body TypedInput body,
+            @Path("rewardId") String rewardID,
+            Callback<JsonObject>callback
+    );
+
+    //****************************************
+    // Claim Discovery Calls
+    //****************************************
+
+    @POST(PDAPIConfig.PD_CLAIM_DISCOVERY_PATH + "/{rewardId}/claim_discovered")
+    void claimDiscovery(
+            @Body TypedInput body,
+            @Path("rewardId") String rewardID,
+            Callback<JsonObject>callback
+    );
 }

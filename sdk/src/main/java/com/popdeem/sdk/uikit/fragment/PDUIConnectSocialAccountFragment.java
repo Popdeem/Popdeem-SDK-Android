@@ -24,14 +24,22 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +54,21 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.location.LocationListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
+import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -64,14 +80,33 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+
+import io.realm.Realm;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by mikenolan on 16/08/16.
  */
 public class PDUIConnectSocialAccountFragment extends Fragment implements View.OnClickListener {
+
+    private static String TAG = PDUIConnectSocialAccountCallback.class.getSimpleName();
+    private Realm realm;
+
+
+    /**
+     * Location is now needed in this Fragment, as the user can now Register as well as Connect
+     */
+    private final int LOCATION_PERMISSION_REQUEST = 90;
+    private PDLocationManager mLocationManager;
+    private Location location;
+    private boolean mAskForPermission = true;
 
     /**
      * Callback for result
@@ -126,6 +161,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         if (args != null) {
             mType = args.getInt("type", PD_CONNECT_TYPE_FACEBOOK);
         }
+        mLocationManager = new PDLocationManager(getActivity());
         mCallbackManager = CallbackManager.Factory.create();
     }
 
@@ -223,11 +259,11 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         @Override
         public void success(PDUser user) {
             PDUtils.updateSavedUser(user);
-            if (mType == PD_CONNECT_TYPE_FACEBOOK && getActivity() != null) {
-                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
-            }
-            triggerCallbackAfterSuccessfulConnect();
-            toggleProgress(false);
+//            if ((mType == PD_CONNECT_TYPE_FACEBOOK || mType == PD_CONNECT_TYPE_INSTAGRAM || mType == PD_CONNECT_TYPE_TWITTER) && getActivity() != null) {
+//                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+//            }
+            checkForLocationPermissionAndStartLocationManager();
+//            updateUser();
         }
 
         @Override
@@ -236,30 +272,75 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             if (mType == PD_CONNECT_TYPE_FACEBOOK) {
                 LoginManager.getInstance().logOut();
             }
+            //Attecmpt to see if the error is an already connected account
+            //New constraint - social account can be connected to one user only
+            RetrofitError err = (RetrofitError)e;
+            if (err.getResponse() != null && err.getResponse().getBody() != null) {
+                String json =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                try {
+                    JSONObject jsobj = new JSONObject(json);
+                    if (jsobj.get("error") != null) {
+                        if (jsobj.getString("error") != null) {
+                            if (jsobj.getString("error").contains("social account is already connected")) {
+                                if (getActivity() != null) {
+                                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Sorry - Wrong Account", "This social account has been linked to another user.");
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } catch (JSONException jse) {
+                    showGenericAlert();
+                    return;
+                }
+            }
             showGenericAlert();
         }
     };
-
 
     /**
      * Connect Facebook Account
      */
     private void connectFacebookAccount() {
         toggleProgress(true);
-        PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(),
-                AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            //register
+            PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(),
+                    AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
+        } else {
+            //connect
+            PDAPIClient.instance().connectFacebookAccount(Long.parseLong(AccessToken.getCurrentAccessToken().getUserId()),
+                    AccessToken.getCurrentAccessToken().getToken(), PD_API_CALLBACK);
+        }
     }
 
 
     /**
-     * Connect Instagram Account
+     * Connect / Register Instagram Account
      *
      * @param instagramResponse Response from Instagram WebView login
      */
     private void connectInstagramAccount(PDInstagramResponse instagramResponse) {
         toggleProgress(true);
-        PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
-                instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            //register
+            Log.i(TAG, "connectInstagramAccount: Registering user via Instagram");
+            PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
+                    instagramResponse.getAccessToken(),
+                    instagramResponse.getUser().getFullName(),
+                    instagramResponse.getUser().getUsername(),
+                    instagramResponse.getUser().getProfilePicture(),
+                    PD_API_CALLBACK);
+        } else {
+            //connect
+            Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
+            PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
+                    instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+        }
     }
 
 
@@ -270,8 +351,21 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
      */
     private void connectTwitterAccount(TwitterSession session) {
         toggleProgress(true);
-        PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
-                session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        if (userDetails == null) {
+            //register
+            Log.i(TAG, "connectInstagramAccount: Registering user via Twitter");
+            PDAPIClient.instance().registerUserwithTwitterParams(session.getAuthToken().token,
+                    session.getAuthToken().secret,
+                    String.valueOf(session.getUserId()),
+                    PD_API_CALLBACK);
+        } else {
+            //connect
+            Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
+            PDAPIClient.instance().connectWithTwitterAccount(String.valueOf(session.getUserId()),
+                    session.getAuthToken().token, session.getAuthToken().secret, PD_API_CALLBACK);
+        }
     }
 
 
@@ -373,4 +467,163 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         return PDUIConnectSocialAccountFragment.class.getSimpleName();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (realm == null) {
+            realm = Realm.getDefaultInstance();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+            realm = null;
+        }
+    }
+
+    ////////////////////////////////////////////////////
+    // Location Methods                              //
+    //////////////////////////////////////////////////
+
+    private void checkForLocationPermissionAndStartLocationManager() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.pd_location_permission_title_text)
+                        .setMessage(R.string.pd_location_permission_rationale_text)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                        LOCATION_PERMISSION_REQUEST);
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST);
+            }
+        } else {
+            startLocationManagerAfterLogin();
+        }
+    }
+
+    private void startLocationManagerAfterLogin() {
+        mLocationManager.startLocationUpdates(new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if (location != null) {
+                    handleLocationUpdate(location);
+                }
+            }
+        });
+    }
+
+    private void handleLocationUpdate(final Location l) {
+        mLocationManager.stop();
+        location = l;
+        PDUtils.updateSavedUserLocation(location);
+        updateUser();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocationManagerAfterLogin();
+                } else {
+                    // Permission was not given
+                    PDLog.d(getClass(), "permission for location not granted");
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_DENIED_LOCATION, null);
+                    if (mAskForPermission) {
+                        mAskForPermission = false;
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.pd_location_permission_title_text)
+                                .setMessage(R.string.pd_location_permission_are_you_sure_text)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                                LOCATION_PERMISSION_REQUEST);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        LoginManager.getInstance().logOut();
+                                        removeThisFragment();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    } else {
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                LoginManager.getInstance().logOut();
+                                removeThisFragment();
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
+    ////////////////////////////////////////////////////
+    // User Methods                                  //
+    //////////////////////////////////////////////////
+
+    private void updateUser() {
+        Realm realm = Realm.getDefaultInstance();
+
+        PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
+        String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
+
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+
+        if (userDetails == null) {
+            realm.close();
+            return;
+        }
+
+        String socialType = "";
+        if (mType == PD_CONNECT_TYPE_FACEBOOK)
+            socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
+        if (mType == PD_CONNECT_TYPE_TWITTER)
+            socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
+        if (mType == PD_CONNECT_TYPE_INSTAGRAM)
+            socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
+
+        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+            @Override
+            public void success(PDUser user) {
+                PDLog.d(PDUIConnectSocialAccountFragment.class, "update user: " + user);
+
+                PDUtils.updateSavedUser(user);
+                if ((mType == PD_CONNECT_TYPE_FACEBOOK || mType == PD_CONNECT_TYPE_INSTAGRAM || mType == PD_CONNECT_TYPE_TWITTER) && getActivity() != null) {
+                    getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+                }
+                triggerCallbackAfterSuccessfulConnect();
+                toggleProgress(false);
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUIConnectSocialAccountFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
+                // Send broadcast to any registered receivers that user has logged in
+                toggleProgress(false);
+                showGenericAlert();
+            }
+        });
+        realm.close();
+    }
 }

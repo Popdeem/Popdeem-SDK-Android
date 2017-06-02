@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -69,6 +70,10 @@ public class PDSocialUtils {
     private static final String INSTAGRAM_CLIENT_ID_KEY = "InstagramClientId";
     private static final String INSTAGRAM_CLIENT_SECRET_KEY = "InstagramClientSecret";
     private static final String INSTAGRAM_CALLBACK_URL_KEY = "InstagramCallbackUrl";
+
+    public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
+    public static final String SOCIAL_TYPE_TWITTER = "twitter";
+    public static final String SOCIAL_TYPE_INSTAGRAM = "instagram";
 
     //------------------------------------------------------------------------
     //                          Instagram Methods
@@ -342,6 +347,7 @@ public class PDSocialUtils {
 
     public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
         if (isFabricInitialisedWithTwitter()) {
+            Log.i("PDSocialUtils", "loginWithTwitter: Fabric is initialized with Twitter");
             Twitter.logIn(activity, callback);
         }
     }

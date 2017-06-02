@@ -25,15 +25,14 @@
 package com.popdeem.sdk.uikit.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -47,6 +46,7 @@ import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -279,11 +279,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         twitterCharactersTextView.setText(String.valueOf(calculateTwitterCharsLeft()));
 
         if (mReward.getTweetOptions() != null) {
+            Log.i("Twitter Hashtag", "TweetOptions NOT NULL");
             if (mReward.getTweetOptions().isPrefill() && mReward.getTweetOptions().getPrefilledMessage() != null) {
                 mMessageEditText.setText(mReward.getTweetOptions().getPrefilledMessage());
                 PDLog.d(PDUIClaimActivity.class, mReward.getTweetOptions().getPrefilledMessage());
             }
-            if (mReward.getTweetOptions().isForceTag()) {
+            if (mReward.getTweetOptions().getForcedTag() != null && !mReward.getTweetOptions().getForcedTag().isEmpty()) {
+                Log.i("Twitter Hashtag", "Forced Tag NOt NULL");
                 hashTagTextView.setText(getString(R.string.pd_claim_required_hashtag_text, mReward.getTweetOptions().getForcedTag()));
                 hashTagContainer.setVisibility(View.VISIBLE);
             }
@@ -441,6 +443,16 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         textView = (TextView) findViewById(R.id.pd_reward_request_text_view);
         textView.setText(actionStringBuilder.toString());
+
+
+        //already shared button
+        Button alreadySharedButton = (Button) findViewById(R.id.pd_claim_already_shared_button);
+        alreadySharedButton.setOnClickListener(this);
+        if (mReward.getGlobalHashtag() != null && !mReward.getGlobalHashtag().equalsIgnoreCase("")) {
+            alreadySharedButton.setText(String.format(getString(R.string.pd_claim_get_already_shared_text), mReward.getGlobalHashtag()));
+        } else {
+            alreadySharedButton.setText(R.string.pd_claim_already_shared_default);
+        }
     }
 
     private boolean twitterShareForced() {
@@ -829,8 +841,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private void startCameraIntentWithImagePath() {
 
         /*first we need to check of client app has the Camera Permission*/
-        if (PDPermissionHelper.hasPermissionInManifest(this, Manifest.permission.CAMERA))
-        {
+        if (PDPermissionHelper.hasPermissionInManifest(this, Manifest.permission.CAMERA)) {
             //ask for camera permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 new AlertDialog.Builder(this)
@@ -848,16 +859,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             } else {
                 startCamera();
             }
-        }
-        else
-        {
+        } else {
             //we can continue as normal
             startCamera();
         }
     }
 
-    private void startCamera()
-    {
+    private void startCamera() {
         try {
             File f = setUpPhotoFile();
             mCurrentPhotoPath = f.getAbsolutePath();
@@ -1126,6 +1134,17 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     mMessageEditText.setSelection(mMessageEditText.getText().length());
                 }
             }
+        } else if (ID == R.id.pd_claim_already_shared_button) {
+            Log.i("Claim Activity", mReward.getGlobalHashtag());
+            if (!mIsHere) {
+                showBasicOKAlertDialog(R.string.pd_claim_verify_location_failed_title_text, R.string.pd_claim_verify_location_failed_text);
+                return;
+            }
+            Intent intent = new Intent(this, PDUISelectNetworkActivity.class);
+            intent.putExtra("reward", new Gson().toJson(mReward, PDReward.class));
+            startActivity(intent);
+
+
         }
     }
 
@@ -1141,15 +1160,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 Toast.makeText(this, R.string.pd_storage_permissions_denied_string, Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == 321) /*camera permission*/
-        {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == 321) /*camera permission*/ {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 PDLog.d(getClass(), "permissions");
                 startCamera();
-            }
-            else
-            {
+            } else {
                 PDLog.d(getClass(), "no camera permissions");
                 Toast.makeText(this, getString(R.string.pd_camera_permissions_denied_string), Toast.LENGTH_SHORT).show();
             }
