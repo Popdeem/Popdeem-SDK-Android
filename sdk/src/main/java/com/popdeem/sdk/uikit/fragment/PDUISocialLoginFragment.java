@@ -37,6 +37,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ import io.realm.Realm;
 public class PDUISocialLoginFragment extends Fragment {
 
     private final int LOCATION_PERMISSION_REQUEST = 90;
+    private static final String TAG = PDUISocialLoginFragment.class.getSimpleName();
 
     private PDLocationManager mLocationManager;
 

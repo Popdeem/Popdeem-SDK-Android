@@ -24,7 +24,10 @@
 
 package com.popdeem.navigationsample;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +40,6 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.utils.PDLog;
-import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 public class MainActivity extends AppCompatActivity {
@@ -78,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
         PopdeemSDK.setThirdPartyToken("thirdPartyTokenTest");
     }
 
+    /**
+     * Used to complete the Twitter Login Flow, seen in SocialMultiLoginFragment
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,11 +97,5 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: Fragment is NULL");
             }
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause: In on Pause");
     }
 }
