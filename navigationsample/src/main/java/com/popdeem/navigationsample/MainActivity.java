@@ -24,10 +24,7 @@
 
 package com.popdeem.navigationsample;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +36,11 @@ import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
+import com.popdeem.sdk.core.interfaces.FragmentCommunicator;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentCommunicator {
 
     private static String TAG = MainActivity.class.getSimpleName();
 
@@ -97,5 +95,31 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: Fragment is NULL");
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        Log.i(TAG, "onAttachFragment: Fragment Attached " + fragment.getClass().getSimpleName());
+        if (fragment.getClass().getSimpleName().equalsIgnoreCase("PDUISocialLoginFragment"))
+        {
+            //clients can do custom stuff here (hide action bars)
+        }
+    }
+
+    @Override
+    public void fragmentDetached() {
+        Log.i(TAG, "fragmentDetached: Fragment is Detached");
+        //clients can do custom stuff here when the social login fragment disappears
     }
 }

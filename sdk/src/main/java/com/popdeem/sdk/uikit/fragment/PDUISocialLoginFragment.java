@@ -25,6 +25,8 @@
 package com.popdeem.sdk.uikit.fragment;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -59,6 +61,7 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.interfaces.FragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
@@ -91,6 +94,8 @@ public class PDUISocialLoginFragment extends Fragment {
     private CallbackManager mCallbackManager;
 
     private boolean mAskForPermission = true;
+
+    private FragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
 
     public PDUISocialLoginFragment() {
     }
@@ -376,6 +381,22 @@ public class PDUISocialLoginFragment extends Fragment {
                     }
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCommunicator){
+            communicator = (FragmentCommunicator) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (communicator != null){
+            communicator.fragmentDetached();
         }
     }
 }
