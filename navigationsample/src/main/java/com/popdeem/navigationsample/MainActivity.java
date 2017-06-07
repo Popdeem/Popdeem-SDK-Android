@@ -107,15 +107,23 @@ public class MainActivity extends AppCompatActivity implements FragmentCommunica
         super.onResume();
     }
 
+    /**
+     * The client must implement the Activity's onAttachFragment and do a simple check for one of the SDK's login fragments, in order to allow for custom functionality
+     * @param fragment
+     */
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         Log.i(TAG, "onAttachFragment: Fragment Attached " + fragment.getClass().getSimpleName());
-        if (fragment.getClass().getSimpleName().equalsIgnoreCase("PDUISocialLoginFragment"))
+        if (fragment.getClass().getSimpleName().equalsIgnoreCase("PDUISocialLoginFragment") || fragment.getClass().getSimpleName().equalsIgnoreCase("PDUISocialMultiLoginFragment"))
         {
             //clients can do custom stuff here (hide action bars)
         }
     }
+
+    /**
+     * fragmentDetached is called when PDUISocialLoginFragment or PDUISocialMultiLoginFragment are no longer attached to the Activity. This allows the client to perform custom func
+     */
 
     @Override
     public void fragmentDetached() {

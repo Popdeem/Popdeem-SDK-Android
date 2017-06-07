@@ -384,6 +384,11 @@ public class PDUISocialLoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Used to allow the client a hook into the SDK, in order to determine when the LoginFragments are detached
+     * allows for custom func client side
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

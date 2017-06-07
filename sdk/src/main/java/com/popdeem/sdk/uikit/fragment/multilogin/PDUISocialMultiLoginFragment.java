@@ -1,6 +1,7 @@
 package com.popdeem.sdk.uikit.fragment.multilogin;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,7 @@ import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
+import com.popdeem.sdk.core.interfaces.FragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
@@ -94,6 +96,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     private boolean isFacebook = false, isTwitter = false, isInstagram = false;
 
     private Location location;
+
+    private FragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
 
     public PDUISocialMultiLoginFragment() {
     }
@@ -577,5 +581,26 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
     public static String getName() {
         return PDUISocialMultiLoginFragment.class.getSimpleName();
+    }
+
+    /**
+     * Used to allow the client a hook into the SDK, in order to determine when the LoginFragments are detached
+     * allows for custom func client side
+     * @param context
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCommunicator){
+            communicator = (FragmentCommunicator) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (communicator != null){
+            communicator.fragmentDetached();
+        }
     }
 }
