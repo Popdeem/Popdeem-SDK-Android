@@ -68,7 +68,7 @@ dependencies {
 //    compile 'com.popdeem.sdk:sdk:1.2.2'
     // Dev
 //    compile 'com.popdeem.sdk:sdk:1.2.2-STAGING'
-    compile 'com.popdeem.sdk:sdk:1.2.9.4'
+    compile 'com.popdeem.sdk:sdk:1.2.9.5'
 //    compile project(path: ':sdk')
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {

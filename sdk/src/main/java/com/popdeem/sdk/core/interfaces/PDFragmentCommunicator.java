@@ -5,6 +5,6 @@ package com.popdeem.sdk.core.interfaces;
  * Project: Popdeem-SDK-Android
  */
 
-public interface FragmentCommunicator {
+public interface PDFragmentCommunicator {
     void fragmentDetached();
 }

@@ -29,17 +29,13 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.LocationListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
-import com.popdeem.sdk.core.deserializer.PDUserDeserializer;
-import com.popdeem.sdk.core.interfaces.FragmentCommunicator;
+import com.popdeem.sdk.core.interfaces.PDFragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
@@ -97,7 +93,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
     private Location location;
 
-    private FragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
+    private PDFragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
 
     public PDUISocialMultiLoginFragment() {
     }
@@ -591,8 +587,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FragmentCommunicator){
-            communicator = (FragmentCommunicator) context;
+        if (context instanceof PDFragmentCommunicator){
+            communicator = (PDFragmentCommunicator) context;
         }
     }
 
