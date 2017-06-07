@@ -40,7 +40,7 @@ import com.popdeem.sdk.core.interfaces.PDFragmentCommunicator;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
-public class MainActivity extends AppCompatActivity implements PDFragmentCommunicator {
+public class MainActivity extends AppCompatActivity implements PDFragmentCommunicator{
 
     private static String TAG = MainActivity.class.getSimpleName();
 
