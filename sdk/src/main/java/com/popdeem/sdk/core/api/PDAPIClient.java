@@ -508,6 +508,29 @@ public class PDAPIClient {
         api.disconnectSocialAccount(body, callback);
     }
 
+    public void disconnectFacebookAccount(@NonNull final String facebookAccessToken,
+                                          @NonNull final String facebookUserID,
+                                          @NonNull final PDAPICallback<PDUser> callback) {
+        JsonObject facebookObject = new JsonObject();
+        facebookObject.addProperty("id", facebookUserID);
+        facebookObject.addProperty("access_token", facebookAccessToken);
+
+        JsonObject userObject = new JsonObject();
+        userObject.add("facebook", facebookObject);
+
+        JsonObject json = new JsonObject();
+        json.add("user", userObject);
+
+        TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .create();
+
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+        api.disconnectSocialAccount(body, callback);
+    }
+
 
     /**
      * Update the Users Location and Device token

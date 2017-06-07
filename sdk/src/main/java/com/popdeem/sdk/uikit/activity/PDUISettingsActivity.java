@@ -45,6 +45,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
@@ -228,9 +229,20 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     //********************************************************************
 
     private void disconnectFacebook() {
-        LoginManager.getInstance().logOut();
-        Toast.makeText(PDUISettingsActivity.this, "Facebook disconnected.", Toast.LENGTH_SHORT).show();
-        abraLog(PDAbraConfig.ABRA_EVENT_LOGOUT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_FACEBOOK);
+        PDAPIClient.instance().disconnectFacebookAccount(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), new PDAPICallback<PDUser>() {
+            @Override
+            public void success(PDUser pdUser) {
+                PDUtils.updateSavedUser(pdUser);
+                LoginManager.getInstance().logOut();
+                Toast.makeText(PDUISettingsActivity.this, "Facebook disconnected.", Toast.LENGTH_SHORT).show();
+                abraLog(PDAbraConfig.ABRA_EVENT_LOGOUT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_FACEBOOK);
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUISettingsActivity.class, "disconnectFacebook:error: " + statusCode + " msg: " + e.getLocalizedMessage());
+            }
+        });
     }
 
     private void disconnectTwitter(PDRealmUserTwitter twitterParams, final int position) {
