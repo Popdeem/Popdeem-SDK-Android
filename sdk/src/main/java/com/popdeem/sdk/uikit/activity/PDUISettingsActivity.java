@@ -58,6 +58,7 @@ import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.realm.PDRealmUserFacebook;
 import com.popdeem.sdk.core.realm.PDRealmUserInstagram;
 import com.popdeem.sdk.core.realm.PDRealmUserTwitter;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -74,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class PDUISettingsActivity extends PDBaseActivity implements PDUISettingsRecyclerViewAdapter.PDUISettingsSwitchCallback {
 

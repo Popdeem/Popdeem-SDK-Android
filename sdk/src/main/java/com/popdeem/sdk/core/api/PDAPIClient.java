@@ -334,7 +334,7 @@ public class PDAPIClient {
         TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
                 .create();
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
@@ -364,7 +364,7 @@ public class PDAPIClient {
 
         TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, json.toString().getBytes());
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
                 .create();
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
@@ -470,7 +470,7 @@ public class PDAPIClient {
         TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDTwitterUserDeserializer())
                 .create();
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
@@ -501,7 +501,7 @@ public class PDAPIClient {
         TypedInput body = new TypedByteArray(PDAPIConfig.PD_JSON_MIME_TYPE, jsonBody.toString().getBytes());
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(PDUser.class, new PDUserDeserializer())
+                .registerTypeAdapter(PDUser.class, new PDInstagramUserDeserializer())
                 .create();
 
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
