@@ -119,12 +119,14 @@ public class PDUIInstagramLoginFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setTitle(R.string.pd_claim_connect_instagram_title);
+            if (actionBar == null) {
+                ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             }
+//            if (actionBar != null) {
+//                actionBar.setDisplayHomeAsUpEnabled(true);
+//                actionBar.setTitle(R.string.pd_claim_connect_instagram_title);
+//            }
         }
 
         loadInstagramUrl();
