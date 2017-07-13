@@ -28,6 +28,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
@@ -35,12 +36,14 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.interfaces.PDFragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.core.utils.PDGoogleServiceUtils;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
@@ -105,6 +108,13 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_pd_social_multi_login, container, false);
+
+        boolean googleServicesAvail = PDGoogleServiceUtils.checkPlayServices(getActivity());
+        if (googleServicesAvail){
+            Log.i(TAG, "onCreateView: Google services are fine");
+        } else {
+            Log.i(TAG, "onCreateView: Google Services are not fine");
+        }
 
 
         registerCallBacks();
@@ -408,6 +418,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     private void startLocationManagerAfterLogin() {
+        Log.i(TAG, "startLocationManagerAfterLogin: Location Manager started updating location");
         mProgressFacebook.setVisibility(View.VISIBLE);
 
         mFacebookLoginButton.setVisibility(View.INVISIBLE);
@@ -419,12 +430,15 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             public void onLocationChanged(Location location) {
                 if (location != null) {
                     handleLocationUpdate(location);
+                } else {
+                    PDGoogleServiceUtils.displayLocationSettingsRequest(getContext(), getActivity());
                 }
             }
         });
     }
 
     private void handleLocationUpdate(final Location l) {
+        Log.i(TAG, "handleLocationUpdate: Location Manager has location");
         mLocationManager.stop();
         location = l;
         PDUtils.updateSavedUserLocation(location);
