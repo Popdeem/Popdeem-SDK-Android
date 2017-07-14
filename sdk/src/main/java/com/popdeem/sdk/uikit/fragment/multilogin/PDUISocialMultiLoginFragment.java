@@ -111,9 +111,9 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
         boolean googleServicesAvail = PDGoogleServiceUtils.checkPlayServices(getActivity());
         if (googleServicesAvail){
-            Log.i(TAG, "onCreateView: Google services are fine");
+            Log.i(TAG, "onCreateView: Google services are up to date");
         } else {
-            Log.i(TAG, "onCreateView: Google Services are not fine");
+            Log.i(TAG, "onCreateView: Google Services need to be updated");
         }
 
 

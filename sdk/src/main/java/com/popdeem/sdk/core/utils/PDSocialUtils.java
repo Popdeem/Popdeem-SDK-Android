@@ -417,4 +417,17 @@ public class PDSocialUtils {
         return !(PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) && PDPreferencesUtils.getLoginUsesCount(context) < PDPreferencesUtils.getNumberOfLoginAttempts(context);
     }
 
+    /**
+     * Should the user be presented with the Social Login Flow.
+     *
+     * @param context Application Context
+     * @return true if to be shown, false otherwise
+     */
+    public static boolean shouldShowMultiSocialLogin(final Context context, boolean isInstaLoggedIn) {
+        Log.i("PopdeemSDK", "isFacebookLoggedIn " + PDSocialUtils.isLoggedInToFacebook());
+        Log.i("PopdeemSDK", "isTwitterLoggedIn " + PDSocialUtils.userHasTwitterCredentials());
+        Log.i("PopdeemSDK", "isInstagramLoggedIn " + isInstaLoggedIn);
+
+        return !((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.userHasTwitterCredentials() || isInstaLoggedIn) && PDUtils.getUserToken() != null) && PDPreferencesUtils.getLoginUsesCount(context) < PDPreferencesUtils.getNumberOfLoginAttempts(context);
+    }
 }

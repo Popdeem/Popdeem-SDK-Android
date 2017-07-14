@@ -515,31 +515,85 @@ public final class PopdeemSDK {
      */
     private static final Application.ActivityLifecycleCallbacks PD_ACTIVITY_LIFECYCLE_CALLBACKS = new Application.ActivityLifecycleCallbacks() {
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        public void onActivityCreated(final Activity activity, Bundle savedInstanceState) {
             // Show social login if needed
-            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
-                    && PDSocialUtils.shouldShowSocialLogin(activity)) {
-                PDLog.i(PopdeemSDK.class, "showing social login");
-                PDPreferencesUtils.incrementLoginUsesCount(activity);
-                if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+            if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication)){
+                if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+                        && PDSocialUtils.shouldShowSocialLogin(activity)) {
+                    PDLog.i(PopdeemSDK.class, "showing social login");
+                    PDPreferencesUtils.incrementLoginUsesCount(activity);
                     showSocialLogin((FragmentActivity) activity);
-                else
-                    showSocialMultiLogin((FragmentActivity) activity);
+
+                    if (activity.getIntent() != null && activity.getIntent().getExtras() != null) {
+                        String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
+                        String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
+                        String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
+                        String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
+                        String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
+
+                        if (messageId != null && title != null && message != null) {
+                            FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+                            PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
+                        }
+                    }
+                }
+            } else {
+                PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+                    @Override
+                    public void success(Boolean aBoolean) {
+                        if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+                                && PDSocialUtils.shouldShowMultiSocialLogin(activity, aBoolean)) {
+                            PDLog.i(PopdeemSDK.class, "showing social login");
+                            PDPreferencesUtils.incrementLoginUsesCount(activity);
+                            showSocialMultiLogin((FragmentActivity) activity);
+
+                            if (activity.getIntent() != null && activity.getIntent().getExtras() != null) {
+                                String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
+                                String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
+                                String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
+                                String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
+                                String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
+
+                                if (messageId != null && title != null && message != null) {
+                                    FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+                                    PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, Exception e) {
+
+                    }
+                });
             }
+
+
+
+//            if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && activity.getClass().getName().equalsIgnoreCase(PDPreferencesUtils.getSocialLoginActivityName(activity))
+//                    && PDSocialUtils.shouldShowSocialLogin(activity)) {
+//                PDLog.i(PopdeemSDK.class, "showing social login");
+//                PDPreferencesUtils.incrementLoginUsesCount(activity);
+//                if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+//                    showSocialLogin((FragmentActivity) activity);
+//                else
+//                    showSocialMultiLogin((FragmentActivity) activity);
+//            }
 
             // Check if intent was started from a Popdeem Notification click and show dialog if it was
-            if (activity.getIntent() != null && activity.getIntent().getExtras() != null && (activity instanceof AppCompatActivity || activity instanceof FragmentActivity)) {
-                String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
-                String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
-                String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
-                String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
-                String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
-
-                if (messageId != null && title != null && message != null) {
-                    FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
-                    PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
-                }
-            }
+//            if (activity.getIntent() != null && activity.getIntent().getExtras() != null && (activity instanceof AppCompatActivity || activity instanceof FragmentActivity)) {
+//                String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
+//                String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
+//                String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
+//                String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
+//                String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
+//
+//                if (messageId != null && title != null && message != null) {
+//                    FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+//                    PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
+//                }
+//            }
         }
 
         @Override
