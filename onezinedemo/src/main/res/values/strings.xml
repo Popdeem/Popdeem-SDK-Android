@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">OnezineDemo</string>
-    <string name="google_app_id">839359806985</string>
-
-    <string name="facebook_app_id">317234361671287</string>
-    <string name="facebook_url_scheme">popdeem</string>
-</resources>
