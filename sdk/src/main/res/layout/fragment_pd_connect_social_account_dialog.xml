@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@color/pd_toolbar_color"
+            android:background="@color/pd_social_connect_button_color"
             android:minHeight="40dp"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

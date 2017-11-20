@@ -156,4 +156,9 @@
     <color name="pd_rainbow_color_4">#668c3d</color>
     <!--<color name="pd_social_login_background_color">#bb000000</color>-->
 
+    <color name="pd_facebook_color">#3B5998</color>
+    <color name="pd_twitter_color">#00aced</color>
+    <color name="pd_social_connect_button_color">@color/pd_toolbar_color</color>
+
+
 </resources>
