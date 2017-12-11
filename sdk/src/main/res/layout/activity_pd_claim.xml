@@ -356,7 +356,7 @@
                             android:padding="10dp"
                             android:text="@string/pd_claim_get_already_shared_text"
                             android:textAllCaps="false"
-                            android:textColor="@color/pd_toolbar_color"
+                            android:textColor="#000000"
                             android:textSize="18sp" />
 
                         <ProgressBar
