@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:paddingTop="3dp"
-            android:textColor="@color/pd_wallet_item_sub_title_text_color"
+            android:textColor="@color/pd_reward_list_item_subtitle_text_color"
             android:textSize="12sp"
             tools:text="@string/pd_wallet_redeem_text" />
 

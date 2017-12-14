@@ -83,6 +83,9 @@
             android:name="InstagramClientSecret"
             android:value="0b14e780896e42be88cefcddb3ac64dc" />
 
+        <meta-data android:name="InstagramCallbackUrl"
+            android:value="https://www.popdeem.com/igredirect" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
