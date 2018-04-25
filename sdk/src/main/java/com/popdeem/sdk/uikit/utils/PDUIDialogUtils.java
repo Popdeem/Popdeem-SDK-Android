@@ -25,6 +25,7 @@
 package com.popdeem.sdk.uikit.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 
@@ -58,6 +59,18 @@ public class PDUIDialogUtils {
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
+    }
+
+    public static void showBasicOKAlertDialog(Context context, String title, String message, DialogInterface.OnClickListener listener ) {
+        if (context == null) {
+            return;
+        }
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, listener)
                 .create()
                 .show();
     }

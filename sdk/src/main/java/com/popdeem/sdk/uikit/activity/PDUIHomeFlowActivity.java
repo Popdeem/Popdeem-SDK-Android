@@ -31,7 +31,10 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.api.PDAPICallback;
+import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -44,6 +47,7 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_pd_home_flow);
         setTitle(R.string.pd_rewards_title);
 

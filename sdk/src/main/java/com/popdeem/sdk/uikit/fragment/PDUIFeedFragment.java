@@ -43,8 +43,13 @@ import com.popdeem.sdk.uikit.activity.PDUIFeedImageActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIFeedRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+
+import static com.popdeem.sdk.uikit.utils.PDUIImageUtils.deleteDirectoryTree;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -68,6 +73,8 @@ public class PDUIFeedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Picasso.with(getActivity()).setLoggingEnabled(true);
+
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_pd_feed, container, false);
 
@@ -82,7 +89,7 @@ public class PDUIFeedFragment extends Fragment {
 
             final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.pd_feed_recycler_view);
 
-            mAdapter = new PDUIFeedRecyclerViewAdapter(mFeedItems);
+            mAdapter = new PDUIFeedRecyclerViewAdapter(mFeedItems, this);
             mAdapter.setOnItemClickListener(new PDUIFeedRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view) {
@@ -103,6 +110,7 @@ public class PDUIFeedFragment extends Fragment {
             recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_feed_list_divider_color));
             recyclerView.setAdapter(mAdapter);
 
+            loadList();
             refreshFeed();
         } else {
             container.removeView(mView);
@@ -122,18 +130,42 @@ public class PDUIFeedFragment extends Fragment {
         PDAPIClient.instance().getFeeds(new PDAPICallback<ArrayList<PDFeed>>() {
             @Override
             public void success(ArrayList<PDFeed> pdFeeds) {
-                mFeedItems.clear();
-                mFeedItems.addAll(pdFeeds);
-                mAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
-                mNoItemsView.setVisibility(mFeedItems.size() == 0 ? View.VISIBLE : View.GONE);
+                deleteDirectoryTree(getActivity());
+                Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(PDFeed.class);
+                    }
+                });
+
+                for (int i = 0; i < pdFeeds.size(); i++) {
+                    realm.beginTransaction();
+                    realm.copyToRealm(pdFeeds.get(i));
+                    realm.commitTransaction();
+                }
+
+                loadList();
+
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 mSwipeRefreshLayout.setRefreshing(false);
+                loadList();
             }
         });
+    }
+
+    public void loadList(){
+
+        Realm realm = Realm.getDefaultInstance();
+
+        mFeedItems.clear();
+        mFeedItems.addAll(realm.where(PDFeed.class).findAll());
+        mAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+        mNoItemsView.setVisibility(mFeedItems.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
 }

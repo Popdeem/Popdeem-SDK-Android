@@ -27,10 +27,18 @@ package com.popdeem.sdk.core.model;
 import android.support.annotation.StringDef;
 
 import com.google.gson.annotations.SerializedName;
+import com.popdeem.sdk.core.realm.PDRealmInstagramOptions;
+import com.popdeem.sdk.core.realm.PDRealmLocation;
+import com.popdeem.sdk.core.realm.PDRealmReward;
+import com.popdeem.sdk.core.realm.PDRealmTweetOptions;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
  * Popdeem Reward Model Class
@@ -85,7 +93,7 @@ public class PDReward {
     private String revoked;
 
     private String twitterMediaCharacters;
-    private String[] socialMediaTypes;
+    private ArrayList<String> socialMediaTypes;
 
     private String disableLocationVerification;
     private String credit;
@@ -111,11 +119,14 @@ public class PDReward {
     @SerializedName("global_hashtag")
     private String globalHashtag;
 
+    @SerializedName("no_time_limit")
+    private String noTimeLimit;
+
     public PDReward() {
         verifying = false;
     }
 
-    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, long createdAt, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, String[] socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified, long claimedAt, String globalHashtag, String recurrence) {
+    public PDReward(String id, String rewardType, String description, String picture, String blurredPicture, String coverImage, String rules, int remainingCount, String status, String action, long createdAt, String availableUntilInSeconds, String availableNextInSeconds, String revoked, String twitterMediaCharacters, ArrayList<String> socialMediaTypes, String disableLocationVerification, String credit, PDTweetOptions tweetOptions, ArrayList<PDLocation> locations, long countdownTimer, boolean instagramVerified, long claimedAt, String globalHashtag, String recurrence, String noTimeLimit) {
         this.id = id;
         this.rewardType = rewardType;
         this.description = description;
@@ -141,7 +152,50 @@ public class PDReward {
         this.claimedAt = claimedAt;
         this.globalHashtag = globalHashtag;
         this.recurrence = recurrence;
+        this.noTimeLimit = noTimeLimit;
+
     }
+
+    public PDReward(PDRealmReward reward) {
+        this.id = reward.getId();
+        this.rewardType = reward.getRewardType();
+        this.description = reward.getDescription();
+        this.picture = reward.getPicture();
+        this.blurredPicture = reward.getBlurredPicture();
+        this.coverImage = reward.getCoverImage();
+        this.rules = reward.getRules();
+        this.remainingCount = reward.getRemainingCount();
+        this.status = reward.getStatus();
+        this.action = reward.getAction();
+        this.createdAt = reward.getCreatedAt();
+        this.availableUntilInSeconds = reward.getAvailableUntilInSeconds();
+        this.availableNextInSeconds = reward.getAvailableNextInSeconds();
+        this.revoked = reward.getRevoked();
+        this.twitterMediaCharacters = reward.getTwitterMediaCharacters();
+        this.disableLocationVerification = reward.getDisableLocationVerification();
+        this.credit = reward.getCredit();
+        this.countdownTimer = reward.getCountdownTimer();
+        this.instagramVerified = reward.isInstagramVerified();
+        this.claimedAt = reward.getClaimedAt();
+        this.globalHashtag = reward.getGlobalHashtag();
+        this.recurrence = reward.getRecurrence();
+        this.noTimeLimit = reward.getNoTimeLimit();
+
+        if(reward.getInstagramOptions()!=null) {
+            this.instagramOptions = new PDInstagramOptions(reward.getInstagramOptions());
+        }
+        if(reward.getTweetOptions()!=null) {
+            this.tweetOptions = new PDTweetOptions(reward.getTweetOptions());
+        }
+        this.locations = new ArrayList<>();
+        for (int i = 0; i < reward.getLocations().size(); i++) {
+            this.locations.add(new PDLocation(reward.getLocations().get(i)));
+        }
+        this.socialMediaTypes = new ArrayList<>();
+        this.socialMediaTypes.addAll(reward.getSocialMediaTypes());
+
+    }
+
 
     public String getId() {
         return id;
@@ -263,11 +317,11 @@ public class PDReward {
         this.twitterMediaCharacters = twitterMediaCharacters;
     }
 
-    public String[] getSocialMediaTypes() {
+    public ArrayList<String> getSocialMediaTypes() {
         return socialMediaTypes;
     }
 
-    public void setSocialMediaTypes(String[] socialMediaTypes) {
+    public void setSocialMediaTypes(ArrayList<String> socialMediaTypes) {
         this.socialMediaTypes = socialMediaTypes;
     }
 
@@ -300,7 +354,11 @@ public class PDReward {
     }
 
     public void setDistanceFromUser(float distanceFromUser) {
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         this.distanceFromUser = distanceFromUser;
+        realm.commitTransaction();
     }
 
     public String getDisableLocationVerification() {
@@ -385,5 +443,20 @@ public class PDReward {
 
     public void setRecurrence(String recurrence) {
         this.recurrence = recurrence;
+    }
+
+    public String getNoTimeLimit() {
+        return this.noTimeLimit;
+    }
+
+    public void setNoTimeLimit(String recurrence) {
+        this.noTimeLimit = noTimeLimit;
+    }
+
+    public boolean isUnlimitedAvailability(){
+        if(noTimeLimit.equalsIgnoreCase("true")){
+            return true;
+        }
+        return false;
     }
 }

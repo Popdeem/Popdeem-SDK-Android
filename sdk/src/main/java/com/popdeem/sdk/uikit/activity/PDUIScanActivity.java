@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -22,13 +23,16 @@ import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
-import com.popdeem.sdk.uikit.fragment.PDUIHomeFlowFragment;
+
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
-import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import io.realm.Realm;
+
+import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK;
+import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM;
+import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER;
 
 /**
  * Created by dave on 11/04/2017.
@@ -116,12 +120,13 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
         //profile photo
         PDUIBezelImageView userProfilePicture = (PDUIBezelImageView) PDScanSuccess.findViewById(R.id.pd_scan_success_user_image_view);
-        Picasso.with(this)
+        Glide.with(this)
                 .load(pdbgScanResponseModel.getProfilePictureUrl())
                 .centerCrop()
                 .placeholder(R.drawable.pd_ui_default_user)
                 .error(R.drawable.pd_ui_default_user)
-                .resizeDimen(R.dimen.pd_scan_profile_image_dimen, R.dimen.pd_scan_profile_image_dimen)
+                .dontAnimate()
+//                .override(R.dimen.pd_scan_profile_image_dimen, R.dimen.pd_scan_profile_image_dimen)
                 .into(userProfilePicture);
 
 
@@ -132,9 +137,10 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
         //media image
         ImageView mediaImage = (ImageView) PDScanSuccess.findViewById(R.id.image_media_url);
-        Picasso.with(this)
+        Glide.with(this)
                 .load(pdbgScanResponseModel.getMediaUrl())
-                .fit()
+                .fitCenter()
+                .dontAnimate()
                 .into(mediaImage);
 
 
@@ -189,15 +195,15 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
         String facebookAccessToken = null, twitterAccessToken = null, twitterAccessSecret = null, instagramAccessToken = null;
 
-        if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase("facebook")){
+        if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase(PD_SOCIAL_MEDIA_TYPE_FACEBOOK)){
             facebookAccessToken = AccessToken.getCurrentAccessToken().getToken();
-        } else if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase("twitter")){
-            if (PDSocialUtils.isTwitterLoggedIn() && Twitter.getSessionManager().getActiveSession().getAuthToken().token != null
-                    && Twitter.getSessionManager().getActiveSession().getAuthToken().secret != null){
-                twitterAccessToken = Twitter.getSessionManager().getActiveSession().getAuthToken().token;
-                twitterAccessSecret = Twitter.getSessionManager().getActiveSession().getAuthToken().secret;
+        } else if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase(PD_SOCIAL_MEDIA_TYPE_TWITTER)){
+            if (PDSocialUtils.isTwitterLoggedIn() && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token != null
+                    && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret != null){
+                twitterAccessToken = TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token;
+                twitterAccessSecret = TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret;
             }
-        } else if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase("instagram")){
+        } else if (pdbgScanResponseModel.getNetwork().equalsIgnoreCase(PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)){
             Realm realm1 = Realm.getDefaultInstance();
             PDRealmUserDetails userDetails = realm1.where(PDRealmUserDetails.class).findFirst();
             if (userDetails.getUserInstagram() != null && userDetails.getUserInstagram().getAccessToken() != null && !userDetails.getUserInstagram().getAccessToken().isEmpty()){

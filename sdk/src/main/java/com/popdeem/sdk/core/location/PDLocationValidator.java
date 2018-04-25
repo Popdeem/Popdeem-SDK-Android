@@ -56,7 +56,8 @@ public class PDLocationValidator {
         }
 
         // Otherwise check all locations for reward to find closest and check
-        final float closestDistance = distanceToClosestLocation(reward.getLocations(), userLocation);
+
+        final float closestDistance = distanceToClosestLocation(new ArrayList<>(reward.getLocations()), userLocation);
         final float accuracy = userLocation.getAccuracy();
         final float checkAccuracy = accuracy > 750 ? accuracy : 500;
 

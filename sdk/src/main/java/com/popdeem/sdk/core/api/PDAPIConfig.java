@@ -38,12 +38,15 @@ public class PDAPIConfig {
     public static final String PD_STAGING_API_ENDPOINT = "http://api.staging.popdeem.com";  // Staging API Endpoint
     public static final String PD_LOCAL_API_ENDPOINT = "http://87f3a997.ngrok.io";
 
-    public static final String PD_API_ENDPOINT = PD_PROD_API_ENDPOINT;
+    public static String PD_API_ENDPOINT = PD_PROD_API_ENDPOINT;
+
+//    public static final String PD_API_ENDPOINT = PD_STAGING_API_ENDPOINT;
 
     private static final String API_PATH = "/api/";
     public static final String API_VERSION = "v2";
     public static final String PD_REWARDS_ENDPOINT = "/rewards";
     public static final String PD_USERS_ENDPOINT = "/users";
+    public static final String PD_CUSTOMER_ENDPOINT = "/customer";
 
     public static final String PD_USERS_PATH = API_PATH + API_VERSION + PD_USERS_ENDPOINT;
     public static final String PD_REWARDS_PATH = API_PATH + API_VERSION + PD_REWARDS_ENDPOINT;
@@ -53,6 +56,8 @@ public class PDAPIConfig {
     public static final String PD_CONNECT_SOCIAL_ACCOUNT = API_PATH + API_VERSION + PD_USERS_ENDPOINT + "/connect_social_account";
     public static final String PD_INIT_NON_SOCIAL_USER = API_PATH + API_VERSION + PD_USERS_ENDPOINT + "/init_non_social_user";
     public static final String PD_MOMENTS_PATH = API_PATH + API_VERSION + "/moments";
+    public static final String PD_CUSTOMER_PATH = API_PATH + API_VERSION + PD_CUSTOMER_ENDPOINT;
+
 
     public static final String PD_BRANDS_PATH = API_PATH + API_VERSION + "/brands";
 

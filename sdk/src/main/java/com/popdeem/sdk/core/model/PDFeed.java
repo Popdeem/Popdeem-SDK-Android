@@ -26,10 +26,12 @@ package com.popdeem.sdk.core.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 /**
  * Popdeem Feed Model Class
  */
-public class PDFeed {
+public class PDFeed extends RealmObject {
 
     private int userId;
     private String brandLogoUrlString;

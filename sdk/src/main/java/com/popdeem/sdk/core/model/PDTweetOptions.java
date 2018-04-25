@@ -31,8 +31,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.popdeem.sdk.core.realm.PDRealmTweetOptions;
 
 import java.lang.reflect.Type;
+
+import io.realm.RealmObject;
 
 /**
  * Created by mikenolan on 12/11/2015.
@@ -67,6 +70,15 @@ public class PDTweetOptions {
         this.prefilledMessage = prefilledMessage;
         this.forcedTag = forcedTag;
         this.includeDownloadLink = includeDownloadLink;
+    }
+
+    public PDTweetOptions(PDRealmTweetOptions pdTweetOptions) {
+        this.prefill = pdTweetOptions.isPrefill();
+        this.forceTag = pdTweetOptions.isForceTag();
+        this.freeForm = pdTweetOptions.isFreeForm();
+        this.prefilledMessage = pdTweetOptions.getPrefilledMessage();
+        this.forcedTag = pdTweetOptions.getForcedTag();
+        this.includeDownloadLink = pdTweetOptions.getIncludeDownloadLink();
     }
 
     public boolean isPrefill() {

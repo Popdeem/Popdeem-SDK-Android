@@ -48,7 +48,7 @@ public class PDAbraConfig {
     public static final String ABRA_PROPERTYVALUE_PAGE_LOGINTAKEOVER = "Login Takeover";
     public static final String ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME = "Rewards Home";
     public static final String ABRA_PROPERTYVALUE_PAGE_ACTIVITY_FEED = "Activity Feed";
-    public static final String ABRA_PROPERTYVALUE_PAGE_WALLET = "Wallet";
+    public static final String ABRA_PROPERTYVALUE_PAGE_WALLET = "Profile";
     public static final String ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_ONE = "Instagram Tutorial Module One";
     public static final String ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_TWO = "Instagram Tutorial Module Two";
     public static final String ABRA_PROPERTYVALUE_PAGE_CONNECT_INSTAGRAM = "Connect Instagram Module";
@@ -139,6 +139,7 @@ public class PDAbraConfig {
     public static final String ABRA_USER_TRAITS_COUNTRY_CODE = "country_code";
     public static final String ABRA_USER_TRAITS_REGION = "region";
     public static final String ABRA_USER_TRAITS_TIME_ZONE = "time_zone";
+    public static final String ABRA_USER_TRAITS_IP = "ip";
     public static final String ABRA_USER_TRAITS_PUSH_NOTIFICATIONS_ENABLED = "push_notifications_enabled";
 
     public static final String ABRA_PROPERTYNAME_ERROR = "Error";

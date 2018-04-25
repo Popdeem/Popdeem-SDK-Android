@@ -28,7 +28,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.popdeem.sdk.R;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
@@ -51,9 +53,10 @@ public class PDUIFeedImageActivity extends PDBaseActivity {
             mImageView.post(new Runnable() {
                 @Override
                 public void run() {
-                    Picasso.with(PDUIFeedImageActivity.this)
+                    Glide.with(PDUIFeedImageActivity.this)
                             .load(imageUrl)
-                            .resize(mImageView.getWidth(), 0)
+                            .dontAnimate()
+//                            .override(mImageView.getWidth(), 1)
                             .into(mImageView);
                 }
             });

@@ -25,6 +25,7 @@
 package com.popdeem.sdk.uikit.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,10 +69,14 @@ import okhttp3.Response;
  */
 public class PDUIInstagramLoginFragment extends Fragment {
 
+    private boolean notCanceled = false;
+
     public interface PDInstagramLoginCallback {
         void loggedIn(PDInstagramResponse response);
 
         void error(String message);
+
+        void canceled();
     }
 
     public static PDUIInstagramLoginFragment newInstance(@NonNull PDInstagramLoginCallback callback) {
@@ -189,6 +194,7 @@ public class PDUIInstagramLoginFragment extends Fragment {
                         public void run() {
                             PDLog.e(getClass(), "error:" + e.getLocalizedMessage());
                             mCallback.error(e.getLocalizedMessage());
+                            notCanceled = true;
                             removeThisFragment();
                         }
                     });
@@ -207,6 +213,7 @@ public class PDUIInstagramLoginFragment extends Fragment {
                                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                                     .create();
                             PDInstagramResponse instagramResponse = gson.fromJson(responseBody, PDInstagramResponse.class);
+                            notCanceled = true;
                             mCallback.loggedIn(instagramResponse);
                             removeThisFragment();
                         }
@@ -214,6 +221,14 @@ public class PDUIInstagramLoginFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        if(!notCanceled){
+            mCallback.canceled();
+        }
+        super.onPause();
     }
 
     private class InstagramWebViewClient extends WebViewClient {

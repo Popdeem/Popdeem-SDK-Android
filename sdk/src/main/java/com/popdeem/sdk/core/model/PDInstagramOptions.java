@@ -24,6 +24,10 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.popdeem.sdk.core.realm.PDRealmInstagramOptions;
+
+import io.realm.RealmObject;
+
 /**
  * Created by mikenolan on 04/08/16.
  */
@@ -57,6 +61,15 @@ public class PDInstagramOptions {
         this.prefilledMessage = prefilledMessage;
         this.forcedTag = forcedTag;
         this.includeDownloadLink = includeDownloadLink;
+    }
+
+    public PDInstagramOptions(PDRealmInstagramOptions pdOptions) {
+        this.prefill = pdOptions.isPrefill();
+        this.forceTag = pdOptions.isForceTag();
+        this.freeForm = pdOptions.isFreeForm();
+        this.prefilledMessage = pdOptions.getPrefilledMessage();
+        this.forcedTag = pdOptions.getForcedTag();
+        this.includeDownloadLink = pdOptions.getIncludeDownloadLink();
     }
 
     public boolean isPrefill() {

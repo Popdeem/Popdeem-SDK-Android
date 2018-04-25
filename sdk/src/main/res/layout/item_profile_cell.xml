@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/pd_logged_in_view"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingTop="10dp">
+
+        <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
+            android:id="@+id/pd_feed_profile_image_view"
+            android:layout_width="@dimen/pd_feed_profile_image_dimen"
+            android:layout_height="@dimen/pd_feed_profile_image_dimen"
+            android:src="@drawable/pduikit_default_user"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:maskDrawable="@drawable/circle_mask" />
+
+        <TextView
+            android:id="@+id/pd_feed_user_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pd_feed_item_name_text_color"
+            android:textStyle="bold"
+            tools:text="Hello, world" />
+
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+    <com.popdeem.sdk.uikit.widget.PDAmbassadorView
+        android:id="@+id/pd_profile_ambassador_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:clickable="true"
+        android:id="@+id/pd_connect_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <TextView
+            android:clickable="false"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:text="@string/pd_profile_connect_text"
+            android:textSize="@dimen/social_login_sign_in_button_text_size" />
+
+        <ImageView
+            android:clickable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pduikit_arrow" />
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:clickable="true"
+        android:id="@+id/pd_messages_layout"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pd_messages_text"
+            android:clickable="false"
+            android:padding="12dp"
+            android:textSize="@dimen/social_login_sign_in_button_text_size"
+            android:text="@string/pd_profile_messages_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/pd_badge_text"
+            android:clickable="false"
+            android:padding="3dp"
+            android:textSize="15sp"
+            android:minHeight="25dp"
+            android:minWidth="25dp"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/badge_text_color"
+            android:background="@drawable/badge_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:clickable="false"
+            android:src="@drawable/pduikit_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <include layout="@layout/view_pd_divider" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="false"
+        android:paddingLeft="24dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:text="My History"
+        android:textAllCaps="true"
+        android:textSize="@dimen/social_login_body_text_size" />
+
+    <TextView
+        android:id="@+id/version_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="false"
+        android:paddingLeft="24dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:text="V"
+        android:textAllCaps="true"
+        android:textSize="8dp" />
+
+    <LinearLayout
+        android:id="@+id/pd_wallet_no_items_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/view_pd_divider" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/pd_wallet_no_items_text"
+            android:textColor="@color/pd_wallet_no_rewards_text_color"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

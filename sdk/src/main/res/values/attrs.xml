@@ -30,4 +30,13 @@
         <attr name="desaturateOnPress" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="BadgedTabLayout">
+        <attr name="badgeTextColor" format="color" />
+        <attr name="badgeTextSize" format="dimension" />
+        <attr name="badgeSelectedTextColor" format="color" />
+        <attr name="badgeBackgroundColor" format="color" />
+        <attr name="badgeSelectedBackgroundColor" format="color" />
+        <attr name="tabTextSize" format="dimension" />
+    </declare-styleable>
+
 </resources>

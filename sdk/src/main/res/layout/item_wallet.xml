@@ -29,7 +29,19 @@
     android:background="@color/pd_wallet_item_background_color"
     android:minHeight="90dp"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <ImageView
+        android:id="@+id/chevron"
+        android:clickable="false"
+        android:visibility="gone"
+        android:src="@drawable/pduikit_arrow"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/pd_wallet_brand_image_view"
@@ -47,14 +59,21 @@
         android:src="@drawable/pd_ui_star_icon" />
 
     <FrameLayout
+        android:background="@color/pd_wallet_item_background_color"
         android:id="@+id/pd_wallet_verify_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:minHeight="60dp"
+        android:minHeight="90dp"
+        android:visibility="visible"
         android:minWidth="50dp">
+
+        <FrameLayout
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
 
         <Button
             android:id="@+id/pd_wallet_verify_button"
@@ -107,6 +126,8 @@
             tools:text="@string/pd_wallet_redeem_text" />
 
     </LinearLayout>
+
+
 
 
 </RelativeLayout>

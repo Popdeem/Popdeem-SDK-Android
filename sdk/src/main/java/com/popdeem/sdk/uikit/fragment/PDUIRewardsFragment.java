@@ -32,8 +32,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,10 +54,12 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.comparator.PDRewardComparator;
 import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.model.PDFeed;
 import com.popdeem.sdk.core.model.PDLocation;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
+import com.popdeem.sdk.core.realm.PDRealmReward;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.realm.PDRealmUserLocation;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -65,6 +69,7 @@ import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
@@ -76,6 +81,9 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
+
+import static com.popdeem.sdk.uikit.utils.PDUIImageUtils.deleteDirectoryTree;
 
 /**
  * Created by mikenolan on 19/02/16.
@@ -98,6 +106,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     private boolean mUpdatingDistances = false;
 
     private boolean isSocialAccountLoggedIn = false;
+    private boolean hasBeenClicked = false;
 
     public PDUIRewardsFragment() {
     }
@@ -120,28 +129,40 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             mRecyclerViewAdapter.setOnItemClickListener(new PDUIRewardsRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(final View view) {
-//                    performRewardClick(view);
-                    if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn()) && PDUtils.getUserToken() != null) {
-                        performRewardClick(view);
-                    } else {
-                        PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+                    if (!hasBeenClicked) {
+                        hasBeenClicked = true;
+                        new Handler().postDelayed(new Runnable() {
                             @Override
-                            public void success(Boolean aBoolean) {
-                                if (aBoolean && PDUtils.getUserToken() != null) {
-                                    performRewardClick(view);
-                                } else {
-                                    if (PDPreferencesUtils.getIsMultiLoginEnabled(getActivity())) {
-                                        PopdeemSDK.showSocialMultiLogin(getActivity());
-                                    } else
-                                        PopdeemSDK.showSocialLogin(getActivity());
+                            public void run() {
+                                hasBeenClicked = false;
+                            }
+                        },2000);
+//                        performRewardClick(view);
+
+                        if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn() || PDSocialUtils.isInstagramLoggedIn()) && PDUtils.getUserToken() != null) {
+                            performRewardClick(view);
+                        } else {
+                            PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
+                                @Override
+                                public void success(Boolean aBoolean) {
+                                    if ((aBoolean || PDSocialUtils.isInstagramLoggedIn()) && PDUtils.getUserToken() != null) {
+                                        performRewardClick(view);
+                                    } else {
+                                        if (PDPreferencesUtils.getIsMultiLoginEnabled(getActivity())) {
+                                            PopdeemSDK.showSocialMultiLogin(getActivity(), mRewards);
+                                        } else
+                                            PopdeemSDK.showSocialLogin(getActivity(), mRewards);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void failure(int statusCode, Exception e) {
-
-                            }
-                        });
+                                @Override
+                                public void failure(int statusCode, Exception e) {
+                                    if (PDSocialUtils.isInstagramLoggedIn() && PDUtils.getUserToken() != null) {
+                                        performRewardClick(view);
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
             });
@@ -149,7 +170,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setNestedScrollingEnabled(true);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_reward_list_divider_color));
+//            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_reward_list_divider_color));
             recyclerView.setAdapter(mRecyclerViewAdapter);
 
             mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
@@ -161,6 +182,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 }
             });
 
+            loadList();
             refreshRewards();
 
             mLocationManager = new PDLocationManager(getActivity());
@@ -175,7 +197,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     @Override
     public void onResume() {
         super.onResume();
+        hasBeenClicked = false;
         getActivity().registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PD_LOGGED_IN_RECEIVER_FILTER));
+
     }
 
     @Override
@@ -238,20 +262,24 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                 } else {
                     mRewards.remove(position);
                     mRecyclerViewAdapter.notifyItemRemoved(position);
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.pd_claim_reward_claimed_text)
-                            .setMessage(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
-                            .setPositiveButton(R.string.pd_go_to_wallet_text, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
-                                        PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
-                                        parent.switchToWallet();
-                                    }
-                                }
-                            })
-                            .create()
-                            .show();
+//                    new AlertDialog.Builder(getActivity())
+//                            .setTitle(R.string.pd_claim_reward_claimed_text)
+//                            .setMessage(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_claim_sweepstakes_claimed_success_text : R.string.pd_claim_reward_claimed_success_text)
+//                            .setPositiveButton(R.string.pd_go_to_wallet_text, new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+//                                        PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+//                                        parent.switchToWallet();
+//                                    }
+//                                }
+//                            })
+//                            .create()
+//                            .show();
+                    if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+                        PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+                        parent.switchToWallet();
+                    }
                 }
             }
 
@@ -269,6 +297,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     }
 
     private void refreshRewards() {
+//
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -278,41 +307,69 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         PDAPIClient.instance().getAllRewards(new PDAPICallback<ArrayList<PDReward>>() {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
-                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
-                mRewards.clear();
-                mRewards.addAll(pdRewards);
-                mRecyclerViewAdapter.notifyDataSetChanged();
-                noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
 
-                if (mLocation == null) {
-                    Realm realm = Realm.getDefaultInstance();
-                    PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
-                    if (userLocation != null) {
-                        mLocation = new Location("");
-                        mLocation.setLongitude(userLocation.getLongitude());
-                        mLocation.setLatitude(userLocation.getLatitude());
+                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(PDRealmReward.class);
                     }
-                    realm.close();
+                });
+
+                for (int i = 0; i < pdRewards.size(); i++) {
+                    realm.beginTransaction();
+                    realm.copyToRealm(new PDRealmReward(pdRewards.get(i)));
+                    realm.commitTransaction();
                 }
 
-                updateListDistances(mLocation);
-                mSwipeRefreshLayout.setRefreshing(false);
+                loadList();
             }
 
             @Override
             public void failure(int statusCode, Exception e) {
                 mSwipeRefreshLayout.setRefreshing(false);
+                loadList();
             }
         });
+    }
+
+    public void loadList(){
+
+        Realm realm = Realm.getDefaultInstance();
+
+        mRewards.clear();
+        RealmResults<PDRealmReward> results = realm.where(PDRealmReward.class).findAll();
+
+        for (int i = 0; i < results.size(); i++) {
+            mRewards.add(new PDReward(results.get(i)));
+        }
+
+        mRecyclerViewAdapter.notifyDataSetChanged();
+        noItemsView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+        if (mLocation == null) {
+            PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
+            if (userLocation != null) {
+                mLocation = new Location("");
+                mLocation.setLongitude(userLocation.getLongitude());
+                mLocation.setLatitude(userLocation.getLatitude());
+            }
+        }
+        updateListDistances(mLocation);
+        mSwipeRefreshLayout.setRefreshing(false);
+        realm.close();
+
     }
 
     private void updateListDistances(final Location location) {
         if (location == null || mUpdatingDistances) {
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
                 mUpdatingDistances = true;
                 Location rewardLocation;
                 for (PDReward reward : mRewards) {
@@ -358,8 +415,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                     }
                 }
                 mUpdatingDistances = false;
-            }
-        }).start();
+//            }
+//        }).start();
     }
 
     private final BroadcastReceiver mLoggedInBroadcastReceiver = new BroadcastReceiver() {
@@ -368,6 +425,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
             refreshRewards();
             isSocialAccountLoggedIn = true;
+            PDUIGratitudeDialog.showGratitudeDialog(context, "logged_in");
+
         }
     };
 
@@ -378,16 +437,35 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             // Reward claimed successfully. Remove from list.
             String id = data.getStringExtra("id");
             if (id != null) {
+                PDReward reward = null;
                 for (Iterator<PDReward> it = mRewards.iterator(); it.hasNext(); ) {
                     PDReward r = it.next();
                     if (r.getId().equalsIgnoreCase(id)) {
                         int position = mRewards.indexOf(r);
                         it.remove();
+                        Realm realm = Realm.getDefaultInstance();
+                        RealmResults<PDRealmReward> results = realm.where(PDRealmReward.class).findAll();
+                        for (int i = 0; i < results.size(); i++) {
+                            if(results.get(i).getId().equalsIgnoreCase(id)){
+                                reward = r;
+                                realm.beginTransaction();
+                                results.get(i).deleteFromRealm();
+                                realm.commitTransaction();
+                                i = results.size();
+                            }
+                        }
                         mRecyclerViewAdapter.notifyItemRemoved(position);
+                        if(mRewards.size() == 0){
+                            noItemsView.setVisibility(View.GONE);
+                        }
                         break;
                     }
                 }
+                PDUIGratitudeDialog.showGratitudeDialog(getActivity(), "share", reward);
+            }else {
+                PDUIGratitudeDialog.showGratitudeDialog(getActivity(), "share");
             }
+
             if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
                 PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
                 parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);

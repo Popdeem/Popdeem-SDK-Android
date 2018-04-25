@@ -26,7 +26,7 @@
 <resources>
 
     <!-- Social Login -->
-    <dimen name="social_login_padding">30dp</dimen>
+    <dimen name="social_login_padding">20dp</dimen>
     <dimen name="social_login_sign_in_button_text_size">20sp</dimen>
     <dimen name="social_login_terms_text_size">11dp</dimen>
     <dimen name="social_login_body_text_size">15sp</dimen>

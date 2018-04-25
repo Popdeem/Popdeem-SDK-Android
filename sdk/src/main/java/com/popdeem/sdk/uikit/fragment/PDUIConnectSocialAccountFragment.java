@@ -107,6 +107,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     private PDLocationManager mLocationManager;
     private Location location;
     private boolean mAskForPermission = true;
+    private boolean fromSettings;
 
     /**
      * Callback for result
@@ -133,8 +134,21 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
      * @return Instance of PDUIConnectSocialAccountFragment
      */
     public static PDUIConnectSocialAccountFragment newInstance(@PDConnectSocialAccountType int type, @NonNull PDUIConnectSocialAccountCallback accountConnectedCallback) {
+        return newInstance(type, false, accountConnectedCallback);
+    }
+    /**
+     * Create a new instance of PDUIConnectSocialAccountFragment.
+     *
+     * @param type                     PDConnectSocialAccountType
+     * @param fromSettings             Boolean for determining display text
+     * @param accountConnectedCallback callback to Activity
+     * @return Instance of PDUIConnectSocialAccountFragment
+     */
+    public static PDUIConnectSocialAccountFragment newInstance(@PDConnectSocialAccountType int type, Boolean fromSettings, @NonNull PDUIConnectSocialAccountCallback accountConnectedCallback) {
         Bundle args = new Bundle();
         args.putInt("type", type);
+        if(fromSettings)
+            args.putBoolean("fromSettings", true);
 
         PDUIConnectSocialAccountFragment fragment = new PDUIConnectSocialAccountFragment();
         fragment.setAccountConnectedCallback(accountConnectedCallback);
@@ -160,6 +174,9 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         Bundle args = getArguments();
         if (args != null) {
             mType = args.getInt("type", PD_CONNECT_TYPE_FACEBOOK);
+            if(args.containsKey("fromSettings")){
+                fromSettings = args.getBoolean("fromSettings");
+            }
         }
         mLocationManager = new PDLocationManager(getActivity());
         mCallbackManager = CallbackManager.Factory.create();
@@ -198,6 +215,9 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         } else if (mType == PD_CONNECT_TYPE_INSTAGRAM) {
             network = getString(R.string.pd_connect_instagram_title);
         }
+        if(fromSettings){
+            return getString(R.string.pd_connect_dialog_message_text_settings, network, network);
+        }
         return getString(R.string.pd_connect_dialog_message_text, network);
     }
 
@@ -213,6 +233,9 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     }
 
     private String getButtonText() {
+        if(fromSettings){
+            return getString(R.string.pd_connect_dialog_button_text_settings);
+        }
         String network = "";
         if (mType == PD_CONNECT_TYPE_FACEBOOK) {
             network = getString(R.string.pd_connect_facebook_title);
@@ -439,6 +462,11 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                         @Override
                         public void error(String message) {
                             showGenericAlert();
+                        }
+
+                        @Override
+                        public void canceled() {
+
                         }
                     });
                     final int containerId = ((ViewGroup) getView().getParent()).getId();

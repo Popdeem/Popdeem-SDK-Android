@@ -124,7 +124,7 @@ public class PopdeemAPITest {
 
     @Test
     public void testFeedsAPI() {
-        buildRestAdapter(new GsonConverter(new GsonBuilder().registerTypeAdapter(PDFeedsDeserializer.FEEDS_TYPE, new PDFeedsDeserializer()).create())).create(PopdeemAPI.class).getFeeds("", new Callback<ArrayList<PDFeed>>() {
+        buildRestAdapter(new GsonConverter(new GsonBuilder().registerTypeAdapter(PDFeedsDeserializer.FEEDS_TYPE, new PDFeedsDeserializer()).create())).create(PopdeemAPI.class).getFeeds(new Callback<ArrayList<PDFeed>>() {
             @Override
             public void success(ArrayList<PDFeed> feed, Response response) {
                 Log.i(TAG, "" + feed.size());

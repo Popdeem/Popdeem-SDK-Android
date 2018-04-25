@@ -26,7 +26,7 @@
     android:shape="rectangle">
 
     <solid android:color="@color/pd_twitter_blue" />
-    <corners android:radius="10dp" />
+    <corners android:radius="@dimen/pd_button_corner_radius" />
     <stroke
         android:width="1dp"
         android:color="@color/pd_twitter_blue" />

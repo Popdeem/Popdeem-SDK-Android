@@ -26,9 +26,17 @@
     <string name="pd_social_login_tagline_text">New: Social Rewards</string>
     <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
 
+    <!--Profile-->
+    <string name="pd_profile_bronze_ambassador">🥉\nBronze\nAmbassador</string>
+    <string name="pd_profile_silver_ambassador">🥈\nSilver\nAmbassador</string>
+    <string name="pd_profile_gold_ambassador">🥇\nGold\nAmbassador</string>
+    <string name="pd_profile_connect_text">Connect Social Media Accounts</string>
+    <string name="pd_profile_messages_text">Messages</string>
+    <string name="pd_profile_history_text">MY HISTORY</string>
+
 
     <!-- Home Flow -->
-    <string name="pd_home_banner_text">Share your Popdeem experience on social networks to earn more rewards.</string>
+    <string name="pd_home_banner_text">Share your #RibsandBurgers experience on social networks to earn more rewards.</string>
 
 
     <!-- Settings -->
@@ -43,7 +51,7 @@
     <!-- Tab Titles -->
     <string name="pd_rewards_title">Rewards</string>
     <string name="pd_activity_title">Activity</string>
-    <string name="pd_wallet_title">Wallet</string>
+    <string name="pd_wallet_title">Profile</string>
     <string-array name="home_flow_tab_titles">
         <item>@string/pd_rewards_title</item>
         <item>@string/pd_activity_title</item>
@@ -77,7 +85,9 @@
 
     <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
     <string name="pd_claim_action_photo">Photo required</string>
+    <string name="pd_claim_action_photo_camera">📸 Photo Required</string>
     <string name="pd_claim_action_none">No Action Required</string>
+    <string name="pd_claim_action_social_login">Social Login</string>
     <string name="pd_claim_action_checkin">Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
@@ -118,14 +128,14 @@
     <string name="pd_wallet_credit_reward_text">was added to your account on</string>
     <string name="pd_wallet_recurs_monthly">Draw takes place monthly.</string>
     <string name="pd_wallet_recurs_day">Draw takes place on</string>
-    <string name="pd_wallet_coupon_info_message_text">- Once you\'re ready to redeem your reward, tap \"Redeem\".\n\n- After tapping \"Redeem\" you have %1$s minutes to get the reward.\n\n- You must show the cashier the following screen within %2$s minutes.</string>
+    <string name="pd_wallet_coupon_info_message_text">You will be presented with a countdown timer you must show the merchant.</string>
     <string name="pd_redeem_sweepstake_reward_info_title_string">Sweepstake Reward</string>
     <string name="pd_redeem_sweepstake_reward_info_message_string">- You are now in the draw.\n\n- You will be notified if you are the winner.</string>
     <string name="pd_redeem_sweepstake_reward_no_date_message_string">\n\n- There is no date set for this draw.</string>
     <string name="pd_draw_takes_place_in_string">Draw takes place in</string>
     <string name="pd_wallet_verify_button_text">Verify</string>
-    <string name="pd_wallet_reward_must_be_verified_text">Press verify to claim your reward.</string>
-    <string name="pd_wallet_sweepstake_must_be_verified_text">Press verify to enter into the competition.</string>
+    <string name="pd_wallet_reward_must_be_verified_text">This reward must be verified.</string>
+    <string name="pd_wallet_sweepstake_must_be_verified_text">This reward must be verified.</string>
     <string name="pd_wallet_redeem_text">Redeem at the point of sale.</string>
     <string name="pd_wallet_sweepstakes_text">You have been entered into the draw.</string>
 
@@ -142,7 +152,7 @@
 
     <string name="pd_are_you_sure_string">Are you sure?</string>
     <string name="pd_redeem_button_string">Redeem</string>
-    <string name="pd_redeem_reward_info_title_string">How to Redeem</string>
+    <string name="pd_redeem_reward_info_title_string">Redeem Reward Now?</string>
 
     <string name="pd_redeem_info_text">Share this screen at the location\nbefore the timer runs out</string>
     <string name="pd_redeem_done_text">Done</string>
@@ -178,9 +188,9 @@
 
 
     <!-- Social Strings -->
-    <string name="pd_log_in_with_facebook_text">Sign in with Facebook</string>
-    <string name="pd_log_in_with_twitter_text">Sign in with Twitter</string>
-    <string name="pd_log_in_with_instagram_text">Sign in with Instagram</string>
+    <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
+    <string name="pd_log_in_with_twitter_text">Log in with Twitter</string>
+    <string name="pd_log_in_with_instagram_text">Log in with Instagram</string>
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
@@ -191,7 +201,9 @@
     <string name="pd_connect_twitter_title">Twitter</string>
     <string name="pd_connect_instagram_title">Instagram</string>
     <string name="pd_connect_dialog_message_text">You must connect your %1s account to claim this reward</string>
+    <string name="pd_connect_dialog_message_text_settings">Connect your %1s account to claim %1s rewards</string>
     <string name="pd_connect_dialog_button_text">Connect %1s Account</string>
+    <string name="pd_connect_dialog_button_text_settings">Continue</string>
 
 
     <!-- Misc Strings -->
@@ -217,7 +229,66 @@
     <string name="pd_scan_success_user_name">Dave Hannan</string>
 
     <string name="pd_claim_text">Claim Reward</string>
+    <string name="pd_claim_back_text">Back to Reward</string>
     <string name="pd_back_to_reward">Back to Reward</string>
+    <string name="pd_gratitude_thanks_text"  formatted="false">Thanks for sharing. You earned an additional %s points to your account and moved up in status</string>
+    <string name="pd_gratitude_thanks_for_connecting">Welcome</string>
+    <string name="pd_gratitude_title">You\'re Brilliant!</string>
+    <string name="pd_gratitude_share_text">Thanks for sharing, your reward has been added to your profile. Enjoy!</string>
+    <string name="pd_gratitude_share_text_coupon" formatted="false">Thanks for sharing. %s has been added to your account. Enjoy!</string>
+    <string name="pd_gratitude_unlock_offers_text">Unlock new rewards and VIP offers as you move up in status.</string>
+    <string name="pd_gratitude_go_to_profile_button">Go to Profile</string>
+
+    <!--Gratitude-->
+    <string name="pd_gratitude_share_body_text" formatted="false">Thanks for sharing. You earned an additional %s points to your account and moved up in status.</string>
+    <string name="pd_gratitude_connect_body_text" formatted="false">You earned %s points for connecting. Share photo’s with #RibsandBurgers to earn additional rewards!</string>
+    <string name="pd_unlocked_reward_text">Hey Richard, we found your post with #hashtag. Thanks for sharing! You have unlocked your reward!</string>
+
+    <!--Events-->
+
+    <string name="pd_event_emoji_0">🏅</string>
+    <string name="pd_event_emoji_1">🥉</string>
+    <string name="pd_event_emoji_2">🥈</string>
+    <string name="pd_event_emoji_3">🥇</string>
+    <string name="pd_tier_1_name">Bronze</string>
+    <string name="pd_tier_2_name">Silver</string>
+    <string name="pd_tier_3_name">Gold</string>
+    <string name="pd_event_congrats_1">Congratulations, you earned</string>
+    <string name="pd_event_congrats_2">ambassador status</string>
+    <string name="pd_event_now">You are now a</string>
+    <string name="pd_event_now_2">ambassador</string>
+
+    <string name="content_authority">com.popdeem.sdk</string>
+
+
+
+    <string-array name="pd_gratuity_strings_login_title">
+    </string-array>
+
+
+    <string-array name="pd_gratuity_strings_login_body">
+    </string-array>
+
+
+    <string-array name="pd_gratuity_strings_share_coupon_title">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_coupon_body">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_credit_title">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_credit_body">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_sweepstake_title">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_sweepstake_body">
+    </string-array>
+
+
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
     <!--<string name="title_activity_pduiwallet_image">Image</string>-->

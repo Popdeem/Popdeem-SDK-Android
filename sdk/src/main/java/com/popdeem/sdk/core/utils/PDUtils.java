@@ -89,6 +89,21 @@ public class PDUtils {
     }
 
 
+//    /**
+//     * Get User from Realm DB
+//     *
+//     * @return User object, null if none is saved
+//     */
+//    public static synchronized PDUser getUser() {
+//        Realm realm = Realm.getDefaultInstance();
+//        final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+//        String token = userDetails == null ? null : userDetails.getUserToken();
+//
+//        PDUser user = PDRealmUserDetails.
+//        realm.close();
+//        return token;
+//    }
+
     /**
      * Get User Token from Realm DB
      *

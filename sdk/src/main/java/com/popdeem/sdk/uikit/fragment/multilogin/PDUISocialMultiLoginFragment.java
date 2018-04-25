@@ -5,7 +5,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,14 +26,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -38,6 +55,7 @@ import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.interfaces.PDFragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
+import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -49,6 +67,7 @@ import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
+import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -56,6 +75,7 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.realm.Realm;
@@ -65,6 +85,8 @@ import io.realm.Realm;
  * Project: Popdeem-SDK-Android
  */
 
+
+//TODO: put in social reward
 public class PDUISocialMultiLoginFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = PDUISocialMultiLoginFragment.class.getSimpleName();
@@ -76,6 +98,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     private PDLocationManager mLocationManager;
 
     private ProgressBar mProgressFacebook;
+    private LinearLayout progressView;
 
     private TextView mRewardsInfoTextView;
 
@@ -94,12 +117,19 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     private Location location;
 
     private PDFragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
+    private ArrayList<PDReward> rewards;
 
     public PDUISocialMultiLoginFragment() {
     }
 
     public static PDUISocialMultiLoginFragment newInstance() {
         return new PDUISocialMultiLoginFragment();
+    }
+
+    public static PDUISocialMultiLoginFragment newInstance(ArrayList<PDReward> rewards) {
+        PDUISocialMultiLoginFragment frag = new PDUISocialMultiLoginFragment();
+        frag.rewards = rewards;
+        return frag;
     }
 
     @Override
@@ -110,6 +140,48 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         registerCallBacks();
         setupBackButton();
         setupSocialButtons();
+        view.findViewById(R.id.pd_login_reward_layout).setVisibility(View.GONE);
+        view.findViewById(R.id.pd_login_text_description).setVisibility(View.VISIBLE);
+        if (rewards != null){
+            final ImageView logoImageView = (ImageView) view.findViewById(R.id.pd_reward_star_image_view);
+
+            for (int i = 0; i < rewards.size(); i++) {
+                if(rewards.get(i).getAction().equalsIgnoreCase("social_login")) {
+                    final String imageUrl = rewards.get(i).getCoverImage();
+                    if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
+                        Glide.with(getActivity())
+                                .load(R.drawable.pd_ui_star_icon)
+                                .error(R.drawable.pd_ui_star_icon)
+                                .dontAnimate()
+                                .placeholder(R.drawable.pd_ui_star_icon)
+                                .into(logoImageView);
+                    } else {
+                        Glide.with(getActivity())
+                                .load(imageUrl)
+                                .error(R.drawable.pd_ui_star_icon)
+                                .dontAnimate()
+                                .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
+                                .placeholder(R.drawable.pd_ui_star_icon)
+                                .into(logoImageView);
+                    }
+
+                    // Reward Description
+                    TextView textView = (TextView) view.findViewById(R.id.pd_reward_offer_text_view);
+                    textView.setText(rewards.get(i).getDescription());
+
+                    // Rules
+                    textView = (TextView) view.findViewById(R.id.pd_reward_item_rules_text_view);
+                    textView.setText(rewards.get(i).getRules());
+                    if (rewards.get(i).getRules() == null || rewards.get(i).getRules().isEmpty()) {
+                        textView.setVisibility(View.GONE);
+                    }
+                    view.findViewById(R.id.pd_login_reward_layout).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.pd_login_text_description).setVisibility(View.GONE);
+
+                    break;
+                }
+            }
+        }
 
 
         return view;
@@ -119,6 +191,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public void onResume() {
         super.onResume();
+
         PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
                 .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_LOGINTAKEOVER)
                 .create());
@@ -136,6 +209,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                mProgressFacebook.setVisibility(View.VISIBLE);
+                progressView.setVisibility(View.VISIBLE);
                 mFacebookLoginButton.setText(R.string.pd_log_out_facebook_text);
                 PDLog.d(PDUISocialMultiLoginFragment.class, "Facebook Login onSuccess(): " + loginResult.getAccessToken().getToken());
                 checkForLocationPermissionAndStartLocationManager();
@@ -145,6 +220,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             public void onCancel() {
                 PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CANCELLED_FACEBOOK_LOGIN, null);
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
+                progressView.setVisibility(View.GONE);
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.pd_common_facebook_login_cancelled_title_text)
                         .setMessage(R.string.pd_common_facebook_login_cancelled_message_text)
@@ -156,6 +232,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             @Override
             public void onError(FacebookException error) {
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
+                progressView.setVisibility(View.GONE);
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.pd_common_sorry_text)
                         .setMessage(error.getMessage())
@@ -188,12 +265,14 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 LoginManager.getInstance().logOut();
 
             mProgressFacebook.setVisibility(View.GONE);
+            progressView.setVisibility(View.GONE);
+
             mFacebookLoginButton.setVisibility(View.VISIBLE);
             mTwitterLoginButton.setVisibility(View.VISIBLE);
             mInstaLoginButton.setVisibility(View.VISIBLE);
             mFacebookLoginButton.setText(R.string.pd_log_in_with_facebook_text);
             mTwitterLoginButton.setText(R.string.pd_log_in_with_twitter_text);
-            mFacebookLoginButton.setText(R.string.pd_log_in_with_instagram_text);
+            mInstaLoginButton.setText(R.string.pd_log_in_with_instagram_text);
 
             new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.pd_common_sorry_text)
@@ -215,8 +294,48 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         mTwitterLoginButton.setOnClickListener(this);
         mInstaLoginButton = (Button) view.findViewById(R.id.pd_instagram_login_button);
         mInstaLoginButton.setOnClickListener(this);
+        mInstaLoginButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mInstaLoginButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mInstaLoginButton.setBackground(getRoundedInstagramButton());
+                }else{
+                    mInstaLoginButton.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    mInstaLoginButton.setBackgroundDrawable(getRoundedInstagramButton());
+
+                }
+            }
+        });
+
+        if(PDSocialUtils.getTwitterConsumerKey(getContext()) == null){
+            mTwitterLoginButton.setVisibility(View.GONE);
+        }
 
         mProgressFacebook = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
+        progressView = (LinearLayout) view.findViewById(R.id.pd_progress_layout);
+    }
+
+    public Drawable getRoundedInstagramButton() {
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pd_insta_button_v2);
+        Bitmap output = Bitmap.createBitmap(mInstaLoginButton.getWidth(), mInstaLoginButton.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(output);
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
+        final RectF rectF = new RectF(0, 0, output.getWidth(), output.getHeight());
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, r.getDisplayMetrics());
+        final float roundPx = px;
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return new BitmapDrawable(getResources(), output);
     }
 
 
@@ -259,7 +378,10 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
      * Facebook
      */
     private void loginFacebook() {
+
         if (PDLocationManager.isGpsEnabled(getActivity())) {
+            mProgressFacebook.setVisibility(View.VISIBLE);
+            progressView.setVisibility(View.VISIBLE);
             LoginManager.getInstance().logInWithReadPermissions(PDUISocialMultiLoginFragment.this, Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
         } else {
             new AlertDialog.Builder(getActivity())
@@ -289,6 +411,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                     Log.i(TAG, "success: Twitter Data present");
                     registerTwitterAccount(result.data);
                 } else {
+                    progressView.setVisibility(View.GONE);
                     showGenericAlert();
                 }
             }
@@ -296,6 +419,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             @Override
             public void failure(TwitterException e) {
                 if (getActivity() != null) {
+                    progressView.setVisibility(View.GONE);
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_claim_twitter_button_text, e.getMessage());
                 }
             }
@@ -319,6 +443,10 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
     private void loginInstagram() {
         if (PDSocialUtils.canUseInstagram()) {
+
+            mProgressFacebook.setVisibility(View.VISIBLE);
+            progressView.setVisibility(View.VISIBLE);
+
             PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
                 @Override
                 public void loggedIn(PDInstagramResponse response) {
@@ -328,7 +456,14 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
                 @Override
                 public void error(String message) {
+                    mProgressFacebook.setVisibility(View.VISIBLE);
+                    progressView.setVisibility(View.GONE);
                     showGenericAlert();
+                }
+
+                @Override
+                public void canceled() {
+                    progressView.setVisibility(View.GONE);
                 }
             });
             getFragmentManager().beginTransaction()
@@ -408,11 +543,11 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     private void startLocationManagerAfterLogin() {
-        mProgressFacebook.setVisibility(View.VISIBLE);
 
-        mFacebookLoginButton.setVisibility(View.INVISIBLE);
-        mTwitterLoginButton.setVisibility(View.INVISIBLE);
-        mInstaLoginButton.setVisibility(View.INVISIBLE);
+//
+//        mFacebookLoginButton.setVisibility(View.INVISIBLE);
+//        mTwitterLoginButton.setVisibility(View.INVISIBLE);
+//        mInstaLoginButton.setVisibility(View.INVISIBLE);
 
         mLocationManager.startLocationUpdates(new LocationListener() {
             @Override
@@ -545,22 +680,24 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     }
 
     private void updateViewAfterLogin() {
-        mProgressFacebook.setVisibility(View.GONE);
-        mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
-        mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
+//        mProgressFacebook.setVisibility(View.GONE);
+//        mRewardsInfoTextView = (TextView) view.findViewById(R.id.pd_social_rewards_info_text_view);
+//        mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
+//
+//        mFacebookLoginButton.setVisibility(View.GONE);
+//        mTwitterLoginButton.setVisibility(View.GONE);
+//        mInstaLoginButton.setVisibility(View.GONE);
+//
+//        mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
+//        mContinueButton.setVisibility(View.VISIBLE);
+//        mContinueButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                removeThisFragment();
+//            }
+//        });
 
-        mFacebookLoginButton.setVisibility(View.GONE);
-        mTwitterLoginButton.setVisibility(View.GONE);
-        mInstaLoginButton.setVisibility(View.GONE);
-
-        mContinueButton = (Button) view.findViewById(R.id.pd_social_continue_button);
-        mContinueButton.setVisibility(View.VISIBLE);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeThisFragment();
-            }
-        });
+        removeThisFragment();
     }
 
     @Override
@@ -569,6 +706,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         Log.i(TAG, "onActivityResult");
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            mProgressFacebook.setVisibility(View.VISIBLE);
+            progressView.setVisibility(View.VISIBLE);
             Log.i(TAG, "onActivityResult: twitter Auth Config");
             TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());
             loginButton.onActivityResult(requestCode, resultCode, data);
@@ -599,4 +738,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             communicator.fragmentDetached();
         }
     }
+
+    ////////////////////////////////////////////////////
+    // Generic Methods                               //
+    //////////////////////////////////////////////////
 }

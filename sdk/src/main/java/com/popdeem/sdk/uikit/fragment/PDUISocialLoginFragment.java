@@ -43,9 +43,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -61,6 +63,7 @@ import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.interfaces.PDFragmentCommunicator;
 import com.popdeem.sdk.core.location.PDLocationManager;
+import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
@@ -68,7 +71,9 @@ import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.realm.Realm;
@@ -94,11 +99,19 @@ public class PDUISocialLoginFragment extends Fragment {
     private boolean mAskForPermission = true;
 
     private PDFragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
+    private ArrayList<PDReward> rewards;
 
     public PDUISocialLoginFragment() {
     }
 
     public static PDUISocialLoginFragment newInstance() {
+        return new PDUISocialLoginFragment();
+    }
+
+    public static PDUISocialLoginFragment newInstance(ArrayList<PDReward> rewards) {
+        PDUISocialLoginFragment frag = new PDUISocialLoginFragment();
+        frag.rewards = rewards;
+
         return new PDUISocialLoginFragment();
     }
 
@@ -183,6 +196,50 @@ public class PDUISocialLoginFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.pd_login_reward_layout).setVisibility(View.GONE);
+        view.findViewById(R.id.pd_login_text_description).setVisibility(View.VISIBLE);
+        if (rewards != null){
+            final ImageView logoImageView = (ImageView) view.findViewById(R.id.pd_reward_star_image_view);
+
+            for (int i = 0; i < rewards.size(); i++) {
+                if(rewards.get(i).getAction().equalsIgnoreCase("social_login")) {
+
+                    final String imageUrl = rewards.get(i).getCoverImage();
+                    if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
+                        Glide.with(getActivity())
+                                .load(R.drawable.pd_ui_star_icon)
+                                .error(R.drawable.pd_ui_star_icon)
+                                .dontAnimate()
+                                .placeholder(R.drawable.pd_ui_star_icon)
+                                .into(logoImageView);
+                    } else {
+                        Glide.with(getActivity())
+                                .load(imageUrl)
+                                .error(R.drawable.pd_ui_star_icon)
+                                .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
+                                .dontAnimate()
+                                .placeholder(R.drawable.pd_ui_star_icon)
+                                .into(logoImageView);
+                    }
+
+                    // Reward Description
+                    TextView textView = (TextView) view.findViewById(R.id.pd_reward_offer_text_view);
+                    textView.setText(rewards.get(i).getDescription());
+
+                    // Rules
+                    textView = (TextView) view.findViewById(R.id.pd_reward_item_rules_text_view);
+                    textView.setText(rewards.get(i).getRules());
+                    if (rewards.get(i).getRules() == null || rewards.get(i).getRules().isEmpty()) {
+                        textView.setVisibility(View.GONE);
+                    }
+                    view.findViewById(R.id.pd_login_reward_layout).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.pd_login_text_description).setVisibility(View.GONE);
+
+                    break;
+                }
+            }
+        }
+
         return view;
     }
 
@@ -195,19 +252,21 @@ public class PDUISocialLoginFragment extends Fragment {
     }
 
     private void updateViewAfterLogin() {
-        mProgress.setVisibility(View.GONE);
-        mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
-//        mHeaderTextView.setText(R.string.pd_social_login_success_text);
-//        mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
-//        mLoginButton.setVisibility(View.GONE);
-        mFacebookLoginButton.setVisibility(View.GONE);
-        mContinueButton.setVisibility(View.VISIBLE);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeThisFragment();
-            }
-        });
+//        mProgress.setVisibility(View.GONE);
+//        mRewardsInfoTextView.setText(R.string.pd_social_login_success_description_text);
+////        mHeaderTextView.setText(R.string.pd_social_login_success_text);
+////        mHeaderTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.pd_continue_button_background_color));
+////        mLoginButton.setVisibility(View.GONE);
+//        mFacebookLoginButton.setVisibility(View.GONE);
+//        mContinueButton.setVisibility(View.VISIBLE);
+//        mContinueButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                removeThisFragment();
+//            }
+//        });
+
+        removeThisFragment();
     }
 
     private void checkForLocationPermissionAndStartLocationManager() {

@@ -24,6 +24,10 @@
 
 package com.popdeem.sdk.core.model;
 
+import com.popdeem.sdk.core.realm.PDRealmRewardClaimingSocialNetwork;
+
+import io.realm.RealmObject;
+
 /**
  * Created by mikenolan on 10/08/16.
  */
@@ -49,6 +53,13 @@ public class PDRewardClaimingSocialNetwork {
         this.socialAccountId = socialAccountId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public PDRewardClaimingSocialNetwork(PDRealmRewardClaimingSocialNetwork reward) {
+        this.name = reward.getName();
+        this.socialAccountId = reward.getSocialAccountId();
+        this.createdAt = reward.getCreatedAt();
+        this.updatedAt = reward.getUpdatedAt();
     }
 
     public String getName() {

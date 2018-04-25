@@ -61,6 +61,8 @@ import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.core.utils.PDUtils;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -706,11 +708,10 @@ public class PDAPIClient {
     /**
      * Get details for User ID
      * (Method will be public once it is tested)
-     *
-     * @param id       User ID
+     *  @param id       User ID
      * @param callback {@link PDAPICallback} for API result
      */
-    private void getUserDetailsForId(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
+    public void getUserDetailsForId(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.getUserDetailsForId(id, callback);
     }
@@ -770,6 +771,17 @@ public class PDAPIClient {
     private void getPopdeemFriends(@NonNull String id, @NonNull PDAPICallback<JsonObject> callback) {
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
         api.getPopdeemFriends(id, callback);
+    }
+
+    /**
+     * Get Customer details
+     * (Method will be public once it is tested)
+     *
+     * @param callback {@link PDAPICallback} for API result
+     */
+    public void getCustomer(@NonNull PDAPICallback<JsonObject> callback) {
+        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), null);
+        api.getCustomer(callback);
     }
 
 
@@ -929,13 +941,22 @@ public class PDAPIClient {
      *
      * @param callback {@link PDAPICallback} for API result
      */
-    public void getRewardsInWallet(@NonNull final PDAPICallback<ArrayList<PDReward>> callback) {
+    public void getRewardsInWallet(@NonNull final PDAPICallback<JsonObject> callback) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(PDRewardsDeserializer.REWARDS_TYPE, new PDRewardsDeserializer())
                 .create();
         PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
         api.getRewardsInWallet(callback);
     }
+// public void getRewardsInWallet(@NonNull final PDAPICallback<ArrayList<PDReward>> callback) {
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(PDRewardsDeserializer.REWARDS_TYPE, new PDRewardsDeserializer())
+//                .create();
+//        PopdeemAPI api = getApiInterface(getUserTokenInterceptor(), new GsonConverter(gson));
+//        api.getRewardsInWallet(callback);
+//    }
+
+
 
 
     /**

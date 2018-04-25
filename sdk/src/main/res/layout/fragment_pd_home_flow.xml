@@ -52,17 +52,17 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/pd_home_banner" />
 
-                <ImageButton
-                    android:id="@+id/pd_home_flow_settings_image_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:adjustViewBounds="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_pd_settings" />
+                <!--<ImageButton-->
+                    <!--android:id="@+id/pd_home_flow_settings_image_button"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:adjustViewBounds="true"-->
+                    <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:src="@drawable/ic_pd_settings" />-->
 
                 <TextView
                     android:id="@+id/pd_home_flow_banner_text_view"
@@ -76,7 +76,7 @@
 
             </RelativeLayout>
 
-            <android.support.design.widget.TabLayout
+            <com.popdeem.sdk.uikit.widget.BadgedTabLayout
                 android:id="@+id/pd_home_tab_layout"
                 style="@style/PopdeemSDKTheme.TabLayoutTheme"
                 android:layout_width="match_parent"
@@ -96,15 +96,15 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pd_home_inbox_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/pd_ic_inbox"
-        app:backgroundTint="@color/pd_inbox_button_bg_color" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/pd_home_inbox_fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--android:src="@drawable/pd_ic_inbox"-->
+        <!--app:backgroundTint="@color/pd_inbox_button_bg_color" />-->
 
 </RelativeLayout>

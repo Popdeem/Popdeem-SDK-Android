@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.facebook.AccessToken;
@@ -39,10 +40,14 @@ import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
-import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import org.json.JSONObject;
 
@@ -50,7 +55,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 
-import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
@@ -61,7 +65,7 @@ public class PDSocialUtils {
     public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends", "user_education_history"};
     public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
-    public static final int TWITTER_CHARACTER_LIMIT = 140;
+    public static final int TWITTER_CHARACTER_LIMIT = 180;
     public static final int TWITTER_DEFAULT_MEDIA_CHARACTERS_COUNT = 25;
 
     private static final String TWITTER_CONSUMER_KEY_META_KEY = "TwitterConsumerKey";
@@ -170,10 +174,23 @@ public class PDSocialUtils {
         return callbackUrl;
     }
 
-
     /**
-     * Check if user is logged in to Instagram
+     * Check if user is logged in to Instagram instantly
      */
+    public static boolean isInstagramLoggedIn() {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        String accessToken = null;
+        if (userDetails != null && userDetails.getUserInstagram() != null) {
+            accessToken = userDetails.getUserInstagram().getAccessToken();
+        }
+        realm.close();
+        return(accessToken!=null&&!accessToken.equalsIgnoreCase(""));
+    }
+
+        /**
+         * Check if user is logged in to Instagram
+         */
     public static void isInstagramLoggedIn(@NonNull final PDAPICallback<Boolean> callback) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
@@ -222,12 +239,15 @@ public class PDSocialUtils {
      * @param path Path to Image file
      * @return Chooser Intent
      */
-    public static Intent createInstagramIntent(String path) {
+    public static Intent createInstagramIntent(Context context, String path) {
         File file = new File(path);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
         intent.setPackage("com.instagram.android");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        Log.i("PROVIDER", "createInstagramIntent: ");
+        Uri sharedFileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName()+".fileprovider", file);
+
+        intent.putExtra(Intent.EXTRA_STREAM, sharedFileUri);
         return intent;
 //        return Intent.createChooser(intent, "Share to");
     }
@@ -312,16 +332,30 @@ public class PDSocialUtils {
     //------------------------------------------------------------------------
 
     public static void initTwitter(Context context) {
-        Twitter twitterKit = getTwitterKitForFabric(context);
-        if (twitterKit != null) {
-            Fabric.with(context, twitterKit);
+//        Twitter twitterKit = getTwitterKitForFabric(context);
+//        if (twitterKit != null) {
+//            Fabric.with(context, twitterKit);
+//        }
+        TwitterConfig twitterConfig = getTwitterKitForFabric(context);
+        if(twitterConfig!=null){
+            Twitter.initialize(twitterConfig);
         }
     }
 
-    public static Twitter getTwitterKitForFabric(Context context) {
+    public static TwitterConfig getTwitterKitForFabric(Context context) {
+
+
+
         TwitterAuthConfig twitterAuthConfig = getTwitterAuthConfig(context);
         if (twitterAuthConfig != null) {
-            return new Twitter(twitterAuthConfig);
+
+            TwitterConfig twitterConfig = new TwitterConfig.Builder(context)
+                    .logger(new DefaultLogger(Log.DEBUG))
+                    .twitterAuthConfig(twitterAuthConfig)
+                    .debug(true)
+                    .build();
+
+            return twitterConfig;
         }
         return null;
     }
@@ -346,14 +380,16 @@ public class PDSocialUtils {
     }
 
     public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
-        if (isFabricInitialisedWithTwitter()) {
+        if (isTwitterInitialised()) {
             Log.i("PDSocialUtils", "loginWithTwitter: Fabric is initialized with Twitter");
-            Twitter.logIn(activity, callback);
+//            Twitter.getInstance().logIn(activity, callback);
+            TwitterAuthClient client = new TwitterAuthClient();
+            client.authorize(activity, callback);
         }
     }
 
     public static boolean isTwitterLoggedIn() {
-        return isFabricInitialisedWithTwitter() && Twitter.getSessionManager().getActiveSession() != null && Twitter.getSessionManager().getActiveSession().getAuthToken() != null;
+        return isTwitterInitialised() && TwitterCore.getInstance().getSessionManager().getActiveSession() != null && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken() != null;
     }
 
     public static boolean userHasTwitterCredentials() {
@@ -394,16 +430,27 @@ public class PDSocialUtils {
         return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
     }
 
-    private static boolean isFabricInitialisedWithTwitter() {
-        if (!Fabric.isInitialized()) {
-            PDLog.e(PDSocialUtils.class, "Fabric is not initialised");
-            return false;
+    private static boolean isTwitterInitialised() {
+//        if (!Twitter.isInitialized()) {
+//            PDLog.e(PDSocialUtils.class, "Fabric is not initialised");
+//            return false;
+//        }
+//        if (Fabric.getKit(Twitter.class) == null) {
+//            PDLog.e(PDSocialUtils.class, "Twitter is not initialised with Fabric");
+//            return false;
+//        }
+
+        try{
+            if(TwitterCore.getInstance()!=null) {
+                return true;
+            }
+        }catch (IllegalStateException e){
+            PDLog.e(PDSocialUtils.class, "Twitter is not initialised");
         }
-        if (Fabric.getKit(Twitter.class) == null) {
-            PDLog.e(PDSocialUtils.class, "Twitter is not initialised with Fabric");
-            return false;
-        }
-        return true;
+//        if(TwitterCore.getInstance()==null){
+//            return false;
+//        }
+        return false;
     }
 
 
@@ -414,7 +461,12 @@ public class PDSocialUtils {
      * @return true if to be shown, false otherwise
      */
     public static boolean shouldShowSocialLogin(Context context) {
-        return !(PDSocialUtils.isLoggedInToFacebook() && PDUtils.getUserToken() != null) && PDPreferencesUtils.getLoginUsesCount(context) < PDPreferencesUtils.getNumberOfLoginAttempts(context);
+
+        boolean isFacebokLoggedIn = PDSocialUtils.isLoggedInToFacebook();
+        boolean isTwitterLoggedIn = PDSocialUtils.isTwitterLoggedIn();
+        boolean isInstagramLoggedIn = PDSocialUtils.isInstagramLoggedIn();
+        String token = PDUtils.getUserToken();
+        return !((isFacebokLoggedIn || isInstagramLoggedIn || isTwitterLoggedIn) && token != null) && PDPreferencesUtils.getLoginUsesCount(context) < PDPreferencesUtils.getNumberOfLoginAttempts(context);
     }
 
 }

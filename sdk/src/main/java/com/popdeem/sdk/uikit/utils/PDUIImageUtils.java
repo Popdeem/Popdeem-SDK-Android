@@ -24,13 +24,18 @@
 
 package com.popdeem.sdk.uikit.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Environment;
+import android.util.Log;
 
+import com.bumptech.glide.Glide;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.PicassoTools;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -160,6 +165,42 @@ public class PDUIImageUtils {
         }
 
         return bitmap;
+    }
+
+    public static boolean deleteDirectoryTree(final Context mContext) {
+
+//        PicassoTools.clearCache(Picasso.with(mContext));
+
+
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                Glide.get(mContext).clearDiskCache();
+            }
+        });
+        thread.start();
+
+//        File cache = new File(mContext.getApplicationContext().getCacheDir(), "picasso-cache");
+//        if (cache.exists() && cache.isDirectory()) {
+//            return deleteDir(cache);
+//        }
+
+        return false;
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                Log.i("PICASSO", "Deleting image");
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
     }
 
 }

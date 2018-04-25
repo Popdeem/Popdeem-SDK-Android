@@ -54,11 +54,9 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
-import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
-import com.popdeem.sdk.core.realm.PDRealmUserFacebook;
 import com.popdeem.sdk.core.realm.PDRealmUserInstagram;
 import com.popdeem.sdk.core.realm.PDRealmUserTwitter;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -68,8 +66,9 @@ import com.popdeem.sdk.uikit.adapter.PDUISettingsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -153,6 +152,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         }
     }
 
+
+
     private void displayUserDetails() {
         if (mUser == null) {
             displayDefaultUserImage();
@@ -162,6 +163,10 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
         TextView textView = (TextView) findViewById(R.id.pd_settings_user_name_text_view);
         if (mUser.getFirstName() != null && mUser.getLastName() != null) {
             textView.setText(String.format(Locale.getDefault(), "%1s %2s", mUser.getFirstName(), mUser.getLastName()));
+        }else if (mUser.getFirstName() !=null){
+            textView.setText(mUser.getFirstName());
+        }else if (mUser.getLastName() !=null){
+            textView.setText(mUser.getFirstName());
         }
         String profileUrl = "";
         if (mUser.getUserFacebook() != null && mUser.getUserFacebook().getProfilePictureUrl() != null && !mUser.getUserFacebook().getProfilePictureUrl().isEmpty()) {
@@ -176,8 +181,6 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             Picasso.with(this)
                     .load(profileUrl)
                     .centerCrop()
-                    .placeholder(R.drawable.pd_ui_default_user)
-                    .error(R.drawable.pd_ui_default_user)
                     .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
                     .into(imageView);
         } else {
@@ -187,11 +190,11 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
     private void displayDefaultUserImage() {
         final PDUIBezelImageView imageView = (PDUIBezelImageView) findViewById(R.id.pd_settings_user_image_view);
-        Picasso.with(this)
-                .load(R.drawable.pd_ui_default_user)
-                .centerCrop()
-                .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
-                .into(imageView);
+//        Picasso.with(this)
+//                .load(R.drawable.pd_ui_default_user)
+//                .centerCrop()
+//                .resizeDimen(R.dimen.pd_settings_image_dimen, R.dimen.pd_settings_image_dimen)
+//                .into(imageView);
     }
 
     @Override
@@ -252,8 +255,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             @Override
             public void success(PDUser user) {
                 PDUtils.updateSavedUser(user);
-                Twitter.getSessionManager().clearActiveSession();
-                Twitter.logOut();
+                TwitterCore.getInstance().getSessionManager().clearActiveSession();
+//                Twitter.logOut();
                 Toast.makeText(PDUISettingsActivity.this, "Twitter disconnected.", Toast.LENGTH_SHORT).show();
                 abraLog(PDAbraConfig.ABRA_EVENT_DISCONNECT_SOCIAL_ACCOUNT, PDAbraConfig.ABRA_PROPERTYVALUE_SOCIAL_NETWORK_TWITTER);
             }
@@ -288,7 +291,8 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     private void refreshList() {
         mItems.clear();
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
-        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
+        if(PDSocialUtils.getTwitterConsumerKey(this) !=null)
+            mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
         mAdapter.notifyDataSetChanged();
 
@@ -320,7 +324,7 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     }
 
     private void showConnectAccountDialog(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type, final int position) {
-        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(type, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
+        PDUIConnectSocialAccountFragment fragment = PDUIConnectSocialAccountFragment.newInstance(type, true, new PDUIConnectSocialAccountFragment.PDUIConnectSocialAccountCallback() {
             @Override
             public void onAccountConnected(@PDUIConnectSocialAccountFragment.PDConnectSocialAccountType int type) {
                 updateUserFromRealm();

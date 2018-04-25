@@ -35,6 +35,7 @@ import android.support.v7.widget.Toolbar;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
+import com.twitter.sdk.android.core.Twitter;
 
 /**
  * Created by mikenolan on 22/02/16.
@@ -44,6 +45,7 @@ public class PDBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Twitter.initialize(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.pd_toolbar_color_dark));
         }

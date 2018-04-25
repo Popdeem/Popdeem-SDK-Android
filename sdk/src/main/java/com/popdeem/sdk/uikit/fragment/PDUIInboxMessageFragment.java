@@ -32,10 +32,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -86,13 +88,15 @@ public class PDUIInboxMessageFragment extends Fragment {
         PDUIBezelImageView imageView = (PDUIBezelImageView) view.findViewById(R.id.pd_inbox_message_image_view);
         String imageUrl = args.getString("image", "");
         if (imageUrl.isEmpty() || imageUrl.contains("default")) {
-            Picasso.with(getActivity())
+            Glide.with(getActivity())
                     .load(R.drawable.pd_ui_star_icon)
+                    .dontAnimate()
                     .into(imageView);
         } else {
-            Picasso.with(getActivity())
+            Glide.with(getActivity())
                     .load(imageUrl)
                     .placeholder(R.drawable.pd_ui_star_icon)
+                    .dontAnimate()
                     .error(R.drawable.pd_ui_star_icon)
                     .into(imageView);
         }

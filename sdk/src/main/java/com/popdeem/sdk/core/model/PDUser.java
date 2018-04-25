@@ -58,7 +58,7 @@ public final class PDUser {
 //    private float reachScore;
 //    private float engagementScore;
 //    private float frequencyScore;
-//    private float advocacyScore;
+    private float advocacy_score;
 
     //Location lat/long for user
     private double latitude;
@@ -214,14 +214,14 @@ public final class PDUser {
 //    public void setFrequencyScore(float frequencyScore) {
 //        this.frequencyScore = frequencyScore;
 //    }
-//
-//    public float getAdvocacyScore() {
-//        return advocacyScore;
-//    }
-//
-//    public void setAdvocacyScore(float advocacyScore) {
-//        this.advocacyScore = advocacyScore;
-//    }
+
+    public float getAdvocacyScore() {
+        return advocacy_score;
+    }
+
+    public void setAdvocacyScore(float advocacy_score) {
+        this.advocacy_score = advocacy_score;
+    }
 
     public double getLatitude() {
         return latitude;

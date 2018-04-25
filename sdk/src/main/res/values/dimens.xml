@@ -45,10 +45,16 @@
     <dimen name="pd_home_flow_banner_height">160dp</dimen>
 
     <!-- Social Login -->
-    <dimen name="social_login_padding">25dp</dimen>
+    <dimen name="social_login_padding">15dp</dimen>
     <dimen name="social_login_sign_in_button_text_size">17sp</dimen>
     <dimen name="social_login_terms_text_size">9dp</dimen>
     <dimen name="social_login_body_text_size">13sp</dimen>
     <dimen name="social_login_header_text_size">20sp</dimen>
+    <dimen name="pd_button_corner_radius">6dp</dimen>
+
+    <!-- Tab badge sizes -->
+    <dimen name="tab_text_max_width">600dp</dimen>
+    <dimen name="badge_text_size">11sp</dimen>
+    <dimen name="tab_text_size">11sp</dimen>
 
 </resources>

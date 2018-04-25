@@ -62,10 +62,11 @@
     <color name="pd_reward_list_item_title_text_color">#000000</color>
     <color name="pd_reward_list_item_subtitle_text_color">#000000</color>
     <color name="pd_reward_list_item_info_text_color">#A2A2A1</color>
+    <color name="pd_reward_list_item_time_text_color">@color/pd_toolbar_color</color>
 
 
     <!-- Feed List Item Colors -->
-    <color name="pd_feed_background">#ffffff</color>
+    <color name="pd_feed_background">#aaaaaa</color>
     <color name="pd_feed_no_feed_text_color">#000000</color>
     <color name="pd_feed_list_background_color">#ffffff</color>
     <color name="pd_feed_list_divider_color">#C0C0C0</color>
@@ -78,7 +79,7 @@
 
     <!-- Wallet List Item Colors -->
     <color name="pd_wallet_background_color">#ffffff</color>
-    <color name="pd_wallet_no_rewards_text_color">#000000</color>
+    <color name="pd_wallet_no_rewards_text_color">#000000</color>efgegefgers
     <color name="pd_wallet_item_background_color">#ffffff</color>
     <color name="pd_wallet_list_divider_color">#C0C0C0</color>
     <color name="pd_wallet_item_default_text_color">#000000</color>
@@ -95,6 +96,14 @@
     <color name="pd_redeem_title_text_colour">#000000</color>
     <color name="pd_redeem_description_text_colour">#000000</color>
 
+    <!-- Cop Image Colors -->
+    <color name="pd_crop_toolbar_colour">@color/pd_toolbar_color</color>
+    <color name="pd_crop_status_bar_colour">@color/pd_toolbar_color_dark</color>
+    <color name="pd_crop_content_background_colour">#ffffff</color>
+    <color name="pd_crop_active_widget_colour">@color/pd_accent</color>
+    <color name="pd_crop_toolbar_widget_colour">@color/pd_back_button_color</color>
+
+
 
     <!-- Claim Colors -->
     <color name="pd_claim_background_color">#EBEBF2</color>
@@ -104,6 +113,7 @@
     <color name="pd_claim_tagged_friends_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_location_verification_background_color">#d8d8d8</color>
     <color name="pd_claim_location_verification_text_color">#000000</color>
+    <color name="pd_claim_verification_text_color">#000000</color>
     <color name="pd_claim_location_verification_tick_color">#777777</color>
     <color name="pd_claim_switch_tint_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_add_hashtag_button_text_color">@color/pd_toolbar_color</color>
@@ -146,9 +156,13 @@
 
     <color name="colorPrimary">@color/pd_toolbar_color</color>
     <color name="colorPrimaryDark">@color/pd_toolbar_color</color>
-    <color name="colorAccent">@color/pd_accent</color>
+    <color name="colorAccent">@color/pd_toolbar_color</color>
 
     <color name="pd_image_border_color">#efeff4</color>
+
+    <color name="pd_progress_border_color">#969696</color>
+    <color name="pd_progress_back_color">#efeff4</color>
+    <color name="pd_progress_filled_color">@color/pd_toolbar_color</color>
 
     <color name="pd_rainbow_color_1">#eac34b</color>
     <color name="pd_rainbow_color_2">#3e96a7</color>
@@ -159,6 +173,14 @@
     <color name="pd_facebook_color">#3B5998</color>
     <color name="pd_twitter_color">#00aced</color>
     <color name="pd_social_connect_button_color">@color/pd_toolbar_color</color>
+
+
+    <color name="pd_gratitude_bg">#ccffffff</color>
+    <color name="pd_dialog_bg_bg">#ccffffff</color>
+
+
+    <color name="clear">#00ffffff</color>
+    <color name="DEBUG">#00ff00ff</color>
 
 
 </resources>

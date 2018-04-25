@@ -41,7 +41,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
@@ -49,38 +56,53 @@ import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.comparator.PDRewardComparator;
+import com.popdeem.sdk.core.deserializer.PDRewardDeserializer;
+import com.popdeem.sdk.core.model.PDEvent;
+import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.model.PDReward;
+import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
 import com.popdeem.sdk.uikit.activity.PDUIRedeemActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIWalletRecyclerViewAdapter;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUILinearLayoutManager;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Locale;
 
 import io.realm.Realm;
+
+import static com.popdeem.sdk.uikit.utils.PDUIImageUtils.deleteDirectoryTree;
 
 /**
  * Created by mikenolan on 19/02/16.
  */
 public class PDUIWalletFragment extends Fragment {
 
+
     private View mView;
     private Realm realm;
 
     private PDUISwipeRefreshLayout mSwipeRefreshLayout;
     private PDUIWalletRecyclerViewAdapter mAdapter;
-    private ArrayList<PDReward> mRewards = new ArrayList<>();
+    private ArrayList<Object> mRewards = new ArrayList<>();
     private View mNoItemsInWalletView;
 
     private String mAutoVerifyRewardId = null;
+    private boolean finishedWallet = false;
+    private boolean finishedMessages = false;
 
     public PDUIWalletFragment() {
     }
@@ -96,6 +118,7 @@ public class PDUIWalletFragment extends Fragment {
             mView = inflater.inflate(R.layout.fragment_pd_wallet, container, false);
 
             mNoItemsInWalletView = mView.findViewById(R.id.pd_wallet_no_items_view);
+            mNoItemsInWalletView.setVisibility(View.GONE);
             mSwipeRefreshLayout = (PDUISwipeRefreshLayout) mView;
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -110,61 +133,52 @@ public class PDUIWalletFragment extends Fragment {
             mAdapter.setOnItemClickListener(new PDUIWalletRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v) {
-                    final int position = recyclerView.getChildAdapterPosition(v);
-                    final PDReward reward = mRewards.get(position);
-                    if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM) && !reward.isInstagramVerified()) {
-                        return;
-                    }
+                    final int position = recyclerView.getChildAdapterPosition(v) - 1;
 
-                    if (reward.getCredit() != null && reward.getCredit().length() > 0) {
-                        return;
-                    }
+                    if(mRewards.get(position) instanceof PDReward) {
+                        final PDReward reward = (PDReward) mRewards.get(position);
+                        if (reward.claimedUsingNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM) && !reward.isInstagramVerified()) {
+                            return;
+                        }
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-//                        long availableUntil = PDNumberUtils.toLong(reward.getAvailableUntilInSeconds(), 0);
-//                        String availabilityString;
-//                        if (availableUntil <= 0) {
-//                            availabilityString = getString(R.string.pd_redeem_sweepstake_reward_no_date_message_string);
-//                        } else {
-//                            availabilityString = String.format(Locale.getDefault(), "\n\n- Draw in %1s", PDUIUtils.timeUntil(availableUntil, false, true));
-//                        }
-//                        String message = String.format(Locale.getDefault(), "%1s%2s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string), availabilityString);
-                        String message = String.format(Locale.getDefault(), "%1s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string));
+                        if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+                            return;
+                        }
 
-                        builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)
-                                .setMessage(message)
-                                .setPositiveButton(android.R.string.ok, null);
-                        builder.create().show();
-                    } else if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
-                        final long REDEMPTION_TIMER = (reward.getCountdownTimer() * 1000) + 500;
-                        String minutes = PDUIUtils.millisecondsToMinutes(REDEMPTION_TIMER);
-                        String message = String.format(Locale.getDefault(), getString(R.string.pd_wallet_coupon_info_message_text), minutes, minutes);
-
-                        builder.setTitle(R.string.pd_redeem_reward_info_title_string)
-                                .setMessage(message)
-                                .setNegativeButton(android.R.string.cancel, null)
-                                .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        redeemReward(reward, position);
-                                        Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
-                                        intent.putExtra("imageUrl", reward.getCoverImage());
-                                        intent.putExtra("reward", reward.getDescription());
-                                        intent.putExtra("rules", reward.getRules());
-                                        intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
-                                        intent.putExtra("time", reward.getAvailableUntilInSeconds());
-                                        intent.putExtra("countdown", reward.getCountdownTimer());
-                                        startActivity(intent);
-                                    }
-                                });
-                        builder.create().show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+                            String message = String.format(Locale.getDefault(), "%1s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string));
+                            builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)
+                                    .setMessage(message)
+                                    .setPositiveButton(android.R.string.ok, null);
+                            builder.create().show();
+                        } else if (!reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_CREDIT)) {
+                            String message = getString(R.string.pd_wallet_coupon_info_message_text);
+                            builder.setTitle(R.string.pd_redeem_reward_info_title_string)
+                                    .setMessage(message)
+                                    .setNegativeButton(android.R.string.cancel, null)
+                                    .setPositiveButton(R.string.pd_redeem_button_string, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            redeemReward(reward, position);
+                                            Intent intent = new Intent(getActivity(), PDUIRedeemActivity.class);
+                                            intent.putExtra("imageUrl", reward.getCoverImage());
+                                            intent.putExtra("reward", reward.getDescription());
+                                            intent.putExtra("rules", reward.getRules());
+                                            intent.putExtra("isSweepstakes", reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE));
+                                            intent.putExtra("time", reward.getAvailableUntilInSeconds());
+                                            intent.putExtra("countdown", reward.getCountdownTimer());
+                                            startActivity(intent);
+                                        }
+                                    });
+                            builder.create().show();
+                        }
                     }
                 }
 
                 @Override
                 public void onVerifyClick(int position) {
-                    PDReward reward = mRewards.get(position);
+                    PDReward reward = (PDReward) mRewards.get(position);
                     reward.setVerifying(true);
 //                    mAdapter.notifyItemChanged(position);
                     mAdapter.notifyDataSetChanged();
@@ -177,7 +191,7 @@ public class PDUIWalletFragment extends Fragment {
             mSwipeRefreshLayout.addLinearLayoutManager(linearLayoutManager);
 
             recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color, false));
+//            recyclerView.addItemDecoration(new PDUIDividerItemDecoration(getActivity(), R.color.pd_wallet_list_divider_color, false));
             recyclerView.setAdapter(mAdapter);
 
 //            refreshWallet();
@@ -229,7 +243,7 @@ public class PDUIWalletFragment extends Fragment {
     }
 
     private void verifyReward(final int position) {
-        final PDReward reward = mRewards.get(position);
+        final PDReward reward = (PDReward) mRewards.get(position);
         PDAPIClient.instance().verifyInstagramPostForReward(reward.getId(), new PDAPICallback<JsonObject>() {
             @Override
             public void success(JsonObject jsonObject) {
@@ -265,6 +279,7 @@ public class PDUIWalletFragment extends Fragment {
     }
 
     private void refreshWallet() {
+//        deleteDirectoryTree(getActivity());
         Log.i("PDUIWalletFragment", "Refreshing Wallet");
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
@@ -273,13 +288,16 @@ public class PDUIWalletFragment extends Fragment {
             }
         });
 
-        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        finishedWallet = false;
+        finishedMessages = false;
+
+        final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
         if (userDetails == null) {
             Log.i("PDUIWalletFragment", "refreshWallet: user is Null, clearing list");
             mRewards.clear();
             mAdapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
-            mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+//            mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
@@ -289,9 +307,45 @@ public class PDUIWalletFragment extends Fragment {
             });
         } else {
             Log.i("PDUIWalletFragment", "refreshWallet: user exists");
-            PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
+//            PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<ArrayList<PDReward>>() {
+
+            PDAPIClient.instance().getUserDetailsForId(userDetails.getId(), new PDAPICallback<JsonObject>() {
+
                 @Override
-                public void success(ArrayList<PDReward> pdRewards) {
+                public void success(JsonObject jsonObject) {
+                    if(jsonObject.get("status").getAsString().equalsIgnoreCase("User Data")){
+                        JsonObject user = jsonObject.getAsJsonObject("user");
+                        float score = Float.valueOf(user.get("advocacy_score").getAsString());
+
+                        realm.beginTransaction();
+                        userDetails.setAdvocacyScore(score);
+                        realm.commitTransaction();
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+
+                }
+            });
+            PDAPIClient.instance().getRewardsInWallet(new PDAPICallback<JsonObject>() {
+                @Override
+                public void success(JsonObject jsonObject) {
+                    JsonArray jsonArray = jsonObject.getAsJsonArray("rewards");
+                    ArrayList<PDReward> pdRewards = new ArrayList<PDReward>();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    gsonBuilder.registerTypeAdapter(PDReward.class, new PDRewardDeserializer());
+
+                    Gson gson = gsonBuilder.create();
+
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        PDReward reward = gson.fromJson(jsonArray.get(i), PDReward.class);
+                        pdRewards.add(reward);
+                    }
+
                     // Sort rewards
                     Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CLAIMED_AT_COMPARATOR));
 
@@ -304,34 +358,131 @@ public class PDUIWalletFragment extends Fragment {
                             continue;
                         }
 
-                        if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
-                            r.setVerifying(true);
-                            verifyingRewardIndex = pdRewards.indexOf(r);
-                            mAutoVerifyRewardId = null;
-                        }
+//                        if (mAutoVerifyRewardId != null && r.getId().equalsIgnoreCase(mAutoVerifyRewardId) && !r.isInstagramVerified()) {
+//                            r.setVerifying(true);
+//                            verifyingRewardIndex = pdRewards.indexOf(r);
+//                            mAutoVerifyRewardId = null;
+//                        }
                     }
+
+                    JsonArray jsonArrayTiers = jsonObject.getAsJsonArray("tiers");
+                    ArrayList<PDEvent> pdEvents = new ArrayList<PDEvent>();
+
+                    Gson gsonEvents = new Gson();
+
+                    for (int i = 0; i < jsonArrayTiers.size(); i++) {
+                        PDEvent event = gsonEvents.fromJson(jsonArrayTiers.get(i), PDEvent.class);
+                        pdEvents.add(event);
+                    }
+
 
                     mRewards.clear();
+                    mRewards.addAll(pdEvents);
                     mRewards.addAll(pdRewards);
-                    mAdapter.notifyDataSetChanged();
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
 
-                    if (verifyingRewardIndex != -1) {
-                        verifyReward(verifyingRewardIndex);
+                    Collections.sort(mRewards, new Comparator<Object>() {
+                        @Override
+                        public int compare(Object o1, Object o2) {
+                            long time1 = 0;
+                            long time2 = 0;
+
+                            if(o1 instanceof PDReward){
+                                PDReward reward = (PDReward) o1;
+                                time1 = reward.getClaimedAt();
+                            }else{
+                                PDEvent reward = (PDEvent) o1;
+                                time1 = reward.getDate();
+                            }
+
+                            if(o2 instanceof PDReward){
+                                PDReward reward = (PDReward) o2;
+                                time2 = reward.getClaimedAt();
+                            }else{
+                                PDEvent reward = (PDEvent) o2;
+                                time2 = reward.getDate();
+                            }
+
+                            if(time1<time2)
+                                return 1;
+                            else if(time1>time2)
+                                return -1;
+
+                            return 0;
+                        }
+
+                    });
+
+
+                    mAdapter.notifyDataSetChanged();
+                    finishedWallet = true;
+                    if(finishedMessages&&finishedWallet) {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
+//                    mNoItemsInWalletView.setVisibility(mRewards.size() == 0 ? View.VISIBLE : View.GONE);
+
+//                    if (verifyingRewardIndex != -1) {
+//                        verifyReward(verifyingRewardIndex);
+//                    }else{
+//                        PDUIGratitudeDialog.showGratitudeDialog(getActivity(), "share");
+//                    }
                 }
 
                 @Override
                 public void failure(int statusCode, Exception e) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    finishedWallet = true;
+                    if(finishedMessages&&finishedWallet) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             });
         }
+
+        PDAPIClient.instance().getPopdeemMessages(new PDAPICallback<ArrayList<PDMessage>>() {
+            @Override
+            public void success(ArrayList<PDMessage> messages) {
+                PDLog.d(PDUIInboxFragment.class, "message count: " + messages.size());
+                ArrayList<PDMessage> mMessages = new ArrayList<>();
+                mMessages.addAll(messages);
+                int unread = 0;
+                for (int i = 0; i < messages.size(); i++) {
+                    if(!messages.get(i).isRead()){
+                        unread++;
+                    }
+                }
+                setBadges(unread);
+
+                finishedMessages = true;
+                if(finishedMessages&&finishedWallet) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                finishedMessages = true;
+                if(finishedMessages&&finishedWallet) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
+    public void setBadges(int badges) {
+
+        if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+            PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+            parent.setProfileBadge(badges);
+        }
+
+        mAdapter.setMessagesCount(badges);
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+
     public void autoVerifyReward(String rewardId) {
-        mAutoVerifyRewardId = rewardId;
+//        mAutoVerifyRewardId = rewardId;
         if (!mSwipeRefreshLayout.isRefreshing()) {
             refreshWallet();
         }
@@ -353,5 +504,6 @@ public class PDUIWalletFragment extends Fragment {
             realm = null;
         }
     }
+
 
 }

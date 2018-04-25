@@ -34,8 +34,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.popdeem.sdk.core.deserializer.PDIntDeserializer;
 import com.popdeem.sdk.core.deserializer.PDLongDeserializer;
+import com.popdeem.sdk.core.realm.PDRealmLocation;
 
 import java.lang.reflect.Type;
+
+import io.realm.RealmObject;
 
 /**
  * Popdeem Location Model Class
@@ -67,6 +70,19 @@ public class PDLocation {
         this.numberOfRewards = numberOfRewards;
         this.brandIdentifier = brandIdentifier;
         this.brandName = brandName;
+    }
+
+    public PDLocation(PDRealmLocation location) {
+        this.id = location.getId();
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+        this.address = location.getAddress();
+        this.twitterPageId = location.getTwitterPageId();
+        this.fbPageId = location.getFbPageId();
+        this.fbPageUrl = location.getFbPageUrl();
+        this.numberOfRewards = location.getNumberOfRewards();
+        this.brandIdentifier = location.getBrandIdentifier();
+        this.brandName = location.getBrandName();
     }
 
     public String getId() {

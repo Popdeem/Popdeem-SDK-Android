@@ -65,35 +65,36 @@
         android:orientation="vertical"
         android:padding="@dimen/social_login_padding">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/pd_social_login_tagline_text"
-            android:textColor="@color/pd_login_tagline_text_color"
-            android:textSize="@dimen/social_login_header_text_size"
-            android:textStyle="bold" />
+        <include
+            android:id="@+id/pd_login_reward_layout"
+            layout="@layout/item_reward"
+            android:visibility="gone" />
 
-        <!--<TextView-->
-        <!--android:id="@+id/pd_social_login_header_text_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="15dp"-->
-        <!--android:minLines="2"-->
-        <!--android:text="@string/pd_social_login_heading_text"-->
-        <!--android:textColor="@color/pd_login_heading_text_color"-->
-        <!--android:textSize="16sp"-->
-        <!--android:visibility="gone" />-->
-
-        <TextView
-            android:id="@+id/pd_social_rewards_info_text_view"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/pd_login_text_description"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:minLines="3"
-            android:text="@string/pd_social_login_body_text"
-            android:textColor="@color/pd_login_body_text_color"
-            android:textSize="@dimen/social_login_body_text_size" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/pd_social_login_tagline_text"
+                android:textColor="@color/pd_login_tagline_text_color"
+                android:textSize="@dimen/social_login_header_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pd_social_rewards_info_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:minLines="3"
+                android:text="@string/pd_social_login_body_text"
+                android:textColor="@color/pd_login_body_text_color"
+                android:textSize="@dimen/social_login_body_text_size" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -139,12 +140,12 @@
         </FrameLayout>
 
         <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/pd_social_login_terms_text"
-        android:textColor="@color/pd_login_terms_text_color"
-        android:textSize="@dimen/social_login_terms_text_size" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/pd_social_login_terms_text"
+            android:textColor="@color/pd_login_terms_text_color"
+            android:textSize="@dimen/social_login_terms_text_size" />
 
     </LinearLayout>
 

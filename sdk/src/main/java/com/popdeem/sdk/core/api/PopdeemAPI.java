@@ -32,6 +32,8 @@ import com.popdeem.sdk.core.model.PDMessage;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -135,10 +137,18 @@ public interface PopdeemAPI {
             Callback<PDUser> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}")
-    void getUserDetailsForId(@Path("id") String id, Callback<JsonObject> callback);
+    void getUserDetailsForId(@Path("id") String id, PDAPICallback<JsonObject> callback);
 
     @GET(PDAPIConfig.PD_USERS_PATH + "/{id}/friends")
     void getPopdeemFriends(@Path("id") String id, Callback<JsonObject> callback);
+
+
+    //****************************************
+    // Customer API Calls
+    //****************************************
+
+    @GET(PDAPIConfig.PD_CUSTOMER_PATH)
+    void getCustomer(Callback<JsonObject> callback);
 
 
     //****************************************
@@ -201,7 +211,8 @@ public interface PopdeemAPI {
     //****************************************
 
     @GET(PDAPIConfig.PD_WALLET_PATH)
-    void getRewardsInWallet(Callback<ArrayList<PDReward>> callback);
+    void getRewardsInWallet(Callback<JsonObject> callback);
+//    void getRewardsInWallet(Callback<ArrayList<PDReward>> callback);
 
 
     //****************************************

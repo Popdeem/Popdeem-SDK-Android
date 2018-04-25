@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pd_login_images">
+        <item>@drawable/pd_social_login_header</item>
+    </string-array>
+
+    <string-array name="pd_share_images">
+        <item>@drawable/ambassador_icon</item>
+    </string-array>
+</resources>
