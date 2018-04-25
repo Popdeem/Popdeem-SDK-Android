@@ -200,9 +200,9 @@
     <string name="pd_connect_facebook_title">Facebook</string>
     <string name="pd_connect_twitter_title">Twitter</string>
     <string name="pd_connect_instagram_title">Instagram</string>
-    <string name="pd_connect_dialog_message_text">You must connect your %1s account to claim this reward</string>
-    <string name="pd_connect_dialog_message_text_settings">Connect your %1s account to claim %1s rewards</string>
-    <string name="pd_connect_dialog_button_text">Connect %1s Account</string>
+    <string name="pd_connect_dialog_message_text" formatted="false">You must connect your %1s account to claim this reward</string>
+    <string name="pd_connect_dialog_message_text_settings" formatted="false">Connect your %1s account to claim %1s rewards</string>
+    <string name="pd_connect_dialog_button_text" formatted="false">Connect %1s Account</string>
     <string name="pd_connect_dialog_button_text_settings">Continue</string>
 
 
@@ -287,6 +287,7 @@
 
     <string-array name="pd_gratuity_strings_share_sweepstake_body">
     </string-array>
+
 
 
 
