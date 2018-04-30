@@ -62,7 +62,7 @@ import io.realm.Realm;
  */
 public class PDSocialUtils {
 
-    public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends", "user_education_history"};
+    public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends"};
     public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
     public static final int TWITTER_CHARACTER_LIMIT = 180;
