@@ -556,6 +556,42 @@ public final class PopdeemSDK {
         }
     }
 
+    public static void pushCordovaLogin(final Activity activity, int numberOfPrompts) {
+        // Show social login if needed
+
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+
+        if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && PDSocialUtils.shouldShowSocialLogin(activity)) {
+            PDLog.i(PopdeemSDK.class, "showing social login");
+            PDPreferencesUtils.incrementLoginUsesCount(activity);
+            PDAPIClient.instance().getAllRewards(new PDAPICallback<ArrayList<PDReward>>() {
+                @Override
+                public void success(ArrayList<PDReward> pdRewards) {
+//                        pdRewards.get(0).setAction("social_login");
+                    if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+                        showSocialLogin((FragmentActivity) activity, pdRewards);
+                    else
+                        showSocialMultiLogin((FragmentActivity) activity, pdRewards);
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+                        showSocialLogin((FragmentActivity) activity);
+                    else
+                        showSocialMultiLogin((FragmentActivity) activity);
+                }
+            });
+
+        }
+
+//        Intent intent= new Intent(activity, CordovaSocialLoginActivity.class);
+//        activity.startActivity(intent);
+
+    }
+
     /**
      * Push the Social Home as an activity.
      *
