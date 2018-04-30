@@ -495,7 +495,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mProgressFacebook.getVisibility() == View.GONE) {
+                if (progressView.getVisibility() == View.GONE) {
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_CLOSE_LOGIN_TAKEOVER, new PDAbraProperties.Builder()
                             .add("Source", "Dismiss Button")
                             .create());
