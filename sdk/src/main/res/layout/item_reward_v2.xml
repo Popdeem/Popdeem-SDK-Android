@@ -157,7 +157,7 @@
                 android:layout_marginEnd="16dp"
                 app:layout_constraintTop_toTopOf="@+id/fl_divider"
                 android:layout_marginTop="2dp">
-                <android.support.text.emoji.widget.EmojiTextView
+                <TextView
                     android:id="@+id/pd_reward_request_text_view"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
