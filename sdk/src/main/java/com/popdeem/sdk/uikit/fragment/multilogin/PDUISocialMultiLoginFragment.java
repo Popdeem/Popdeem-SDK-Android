@@ -25,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -86,7 +87,6 @@ import io.realm.Realm;
  */
 
 
-//TODO: put in social reward
 public class PDUISocialMultiLoginFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = PDUISocialMultiLoginFragment.class.getSimpleName();
@@ -221,7 +221,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CANCELLED_FACEBOOK_LOGIN, null);
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
                 progressView.setVisibility(View.GONE);
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                         .setTitle(R.string.pd_common_facebook_login_cancelled_title_text)
                         .setMessage(R.string.pd_common_facebook_login_cancelled_message_text)
                         .setPositiveButton(android.R.string.ok, null)
@@ -233,7 +233,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             public void onError(FacebookException error) {
                 PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
                 progressView.setVisibility(View.GONE);
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                         .setTitle(R.string.pd_common_sorry_text)
                         .setMessage(error.getMessage())
                         .setPositiveButton(android.R.string.ok, null)
@@ -274,7 +274,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             mTwitterLoginButton.setText(R.string.pd_log_in_with_twitter_text);
             mInstaLoginButton.setText(R.string.pd_log_in_with_instagram_text);
 
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                     .setTitle(R.string.pd_common_sorry_text)
                     .setMessage("An error occurred while registering. Please try again")
                     .setPositiveButton(android.R.string.ok, null)
@@ -384,7 +384,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             progressView.setVisibility(View.VISIBLE);
             LoginManager.getInstance().logInWithReadPermissions(PDUISocialMultiLoginFragment.this, Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
         } else {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                     .setTitle(R.string.pd_location_disabled_title_text)
                     .setMessage(R.string.pd_location_disabled_message_text)
                     .setNegativeButton(android.R.string.no, null)
@@ -521,7 +521,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                         .setTitle(R.string.pd_location_permission_title_text)
                         .setMessage(R.string.pd_location_permission_rationale_text)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -587,7 +587,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_DENIED_LOCATION, null);
                     if (mAskForPermission) {
                         mAskForPermission = false;
-                        new AlertDialog.Builder(getActivity())
+                        new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                                 .setTitle(R.string.pd_location_permission_title_text)
                                 .setMessage(R.string.pd_location_permission_are_you_sure_text)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

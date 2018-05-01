@@ -32,6 +32,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -80,7 +81,7 @@ public class PDUIProgressDialogFragment extends DialogFragment {
         Bundle args = getArguments();
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_pd_progress_dialog, null, false);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setView(view);
         builder.setOnCancelListener(mOnCancelListener);
 

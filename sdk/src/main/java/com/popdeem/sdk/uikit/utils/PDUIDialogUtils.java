@@ -28,6 +28,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
+
+import com.popdeem.sdk.R;
 
 /**
  * Created by mikenolan on 10/08/16.
@@ -55,7 +58,7 @@ public class PDUIDialogUtils {
         if (context == null) {
             return;
         }
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom))
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
@@ -67,7 +70,7 @@ public class PDUIDialogUtils {
         if (context == null) {
             return;
         }
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom))
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, listener)

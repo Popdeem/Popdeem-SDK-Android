@@ -38,6 +38,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -246,14 +247,14 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             public void success(JsonObject jsonObject) {
                 progress.dismiss();
                 if (jsonObject == null) {
-                    new AlertDialog.Builder(getActivity())
+                    new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                             .setTitle(R.string.pd_common_sorry_text)
                             .setMessage(R.string.pd_common_something_wrong_text)
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
                             .show();
                 } else if (jsonObject.has("error")) {
-                    new AlertDialog.Builder(getActivity())
+                    new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                             .setTitle(R.string.pd_common_sorry_text)
                             .setMessage(jsonObject.get("error").getAsString())
                             .setPositiveButton(android.R.string.ok, null)
@@ -286,7 +287,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             @Override
             public void failure(int statusCode, Exception e) {
                 progress.dismiss();
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                         .setTitle(R.string.pd_common_sorry_text)
                         .setMessage(R.string.pd_common_something_wrong_text)
                         .setPositiveButton(android.R.string.ok, null)

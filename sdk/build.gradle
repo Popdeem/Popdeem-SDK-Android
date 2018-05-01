@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.2.19'
+project.ext.popdeemSdkVersion = '1.2.20'
 
 android {
     compileSdkVersion 27
@@ -55,10 +55,12 @@ dependencies {
     compile 'com.github.justzak:dilatingdotsprogressbar:1.0.1'
     compile 'com.github.yalantis:ucrop:2.2.2'
     compile 'com.github.bumptech.glide:glide:3.8.0'
+
     // Square
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+
 }
 
 //apply plugin: 'com.jfrog.bintray'

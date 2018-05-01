@@ -27,9 +27,9 @@
     <string name="pd_social_login_terms_text">By signing in with Facebook you accept the terms of our privacy policy.</string>
 
     <!--Profile-->
-    <string name="pd_profile_bronze_ambassador">\u1F949\nBronze\nAmbassador</string>
-    <string name="pd_profile_silver_ambassador">\u1F948\nSilver\nAmbassador</string>
-    <string name="pd_profile_gold_ambassador">\u1F947\nGold\nAmbassador</string>
+    <string name="pd_profile_bronze_ambassador">\uD83E\uDD49\nBronze\nAmbassador</string>
+    <string name="pd_profile_silver_ambassador">\uD83E\uDD48\nSilver\nAmbassador</string>
+    <string name="pd_profile_gold_ambassador">\uD83E\uDD47\nGold\nAmbassador</string>
     <string name="pd_profile_connect_text">Connect Social Media Accounts</string>
     <string name="pd_profile_messages_text">Messages</string>
     <string name="pd_profile_history_text">MY HISTORY</string>
@@ -85,7 +85,7 @@
 
     <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
     <string name="pd_claim_action_photo">Photo required</string>
-    <string name="pd_claim_action_photo_camera">\u1F4F8 Photo Required</string>
+    <string name="pd_claim_action_photo_camera">\uD83D\uDCF8 Photo Required</string>
     <string name="pd_claim_action_none">No Action Required</string>
     <string name="pd_claim_action_social_login">Social Login</string>
     <string name="pd_claim_action_checkin">Check-in Required</string>
@@ -246,10 +246,10 @@
 
     <!--Events-->
 
-    <string name="pd_event_emoji_0">\u1F3C5</string>
-    <string name="pd_event_emoji_1">\u1F949</string>
-    <string name="pd_event_emoji_2">\u1F948</string>
-    <string name="pd_event_emoji_3">\u1F947</string>
+    <string name="pd_event_emoji_0">\uD83C\uDFC5</string>
+    <string name="pd_event_emoji_1">\uD83E\uDD49</string>
+    <string name="pd_event_emoji_2">\uD83E\uDD48</string>
+    <string name="pd_event_emoji_3">\uD83E\uDD47</string>
 
     <string name="pd_tier_1_name">Bronze</string>
     <string name="pd_tier_2_name">Silver</string>

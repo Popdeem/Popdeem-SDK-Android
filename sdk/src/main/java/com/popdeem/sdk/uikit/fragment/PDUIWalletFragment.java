@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -145,7 +146,7 @@ public class PDUIWalletFragment extends Fragment {
                             return;
                         }
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
                         if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
                             String message = String.format(Locale.getDefault(), "%1s", getString(R.string.pd_redeem_sweepstake_reward_info_message_string));
                             builder.setTitle(R.string.pd_redeem_sweepstake_reward_info_title_string)

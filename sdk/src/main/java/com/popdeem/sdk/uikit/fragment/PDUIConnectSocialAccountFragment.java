@@ -39,6 +39,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -520,7 +521,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                         .setTitle(R.string.pd_location_permission_title_text)
                         .setMessage(R.string.pd_location_permission_rationale_text)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -573,7 +574,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_DENIED_LOCATION, null);
                     if (mAskForPermission) {
                         mAskForPermission = false;
-                        new AlertDialog.Builder(getActivity())
+                        new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                                 .setTitle(R.string.pd_location_permission_title_text)
                                 .setMessage(R.string.pd_location_permission_are_you_sure_text)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

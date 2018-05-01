@@ -30,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -193,7 +194,7 @@ public class PDUIInboxFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_pd_logout) {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                     .setTitle(R.string.pd_common_logout_text)
                     .setMessage(R.string.pd_common_logout_message_text)
                     .setNegativeButton(android.R.string.cancel, null)
