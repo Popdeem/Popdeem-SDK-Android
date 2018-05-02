@@ -32,10 +32,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +55,7 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
 import com.popdeem.sdk.core.utils.PDLog;
+import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -124,18 +128,44 @@ public class PDUIInstagramLoginFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            ActionBar actionBar = null;
+            if(getActivity() instanceof AppCompatActivity) {
+                ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+                actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            }else{
+//                toolbar.getContext().setTheme(R.style.PopdeemSDKTheme_AppBarOverlay);
+                toolbar.setTitleTextAppearance(getActivity(),R.style.ToolbarTitleText);
+                String title = " " + getString(R.string.pd_claim_connect_instagram_title);
+                toolbar.setTitle(title);
+                toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.pd_toolbar_text_color));
+
+                int inset = (int) getResources().getDimension(R.dimen.toolbarPadding);
+                for (int i = 0; i < 35; i++) {
+                    Log.i("INSET", "onCreateView: " + inset);
+                }
+                toolbar.setContentInsetsRelative(inset, inset);
+                toolbar.setContentInsetStartWithNavigation(inset);
+                toolbar.setNavigationIcon(PDUIColorUtils.getTintedDrawable(getActivity(),R.drawable.pd_ic_arrow_back,R.color.pd_toolbar_text_color, false));
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+            }
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(R.string.pd_claim_connect_instagram_title);
             }
+
         }
 
         loadInstagramUrl();
 
         return view;
     }
+
+
 
     public void setCallback(@NonNull PDInstagramLoginCallback callback) {
         this.mCallback = callback;

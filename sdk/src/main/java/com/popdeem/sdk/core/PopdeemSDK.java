@@ -37,9 +37,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
@@ -51,6 +53,7 @@ import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.model.PDNonSocialUID;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmNonSocialUID;
 import com.popdeem.sdk.core.realm.PDRealmReferral;
@@ -103,7 +106,7 @@ public final class PopdeemSDK {
      * @param application Application context
      *
      */
-    public static void initializeSDK(@NonNull Application application) {
+    public static void initializeSDK(@NonNull final Application application) {
         initializeSDK(application, PD_PROD_API_ENDPOINT);
     }
 
@@ -123,7 +126,7 @@ public final class PopdeemSDK {
      * @param enviroment Popdeem enviroment PD_PROD_API_ENDPOINT, PD_STAGING_API_ENDPOINT
      *
      */
-    public static void initializeSDK(@NonNull Application application, String enviroment) {
+    public static void initializeSDK(@NonNull final Application application, String enviroment) {
 
         application.registerReceiver(mLoggedInBroadcastReceiver , new IntentFilter(PD_LOGGED_IN_RECEIVER_FILTER));
 
@@ -138,15 +141,38 @@ public final class PopdeemSDK {
 
         // Get Popdeem API Key
         getPopdeemAPIKey();
-
-        // Init Facebook
         FacebookSdk.sdkInitialize(application);
 
-        // Init Twitter
-        PDSocialUtils.initTwitter(application);
+        sdkInitialized = true;
 
-        // Init Instagram
-        PDSocialUtils.initInstagram(application);
+        PDAPIClient.instance().getCustomer(new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                Log.i("JsonObject", "success: ");
+                if(jsonObject.has("customer")){
+                    JsonObject customer = jsonObject.getAsJsonObject("customer");
+                    PDRealmCustomer realmCustomer = PDRealmCustomer.fromJson(customer);
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    RealmResults<PDRealmCustomer> results = realm.where(PDRealmCustomer.class).findAll();
+                    results.deleteAllFromRealm();
+                    realm.copyToRealm(realmCustomer);
+                    realm.commitTransaction();
+                    realm.close();
+                    initFromCustomer(application);
+
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                e.printStackTrace();
+                initFromCustomer(application);
+
+            }
+        });
+
 
         // Get UID for Non Social login
         if (PDUniqueIdentifierUtils.getUID() == null) {
@@ -188,8 +214,25 @@ public final class PopdeemSDK {
             }
         });
 
-        sdkInitialized = true;
+
+
+
+
     }
+
+    private static void initFromCustomer(Application application){
+        // Init Facebook
+//        FacebookSdk.sdkInitialize(application);
+        PDSocialUtils.initFacebook(application);
+
+        // Init Twitter
+        PDSocialUtils.initTwitter(application);
+
+        // Init Instagram
+        PDSocialUtils.initInstagram(application);
+    }
+
+
 
 
     /**

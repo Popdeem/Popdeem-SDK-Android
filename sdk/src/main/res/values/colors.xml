@@ -8,7 +8,7 @@
     <color name="pd_accent">#dba7ac</color>
     <color name="pd_back_button_color">@color/pd_toolbar_text_color</color>
     <!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
-    <color name="pd_social_login_back_button_color">@color/pd_back_button_color</color>
+    <color name="pd_social_login_back_button_color">@color/pd_toolbar_color</color>
 
 
     <!-- Inbox Floating Action Button Colors -->
@@ -101,7 +101,7 @@
     <color name="pd_crop_status_bar_colour">@color/pd_toolbar_color_dark</color>
     <color name="pd_crop_content_background_colour">#ffffff</color>
     <color name="pd_crop_active_widget_colour">@color/pd_accent</color>
-    <color name="pd_crop_toolbar_widget_colour">@color/pd_back_button_color</color>
+    <color name="pd_crop_toolbar_widget_colour">@color/pd_toolbar_text_color</color>
 
 
 

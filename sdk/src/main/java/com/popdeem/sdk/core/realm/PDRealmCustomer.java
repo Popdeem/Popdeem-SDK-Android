@@ -43,7 +43,7 @@ public class PDRealmCustomer extends RealmObject {
         ret.setFb_app_id(jsonObject.get(FB_APP_ID).getAsString());
         ret.setFb_app_access_token(jsonObject.get(FB_APP_ACCESS_TOKEN).getAsString());
         ret.setFacebook_namespace(jsonObject.get(FACEBOOK_NAMESPACE).getAsString());
-        if(jsonObject.get(TWITTER_CONSUMER_KEY)==null || jsonObject.get(TWITTER_CONSUMER_SECRET)==null) {
+        if(jsonObject.get(TWITTER_CONSUMER_KEY)!=null && jsonObject.get(TWITTER_CONSUMER_SECRET)!=null) {
             ret.setTwitter_consumer_key(jsonObject.get(TWITTER_CONSUMER_KEY).getAsString());
             ret.setTwitter_consumer_secret(jsonObject.get(TWITTER_CONSUMER_SECRET).getAsString());
         }else{

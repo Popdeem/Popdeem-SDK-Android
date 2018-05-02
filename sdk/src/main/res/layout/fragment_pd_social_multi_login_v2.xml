@@ -69,6 +69,11 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="@dimen/social_login_padding">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="0dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -167,7 +172,11 @@
                 android:visibility="visible" />
 
         </FrameLayout>
-
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="0dp"/>
     </LinearLayout>
     </LinearLayout>
 

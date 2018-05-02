@@ -25,6 +25,7 @@
 package com.popdeem.sdk.core.utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,10 +35,12 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
+import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmInstagramConfig;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.twitter.sdk.android.core.Callback;
@@ -56,6 +59,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by mikenolan on 23/02/16.
@@ -64,6 +68,8 @@ public class PDSocialUtils {
 
     public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends"};
     public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
+
+    private static final String FACEBOOK_APP_ID = "com.facebook.sdk.ApplicationId";
 
     public static final int TWITTER_CHARACTER_LIMIT = 180;
     public static final int TWITTER_DEFAULT_MEDIA_CHARACTERS_COUNT = 25;
@@ -133,7 +139,16 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getInstagramClientId(Context context) {
-        final String clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
+
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+            final String clientId;
+        if(customer == null || customer.getInstagram_client_id() == null || customer.getInstagram_client_id().length() == 0) {
+            clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
+        }else{
+            clientId = customer.getInstagram_client_id();
+        }
         if (clientId == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client ID in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientId\" android:value=\"YOUR_INSTAGRAM_CLIENT_ID\" />");
@@ -149,8 +164,17 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getInstagramClientSecret(Context context) {
-        final String clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
-        if (clientSecret == null) {
+
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+        final String clientSecret;
+        if(customer == null || customer.getInstagram_client_secret() == null || customer.getInstagram_client_secret().length() == 0) {
+            clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
+        }else{
+            clientSecret = customer.getInstagram_client_secret();
+        }
+            if (clientSecret == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientSecret\" android:value=\"YOUR_INSTAGRAM_CLIENT_SECRET\" />");
             return null;
@@ -165,6 +189,7 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getInstagramCallbackUrl(Context context) {
+
         final String callbackUrl = PDUtils.getStringFromMetaData(context, INSTAGRAM_CALLBACK_URL_KEY);
         if (callbackUrl == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Callback URL in your AndroidManifest.xml\n" +
@@ -180,11 +205,11 @@ public class PDSocialUtils {
     public static boolean isInstagramLoggedIn() {
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+        realm.close();
         String accessToken = null;
         if (userDetails != null && userDetails.getUserInstagram() != null) {
             accessToken = userDetails.getUserInstagram().getAccessToken();
         }
-        realm.close();
         return(accessToken!=null&&!accessToken.equalsIgnoreCase(""));
     }
 
@@ -326,6 +351,71 @@ public class PDSocialUtils {
         request.executeAsync();
     }
 
+    /**
+     * Get Facebook AppID from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getFacebookAppId(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+
+        if(customer == null || customer.getFb_app_id() == null || customer.getFb_app_id().length() == 0) {
+            return PDUtils.getStringFromMetaData(context, FACEBOOK_APP_ID);
+        }else{
+            return customer.getFb_app_id();
+        }
+    }
+
+    /**
+     * Get Facebook AppID from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getFacebookAppName(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+
+        if(customer == null || customer.getFacebook_namespace() == null || customer.getFb_app_id().length() == 0) {
+            return null;
+        }
+        return customer.getFacebook_namespace();
+
+    }
+
+    /**
+     * Get Facebook AppID from AndroidManifest Meta Data
+     *
+     * @param context Application Context
+     * @return null if value does not exist, String value otherwise
+     */
+    public static String getFacebookAppToken(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+
+        if(customer == null || customer.getFb_app_id() == null || customer.getFb_app_id().length() == 0) {
+            return null;
+        }
+        return customer.getFb_app_access_token();
+    }
+
+    public static void initFacebook(Application application){
+//        FacebookSdk.sdkInitialize(application);
+        FacebookSdk.setApplicationId(getFacebookAppId(application));
+        if(PDSocialUtils.getFacebookAppName(application)!=null) {
+            FacebookSdk.setApplicationName(PDSocialUtils.getFacebookAppName(application));
+        }
+
+        if(PDSocialUtils.getFacebookAppToken(application)!=null) {
+            FacebookSdk.setClientToken(PDSocialUtils.getFacebookAppToken(application));
+        }
+    }
+
 
     //------------------------------------------------------------------------
     //                          Twitter Methods
@@ -378,12 +468,17 @@ public class PDSocialUtils {
 
         return new TwitterAuthConfig(consumerKey, consumerSecret);
     }
+    public static TwitterAuthClient client;
 
     public static void loginWithTwitter(Activity activity, Callback<TwitterSession> callback) {
         if (isTwitterInitialised()) {
             Log.i("PDSocialUtils", "loginWithTwitter: Fabric is initialized with Twitter");
 //            Twitter.getInstance().logIn(activity, callback);
-            TwitterAuthClient client = new TwitterAuthClient();
+            if(client != null) {
+                client.cancelAuthorize();
+                client = null;
+            }
+            client = new TwitterAuthClient();
             client.authorize(activity, callback);
         }
     }
@@ -416,7 +511,19 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getTwitterConsumerKey(Context context) {
-        return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+        if(customer != null){
+            Log.i("TWITTER_KEY", "customer.getTwitter_consumer_key(): "+ customer.getTwitter_consumer_key());
+        }
+        if(customer == null || customer.getTwitter_consumer_key() == null || customer.getTwitter_consumer_key().length() == 0) {
+            Log.i("TWITTER_KEY", "getTwitterConsumerKey MANIFEST: " + PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY));
+            return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+        }else{
+            Log.i("TWITTER_KEY", "getTwitterConsumerKey: " + customer.getTwitter_consumer_key());
+            return customer.getTwitter_consumer_key();
+        }
     }
 
 
@@ -427,7 +534,15 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getTwitterConsumerSecret(Context context) {
-        return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        realm.close();
+
+        if(customer == null || customer.getTwitter_consumer_secret() == null || customer.getTwitter_consumer_secret().length() == 0) {
+            return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
+        }else{
+            return customer.getTwitter_consumer_secret();
+        }
     }
 
     private static boolean isTwitterInitialised() {

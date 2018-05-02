@@ -21,6 +21,15 @@
 
     <style name="PopdeemSDKTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/pd_toolbar_text_color</item>
+        <item name="android:textColor">@color/pd_toolbar_text_color</item>
+        <item name="contentInsetStart">16dp</item>
+    </style>
+
+    <style name="ToolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColorPrimary">@color/pd_toolbar_text_color</item>
+        <item name="android:textColor">@color/pd_toolbar_text_color</item>
+        <item name="actionMenuTextColor">@color/pd_toolbar_text_color</item>
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="PopdeemSDKTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

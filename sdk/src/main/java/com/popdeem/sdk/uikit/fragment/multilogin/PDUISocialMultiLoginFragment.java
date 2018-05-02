@@ -414,6 +414,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                     progressView.setVisibility(View.GONE);
                     showGenericAlert();
                 }
+//                PDSocialUtils.client.cancelAuthorize();
+//                PDSocialUtils.client = null;
             }
 
             @Override
@@ -421,6 +423,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 if (getActivity() != null) {
                     progressView.setVisibility(View.GONE);
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_claim_twitter_button_text, e.getMessage());
+//                    PDSocialUtils.client.cancelAuthorize();
+//                    PDSocialUtils.client = null;
                 }
             }
         });
