@@ -142,8 +142,7 @@ public class PDSocialUtils {
 
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
-            final String clientId;
+        final String clientId;
         if(customer == null || customer.getInstagram_client_id() == null || customer.getInstagram_client_id().length() == 0) {
             clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
         }else{
@@ -152,8 +151,11 @@ public class PDSocialUtils {
         if (clientId == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client ID in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientId\" android:value=\"YOUR_INSTAGRAM_CLIENT_ID\" />");
+            realm.close();
             return null;
         }
+
+        realm.close();
         return clientId;
     }
 
@@ -167,7 +169,6 @@ public class PDSocialUtils {
 
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
         final String clientSecret;
         if(customer == null || customer.getInstagram_client_secret() == null || customer.getInstagram_client_secret().length() == 0) {
             clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
@@ -177,8 +178,10 @@ public class PDSocialUtils {
             if (clientSecret == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientSecret\" android:value=\"YOUR_INSTAGRAM_CLIENT_SECRET\" />");
+            realm.close();
             return null;
         }
+        realm.close();
         return clientSecret;
     }
 
@@ -205,11 +208,11 @@ public class PDSocialUtils {
     public static boolean isInstagramLoggedIn() {
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
-        realm.close();
         String accessToken = null;
         if (userDetails != null && userDetails.getUserInstagram() != null) {
             accessToken = userDetails.getUserInstagram().getAccessToken();
         }
+        realm.close();
         return(accessToken!=null&&!accessToken.equalsIgnoreCase(""));
     }
 
@@ -360,12 +363,15 @@ public class PDSocialUtils {
     public static String getFacebookAppId(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
 
         if(customer == null || customer.getFb_app_id() == null || customer.getFb_app_id().length() == 0) {
-            return PDUtils.getStringFromMetaData(context, FACEBOOK_APP_ID);
+            String ret = PDUtils.getStringFromMetaData(context, FACEBOOK_APP_ID);
+            realm.close();
+            return ret;
         }else{
-            return customer.getFb_app_id();
+            String ret = customer.getFb_app_id();
+            realm.close();
+            return ret;
         }
     }
 
@@ -378,12 +384,14 @@ public class PDSocialUtils {
     public static String getFacebookAppName(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
 
         if(customer == null || customer.getFacebook_namespace() == null || customer.getFb_app_id().length() == 0) {
+            realm.close();
             return null;
         }
-        return customer.getFacebook_namespace();
+        String ret = customer.getFacebook_namespace();
+        realm.close();
+        return ret;
 
     }
 
@@ -396,12 +404,14 @@ public class PDSocialUtils {
     public static String getFacebookAppToken(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
 
         if(customer == null || customer.getFb_app_id() == null || customer.getFb_app_id().length() == 0) {
+            realm.close();
             return null;
         }
-        return customer.getFb_app_access_token();
+        String ret = customer.getFb_app_access_token();
+        realm.close();
+        return ret;
     }
 
     public static void initFacebook(Application application){
@@ -513,16 +523,19 @@ public class PDSocialUtils {
     public static String getTwitterConsumerKey(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
         if(customer != null){
             Log.i("TWITTER_KEY", "customer.getTwitter_consumer_key(): "+ customer.getTwitter_consumer_key());
         }
         if(customer == null || customer.getTwitter_consumer_key() == null || customer.getTwitter_consumer_key().length() == 0) {
             Log.i("TWITTER_KEY", "getTwitterConsumerKey MANIFEST: " + PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY));
-            return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+            String ret = PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+            realm.close();
+            return ret;
         }else{
             Log.i("TWITTER_KEY", "getTwitterConsumerKey: " + customer.getTwitter_consumer_key());
-            return customer.getTwitter_consumer_key();
+            String ret = customer.getTwitter_consumer_key();
+            realm.close();
+            return ret;
         }
     }
 
@@ -536,12 +549,16 @@ public class PDSocialUtils {
     public static String getTwitterConsumerSecret(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        realm.close();
 
         if(customer == null || customer.getTwitter_consumer_secret() == null || customer.getTwitter_consumer_secret().length() == 0) {
-            return PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
+            String ret = PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
+            realm.close();
+            return ret;
+
         }else{
-            return customer.getTwitter_consumer_secret();
+            String ret = customer.getTwitter_consumer_key();
+            realm.close();
+            return ret;
         }
     }
 
