@@ -224,7 +224,15 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         pdVerifyImageCard.setVisibility(View.GONE);
         pdProceedButton.setVisibility(View.GONE);
         pdBackButton.setVisibility(View.GONE);
+        if(mReward!=null && mReward.getGlobalHashtag()!=null && !mReward.getGlobalHashtag().isEmpty()) {
+            LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
+            hashTagContainer.setVisibility(View.VISIBLE);
+            TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
+            hashTagTextView.setText(mReward.getGlobalHashtag());
+            hashTagContainer.setVisibility(View.VISIBLE);
+        }
 
+        validateHashTag();
     }
 
     //*******************************************************
@@ -300,10 +308,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
         LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagContainer.setVisibility(View.INVISIBLE);
+//        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mFacebookSwitch.isChecked()) {
-            removeHashTagSpans(mMessageEditText.getText());
+//            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -325,10 +333,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
         LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagContainer.setVisibility(View.INVISIBLE);
+//        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mInstagramSwitch.isChecked()) {
-            removeHashTagSpans(mMessageEditText.getText());
+//            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -346,10 +354,10 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         TextView hashTagTextView = (TextView) findViewById(R.id.pd_claim_twitter_hashtag_text_view);
         LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         twitterCharactersTextView.setVisibility(View.INVISIBLE);
-        hashTagContainer.setVisibility(View.INVISIBLE);
+//        hashTagContainer.setVisibility(View.INVISIBLE);
 
         if (!mTwitterSwitch.isChecked()) {
-            removeHashTagSpans(mMessageEditText.getText());
+//            removeHashTagSpans(mMessageEditText.getText());
             return;
         }
 
@@ -373,11 +381,11 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void validateHashTag() {
-        if (!mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked() && !mFacebookSwitch.isChecked()) {
-            removeHashTagSpans(mMessageEditText.getText());
-            mHashTagValidated = true;
-            return;
-        }
+//        if (!mTwitterSwitch.isChecked() && !mInstagramSwitch.isChecked() && !mFacebookSwitch.isChecked()) {
+//            removeHashTagSpans(mMessageEditText.getText());
+//            mHashTagValidated = true;
+//            return;
+//        }
 
         String hashTagLowerCase = null;
         if (mTwitterSwitch.isChecked()) {
@@ -386,9 +394,14 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             hashTagLowerCase = mReward.getInstagramOptions().getForcedTag().toLowerCase(Locale.getDefault());
         } else if (mFacebookSwitch.isChecked()) {
             hashTagLowerCase = mReward.getGlobalHashtag().toLowerCase(Locale.getDefault());
+        } else if(mReward.getGlobalHashtag()!=null){
+            hashTagLowerCase = mReward.getGlobalHashtag().toLowerCase(Locale.getDefault());
         }
 
+        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
+
         if (hashTagLowerCase == null || hashTagLowerCase.isEmpty()) {
+            hashTagContainer.setVisibility(View.INVISIBLE);
             mHashTagValidated = true;
             return;
         }
@@ -401,7 +414,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
         mHashTagValidated = currentMessageLowerCase.contains(hashTagLowerCase);
 
-        LinearLayout hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
+        hashTagContainer = (LinearLayout) findViewById(R.id.pd_claim_hashtag_container);
         hashTagContainer.setVisibility(mHashTagValidated ? View.INVISIBLE : View.VISIBLE);
 
         Spannable messageSpannable = mMessageEditText.getText();
@@ -1496,6 +1509,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             } else if (mTwitterSwitch.isChecked()) {
                 hashTag = mReward.getTweetOptions().getForcedTag();
             }else if (mFacebookSwitch.isChecked()) {
+                hashTag = mReward.getGlobalHashtag();
+            }else if (mReward.getGlobalHashtag()!=null){
                 hashTag = mReward.getGlobalHashtag();
             }
             if (hashTag != null) {
