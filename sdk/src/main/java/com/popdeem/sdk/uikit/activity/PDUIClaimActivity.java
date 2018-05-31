@@ -510,7 +510,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                     .load(imageUrl)
                     .error(R.drawable.pd_ui_star_icon)
                     .dontAnimate()
-//                    .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                     .placeholder(R.drawable.pd_ui_star_icon)
                     .into(logoImageView);
         }

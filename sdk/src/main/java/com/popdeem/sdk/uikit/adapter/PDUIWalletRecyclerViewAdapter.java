@@ -40,25 +40,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonObject;
 import com.popdeem.sdk.BuildConfig;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.model.PDEvent;
 import com.popdeem.sdk.core.model.PDReward;
-import com.popdeem.sdk.core.model.PDUser;
 import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.uikit.activity.PDUIInboxActivity;
 import com.popdeem.sdk.uikit.activity.PDUISettingsActivity;
-import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.widget.PDAmbassadorView;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
-import com.readystatesoftware.viewbadger.BadgeView;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-
-import org.joda.time.LocalTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

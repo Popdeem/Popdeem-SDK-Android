@@ -126,7 +126,6 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
                 .placeholder(R.drawable.pd_ui_default_user)
                 .error(R.drawable.pd_ui_default_user)
                 .dontAnimate()
-//                .override(R.dimen.pd_scan_profile_image_dimen, R.dimen.pd_scan_profile_image_dimen)
                 .into(userProfilePicture);
 
 

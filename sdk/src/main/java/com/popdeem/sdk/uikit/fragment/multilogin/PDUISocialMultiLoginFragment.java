@@ -160,7 +160,6 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                                 .load(imageUrl)
                                 .error(R.drawable.pd_ui_star_icon)
                                 .dontAnimate()
-                                .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                                 .placeholder(R.drawable.pd_ui_star_icon)
                                 .into(logoImageView);
                     }
@@ -308,7 +307,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             }
         });
 
-        if(PDSocialUtils.getTwitterConsumerKey(getContext()) == null){
+        if(!PDSocialUtils.usesTwitter(getContext())){
             mTwitterLoginButton.setVisibility(View.GONE);
         }
 

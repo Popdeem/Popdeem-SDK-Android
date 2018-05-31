@@ -217,7 +217,6 @@ public class PDUISocialLoginFragment extends Fragment {
                         Glide.with(getActivity())
                                 .load(imageUrl)
                                 .error(R.drawable.pd_ui_star_icon)
-                                .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                                 .dontAnimate()
                                 .placeholder(R.drawable.pd_ui_star_icon)
                                 .into(logoImageView);

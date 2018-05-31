@@ -47,8 +47,8 @@
             <ImageView
                 android:background="@color/pd_rewards_background_color"
                 android:id="@+id/pd_reward_star_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"

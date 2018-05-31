@@ -24,17 +24,12 @@
 
 package com.popdeem.sdk.uikit.activity;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -291,8 +286,10 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
     private void refreshList() {
         mItems.clear();
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
-        if(PDSocialUtils.getTwitterConsumerKey(this) !=null)
+        boolean addTwitter = PDSocialUtils.usesTwitter(this);
+        if(addTwitter) {
             mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
+        }
         mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
         mAdapter.notifyDataSetChanged();
 

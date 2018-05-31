@@ -132,6 +132,17 @@ public class PDSocialUtils {
         return foundInstagramConfig;
     }
 
+    public static boolean usesInstagram(Context context){
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        if(customer != null && customer.getInstagram_client_id() != null && customer.getInstagram_client_id().length() > 0  && customer.getInstagram_client_secret() != null && customer.getInstagram_client_secret().length() > 0) {
+            realm.close();
+            return true;
+        }
+        realm.close();
+        return false;
+
+    }
     /**
      * Get Instagram Client ID from AndroidManifest Meta Data
      *
@@ -140,24 +151,17 @@ public class PDSocialUtils {
      */
     public static String getInstagramClientId(Context context) {
 
-        Realm realm = Realm.getDefaultInstance();
-        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        final String clientId;
-        if(customer == null || customer.getInstagram_client_id() == null || customer.getInstagram_client_id().length() == 0) {
-            clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
-        }else{
-            clientId = customer.getInstagram_client_id();
-        }
+        final String clientId = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_ID_KEY);
+
+
         if (clientId == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client ID in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientId\" android:value=\"YOUR_INSTAGRAM_CLIENT_ID\" />");
-            realm.close();
             return null;
         }
-
-        realm.close();
         return clientId;
     }
+
 
     /**
      * Get Instagram Client Secret from AndroidManifest Meta Data
@@ -167,21 +171,13 @@ public class PDSocialUtils {
      */
     public static String getInstagramClientSecret(Context context) {
 
-        Realm realm = Realm.getDefaultInstance();
-        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-        final String clientSecret;
-        if(customer == null || customer.getInstagram_client_secret() == null || customer.getInstagram_client_secret().length() == 0) {
-            clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
-        }else{
-            clientSecret = customer.getInstagram_client_secret();
-        }
-            if (clientSecret == null) {
+        final String clientSecret = PDUtils.getStringFromMetaData(context, INSTAGRAM_CLIENT_SECRET_KEY);
+
+        if (clientSecret == null) {
             PDLog.e(PDSocialUtils.class, "Instagram Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
                     "<meta-data android:name=\"InstagramClientSecret\" android:value=\"YOUR_INSTAGRAM_CLIENT_SECRET\" />");
-            realm.close();
             return null;
         }
-        realm.close();
         return clientSecret;
     }
 
@@ -216,9 +212,9 @@ public class PDSocialUtils {
         return(accessToken!=null&&!accessToken.equalsIgnoreCase(""));
     }
 
-        /**
-         * Check if user is logged in to Instagram
-         */
+    /**
+     * Check if user is logged in to Instagram
+     */
     public static void isInstagramLoggedIn(@NonNull final PDAPICallback<Boolean> callback) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
@@ -354,6 +350,17 @@ public class PDSocialUtils {
         request.executeAsync();
     }
 
+    public static boolean usesFacebook(){
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        if(customer != null && customer.getFb_app_id() != null && customer.getFb_app_id().length() > 0 && customer.getFacebook_namespace() != null && customer.getFacebook_namespace().length() > 0) {
+            realm.close();
+            return true;
+        }
+        realm.close();
+        return false;
+    }
+
     /**
      * Get Facebook AppID from AndroidManifest Meta Data
      *
@@ -361,18 +368,16 @@ public class PDSocialUtils {
      * @return null if value does not exist, String value otherwise
      */
     public static String getFacebookAppId(Context context) {
-        Realm realm = Realm.getDefaultInstance();
-        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
 
-        if(customer == null || customer.getFb_app_id() == null || customer.getFb_app_id().length() == 0) {
-            String ret = PDUtils.getStringFromMetaData(context, FACEBOOK_APP_ID);
-            realm.close();
-            return ret;
-        }else{
-            String ret = customer.getFb_app_id();
-            realm.close();
-            return ret;
+
+        final String clientSecret = PDUtils.getStringFromMetaData(context, FACEBOOK_APP_ID);
+
+        if (clientSecret == null) {
+            PDLog.e(PDSocialUtils.class, "Facebook Error: Please ensure you have your Instagram Client Secret in your AndroidManifest.xml\n" +
+                    "<meta-data android:name=\"com.facebook.sdk.ApplicationId\" android:value=\"YOUR_FACEBOOK_ID\" />");
+            return null;
         }
+        return clientSecret;
     }
 
     /**
@@ -514,6 +519,18 @@ public class PDSocialUtils {
         return hasCreds;
     }
 
+
+    public static boolean usesTwitter(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
+        if (customer != null && customer.getTwitter_consumer_key() != null && customer.getTwitter_consumer_key().length() > 0 && customer.getTwitter_consumer_secret() != null && customer.getTwitter_consumer_secret().length()> 0) {
+            return true;
+        } else {
+            return false;
+        }
+//        return (customer != null && customer.getTwitter_consumer_key() != null && customer.getTwitter_consumer_key().length() > 0 && customer.getTwitter_consumer_secret() != null && customer.getTwitter_consumer_secret().length() > 0);
+    }
+
     /**
      * Get Twitter Consumer Key from AndroidManifest Meta Data
      *
@@ -526,18 +543,13 @@ public class PDSocialUtils {
         if(customer != null){
             Log.i("TWITTER_KEY", "customer.getTwitter_consumer_key(): "+ customer.getTwitter_consumer_key());
         }
-        if(customer == null || customer.getTwitter_consumer_key() == null || customer.getTwitter_consumer_key().length() == 0) {
-            Log.i("TWITTER_KEY", "getTwitterConsumerKey MANIFEST: " + PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY));
-            String ret = PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
-            realm.close();
-            return ret;
-        }else{
-            Log.i("TWITTER_KEY", "getTwitterConsumerKey: " + customer.getTwitter_consumer_key());
-            String ret = customer.getTwitter_consumer_key();
-            realm.close();
-            return ret;
-        }
+        Log.i("TWITTER_KEY", "getTwitterConsumerKey MANIFEST: " + PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY));
+        String ret = PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_KEY_META_KEY);
+        realm.close();
+        return ret;
     }
+
+
 
 
     /**

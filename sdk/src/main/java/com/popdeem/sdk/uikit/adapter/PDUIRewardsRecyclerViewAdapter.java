@@ -194,7 +194,6 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
                     .load(imageUrl)
                     .dontAnimate()
                     .error(R.drawable.pd_ui_star_icon)
-//                    .override(R.dimen.pd_reward_item_image_dimen, R.dimen.pd_reward_item_image_dimen)
                     .dontAnimate()
                     .placeholder(R.drawable.pd_ui_star_icon)
                     .into(holder.imageView);
@@ -308,9 +307,17 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         } else if (intervalDays > 6) {
             ret = ret + "⌚︎ " + intervalWeeks + " weeks left to claim";
         } else if (intervalDays < 7 && intervalHours > 23) {
-            ret = ret + "⌚︎ " + intervalDays + " days left to claim";
+            if(intervalDays == 1) {
+                ret = ret + "⌚︎ " + intervalDays + " day left to claim";
+            }else{
+                ret = ret + "⌚︎ " + intervalDays + " days left to claim";
+            }
         } else {
-            ret = ret + "⌚︎ " + intervalHours + " hours left to claim";
+            if(intervalHours == 1) {
+                ret = ret + "⌚︎ " + intervalHours + " hour left to claim";
+            }else{
+                ret = ret + "⌚︎ " + intervalHours + " hours left to claim";
+            }
         }
 
 
