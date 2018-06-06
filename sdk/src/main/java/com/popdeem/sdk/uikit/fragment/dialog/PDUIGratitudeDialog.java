@@ -50,6 +50,12 @@ public class PDUIGratitudeDialog extends Dialog {
     }
     public static PDUIGratitudeDialog showGratitudeDialog(final Context context, String type, PDReward reward){
 
+
+        Realm  mRealm = Realm.getDefaultInstance();
+        PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+        if(mUser.getAdvocacyScore()>30 && type.equalsIgnoreCase("logged_in")){
+            return null;
+        }
         final PDUIGratitudeDialog dialog = new PDUIGratitudeDialog(context, R.style.FullScreenDialogStyle);
         dialog.setPdReward(reward);
         dialog.setCancelable(true);
@@ -64,12 +70,21 @@ public class PDUIGratitudeDialog extends Dialog {
 
         PDAmbassadorView ambassadorView = (PDAmbassadorView) dialog.findViewById(R.id.pd_gratitude_ambassador_view);
 
-        Realm  mRealm = Realm.getDefaultInstance();
         PDRealmCustomer mCustomer = mRealm.where(PDRealmCustomer.class).findFirst();
-        if(mCustomer!=null){
-            if(!mCustomer.usesAmbassadorFeatures()){
-                ambassadorView.setVisibility(View.GONE);
+        if(mCustomer!=null && mCustomer.usesAmbassadorFeatures()){
+            int increment = 0;
+            if(mCustomer!=null){
+                increment = mCustomer.getIncrement_advocacy_points();
             }
+            if (mUser != null) {
+                ambassadorView.setLevel((int) mUser.getAdvocacyScore() + increment, ((int) mUser.getAdvocacyScore() < 90));
+                mRealm.beginTransaction();
+                mUser.setAdvocacyScore(mUser.getAdvocacyScore() + increment);
+                mRealm.commitTransaction();
+            }
+
+        }else{
+            ambassadorView.setVisibility(View.GONE);
         }
 
         Button profileButton = (Button) dialog.findViewById(R.id.pd_gratitude_profile_button);
@@ -79,160 +94,114 @@ public class PDUIGratitudeDialog extends Dialog {
                 dialog.dismiss();
             }
         });
-        PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
 
-        int increment = 0;
-        if(mCustomer!=null){
-            increment = mCustomer.getIncrement_advocacy_points();
-        }
+        setIcon(context, mCustomer, dialog);
+        setTitleAndsBody(context, mCustomer, reward, type, dialog);
+
+        mRealm.close();
+        return dialog;
+    }
+
+    public static void setIcon(Context context, PDRealmCustomer customer, PDUIGratitudeDialog dialog){
+
+        SharedPreferences sp = context.getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
+        int variationNumImages = sp.getInt("variation_num_images", 0);
 
         ImageView icon = dialog.findViewById(R.id.pd_iv_ambassador_icon);
 
+        TypedArray imagesArray = context.getResources().obtainTypedArray(R.array.pd_login_images);
 
-        SharedPreferences sp = context.getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
-        int variationNum = sp.getInt("variation_num", 0);
-        int variationNumImages = sp.getInt("variation_num_images", 0);
-
-
-        if(type.equalsIgnoreCase("logged_in")) {
-
-            if (mUser != null && mCustomer.usesAmbassadorFeatures()) {
-                ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(context.getString(R.string.pd_gratitude_thanks_for_connecting));
-                ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(String.format(context.getString(R.string.pd_gratitude_connect_body_text), "" + mCustomer.getIncrement_advocacy_points()));
-                ambassadorView.setLevel((int) mUser.getAdvocacyScore(), true);
-
-            }else{
-
-
-//                int[] imagesArray = context.getResources().getIntArray(R.array.pd_login_images);
-                TypedArray imagesArray = context.getResources().obtainTypedArray(R.array.pd_login_images);
-
-                if(imagesArray.length()==0) {
-                    icon.setVisibility(View.INVISIBLE);
-                }else if(imagesArray.length()==1){
-                    icon.setVisibility(View.VISIBLE);
-                    int showNum = variationNumImages%imagesArray.length();
-                    icon.setImageResource(imagesArray.getResourceId(showNum,-1));
-                }else if(imagesArray.length()>1){
-                    int showNum = variationNumImages%imagesArray.length();
-                    icon.setImageResource(imagesArray.getResourceId(showNum,-1));
-                    icon.setVisibility(View.VISIBLE);
-                }
-
-                imagesArray.recycle();
-
-                String[] stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_title);
-                String[] stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_title);
-                if(stringsArrayBody.length==0) {
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(context.getString(R.string.pd_gratitude_thanks_for_connecting));
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(String.format(context.getString(R.string.pd_gratitude_connect_body_text), "" + mCustomer.getIncrement_advocacy_points()));
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-                }else if(stringsArrayBody.length==1) {
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(stringsArrayTitle[0]);
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(stringsArrayBody[0]);
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-
-                }else if(stringsArrayBody.length>1) {
-                    int showNum = variationNum%stringsArrayBody.length;
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(stringsArrayTitle[showNum]);
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(stringsArrayBody[showNum]);
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-                }
-
-
-            }
-
-        }else{
-            if(mCustomer!=null && mCustomer.usesAmbassadorFeatures()) {
-                ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(context.getString(R.string.pd_gratitude_title));
-                ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText(String.format(context.getString(R.string.pd_gratitude_share_body_text), "" + mCustomer.getIncrement_advocacy_points()));
-
-                if (mUser != null) {
-                    ambassadorView.setLevel((int) mUser.getAdvocacyScore() + increment, ((int) mUser.getAdvocacyScore() < 90));
-                    mRealm.beginTransaction();
-                    mUser.setAdvocacyScore(mUser.getAdvocacyScore() + increment);
-                    mRealm.commitTransaction();
-                }
-
-            }else{
-//                int[] imagesArray = context.getResources().getIntArray(R.array.pd_share_images);
-                TypedArray imagesArray = context.getResources().obtainTypedArray(R.array.pd_share_images);
-
-                if(imagesArray.length()==0) {
-                    icon.setVisibility(View.INVISIBLE);
-                }else if(imagesArray.length()==1){
-                    int showNum = variationNumImages%imagesArray.length();
-                    icon.setImageResource(imagesArray.getResourceId(showNum,-1));
-                    icon.setVisibility(View.VISIBLE);
-                }else if(imagesArray.length()>1){
-                    int showNum = variationNum%imagesArray.length();
-                    icon.setImageResource(imagesArray.getResourceId(showNum,-1));
-                    icon.setVisibility(View.VISIBLE);
-                }
-
-                imagesArray.recycle();
-
-                String[] stringsArrayTitle;
-                String[] stringsArrayBody;
-                if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)) {
-                    stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
-                    stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_body);
-                }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
-                    stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_credit_title);
-                    stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_credit_body);
-                }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-                    stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_sweepstake_title);
-                    stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_sweepstake_body);
-                }else{
-                    stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
-                    stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
-                }
-
-                if(stringsArrayBody.length==0) {
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(context.getString(R.string.pd_gratitude_title));
-                    if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(String.format(context.getString(R.string.pd_gratitude_share_text_coupon), reward.getCredit()));
-                    }else {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(context.getString(R.string.pd_gratitude_share_text));
-                    }
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-                }else if(stringsArrayBody.length==1) {
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(stringsArrayTitle[0]);
-                    if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(String.format(stringsArrayBody[0], reward.getCredit()));
-                    }else {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(stringsArrayBody[0]);
-                    }
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-                }else if(stringsArrayBody.length>1) {
-                    int showNum = variationNum%stringsArrayBody.length;
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(stringsArrayTitle[showNum]);
-                    if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(String.format(stringsArrayBody[showNum], reward.getCredit()));
-                    }else {
-                        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(stringsArrayBody[showNum]);
-                    }
-                    ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
-                }
-
-
-
-
-            }
+        if(imagesArray.length()==0) {
+            icon.setVisibility(View.INVISIBLE);
+        }else if(imagesArray.length()==1){
+            icon.setVisibility(View.VISIBLE);
+            icon.setImageResource(imagesArray.getResourceId(imagesArray.getIndex(0),-1));
+        }else if(imagesArray.length()>1){
+            int showNum = variationNumImages%imagesArray.length();
+            icon.setImageResource(imagesArray.getResourceId(showNum,-1));
+            icon.setVisibility(View.VISIBLE);
         }
 
-        variationNum++;
         variationNumImages++;
-
         SharedPreferences.Editor editor = sp.edit();
-        editor.putInt("variation_num", variationNum);
         editor.putInt("variation_num_images", variationNumImages);
         editor.commit();
 
 
+    }
 
-        mRealm.close();
-        return dialog;
+    public static void setTitleAndsBody(Context context, PDRealmCustomer customer, PDReward reward, String type, PDUIGratitudeDialog dialog){
+        String title = "";
+        String body = "";
+
+        String[] stringsArrayTitle;
+        String[] stringsArrayBody;
+        if(type.equalsIgnoreCase("logged_in")){
+            stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_title);
+            stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_body);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)) {
+            stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
+            stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_body);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
+            stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_credit_title);
+            stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_credit_body);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+            stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_sweepstake_title);
+            stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_sweepstake_body);
+        }else{
+            stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
+            stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_share_coupon_title);
+        }
+
+        int numVar = stringsArrayBody.length;
+
+        SharedPreferences sp = context.getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
+        int variationNum = sp.getInt("variation_num", 0);
+
+        if(numVar == 0){
+            if(type.equalsIgnoreCase("logged_in")){
+                title = "Welcome!";
+                body = "Thanks for connecting, start sharing to earn more rewards and enter amazing competitions.";
+
+            }else{
+                if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)){
+                    if(reward.getCredit()!=null && reward.getCredit().length()>0){
+                        String.format("Thanks for sharing. %s has been added to your account. Enjoy!", "" + reward.getCredit());
+                    }else{
+                        title = "Great Job!";
+                        body = "Thanks for sharing, your reward has been added to your profile. Enjoy!";
+                    }
+                }else{
+                    title = "Awesome!";
+                    body = "Thanks for sharing, you’ve been entered into the competition.";
+                }
+            }
+        }else if(numVar == 1) {
+            title = stringsArrayTitle[0];
+            if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+                body = String.format(stringsArrayBody[0], reward.getCredit());
+            } else {
+                body = stringsArrayBody[0];
+            }
+        }else{
+            int showNum = variationNum%numVar;
+            title = stringsArrayTitle[showNum];
+            if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+                body = String.format(stringsArrayBody[showNum], reward.getCredit());
+            } else {
+                body = stringsArrayBody[showNum];
+            }
+        }
+
+        ((TextView) dialog.findViewById(R.id.pd_gratitude_title)).setText(title);
+        ((TextView) dialog.findViewById(R.id.pd_gratitude_description)).setText(body);
+        ((TextView) dialog.findViewById(R.id.pd_gratitude_description_2)).setText("");
+
+        variationNum++;
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("variation_num", variationNum);
+        editor.commit();
+
     }
 
     public void setPdReward(PDReward pdReward) {

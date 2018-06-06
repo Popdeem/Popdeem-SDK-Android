@@ -242,6 +242,7 @@
     <!--Gratitude-->
     <string name="pd_gratitude_share_body_text" formatted="false">Thanks for sharing. You earned an additional %s points to your account and moved up in status.</string>
     <string name="pd_gratitude_connect_body_text" formatted="false">You earned %s points for connecting. Share photo’s with #RibsandBurgers to earn additional rewards!</string>
+    <string name="pd_gratitude_connect_body_text_no_ambassador">Thanks for connecting, start sharing to earn more rewards and enter amazing competitions.</string>
     <string name="pd_unlocked_reward_text">Hey Richard, we found your post with #hashtag. Thanks for sharing! You have unlocked your reward!</string>
 
     <!--Events-->

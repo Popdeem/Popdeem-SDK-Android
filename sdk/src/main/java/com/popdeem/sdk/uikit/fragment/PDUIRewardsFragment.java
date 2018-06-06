@@ -426,7 +426,15 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
             refreshRewards();
             isSocialAccountLoggedIn = true;
-            PDUIGratitudeDialog.showGratitudeDialog(context, "logged_in");
+
+            Realm  mRealm = Realm.getDefaultInstance();
+            PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+            if(mUser.getAdvocacyScore()<=30){
+                mRealm.close();
+                PDUIGratitudeDialog.showGratitudeDialog(context, "logged_in");
+            }else{
+                mRealm.close();
+            }
 
         }
     };

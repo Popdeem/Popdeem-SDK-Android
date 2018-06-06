@@ -95,6 +95,12 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
             isTwitterLoggedIn = false;
         }
 
+        if(!PDSocialUtils.usesTwitter(this)){
+            btnTwitter.setVisibility(View.GONE);
+        }else{
+            btnTwitter.setVisibility(View.VISIBLE);
+        }
+
         //update Instagram
         PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {
             @Override
