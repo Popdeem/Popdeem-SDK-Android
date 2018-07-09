@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2015 Popdeem
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:animateLayoutChanges="true"
+    tools:context=".uikit.activity.PDUIClaimActivity">
+
+    <include layout="@layout/pd_toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/pd_claim_not_here_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/pd_claim_location_verification_background_color"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/pd_claim_not_here_tick_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_tick"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
+                    android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
+                    android:text="@string/pd_claim_verify_location_failed_text"
+                    android:textColor="@color/pd_claim_location_verification_text_color"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:background="@android:color/white">
+
+                    <include
+                        android:layout_centerVertical="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pd_claim_reward_layout"
+                        layout="@layout/item_reward" />
+
+
+
+
+                </RelativeLayout>
+
+                <include layout="@layout/view_pd_divider" />
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:id="@+id/pd_claim_already_shared_view"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                    <TextView
+                        android:paddingLeft="10dp"
+                        android:text="SCAN"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                    <LinearLayout
+                        android:paddingTop="3dp"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <ImageView
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/pd_ic_search_black"
+                            android:clickable="false"
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        <TextView
+                            android:gravity="center_vertical"
+                            android:id="@+id/pd_claim_already_shared_button"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:text="@string/pd_claim_scan_for_already_shared_text"
+                            android:textAllCaps="false"
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/pduikit_arrow"
+                            android:clickable="false"
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                    </LinearLayout>
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+                </LinearLayout>
+                <include layout="@layout/view_pd_divider" />
+                <LinearLayout
+                    android:background="@android:color/white"
+                    android:id="@+id/pd_claim_share_view"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+                    <TextView
+                        android:paddingLeft="10dp"
+                        android:text="OR, SHARE A PHOTO NOW"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+                    <RelativeLayout
+                        android:id="@+id/pd_share_view_holder"
+                        android:clickable="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/pd_share_view_taken_holder"
+                            android:visibility="invisible"
+                            android:paddingBottom="5dp"
+                            android:clickable="false"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/pd_reward_share_image_preview_dimen"
+                            android:background="@android:color/white">
+
+                            <ImageView
+                                android:id="@+id/pd_claim_share_image_view"
+                                android:layout_width="@dimen/pd_reward_share_image_preview_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_preview_dimen"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:clickable="false"
+                                android:adjustViewBounds="true"
+                                android:background="@android:color/black"
+                                android:scaleType="centerInside" />
+
+                            <TextView
+                                android:gravity="center_vertical"
+                                android:id="@+id/pd_claim_change_photo_text"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/pd_claim_change_photo"
+                                android:clickable="false"
+                                android:textAllCaps="false"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:clickable="false"
+                                android:src="@drawable/pduikit_arrow"
+                                android:layout_width="@dimen/pd_reward_share_image_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/pd_share_view_icon_holder"
+                            android:visibility="visible"
+                            android:layout_centerVertical="true"
+                            android:paddingBottom="5dp"
+                            android:clickable="false"
+                            android:paddingTop="3dp"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/white">
+
+                            <ImageView
+                                android:id="@+id/pd_claim_share_image_icon"
+                                android:layout_width="@dimen/pd_reward_share_image_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_dimen"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:adjustViewBounds="true"
+                                android:clickable="false"
+                                android:src="@drawable/pdui_camera_icon"
+                                android:scaleType="centerInside" />
+
+                            <TextView
+                                android:gravity="center_vertical"
+                                android:id="@+id/pd_claim_add_photo_text"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:clickable="false"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pd_claim_add_photo_title_text"
+                                android:textAllCaps="false"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/pduikit_arrow"
+                                android:clickable="false"
+                                android:layout_width="@dimen/pd_reward_share_image_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+                </LinearLayout>
+
+                <include layout="@layout/view_pd_divider" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="3"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <LinearLayout
+                        android:id="@+id/pd_claim_facebook_holder"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/pd_facebook_switch_drawable"
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        <TextView
+                            android:gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="Facebook"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/pd_claim_facebook_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+
+                    </LinearLayout>
+
+                    <include layout="@layout/view_pd_divider" />
+
+
+
+                    <LinearLayout
+                        android:id="@+id/pd_claim_twitter_holder"
+                        android:orientation="horizontal"
+                        android:visibility="visible"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/pd_twitter_switch_drawable"
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        <TextView
+                            android:gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="Twitter"
+                            android:layout_width="0dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:layout_height="match_parent" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/pd_claim_twitter_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+
+                    </LinearLayout>
+                    <include layout="@layout/view_pd_divider" />
+
+                    <LinearLayout
+                        android:id="@+id/pd_claim_instagram_holder"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/pd_instagram_switch_drawable"
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+
+                        <TextView
+                            android:gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="Instagram"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/pd_claim_instagram_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+
+                    </LinearLayout>
+                    <FrameLayout
+                        android:visibility="gone"
+                        android:id="@+id/spacer1"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <FrameLayout
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:visibility="gone"
+                        android:id="@+id/spacer2"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <FrameLayout
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <include layout="@layout/view_pd_divider" />
+
+            <TextView
+                android:id="@+id/pd_claim_info_text"
+                android:padding="10dp"
+                android:text="@string/pd_claim_info_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include layout="@layout/view_pd_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/pd_claim_share_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/pd_claim_share_button_background_color"
+                    android:padding="10dp"
+                    android:text="@string/pd_claim_get_reward_text"
+                    android:textAllCaps="false"
+                    android:textColor="@color/pd_claim_share_button_text_color"
+                    android:textSize="16sp"/>
+
+
+
+                <ProgressBar
+                    android:id="@+id/pd_progress_bar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:progressDrawable="@drawable/pd_progress_drawable"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!--</ScrollView>-->
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/pd_claim_progress_view"
+            android:background="@color/pd_claim_background_color"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar
+                android:id="@+id/dots_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:radius="8dp"
+                android:color="@color/pd_toolbar_color"
+                app:dd_numDots="3"
+                app:dd_scaleMultiplier="1.5"
+                app:dd_animationDuration="500"
+                app:dd_horizontalSpacing="4dp"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"/>
+
+                <TextView
+                    android:id="@+id/pd_verify_heading_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/pd_unlocked_reward_text"
+                    android:textColor="@color/pd_claim_verification_text_color"
+                    android:textSize="16sp"
+                    android:paddingBottom="16dp"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/pd_verify_image_card"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingTop="0dp">
+
+                            <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
+                                android:id="@+id/pd_claim_profile_image_view"
+                                android:layout_width="@dimen/pd_feed_profile_image_dimen"
+                                android:layout_height="@dimen/pd_feed_profile_image_dimen"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginTop="10dp"
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/pduikit_default_user"
+                                app:maskDrawable="@drawable/circle_mask" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/pd_claim_user_name_text_view"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/pd_feed_item_name_text_color"
+                                    tools:text="Hello, world" />
+
+                                <TextView
+                                    android:id="@+id/pd_claim_user_hashtag_text_view"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/pd_feed_item_name_text_color"
+                                    tools:text="Hello, world" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@android:color/black" />
+
+                        <ImageView
+                            android:id="@+id/pd_verify_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/black"
+                            android:scaleType="fitCenter" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"/>
+
+
+                <Button
+                    android:id="@+id/pd_verify_proceed_button"
+                    android:visibility="gone"
+                    android:background="@drawable/pd_rounded_button"
+                    android:textColor="@color/pd_toolbar_text_color"
+                    android:text="@string/pd_claim_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/pd_verify_back_button"
+                    android:visibility="gone"
+                    android:background="@drawable/pd_button_rounded_rect_primary"
+                    android:textColor="@color/pd_toolbar_color"
+                    android:text="@string/pd_claim_back_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:visibility="visible"
+            android:id="@+id/pd_claim_tag_friends_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+</LinearLayout>

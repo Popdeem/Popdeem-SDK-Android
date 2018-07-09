@@ -67,7 +67,7 @@ import io.realm.RealmResults;
 public class PDSocialUtils {
 
     public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends"};
-    public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
+//    public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
     private static final String FACEBOOK_APP_ID = "com.facebook.sdk.ApplicationId";
 
@@ -301,14 +301,14 @@ public class PDSocialUtils {
      *
      * @return true if permissions are granted, false if not
      */
-    public static boolean hasAllFacebookPublishPermissions() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken == null) {
-            return false;
-        }
-        Set<String> grantedPermissions = AccessToken.getCurrentAccessToken().getPermissions();
-        return grantedPermissions.containsAll(Arrays.asList(FACEBOOK_PUBLISH_PERMISSIONS));
-    }
+//    public static boolean hasAllFacebookPublishPermissions() {
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        if (accessToken == null) {
+//            return false;
+//        }
+//        Set<String> grantedPermissions = AccessToken.getCurrentAccessToken().getPermissions();
+//        return grantedPermissions.containsAll(Arrays.asList(FACEBOOK_PUBLISH_PERMISSIONS));
+//    }
 
 
     /**
@@ -499,7 +499,19 @@ public class PDSocialUtils {
     }
 
     public static boolean isTwitterLoggedIn() {
-        return isTwitterInitialised() && TwitterCore.getInstance().getSessionManager().getActiveSession() != null && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken() != null;
+
+        boolean twitterInitialised = isTwitterInitialised();
+        if(twitterInitialised) {
+            boolean getActiveSession = (TwitterCore.getInstance().getSessionManager().getActiveSession() != null);
+            if(getActiveSession) {
+                boolean gotAuthToken = (TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken() != null);
+                if(gotAuthToken){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static boolean userHasTwitterCredentials() {

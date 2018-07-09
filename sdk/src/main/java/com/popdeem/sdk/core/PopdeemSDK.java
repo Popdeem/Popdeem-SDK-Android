@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -75,6 +76,10 @@ import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -139,9 +144,22 @@ public final class PopdeemSDK {
         // Init Realm
         PDRealmUtils.initRealmDB(application);
 
+        TwitterAuthConfig authConfig = new TwitterAuthConfig("144pFFdkYjC9p4J61YHubqKux", "ynGwNExKrhd2q0oDriut1MrLrkXSA78j78FnSrBkFON0QV0TUh");
+        TwitterConfig config = new TwitterConfig.Builder(application)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(authConfig)
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
+
         // Get Popdeem API Key
         getPopdeemAPIKey();
-        FacebookSdk.sdkInitialize(application);
+        FacebookSdk.sdkInitialize(application, new FacebookSdk.InitializeCallback() {
+            @Override
+            public void onInitialized() {
+                Log.i("Facebook", "onInitialized: Facebook initialized");
+            }
+        });
 
         sdkInitialized = true;
 
@@ -223,7 +241,7 @@ public final class PopdeemSDK {
     private static void initFromCustomer(Application application){
         // Init Facebook
 //        FacebookSdk.sdkInitialize(application);
-        PDSocialUtils.initFacebook(application);
+//        PDSocialUtils.initFacebook(application);
 
         // Init Twitter
         PDSocialUtils.initTwitter(application);
@@ -642,6 +660,9 @@ public final class PopdeemSDK {
      */
     public static void handleHomeFlow(Context context){
         Intent intent = new Intent(context, PDUIHomeFlowActivity.class);
+        if(Build.VERSION.SDK_INT<= Build.VERSION_CODES.M) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         sApplication.startActivity(intent);
     }
 

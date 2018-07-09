@@ -118,6 +118,10 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
     private PDFragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
     private ArrayList<PDReward> rewards;
+    private boolean doingLogin = false;
+    private Handler handler;
+    private Runnable runny;
+    private boolean loggedIn = false;
 
     public PDUISocialMultiLoginFragment() {
     }
@@ -415,6 +419,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 }
 //                PDSocialUtils.client.cancelAuthorize();
 //                PDSocialUtils.client = null;
+                doingLogin = false;
+
             }
 
             @Override
@@ -424,6 +430,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_claim_twitter_button_text, e.getMessage());
 //                    PDSocialUtils.client.cancelAuthorize();
 //                    PDSocialUtils.client = null;
+                    doingLogin = false;
                 }
             }
         });
@@ -455,6 +462,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 public void loggedIn(PDInstagramResponse response) {
                     Log.i(TAG, "loggedIn: Instagram Logged In");
                     registerInstagramAccount(response);
+                    doingLogin = false;
                 }
 
                 @Override
@@ -462,10 +470,12 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                     mProgressFacebook.setVisibility(View.VISIBLE);
                     progressView.setVisibility(View.GONE);
                     showGenericAlert();
+                    doingLogin = false;
                 }
 
                 @Override
                 public void canceled() {
+                    doingLogin = false;
                     progressView.setVisibility(View.GONE);
                 }
             });
@@ -552,11 +562,26 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 //        mTwitterLoginButton.setVisibility(View.INVISIBLE);
 //        mInstaLoginButton.setVisibility(View.INVISIBLE);
 
+        if(handler == null) {
+            handler = new Handler();
+        }
+
+        if(runny == null){
+            runny = new Runnable() {
+                @Override
+                public void run() {
+                    doLogin();
+                }
+            };
+        }
+        handler.postDelayed(runny, 3000);
+
         mLocationManager.startLocationUpdates(new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
                     handleLocationUpdate(location);
+                    handler.removeCallbacks(runny);
                 }
             }
         });
@@ -567,12 +592,21 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         location = l;
         PDUtils.updateSavedUserLocation(location);
 
-        if (isFacebook) {
-            PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
-        } else if (isTwitter) {
-            loginTwitter();
-        } else if (isInstagram) {
-            loginInstagram();
+        doLogin();
+
+    }
+
+    public void doLogin(){
+        if(!doingLogin) {
+            doingLogin = true;
+            if (isFacebook) {
+                PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), PD_API_CALLBACK);
+                doingLogin = false;
+            } else if (isTwitter) {
+                loginTwitter();
+            } else if (isInstagram) {
+                loginInstagram();
+            }
         }
     }
 
@@ -628,47 +662,60 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     //////////////////////////////////////////////////
 
     private void updateUser() {
-        Realm realm = Realm.getDefaultInstance();
+        if(!loggedIn) {
+            loggedIn = true;
 
-        PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
-        String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
+            Realm realm = Realm.getDefaultInstance();
 
-        PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+            PDRealmGCM gcm = realm.where(PDRealmGCM.class).findFirst();
+            String deviceToken = gcm == null ? "" : gcm.getRegistrationToken();
 
-        if (userDetails == null) {
+            PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+
+            if (userDetails == null) {
+                realm.close();
+                return;
+            }
+
+            String socialType = "";
+            if (isFacebook)
+                socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
+            if (isTwitter)
+                socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
+            if (isInstagram)
+                socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
+
+            String lat = "";
+            String lon = "";
+            if (location != null) {
+                lat = String.valueOf(location.getLatitude());
+                lon = String.valueOf(location.getLongitude());
+            }
+
+            PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, lat, lon, new PDAPICallback<PDUser>() {
+                @Override
+                public void success(PDUser user) {
+                    PDLog.d(PDUISocialMultiLoginFragment.class, "update user: " + user);
+
+                    PDUtils.updateSavedUser(user);
+
+                    // Send broadcast to any registered receivers that user has logged in
+                    if (getActivity() != null) {
+                        getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+                    }
+                    // Update view
+                    updateViewAfterLogin();
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    PDLog.d(PDUISocialMultiLoginFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
+                    // Send broadcast to any registered receivers that user has logged in
+                    updateViewAfterLogin();
+                }
+            });
             realm.close();
-            return;
         }
-
-        String socialType = "";
-        if (isFacebook)
-            socialType = PDSocialUtils.SOCIAL_TYPE_FACEBOOK;
-        if (isTwitter)
-            socialType = PDSocialUtils.SOCIAL_TYPE_TWITTER;
-        if (isInstagram)
-            socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
-
-        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
-            @Override
-            public void success(PDUser user) {
-                PDLog.d(PDUISocialMultiLoginFragment.class, "update user: " + user);
-
-                PDUtils.updateSavedUser(user);
-
-                // Send broadcast to any registered receivers that user has logged in
-                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
-                // Update view
-                updateViewAfterLogin();
-            }
-
-            @Override
-            public void failure(int statusCode, Exception e) {
-                PDLog.d(PDUISocialMultiLoginFragment.class, "failed update user: status=" + statusCode + ", e=" + e.getMessage());
-                // Send broadcast to any registered receivers that user has logged in
-                updateViewAfterLogin();
-            }
-        });
-        realm.close();
     }
 
 

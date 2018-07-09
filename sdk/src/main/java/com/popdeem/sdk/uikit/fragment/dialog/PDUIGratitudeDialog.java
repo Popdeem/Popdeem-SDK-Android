@@ -164,7 +164,7 @@ public class PDUIGratitudeDialog extends Dialog {
                 body = "Thanks for connecting, start sharing to earn more rewards and enter amazing competitions.";
 
             }else{
-                if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)){
+                if(reward != null && reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)){
                     if(reward.getCredit()!=null && reward.getCredit().length()>0){
                         String.format("Thanks for sharing. %s has been added to your account. Enjoy!", "" + reward.getCredit());
                     }else{
@@ -178,7 +178,7 @@ public class PDUIGratitudeDialog extends Dialog {
             }
         }else if(numVar == 1) {
             title = stringsArrayTitle[0];
-            if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+            if (reward != null && reward.getCredit() != null && reward.getCredit().length() > 0) {
                 body = String.format(stringsArrayBody[0], reward.getCredit());
             } else {
                 body = stringsArrayBody[0];
@@ -186,7 +186,7 @@ public class PDUIGratitudeDialog extends Dialog {
         }else{
             int showNum = variationNum%numVar;
             title = stringsArrayTitle[showNum];
-            if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+            if (reward != null && reward.getCredit() != null && reward.getCredit().length() > 0) {
                 body = String.format(stringsArrayBody[showNum], reward.getCredit());
             } else {
                 body = stringsArrayBody[showNum];

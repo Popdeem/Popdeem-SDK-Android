@@ -106,10 +106,10 @@
 
 
     <!-- Claim Colors -->
-    <color name="pd_claim_background_color">#EBEBF2</color>
+    <color name="pd_claim_background_color">#ffffff</color>
     <color name="pd_claim_over_character_limit_text_color">#ff0000</color>
-    <color name="pd_claim_share_button_background_color">#3b5999</color>
-    <color name="pd_claim_share_button_text_color">#ffffff</color>
+    <color name="pd_claim_share_button_background_color">@color/pd_claim_background_color</color>
+    <color name="pd_claim_share_button_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_tagged_friends_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_location_verification_background_color">#d8d8d8</color>
     <color name="pd_claim_location_verification_text_color">#000000</color>

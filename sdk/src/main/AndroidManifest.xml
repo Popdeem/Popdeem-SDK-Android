@@ -67,11 +67,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme"
             />
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />
@@ -85,6 +81,15 @@
         </receiver>
 
         <service android:name=".core.gcm.GCMIntentService" />
+        <receiver
+            android:name=".core.utils.PDTwitterBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_SUCCESS"/>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_FAILURE"/>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.TWEET_COMPOSE_CANCEL"/>
+            </intent-filter>
+        </receiver>
         <provider
             android:name=".CustomFileProvider"
             android:authorities="${applicationId}.fileprovider"

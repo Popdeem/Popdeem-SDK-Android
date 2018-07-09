@@ -31,497 +31,497 @@
     android:animateLayoutChanges="true"
     tools:context=".uikit.activity.PDUIClaimActivity">
 
-    <include layout="@layout/pd_toolbar" />
+    <!--<include layout="@layout/pd_toolbar" />-->
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
 
-            <RelativeLayout
-                android:id="@+id/pd_claim_not_here_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/pd_claim_location_verification_background_color"
-                android:padding="10dp"
-                android:visibility="gone">
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/pd_claim_not_here_container"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/pd_claim_location_verification_background_color"-->
+                <!--android:padding="10dp"-->
+                <!--android:visibility="gone">-->
 
-                <ImageView
-                    android:id="@+id/pd_claim_not_here_tick_image_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ic_tick"
-                    android:visibility="gone" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/pd_claim_not_here_tick_image_view"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:adjustViewBounds="true"-->
+                    <!--android:src="@drawable/ic_tick"-->
+                    <!--android:visibility="gone" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
-                    android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
-                    android:text="@string/pd_claim_verify_location_failed_text"
-                    android:textColor="@color/pd_claim_location_verification_text_color"
-                    android:textSize="12sp" />
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginStart="10dp"-->
+                    <!--android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"-->
+                    <!--android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"-->
+                    <!--android:text="@string/pd_claim_verify_location_failed_text"-->
+                    <!--android:textColor="@color/pd_claim_location_verification_text_color"-->
+                    <!--android:textSize="12sp" />-->
 
-            </RelativeLayout>
+            <!--</RelativeLayout>-->
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!--<ScrollView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical">-->
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white">
+                    <!--<FrameLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@android:color/white">-->
 
-                        <include
-                            android:id="@+id/pd_claim_reward_layout"
-                            layout="@layout/item_reward" />
-
-
+                        <!--<include-->
+                            <!--android:id="@+id/pd_claim_reward_layout"-->
+                            <!--layout="@layout/item_reward" />-->
 
 
-                    </FrameLayout>
-
-                    <include layout="@layout/view_pd_divider" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white"
-                        android:minHeight="150dp">
-
-                        <ImageView
-                            android:id="@+id/pd_claim_share_image_view"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_margin="3dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/pd_image_border"
-                            android:padding="3dp"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-
-                        <EditText
-                            android:id="@+id/pd_claim_share_edit_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="100sp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_margin="5dp"
-                            android:layout_toLeftOf="@id/pd_claim_share_image_view"
-                            android:layout_toStartOf="@id/pd_claim_share_image_view"
-                            android:background="@null"
-                            android:gravity="top|start"
-                            android:hint="@string/pd_claim_message_placeholder_text"
-                            android:inputType="textCapSentences|textMultiLine"
-                            android:textSize="13sp" />
-
-                        <TextView
-                            android:id="@+id/pd_claim_tagged_friends_count_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:ellipsize="end"
-                            android:lines="1"
-                            android:padding="3dp"
-                            android:textColor="@color/pd_claim_tagged_friends_text_color"
-                            android:textSize="10sp"
-                            android:visibility="gone"
-                            tools:ignore="SmallSp"
-                            tools:text="Mike Nolan and one other" />
-
-                    </RelativeLayout>
-
-                    <include layout="@layout/view_pd_divider" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white">
-
-                        <ImageButton
-                            android:id="@+id/pd_claim_tag_friends_button"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerVertical="true"
-                            android:background="@null"
-                            android:src="@drawable/pd_add_friends_icon"
-                            android:visibility="visible" />
-
-                        <ImageButton
-                            android:id="@+id/pd_claim_add_image_button"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_toEndOf="@+id/pd_claim_tag_friends_button"
-                            android:layout_toRightOf="@+id/pd_claim_tag_friends_button"
-                            android:background="@null"
-                            android:src="@drawable/pd_add_photo_icon" />
-
-                        <LinearLayout
-                            android:id="@+id/pd_claim_hashtag_container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:visibility="invisible">
-
-                            <TextView
-                                android:id="@+id/pd_claim_twitter_hashtag_text_view"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="2dp"
-                                android:textColor="@color/pd_claim_add_hashtag_text_color"
-                                android:textSize="13sp"
-                                tools:text="#hashtaghere" />
-
-                            <Button
-                                android:id="@+id/pd_claim_add_hashtag_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="?attr/selectableItemBackground"
-                                android:minHeight="0dp"
-                                android:minWidth="0dp"
-                                android:paddingEnd="5dp"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
-                                android:paddingStart="5dp"
-                                android:text="@string/pd_add_text"
-                                android:textAllCaps="false"
-                                android:textColor="@color/pd_claim_add_hashtag_button_text_color" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/pd_claim_twitter_characters_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_below="@id/pd_claim_hashtag_container"
-                            android:padding="2dp"
-                            android:textColor="@color/pd_twitter_blue"
-                            android:textSize="13sp"
-                            android:visibility="invisible"
-                            tools:text="115" />
-
-                    </RelativeLayout>
-
-                    <include layout="@layout/view_pd_divider" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="10dp"
-                        android:background="@null" />
-
-                    <include layout="@layout/view_pd_divider" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@android:color/white"
-                        android:orientation="horizontal">
-
-                        <FrameLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <android.support.v7.widget.SwitchCompat
-                                android:id="@+id/pd_claim_facebook_switch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_facebook_switch_drawable"
-                                android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_facebook_switch_drawable"
-                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
-
-                        </FrameLayout>
 
 
-                        <FrameLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                    <!--</FrameLayout>-->
 
-                            <android.support.v7.widget.SwitchCompat
-                                android:id="@+id/pd_claim_twitter_switch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_twitter_switch_drawable"
-                                android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_twitter_switch_drawable"
-                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+                    <!--<include layout="@layout/view_pd_divider" />-->
 
-                        </FrameLayout>
+                    <!--<RelativeLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@android:color/white"-->
+                        <!--android:minHeight="150dp">-->
 
-                        <FrameLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                        <!--<ImageView-->
+                            <!--android:id="@+id/pd_claim_share_image_view"-->
+                            <!--android:layout_width="80dp"-->
+                            <!--android:layout_height="80dp"-->
+                            <!--android:layout_alignParentEnd="true"-->
+                            <!--android:layout_alignParentRight="true"-->
+                            <!--android:layout_margin="3dp"-->
+                            <!--android:adjustViewBounds="true"-->
+                            <!--android:background="@drawable/pd_image_border"-->
+                            <!--android:padding="3dp"-->
+                            <!--android:scaleType="centerInside"-->
+                            <!--android:visibility="gone" />-->
 
-                            <android.support.v7.widget.SwitchCompat
-                                android:id="@+id/pd_claim_instagram_switch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:drawableLeft="@drawable/pd_instagram_switch_drawable"
-                                android:drawablePadding="10dp"
-                                android:drawableStart="@drawable/pd_instagram_switch_drawable"
-                                app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
+                        <!--<EditText-->
+                            <!--android:id="@+id/pd_claim_share_edit_text"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="100sp"-->
+                            <!--android:layout_alignParentLeft="true"-->
+                            <!--android:layout_alignParentStart="true"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_toLeftOf="@id/pd_claim_share_image_view"-->
+                            <!--android:layout_toStartOf="@id/pd_claim_share_image_view"-->
+                            <!--android:background="@null"-->
+                            <!--android:gravity="top|start"-->
+                            <!--android:hint="@string/pd_claim_message_placeholder_text"-->
+                            <!--android:inputType="textCapSentences|textMultiLine"-->
+                            <!--android:textSize="13sp" />-->
 
-                        </FrameLayout>
+                        <!--<TextView-->
+                            <!--android:id="@+id/pd_claim_tagged_friends_count_text_view"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_alignParentBottom="true"-->
+                            <!--android:ellipsize="end"-->
+                            <!--android:lines="1"-->
+                            <!--android:padding="3dp"-->
+                            <!--android:textColor="@color/pd_claim_tagged_friends_text_color"-->
+                            <!--android:textSize="10sp"-->
+                            <!--android:visibility="gone"-->
+                            <!--tools:ignore="SmallSp"-->
+                            <!--tools:text="Mike Nolan and one other" />-->
+
+                    <!--</RelativeLayout>-->
+
+                    <!--<include layout="@layout/view_pd_divider" />-->
+
+                    <!--<RelativeLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@android:color/white">-->
+
+                        <!--<ImageButton-->
+                            <!--android:id="@+id/pd_claim_tag_friends_button"-->
+                            <!--android:layout_width="40dp"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:background="@null"-->
+                            <!--android:src="@drawable/pd_add_friends_icon"-->
+                            <!--android:visibility="visible" />-->
+
+                        <!--<ImageButton-->
+                            <!--android:id="@+id/pd_claim_add_image_button"-->
+                            <!--android:layout_width="40dp"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:layout_marginStart="5dp"-->
+                            <!--android:layout_toEndOf="@+id/pd_claim_tag_friends_button"-->
+                            <!--android:layout_toRightOf="@+id/pd_claim_tag_friends_button"-->
+                            <!--android:background="@null"-->
+                            <!--android:src="@drawable/pd_add_photo_icon" />-->
+
+                        <!--<LinearLayout-->
+                            <!--android:id="@+id/pd_claim_hashtag_container"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_alignParentEnd="true"-->
+                            <!--android:layout_alignParentRight="true"-->
+                            <!--android:layout_alignParentTop="true"-->
+                            <!--android:gravity="center_vertical"-->
+                            <!--android:orientation="horizontal"-->
+                            <!--android:visibility="invisible">-->
+
+                            <!--<TextView-->
+                                <!--android:id="@+id/pd_claim_twitter_hashtag_text_view"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:padding="2dp"-->
+                                <!--android:textColor="@color/pd_claim_add_hashtag_text_color"-->
+                                <!--android:textSize="13sp"-->
+                                <!--tools:text="#hashtaghere" />-->
+
+                            <!--<Button-->
+                                <!--android:id="@+id/pd_claim_add_hashtag_button"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:background="?attr/selectableItemBackground"-->
+                                <!--android:minHeight="0dp"-->
+                                <!--android:minWidth="0dp"-->
+                                <!--android:paddingEnd="5dp"-->
+                                <!--android:paddingLeft="5dp"-->
+                                <!--android:paddingRight="5dp"-->
+                                <!--android:paddingStart="5dp"-->
+                                <!--android:text="@string/pd_add_text"-->
+                                <!--android:textAllCaps="false"-->
+                                <!--android:textColor="@color/pd_claim_add_hashtag_button_text_color" />-->
+                        <!--</LinearLayout>-->
+
+                        <!--<TextView-->
+                            <!--android:id="@+id/pd_claim_twitter_characters_text_view"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_alignParentEnd="true"-->
+                            <!--android:layout_alignParentRight="true"-->
+                            <!--android:layout_below="@id/pd_claim_hashtag_container"-->
+                            <!--android:padding="2dp"-->
+                            <!--android:textColor="@color/pd_twitter_blue"-->
+                            <!--android:textSize="13sp"-->
+                            <!--android:visibility="invisible"-->
+                            <!--tools:text="115" />-->
+
+                    <!--</RelativeLayout>-->
+
+                    <!--<include layout="@layout/view_pd_divider" />-->
+
+                    <!--<View-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="10dp"-->
+                        <!--android:background="@null" />-->
+
+                    <!--<include layout="@layout/view_pd_divider" />-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:background="@android:color/white"-->
+                        <!--android:orientation="horizontal">-->
+
+                        <!--<FrameLayout-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_weight="1">-->
+
+                            <!--<android.support.v7.widget.SwitchCompat-->
+                                <!--android:id="@+id/pd_claim_facebook_switch"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_gravity="center"-->
+                                <!--android:drawableLeft="@drawable/pd_facebook_switch_drawable"-->
+                                <!--android:drawablePadding="10dp"-->
+                                <!--android:drawableStart="@drawable/pd_facebook_switch_drawable"-->
+                                <!--app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />-->
+
+                        <!--</FrameLayout>-->
+
+
+                        <!--<FrameLayout-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_weight="1">-->
+
+                            <!--<android.support.v7.widget.SwitchCompat-->
+                                <!--android:id="@+id/pd_claim_twitter_switch"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_gravity="center"-->
+                                <!--android:drawableLeft="@drawable/pd_twitter_switch_drawable"-->
+                                <!--android:drawablePadding="10dp"-->
+                                <!--android:drawableStart="@drawable/pd_twitter_switch_drawable"-->
+                                <!--app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />-->
+
+                        <!--</FrameLayout>-->
+
+                        <!--<FrameLayout-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_weight="1">-->
+
+                            <!--<android.support.v7.widget.SwitchCompat-->
+                                <!--android:id="@+id/pd_claim_instagram_switch"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_gravity="center"-->
+                                <!--android:drawableLeft="@drawable/pd_instagram_switch_drawable"-->
+                                <!--android:drawablePadding="10dp"-->
+                                <!--android:drawableStart="@drawable/pd_instagram_switch_drawable"-->
+                                <!--app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />-->
+
+                        <!--</FrameLayout>-->
+
+                        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:id="@+id/pd_facebook_share_option_button"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:background="@android:color/white"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawableLeft="@drawable/pd_fb_button_deselected"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawablePadding="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawableStart="@drawable/pd_fb_button_deselected"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:gravity="start|center_vertical"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingEnd="1dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingLeft="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingRight="1dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingStart="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:text="@string/pd_claim_facebook_button_text" />&ndash;&gt;-->
+
+                        <!--&lt;!&ndash;<View&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_width="0.5dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:background="@color/pd_divider_color" />&ndash;&gt;-->
+
+                        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:id="@+id/pd_twitter_share_option_button"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:background="@android:color/white"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawableLeft="@drawable/pd_twitter_button_deselected"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawablePadding="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:drawableStart="@drawable/pd_twitter_button_deselected"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:gravity="start|center_vertical"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingEnd="1dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingLeft="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingRight="1dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:paddingStart="20dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:text="@string/pd_claim_twitter_button_text" />&ndash;&gt;-->
+
+                    <!--</LinearLayout>-->
+
+                    <!--<include layout="@layout/view_pd_divider" />-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="10dp"-->
+                        <!--android:orientation="vertical">-->
 
                         <!--<Button-->
-                        <!--android:id="@+id/pd_facebook_share_option_button"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@android:color/white"-->
-                        <!--android:drawableLeft="@drawable/pd_fb_button_deselected"-->
-                        <!--android:drawablePadding="20dp"-->
-                        <!--android:drawableStart="@drawable/pd_fb_button_deselected"-->
-                        <!--android:gravity="start|center_vertical"-->
-                        <!--android:paddingEnd="1dp"-->
-                        <!--android:paddingLeft="20dp"-->
-                        <!--android:paddingRight="1dp"-->
-                        <!--android:paddingStart="20dp"-->
-                        <!--android:text="@string/pd_claim_facebook_button_text" />-->
-
-                        <!--<View-->
-                        <!--android:layout_width="0.5dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:background="@color/pd_divider_color" />-->
+                            <!--android:id="@+id/pd_claim_share_button"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:background="@color/pd_claim_share_button_background_color"-->
+                            <!--android:padding="10dp"-->
+                            <!--android:text="@string/pd_claim_get_reward_text"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/pd_claim_share_button_text_color"-->
+                            <!--android:textSize="18sp"-->
+                            <!--android:layout_marginBottom="10dp"/>-->
 
                         <!--<Button-->
-                        <!--android:id="@+id/pd_twitter_share_option_button"-->
-                        <!--android:layout_width="0dp"-->
+                            <!--android:id="@+id/pd_claim_already_shared_button"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:background="@drawable/pd_rounded_border_button_background"-->
+                            <!--android:padding="10dp"-->
+                            <!--android:text="@string/pd_claim_get_already_shared_text"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="#000000"-->
+                            <!--android:textSize="18sp" />-->
+
+                        <!--<ProgressBar-->
+                            <!--android:id="@+id/pd_progress_bar"-->
+                            <!--style="?android:attr/progressBarStyle"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:indeterminate="true"-->
+                            <!--android:progressDrawable="@drawable/pd_progress_drawable"-->
+                            <!--android:visibility="gone" />-->
+
+                    <!--</LinearLayout>-->
+
+                <!--</LinearLayout>-->
+
+            <!--</ScrollView>-->
+
+        <!--</LinearLayout>-->
+
+        <!--<FrameLayout-->
+            <!--android:id="@+id/pd_claim_tag_friends_container"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/pd_claim_progress_view"-->
+            <!--android:background="@color/pd_claim_background_color"-->
+            <!--android:padding="16dp"-->
+            <!--android:visibility="gone"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+            <!--<com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar-->
+                <!--android:id="@+id/dots_progress"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:radius="8dp"-->
+                <!--android:color="@color/pd_toolbar_color"-->
+                <!--app:dd_numDots="3"-->
+                <!--app:dd_scaleMultiplier="1.5"-->
+                <!--app:dd_animationDuration="500"-->
+                <!--app:dd_horizontalSpacing="4dp"-->
+                <!--/>-->
+
+            <!--<LinearLayout-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="16dp"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/pd_verify_heading_text"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/pd_unlocked_reward_text"-->
+                    <!--android:textColor="@color/pd_claim_verification_text_color"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:paddingBottom="16dp"-->
+                    <!--android:visibility="gone" />-->
+
+                <!--<android.support.v7.widget.CardView-->
+                    <!--android:id="@+id/pd_verify_image_card"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp">-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
                         <!--android:layout_height="match_parent"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@android:color/white"-->
-                        <!--android:drawableLeft="@drawable/pd_twitter_button_deselected"-->
-                        <!--android:drawablePadding="20dp"-->
-                        <!--android:drawableStart="@drawable/pd_twitter_button_deselected"-->
-                        <!--android:gravity="start|center_vertical"-->
-                        <!--android:paddingEnd="1dp"-->
-                        <!--android:paddingLeft="20dp"-->
-                        <!--android:paddingRight="1dp"-->
-                        <!--android:paddingStart="20dp"-->
-                        <!--android:text="@string/pd_claim_twitter_button_text" />-->
+                        <!--android:orientation="vertical">-->
 
-                    </LinearLayout>
+                        <!--<LinearLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:gravity="center_vertical"-->
+                            <!--android:paddingTop="0dp">-->
 
-                    <include layout="@layout/view_pd_divider" />
+                            <!--<com.popdeem.sdk.uikit.widget.PDUIBezelImageView-->
+                                <!--android:id="@+id/pd_claim_profile_image_view"-->
+                                <!--android:layout_width="@dimen/pd_feed_profile_image_dimen"-->
+                                <!--android:layout_height="@dimen/pd_feed_profile_image_dimen"-->
+                                <!--android:layout_marginBottom="10dp"-->
+                                <!--android:layout_marginLeft="12dp"-->
+                                <!--android:layout_marginRight="12dp"-->
+                                <!--android:layout_marginTop="10dp"-->
+                                <!--android:adjustViewBounds="true"-->
+                                <!--android:scaleType="centerCrop"-->
+                                <!--android:src="@drawable/pduikit_default_user"-->
+                                <!--app:maskDrawable="@drawable/circle_mask" />-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:orientation="vertical">
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_gravity="center_vertical"-->
+                                <!--android:orientation="vertical">-->
 
-                        <Button
-                            android:id="@+id/pd_claim_share_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/pd_claim_share_button_background_color"
-                            android:padding="10dp"
-                            android:text="@string/pd_claim_get_reward_text"
-                            android:textAllCaps="false"
-                            android:textColor="@color/pd_claim_share_button_text_color"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="10dp"/>
+                                <!--<TextView-->
+                                    <!--android:id="@+id/pd_claim_user_name_text_view"-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:textColor="@color/pd_feed_item_name_text_color"-->
+                                    <!--tools:text="Hello, world" />-->
 
-                        <Button
-                            android:id="@+id/pd_claim_already_shared_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/pd_rounded_border_button_background"
-                            android:padding="10dp"
-                            android:text="@string/pd_claim_get_already_shared_text"
-                            android:textAllCaps="false"
-                            android:textColor="#000000"
-                            android:textSize="18sp" />
+                                <!--<TextView-->
+                                    <!--android:id="@+id/pd_claim_user_hashtag_text_view"-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:textColor="@color/pd_feed_item_name_text_color"-->
+                                    <!--tools:text="Hello, world" />-->
+                            <!--</LinearLayout>-->
 
-                        <ProgressBar
-                            android:id="@+id/pd_progress_bar"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:indeterminate="true"
-                            android:progressDrawable="@drawable/pd_progress_drawable"
-                            android:visibility="gone" />
+                        <!--</LinearLayout>-->
 
-                    </LinearLayout>
+                        <!--<FrameLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="0.5dp"-->
+                            <!--android:background="@android:color/black" />-->
 
-                </LinearLayout>
+                        <!--<ImageView-->
+                            <!--android:id="@+id/pd_verify_image"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="0dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@android:color/black"-->
+                            <!--android:scaleType="fitCenter" />-->
 
-            </ScrollView>
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/pd_claim_tag_friends_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <RelativeLayout
-            android:id="@+id/pd_claim_progress_view"
-            android:background="@color/pd_claim_background_color"
-            android:padding="16dp"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar
-                android:id="@+id/dots_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:radius="8dp"
-                android:color="@color/pd_toolbar_color"
-                app:dd_numDots="3"
-                app:dd_scaleMultiplier="1.5"
-                app:dd_animationDuration="500"
-                app:dd_horizontalSpacing="4dp"
-                />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="16dp"/>
-
-                <TextView
-                    android:id="@+id/pd_verify_heading_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/pd_unlocked_reward_text"
-                    android:textColor="@color/pd_claim_verification_text_color"
-                    android:textSize="16sp"
-                    android:paddingBottom="16dp"
-                    android:visibility="gone" />
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/pd_verify_image_card"
-                    android:visibility="gone"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:paddingTop="0dp">
-
-                            <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
-                                android:id="@+id/pd_claim_profile_image_view"
-                                android:layout_width="@dimen/pd_feed_profile_image_dimen"
-                                android:layout_height="@dimen/pd_feed_profile_image_dimen"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginLeft="12dp"
-                                android:layout_marginRight="12dp"
-                                android:layout_marginTop="10dp"
-                                android:adjustViewBounds="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/pduikit_default_user"
-                                app:maskDrawable="@drawable/circle_mask" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/pd_claim_user_name_text_view"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/pd_feed_item_name_text_color"
-                                    tools:text="Hello, world" />
-
-                                <TextView
-                                    android:id="@+id/pd_claim_user_hashtag_text_view"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/pd_feed_item_name_text_color"
-                                    tools:text="Hello, world" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
-                            android:background="@android:color/black" />
-
-                        <ImageView
-                            android:id="@+id/pd_verify_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/black"
-                            android:scaleType="fitCenter" />
-
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="16dp"/>
+                    <!--</LinearLayout>-->
+                <!--</android.support.v7.widget.CardView>-->
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="16dp"/>-->
 
 
-                <Button
-                    android:id="@+id/pd_verify_proceed_button"
-                    android:visibility="gone"
-                    android:background="@drawable/pd_rounded_button"
-                    android:textColor="@color/pd_toolbar_text_color"
-                    android:text="@string/pd_claim_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <!--<Button-->
+                    <!--android:id="@+id/pd_verify_proceed_button"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:background="@drawable/pd_rounded_button"-->
+                    <!--android:textColor="@color/pd_toolbar_text_color"-->
+                    <!--android:text="@string/pd_claim_text"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content" />-->
 
-                <Button
-                    android:id="@+id/pd_verify_back_button"
-                    android:visibility="gone"
-                    android:background="@drawable/pd_button_rounded_rect_primary"
-                    android:textColor="@color/pd_toolbar_color"
-                    android:text="@string/pd_claim_back_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </RelativeLayout>
+                <!--<Button-->
+                    <!--android:id="@+id/pd_verify_back_button"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:background="@drawable/pd_button_rounded_rect_primary"-->
+                    <!--android:textColor="@color/pd_toolbar_color"-->
+                    <!--android:text="@string/pd_claim_back_text"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content" />-->
+            <!--</LinearLayout>-->
+        <!--</RelativeLayout>-->
 
-    </FrameLayout>
+    <!--</FrameLayout>-->
 
 </LinearLayout>

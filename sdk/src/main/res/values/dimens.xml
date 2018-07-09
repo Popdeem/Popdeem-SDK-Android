@@ -38,6 +38,9 @@
 
     <dimen name="pd_reward_item_image_dimen">50dp</dimen>
 
+    <dimen name="pd_reward_share_image_dimen">25dp</dimen>
+    <dimen name="pd_reward_share_image_preview_dimen">72dp</dimen>
+
     <dimen name="pd_notification_dialog_image_dimen">100dp</dimen>
 
     <dimen name="wallet_image_dimen">50dp</dimen>

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.2.30'
+project.ext.popdeemSdkVersion = '1.2.31'
 
 
 android {
@@ -10,7 +10,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 10
         versionName popdeemSdkVersion
@@ -46,7 +46,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:11.8.0'
     compile 'com.google.android.gms:play-services-location:11.8.0'
     // Facebook
-    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.34.0'
+
     // Twitter
     compile 'com.twitter.sdk.android:twitter:3.1.1'
     // Third Party

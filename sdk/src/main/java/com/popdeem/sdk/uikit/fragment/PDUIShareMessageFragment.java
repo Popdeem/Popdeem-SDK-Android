@@ -24,6 +24,7 @@
 
 package com.popdeem.sdk.uikit.fragment;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,17 +32,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
 import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
 import com.popdeem.sdk.core.api.abra.PDAbraProperties;
+import com.popdeem.sdk.core.model.PDReward;
 
 /**
  * Created by mikenolan on 09/08/16.
  */
-public class PDUIInstagramShareFragment extends Fragment implements View.OnClickListener {
+public class PDUIShareMessageFragment extends Fragment implements View.OnClickListener {
+
+
+    PDReward mReward;
+    String type;
 
     public interface PDInstagramShareCallback {
         void onShareClick();
@@ -49,10 +57,12 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
         void onCancel();
     }
 
-    public static PDUIInstagramShareFragment newInstance(@NonNull PDInstagramShareCallback callback) {
+    public static PDUIShareMessageFragment newInstance(PDReward reward, @NonNull String type, @NonNull PDInstagramShareCallback callback) {
         Bundle args = new Bundle();
 
-        PDUIInstagramShareFragment fragment = new PDUIInstagramShareFragment();
+        PDUIShareMessageFragment fragment = new PDUIShareMessageFragment();
+        fragment.mReward = reward;
+        fragment.type = type;
         fragment.setCallback(callback);
         fragment.setArguments(args);
         return fragment;
@@ -61,7 +71,7 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
     private View mView;
     private PDInstagramShareCallback mCallback;
 
-    public PDUIInstagramShareFragment() {
+    public PDUIShareMessageFragment() {
     }
 
     public void setCallback(@NonNull PDInstagramShareCallback callback) {
@@ -78,12 +88,65 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
                 mCallback.onCancel();
             }
         });
-        mView.findViewById(R.id.pd_instagram_share_next_button).setOnClickListener(this);
-        mView.findViewById(R.id.pd_instagram_share_okay_button).setOnClickListener(this);
-        PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
-                .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_ONE)
-                .create());
+        mView.findViewById(R.id.pd_facebook_share_okay_button).setOnClickListener(this);
+
+
+        if(type.equalsIgnoreCase("facebook")){
+            setupFacebookViews();
+        }else{
+            PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
+                    .add(PDAbraConfig.ABRA_PROPERTYNAME_SOURCE_PAGE, PDAbraConfig.ABRA_PROPERTYVALUE_PAGE_TUTORIAL_MODULE_ONE)
+                    .create());
+            mView.findViewById(R.id.pd_instagram_share_next_button).setOnClickListener(this);
+            mView.findViewById(R.id.pd_instagram_share_okay_button).setOnClickListener(this);
+            LinearLayout facebookView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_facebook_view);
+            facebookView.setVisibility(View.INVISIBLE);
+        }
         return mView;
+    }
+
+    public void setupFacebookViews(){
+
+        LinearLayout firstView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_first_view);
+        LinearLayout secondView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_second_view);
+        LinearLayout facebookView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_facebook_view);
+
+        firstView.setVisibility(View.INVISIBLE);
+        secondView.setVisibility(View.INVISIBLE);
+        facebookView.setVisibility(View.VISIBLE);
+
+
+
+        mView.findViewById(R.id.pd_facebook_share_okay_button).setOnClickListener(this);
+
+        TextView header = mView.findViewById(R.id.facebook_share_tutorial_heading);
+        TextView mainText = mView.findViewById(R.id.facebook_share_tutorial_description);
+        ImageView imageView = mView.findViewById(R.id.facebook_share_tutorial_image);
+
+
+        if (!checkFbInstalled()) {
+            header.setText(getText(R.string.pd_claim_insta_not_installed));
+            imageView.setImageResource(R.drawable.pduikit_facebook_noapp);
+            if (mReward.getGlobalHashtag()!=null) {
+                mainText.setText(String.format(getString(R.string.pd_facebook_not_installed),mReward.getGlobalHashtag()));
+            } else {
+                mainText.setText(getString(R.string.pd_facebook_not_installed2));
+            }
+        } else {
+            imageView.setImageResource(R.drawable.pduikit_facebook_step1);
+
+            if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {
+                header.setText(getString(R.string.pd_facebook_tutorial_heading_photo));
+            } else {
+                header.setText(getString(R.string.pd_facebook_tutorial_heading_check_in));
+            }
+            if (mReward.getGlobalHashtag()!=null) {
+                String formated = getString(R.string.pd_facebook_tutorial_1);
+                mainText.setText(String.format(formated, mReward.getGlobalHashtag()));
+            } else {
+                mainText.setText(getString(R.string.pd_facebook_tutorial_2));
+            }
+        }
     }
 
     @Override
@@ -126,13 +189,26 @@ public class PDUIInstagramShareFragment extends Fragment implements View.OnClick
 //                }
 //            });
 //            set.start();
-        } else if (ID == R.id.pd_instagram_share_okay_button) {
+        } else if (ID == R.id.pd_instagram_share_okay_button || ID == R.id.pd_facebook_share_okay_button) {
             PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLICKED_NEXT_INSTAGRAM_TUTORIAL, null);
             mCallback.onShareClick();
         }
     }
 
     public static String getName() {
-        return PDUIInstagramShareFragment.class.getSimpleName();
+        return PDUIShareMessageFragment.class.getSimpleName();
+    }
+
+    public Boolean checkFbInstalled() {
+        PackageManager pm = getActivity().getPackageManager();
+        boolean flag = false;
+        try {
+            pm.getPackageInfo("com.facebook.katana",
+                    PackageManager.GET_ACTIVITIES);
+            flag = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            flag = false;
+        }
+        return flag;
     }
 }
