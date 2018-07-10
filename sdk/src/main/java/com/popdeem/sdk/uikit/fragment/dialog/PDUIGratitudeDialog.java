@@ -95,21 +95,38 @@ public class PDUIGratitudeDialog extends Dialog {
             }
         });
 
-        setIcon(context, mCustomer, dialog);
+        setIcon(context, mCustomer, reward, type, dialog);
         setTitleAndsBody(context, mCustomer, reward, type, dialog);
 
         mRealm.close();
         return dialog;
     }
 
-    public static void setIcon(Context context, PDRealmCustomer customer, PDUIGratitudeDialog dialog){
+    public static void setIcon(Context context, PDRealmCustomer customer, PDReward reward, String type, PDUIGratitudeDialog dialog){
 
         SharedPreferences sp = context.getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
-        int variationNumImages = sp.getInt("variation_num_images", 0);
+        int variationNumImages = 0;
 
         ImageView icon = dialog.findViewById(R.id.pd_iv_ambassador_icon);
 
         TypedArray imagesArray = context.getResources().obtainTypedArray(R.array.pd_login_images);
+
+        if(type.equalsIgnoreCase("logged_in")){
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_connect_images);
+            variationNumImages = sp.getInt("variation_num_images_login", 0);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)) {
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_share_images);
+            variationNumImages = sp.getInt("variation_num_images_coupon", 0);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_credit_images);
+            variationNumImages = sp.getInt("variation_num_images_credit", 0);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_sweepstake_images);
+            variationNumImages = sp.getInt("variation_num_images_sweepstake", 0);
+        }else{
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_connect_images);
+            variationNumImages = sp.getInt("variation_num_images", 0);
+        }
 
         if(imagesArray.length()==0) {
             icon.setVisibility(View.INVISIBLE);
@@ -122,9 +139,23 @@ public class PDUIGratitudeDialog extends Dialog {
             icon.setVisibility(View.VISIBLE);
         }
 
+
         variationNumImages++;
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("variation_num_images", variationNumImages);
+
+        if(type.equalsIgnoreCase("logged_in")){
+            editor.putInt("variation_num_images_login", variationNumImages);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)) {
+            editor.putInt("variation_num_images_coupon", variationNumImages);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
+            editor.putInt("variation_num_images_credit", variationNumImages);
+        }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
+            editor.putInt("variation_num_images_sweepstake", variationNumImages);
+        }else{
+            editor.putInt("variation_num_images", variationNumImages);
+        }
+
         editor.commit();
 
 

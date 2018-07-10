@@ -7,4 +7,16 @@
     <string-array name="pd_share_images">
         <item>@drawable/ambassador_icon</item>
     </string-array>
+
+    <string-array name="pd_connect_images">
+        <item>@drawable/ambassador_icon</item>
+    </string-array>
+
+    <string-array name="pd_credit_images">
+        <item>@drawable/ambassador_icon</item>
+    </string-array>
+
+    <string-array name="pd_sweepstake_images">
+        <item>@drawable/ambassador_icon</item>
+    </string-array>
 </resources>
