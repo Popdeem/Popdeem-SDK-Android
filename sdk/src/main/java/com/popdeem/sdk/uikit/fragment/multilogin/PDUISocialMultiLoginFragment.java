@@ -1,11 +1,14 @@
 package com.popdeem.sdk.uikit.fragment.multilogin;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -29,6 +32,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -58,6 +62,7 @@ import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
+import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -66,6 +71,7 @@ import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIInstagramLoginFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
+import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.squareup.picasso.Picasso;
@@ -186,8 +192,72 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             }
         }
 
+        SharedPreferences sp = getActivity().getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
+        int variationNumImages  = sp.getInt("variation_num_images_login", 0);
+
+        TypedArray imagesArray = getResources().obtainTypedArray(R.array.pd_login_images);
+        ImageView loginImage = view.findViewById(R.id.pd_social_login_header_image_view);
+
+        if(imagesArray.length()==1){
+            loginImage.setImageResource(imagesArray.getResourceId(imagesArray.getIndex(0),-1));
+        }else if(imagesArray.length()>1){
+            int showNum = variationNumImages%imagesArray.length();
+            loginImage.setImageResource(imagesArray.getResourceId(showNum,R.drawable.pd_social_login_header));
+        }
+
+        variationNumImages++;
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("variation_num_images", variationNumImages);
+
+        editor.commit();
+
+        setTitleAndsBody(getActivity());
+
 
         return view;
+    }
+
+    public void setTitleAndsBody(Context context) {
+
+        TextView titleView = view.findViewById(R.id.pd_social_rewards_title_text_view);
+        TextView infoView = view.findViewById(R.id.pd_social_rewards_info_text_view);
+        String title = "";
+        String body = "";
+
+        String[] stringsArrayTitle;
+        String[] stringsArrayBody;
+        stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_title);
+        stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_body);
+
+        int numVar = stringsArrayBody.length;
+
+        SharedPreferences sp = context.getSharedPreferences("popdeem_prefs", Activity.MODE_PRIVATE);
+        int variationNum = sp.getInt("variation_num_login_text", 0);
+
+        if (numVar == 0) {
+            title = getActivity().getResources().getString(R.string.pd_social_login_tagline_text);
+            body = getActivity().getResources().getString(R.string.pd_social_login_body_text);
+            ;
+
+        } else if (numVar == 1) {
+            title = stringsArrayTitle[0];
+            body = stringsArrayBody[0];
+
+        } else {
+            int showNum = variationNum % numVar;
+            title = stringsArrayTitle[showNum];
+            body = stringsArrayBody[showNum];
+        }
+
+        titleView.setText(title);
+        infoView.setText(body);
+
+        variationNum++;
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("variation_num_login_text", variationNum);
+        editor.commit();
+
+
     }
 
 

@@ -115,7 +115,7 @@ public class PDUIGratitudeDialog extends Dialog {
             imagesArray = context.getResources().obtainTypedArray(R.array.pd_connect_images);
             variationNumImages = sp.getInt("variation_num_images_login", 0);
         }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)) {
-            imagesArray = context.getResources().obtainTypedArray(R.array.pd_share_images);
+            imagesArray = context.getResources().obtainTypedArray(R.array.pd_coupon_images);
             variationNumImages = sp.getInt("variation_num_images_coupon", 0);
         }else if(reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_CREDIT)) {
             imagesArray = context.getResources().obtainTypedArray(R.array.pd_credit_images);
