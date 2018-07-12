@@ -288,9 +288,14 @@
     <string name="pd_facebook_tutorial_2">Your post must include the specified hashtag, or you will be unable to claim your reward.</string>
 
 
-    <string-array name="pd_gratuity_strings_login_title">
+    <string-array name="pd_sociallogin_title">
     </string-array>
 
+    <string-array name="pd_sociallogin_body">
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_login_title">
+    </string-array>
 
     <string-array name="pd_gratuity_strings_login_body">
     </string-array>

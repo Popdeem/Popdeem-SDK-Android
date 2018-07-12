@@ -226,8 +226,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
         String[] stringsArrayTitle;
         String[] stringsArrayBody;
-        stringsArrayTitle = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_title);
-        stringsArrayBody = context.getResources().getStringArray(R.array.pd_gratuity_strings_login_body);
+        stringsArrayTitle = context.getResources().getStringArray(R.array.pd_sociallogin_title);
+        stringsArrayBody = context.getResources().getStringArray(R.array.pd_sociallogin_body);
 
         int numVar = stringsArrayBody.length;
 
