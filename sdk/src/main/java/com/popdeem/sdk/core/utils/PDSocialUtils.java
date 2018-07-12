@@ -66,7 +66,8 @@ import io.realm.RealmResults;
  */
 public class PDSocialUtils {
 
-    public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends"};
+//    public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts", "user_friends"};
+    public static final String[] FACEBOOK_READ_PERMISSIONS = {"public_profile", "email", "user_birthday", "user_posts"};
 //    public static final String[] FACEBOOK_PUBLISH_PERMISSIONS = {"publish_actions"};
 
     private static final String FACEBOOK_APP_ID = "com.facebook.sdk.ApplicationId";
