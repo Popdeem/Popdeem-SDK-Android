@@ -4,6 +4,9 @@
 
 
     <!-- Common -->
+
+    <string name="pd_home_title">Rewards</string>
+
     <string name="pd_empty_string" />
     <string name="pd_common_please_wait_text">Please wait</string>
     <string name="pd_common_sorry_text">Sorry</string>

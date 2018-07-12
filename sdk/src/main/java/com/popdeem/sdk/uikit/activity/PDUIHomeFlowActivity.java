@@ -51,7 +51,7 @@ public class PDUIHomeFlowActivity extends PDBaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_pd_home_flow);
-        setTitle(R.string.pd_rewards_title);
+        setTitle(R.string.pd_home_title);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
