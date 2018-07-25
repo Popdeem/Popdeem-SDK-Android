@@ -112,6 +112,7 @@
     <color name="pd_claim_share_button_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_tagged_friends_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_location_verification_background_color">#d8d8d8</color>
+    <color name="pd_claim_location_verification_background_colorfaded">#88000000</color>
     <color name="pd_claim_location_verification_text_color">#000000</color>
     <color name="pd_claim_verification_text_color">#000000</color>
     <color name="pd_claim_location_verification_tick_color">#777777</color>
@@ -177,6 +178,8 @@
 
     <color name="pd_gratitude_bg">#ccffffff</color>
     <color name="pd_dialog_bg_bg">#ccffffff</color>
+
+    <color name="facebook_hashtag_bg">#DDE5F4</color>
 
 
     <color name="clear">#00ffffff</color>

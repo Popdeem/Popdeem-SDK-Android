@@ -43,7 +43,7 @@ public class PDUIColorUtils {
     }
 
     public static Drawable getSocialLoginBackButtonIcon(Context context) {
-        return getTintedDrawable(context, R.drawable.pd_ic_arrow_back, R.color.pd_social_login_back_button_color, true);
+        return getTintedDrawable(context, R.drawable.baseline_close_white_36, R.color.pd_social_login_back_button_color, true);
     }
 
     public static Drawable getInboxButtonIcon(Context context) {

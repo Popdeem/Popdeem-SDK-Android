@@ -149,13 +149,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:background="@color/tw__composer_white"
             android:id="@+id/pd_instagram_share_facebook_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="20dp"
-            android:visibility="invisible">
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/facebook_share_tutorial_heading"
@@ -184,13 +185,53 @@
                 android:layout_gravity="center_horizontal"
                 android:minHeight="150dp">
 
-                <ImageView
-                    android:id="@+id/facebook_share_tutorial_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <RelativeLayout
                     android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/pduikit_facebook_noapp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:id="@+id/facebook_share_tutorial_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/pduikit_facebook_noapp" />
+                        <!--android:src="@drawable/pduikit_facebook_step1" />-->
+                    <LinearLayout
+                        android:layout_alignTop="@+id/facebook_share_tutorial_image"
+                        android:layout_alignBottom="@+id/facebook_share_tutorial_image"
+                        android:orientation="vertical"
+                        android:weightSum="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <RelativeLayout
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp">
+
+                            <FrameLayout
+                                android:id="@+id/center_holder"
+                                android:layout_centerVertical="true"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"/>
+                            <TextView
+                                android:id="@+id/pd_facebook_hashtag"
+                                android:visibility="gone"
+                                android:text="#Hashtag"
+                                android:textSize="12dp"
+                                android:layout_above="@+id/center_holder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/facebook_hashtag_bg_square" />
+                            </RelativeLayout>
+                        <FrameLayout
+                            android:layout_weight="0"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"/>
+                    </LinearLayout>
+                </RelativeLayout>
 
             </FrameLayout>
 

@@ -28,6 +28,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:background="@android:color/white"
     android:animateLayoutChanges="true"
     tools:context=".uikit.activity.PDUIClaimActivity">
@@ -39,40 +41,10 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
-                android:id="@+id/pd_claim_not_here_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/pd_claim_location_verification_background_color"
-                android:padding="10dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/pd_claim_not_here_tick_image_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ic_tick"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
-                    android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
-                    android:text="@string/pd_claim_verify_location_failed_text"
-                    android:textColor="@color/pd_claim_location_verification_text_color"
-                    android:textSize="12sp" />
-
-            </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <!--<ScrollView-->
             <!--android:layout_width="match_parent"-->
@@ -92,122 +64,130 @@
                     android:background="@android:color/white">
 
                     <include
-                        android:layout_centerVertical="true"
+                        android:id="@+id/pd_claim_reward_layout"
+                        layout="@layout/item_reward"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pd_claim_reward_layout"
-                        layout="@layout/item_reward" />
-
-
+                        android:layout_centerVertical="true" />
 
 
                 </RelativeLayout>
 
                 <include layout="@layout/view_pd_divider" />
+
                 <LinearLayout
+                    android:id="@+id/pd_claim_already_shared_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/white"
-                    android:id="@+id/pd_claim_already_shared_view"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
+
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:text="SCAN"
-                        android:textSize="16sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:textSize="16sp" />
 
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                     <LinearLayout
-                        android:paddingTop="3dp"
-                        android:orientation="horizontal"
-                        android:clickable="true"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:background="@color/DEBUG"
+                        android:clickable="false"
+                        android:orientation="horizontal"
+                        android:paddingTop="3dp">
 
 
                         <ImageView
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/pd_ic_search_black"
                             android:clickable="false"
-                            android:layout_width="@dimen/pd_reward_share_image_dimen"
-                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                            android:src="@drawable/pd_ic_search_black" />
 
                         <TextView
-                            android:gravity="center_vertical"
                             android:id="@+id/pd_claim_already_shared_button"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:clickable="false"
+                            android:gravity="center_vertical"
                             android:text="@string/pd_claim_scan_for_already_shared_text"
                             android:textAllCaps="false"
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
                         <ImageView
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/pduikit_arrow"
                             android:clickable="false"
-                            android:layout_width="@dimen/pd_reward_share_image_dimen"
-                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                            android:src="@drawable/pduikit_arrow" />
 
                     </LinearLayout>
+
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
                 </LinearLayout>
+
                 <include layout="@layout/view_pd_divider" />
+
                 <LinearLayout
-                    android:background="@android:color/white"
                     android:id="@+id/pd_claim_share_view"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:background="@android:color/white"
+                    android:orientation="vertical">
+
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:text="OR, SHARE A PHOTO NOW"
-                        android:textSize="16sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:textSize="16sp" />
+
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
                     <RelativeLayout
                         android:id="@+id/pd_share_view_holder"
-                        android:clickable="true"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clickable="true">
 
                         <LinearLayout
                             android:id="@+id/pd_share_view_taken_holder"
-                            android:visibility="invisible"
-                            android:paddingBottom="5dp"
-                            android:clickable="false"
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/white"
+                            android:clickable="false"
                             android:minHeight="@dimen/pd_reward_share_image_preview_dimen"
-                            android:background="@android:color/white">
+                            android:orientation="horizontal"
+                            android:paddingBottom="5dp"
+                            android:visibility="invisible">
 
                             <ImageView
                                 android:id="@+id/pd_claim_share_image_view"
@@ -215,45 +195,45 @@
                                 android:layout_height="@dimen/pd_reward_share_image_preview_dimen"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:clickable="false"
                                 android:adjustViewBounds="true"
                                 android:background="@android:color/black"
+                                android:clickable="false"
                                 android:scaleType="centerInside" />
 
                             <TextView
-                                android:gravity="center_vertical"
                                 android:id="@+id/pd_claim_change_photo_text"
-                                android:layout_weight="1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:text="@string/pd_claim_change_photo"
+                                android:layout_weight="1"
                                 android:clickable="false"
+                                android:gravity="center_vertical"
+                                android:text="@string/pd_claim_change_photo"
                                 android:textAllCaps="false"
                                 android:textColor="#000000"
                                 android:textSize="16sp" />
 
                             <ImageView
+                                android:layout_width="@dimen/pd_reward_share_image_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_dimen"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:clickable="false"
-                                android:src="@drawable/pduikit_arrow"
-                                android:layout_width="@dimen/pd_reward_share_image_dimen"
-                                android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                                android:src="@drawable/pduikit_arrow" />
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/pd_share_view_icon_holder"
-                            android:visibility="visible"
-                            android:layout_centerVertical="true"
-                            android:paddingBottom="5dp"
-                            android:clickable="false"
-                            android:paddingTop="3dp"
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/white">
+                            android:layout_centerVertical="true"
+                            android:background="@android:color/white"
+                            android:clickable="false"
+                            android:orientation="horizontal"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="3dp"
+                            android:visibility="visible">
 
                             <ImageView
                                 android:id="@+id/pd_claim_share_image_icon"
@@ -263,71 +243,73 @@
                                 android:layout_marginRight="10dp"
                                 android:adjustViewBounds="true"
                                 android:clickable="false"
-                                android:src="@drawable/pdui_camera_icon"
-                                android:scaleType="centerInside" />
+                                android:scaleType="centerInside"
+                                android:src="@drawable/pdui_camera_icon" />
 
                             <TextView
-                                android:gravity="center_vertical"
                                 android:id="@+id/pd_claim_add_photo_text"
-                                android:layout_weight="1"
                                 android:layout_width="0dp"
-                                android:clickable="false"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:clickable="false"
+                                android:gravity="center_vertical"
                                 android:text="@string/pd_claim_add_photo_title_text"
                                 android:textAllCaps="false"
                                 android:textColor="#000000"
                                 android:textSize="16sp" />
 
                             <ImageView
+                                android:layout_width="@dimen/pd_reward_share_image_dimen"
+                                android:layout_height="@dimen/pd_reward_share_image_dimen"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/pduikit_arrow"
                                 android:clickable="false"
-                                android:layout_width="@dimen/pd_reward_share_image_dimen"
-                                android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                                android:src="@drawable/pduikit_arrow" />
 
                         </LinearLayout>
 
                     </RelativeLayout>
+
                     <FrameLayout
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <include layout="@layout/view_pd_divider" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="3"
-
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="3"
+                    android:orientation="vertical">
 
 
                     <LinearLayout
                         android:id="@+id/pd_claim_facebook_holder"
-                        android:orientation="horizontal"
-                        android:layout_weight="1"
-                        android:visibility="visible"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
                         <ImageView
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/pd_facebook_switch_drawable"
-                            android:layout_width="@dimen/pd_reward_share_image_dimen"
-                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                            android:src="@drawable/pd_facebook_switch_drawable" />
 
                         <TextView
-                            android:gravity="center_vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:gravity="center_vertical"
                             android:text="Facebook"
                             android:textColor="@android:color/black"
-                            android:textSize="16sp"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent" />
+                            android:textSize="16sp" />
 
 
                         <android.support.v7.widget.SwitchCompat
@@ -344,31 +326,30 @@
                     <include layout="@layout/view_pd_divider" />
 
 
-
                     <LinearLayout
                         android:id="@+id/pd_claim_twitter_holder"
-                        android:orientation="horizontal"
-                        android:visibility="visible"
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageView
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/pd_twitter_switch_drawable"
-                            android:layout_width="@dimen/pd_reward_share_image_dimen"
-                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                            android:src="@drawable/pd_twitter_switch_drawable" />
 
                         <TextView
-                            android:gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="Twitter"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="Twitter"
                             android:textColor="@android:color/black"
-                            android:textSize="16sp"
-                            android:layout_height="match_parent" />
+                            android:textSize="16sp" />
 
                         <android.support.v7.widget.SwitchCompat
                             android:id="@+id/pd_claim_twitter_switch"
@@ -380,31 +361,32 @@
                             app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
                     </LinearLayout>
+
                     <include layout="@layout/view_pd_divider" />
 
                     <LinearLayout
                         android:id="@+id/pd_claim_instagram_holder"
-                        android:orientation="horizontal"
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
                         <ImageView
+                            android:layout_width="@dimen/pd_reward_share_image_dimen"
+                            android:layout_height="@dimen/pd_reward_share_image_dimen"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/pd_instagram_switch_drawable"
-                            android:layout_width="@dimen/pd_reward_share_image_dimen"
-                            android:layout_height="@dimen/pd_reward_share_image_dimen" />
+                            android:src="@drawable/pd_instagram_switch_drawable" />
 
                         <TextView
-                            android:gravity="center_vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:gravity="center_vertical"
                             android:text="Instagram"
                             android:textColor="@android:color/black"
-                            android:textSize="16sp"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent" />
+                            android:textSize="16sp" />
 
                         <android.support.v7.widget.SwitchCompat
                             android:id="@+id/pd_claim_instagram_switch"
@@ -416,23 +398,26 @@
                             app:theme="@style/PopdeemSDKTheme.ClaimSwitchStyle" />
 
                     </LinearLayout>
+
                     <FrameLayout
-                        android:visibility="gone"
                         android:id="@+id/spacer1"
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
                         <FrameLayout
                             android:layout_width="@dimen/pd_reward_share_image_dimen"
                             android:layout_height="@dimen/pd_reward_share_image_dimen" />
                     </FrameLayout>
 
                     <FrameLayout
-                        android:visibility="gone"
                         android:id="@+id/spacer2"
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
                         <FrameLayout
                             android:layout_width="@dimen/pd_reward_share_image_dimen"
                             android:layout_height="@dimen/pd_reward_share_image_dimen" />
@@ -442,14 +427,15 @@
 
 
             </LinearLayout>
+
             <include layout="@layout/view_pd_divider" />
 
             <TextView
                 android:id="@+id/pd_claim_info_text"
-                android:padding="10dp"
-                android:text="@string/pd_claim_info_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/pd_claim_info_photo" />
 
             <include layout="@layout/view_pd_divider" />
 
@@ -467,8 +453,7 @@
                     android:text="@string/pd_claim_get_reward_text"
                     android:textAllCaps="false"
                     android:textColor="@color/pd_claim_share_button_text_color"
-                    android:textSize="16sp"/>
-
+                    android:textSize="16sp" />
 
 
                 <ProgressBar
@@ -491,7 +476,8 @@
             android:id="@+id/pd_claim_progress_view"
             android:background="@color/pd_claim_background_color"
             android:padding="16dp"
-            android:visibility="gone"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar
@@ -509,6 +495,8 @@
 
             <LinearLayout
                 android:orientation="vertical"
+                android:clipToPadding="false"
+                android:clipChildren="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -521,10 +509,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/pd_unlocked_reward_text"
                     android:textColor="@color/pd_claim_verification_text_color"
                     android:textSize="16sp"
                     android:paddingBottom="16dp"
+                    android:text="@string/pd_unlocked_reward_text"
                     android:visibility="gone" />
 
                 <android.support.v7.widget.CardView
@@ -623,10 +611,52 @@
         </RelativeLayout>
 
         <FrameLayout
-            android:visibility="visible"
             android:id="@+id/pd_claim_tag_friends_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/pd_claim_not_here_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:background="@color/pd_claim_location_verification_background_colorfaded"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/pd_claim_not_here_tick_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_tick"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
+                    android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
+                    android:text="@string/pd_claim_verify_location_failed_text"
+                    android:textColor="@color/pd_claim_location_verification_text_color"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

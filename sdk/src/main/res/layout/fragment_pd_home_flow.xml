@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/pd_home_banner" />
+                    android:src="@drawable/pd_header_image" />
 
                 <!--<ImageButton-->
                     <!--android:id="@+id/pd_home_flow_settings_image_button"-->

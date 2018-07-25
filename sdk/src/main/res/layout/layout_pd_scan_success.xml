@@ -5,63 +5,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/pd_success_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:gravity="center"
+        android:textColor="@color/pd_claim_verification_text_color"
+        android:textSize="16sp"
+        android:paddingBottom="16dp"
         android:text="@string/pd_scan_success_label" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
+    <android.support.v7.widget.CardView
+        android:id="@+id/pd_verify_image_card"
+        android:visibility="visible"
         android:layout_weight="1"
-        android:background="@drawable/pd_rounded_background"
-        android:orientation="vertical"
-        android:padding="5dp">
 
+        android:layout_marginBottom="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
-                android:id="@+id/pd_scan_success_user_image_view"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                app:maskDrawable="@drawable/circle_mask"
-                tools:src="@drawable/pd_ui_default_user" />
-
-            <TextView
-                android:id="@+id/pd_social_user_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:text="@string/pd_scan_success_user_name" />
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <com.popdeem.sdk.uikit.widget.PDUIBezelImageView
+                    android:id="@+id/pd_scan_success_user_image_view"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    app:maskDrawable="@drawable/circle_mask"
+                    tools:src="@drawable/pd_ui_default_user" />
+
+                <TextView
+                    android:id="@+id/pd_social_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/pd_scan_success_user_name" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_media_url"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:scaleType="fitCenter"
+                />
+
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/image_media_url"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            />
-
-
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,19 +82,19 @@
             android:id="@+id/btn_claim"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/pd_claim_share_button_background_color"
+            android:visibility="visible"
+            android:background="@drawable/pd_rounded_button"
             android:text="@string/pd_claim_text"
-            android:textColor="@color/pd_claim_share_button_text_color"
-            android:textAllCaps="false"/>
+            android:textColor="@color/pd_toolbar_text_color"/>
 
         <Button
             android:id="@+id/btn_return"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:visibility="gone"
             android:text="@string/pd_back_to_reward"
-            android:textAllCaps="false"
-            android:textColor="@color/pd_claim_share_button_background_color"
-            android:background="@null"/>
+            android:background="@drawable/pd_button_rounded_rect_primary"
+            android:textColor="@color/pd_toolbar_color"/>
 
     </LinearLayout>
 

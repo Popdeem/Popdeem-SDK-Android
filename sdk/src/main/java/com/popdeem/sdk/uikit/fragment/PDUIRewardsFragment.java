@@ -49,6 +49,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.popdeem.sdk.BuildConfig;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
@@ -220,6 +221,11 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
         }
 
         PDReward reward = mRewards.get(position);
+
+//        if(BuildConfig.DEBUG){
+//            showDebugGratitude(reward.getId());
+//            return;
+//        }
         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
             claimNoActionReward(position, reward);
         } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
@@ -423,21 +429,61 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
     private final BroadcastReceiver mLoggedInBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
-            refreshRewards();
-            isSocialAccountLoggedIn = true;
+            if(!PopdeemSDK.showHome) {
+                PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
+                refreshRewards();
+                isSocialAccountLoggedIn = true;
 
-            Realm  mRealm = Realm.getDefaultInstance();
-            PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
-            if(mUser.getAdvocacyScore()<=30){
-                mRealm.close();
-                PDUIGratitudeDialog.showGratitudeDialog(context, "logged_in");
-            }else{
-                mRealm.close();
+                Realm mRealm = Realm.getDefaultInstance();
+                PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
+                if (mUser.getAdvocacyScore() <= 30) {
+                    mRealm.close();
+                    PDUIGratitudeDialog.showGratitudeDialog(context, "logged_in");
+                } else {
+                    mRealm.close();
+                }
             }
 
         }
     };
+
+    public void showDebugGratitude(String id){
+
+        if (id != null) {
+            PDReward reward = null;
+            for (Iterator<PDReward> it = mRewards.iterator(); it.hasNext(); ) {
+                PDReward r = it.next();
+                if (r.getId().equalsIgnoreCase(id)) {
+                    int position = mRewards.indexOf(r);
+                    it.remove();
+                    Realm realm = Realm.getDefaultInstance();
+                    RealmResults<PDRealmReward> results = realm.where(PDRealmReward.class).findAll();
+                    for (int i = 0; i < results.size(); i++) {
+                        if(results.get(i).getId().equalsIgnoreCase(id)){
+                            reward = r;
+                            realm.beginTransaction();
+                            results.get(i).deleteFromRealm();
+                            realm.commitTransaction();
+                            i = results.size();
+                        }
+                    }
+                    mRecyclerViewAdapter.notifyItemRemoved(position);
+                    if(mRewards.size() == 0){
+                        noItemsView.setVisibility(View.GONE);
+                    }
+                    break;
+                }
+            }
+            PDUIGratitudeDialog.showGratitudeDialog(getActivity(), "share", reward);
+        }else {
+            PDUIGratitudeDialog.showGratitudeDialog(getActivity(), "share");
+        }
+
+        if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
+            PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
+            parent.switchToWalletForVerify(false, id);
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

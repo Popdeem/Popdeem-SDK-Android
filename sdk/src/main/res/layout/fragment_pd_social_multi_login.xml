@@ -51,14 +51,14 @@
             android:id="@+id/pd_social_login_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="15dp"
             android:adjustViewBounds="true"
             android:background="@null"
             android:padding="10dp"
-            tools:src="@drawable/pd_ic_arrow_back" />
+            tools:src="@drawable/baseline_close_white_24" />
 
     </RelativeLayout>
 
@@ -69,10 +69,80 @@
         android:orientation="vertical"
         android:padding="@dimen/social_login_padding"
         >
-        <include
-            android:visibility="gone"
+        <RelativeLayout
             android:id="@+id/pd_login_reward_layout"
-            layout="@layout/item_reward" />
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pd_reward_list_background_color"
+            android:minHeight="90dp"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            >
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/pd_reward_star_image_view"
+                android:layout_width="@dimen/pd_reward_item_image_dimen"
+                android:layout_height="@dimen/pd_reward_item_image_dimen"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/pd_ui_star_icon" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/pd_reward_star_image_view"
+                android:layout_toRightOf="@id/pd_reward_star_image_view"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp"
+                >
+
+                <TextView
+                    android:id="@+id/pd_reward_offer_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/pd_login_tagline_text_color"
+                    android:textSize="@dimen/social_login_sign_in_button_text_size"
+                    tools:text="Reward Title"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/pd_reward_item_rules_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/pd_login_body_text_color"
+                    android:textSize="@dimen/social_login_body_text_size"
+                    tools:text="Reward Rules" />
+
+                <TextView
+                    android:id="@+id/pd_reward_request_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:maxLines="2"
+                    android:textColor="@color/pd_accent"
+                    android:textSize="12sp"
+                    tools:text="3 Days Remaining"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/pd_login_text_description"
             android:orientation="vertical"

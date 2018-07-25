@@ -54,6 +54,7 @@ import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -183,8 +184,12 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 String drawString = drawString(reward);
                 holder.subTitleTextView.setText(drawString);
             } else if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(reward.getClaimedAt()*1000);
+
                 DateFormat formatter = new SimpleDateFormat("d MMM");
-                Date claimed = new Date(reward.getClaimedAt());
+                Date claimed = c.getTime();
                 String claimedString = formatter.format(claimed);
 
                 holder.subTitleTextView.setText(String.format(

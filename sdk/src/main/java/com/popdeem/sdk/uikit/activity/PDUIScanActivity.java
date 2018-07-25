@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +28,8 @@ import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import java.util.List;
 
 import io.realm.Realm;
 
@@ -71,6 +74,17 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         indicatorView.smoothToShow();
 
         scan();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+//            if (!popBackStackIfNeeded()) {
+                finish();
+//            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void populateUIWithTag() {
@@ -254,4 +268,6 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
             }
         });
     }
+
+
 }

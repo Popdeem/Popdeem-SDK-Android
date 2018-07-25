@@ -18,6 +18,8 @@ import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIConnectSocialAccountFragment;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
+import java.util.List;
+
 /**
  * Created by dave on 10/04/2017.
  * Project: Popdeem-SDK-Android
@@ -49,6 +51,8 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
         populateUIWithTag();
         checkSocialAccounts();
+
+
 
     }
 
@@ -135,6 +139,24 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
         btnFacebook.setOnClickListener(this);
         btnTwitter.setOnClickListener(this);
         btnInstagram.setOnClickListener(this);
+
+        int counter = 0;
+        if(!isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK)) {
+            btnFacebook.setVisibility(View.GONE);
+            counter++;
+        }
+
+        if(!isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER)) {
+            btnTwitter.setVisibility(View.GONE);
+            counter++;
+        }
+
+        if(!isNetworkAvailableForShare(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM)) {
+            btnInstagram.setVisibility(View.GONE);
+            counter++;
+        }
+
+
     }
 
     @Override
@@ -250,5 +272,10 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
         }
+    }
+
+    private boolean isNetworkAvailableForShare(@PDReward.PDSocialMediaType String network) {
+        List<String> mediaTypes = mReward.getSocialMediaTypes();
+        return mediaTypes.contains(network);
     }
 }

@@ -59,7 +59,6 @@ import java.util.Arrays;
 import java.util.Set;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by mikenolan on 23/02/16.
@@ -466,7 +465,7 @@ public class PDSocialUtils {
         return null;
     }
 
-    private static TwitterAuthConfig getTwitterAuthConfig(Context context) {
+    public static TwitterAuthConfig getTwitterAuthConfig(Context context) {
         final String consumerKey = getTwitterConsumerKey(context);
         final String consumerSecret = getTwitterConsumerSecret(context);
 
@@ -497,6 +496,10 @@ public class PDSocialUtils {
             client = new TwitterAuthClient();
             client.authorize(activity, callback);
         }
+    }
+
+    public static TwitterAuthClient getTwitterAuthClient(){
+        return client;
     }
 
     public static boolean isTwitterLoggedIn() {
@@ -574,14 +577,14 @@ public class PDSocialUtils {
     public static String getTwitterConsumerSecret(Context context) {
         Realm realm = Realm.getDefaultInstance();
         PDRealmCustomer customer = realm.where(PDRealmCustomer.class).findFirst();
-
+        customer = null;
         if(customer == null || customer.getTwitter_consumer_secret() == null || customer.getTwitter_consumer_secret().length() == 0) {
             String ret = PDUtils.getStringFromMetaData(context, TWITTER_CONSUMER_SECRET_META_KEY);
             realm.close();
             return ret;
 
         }else{
-            String ret = customer.getTwitter_consumer_key();
+            String ret = customer.getTwitter_consumer_secret();
             realm.close();
             return ret;
         }

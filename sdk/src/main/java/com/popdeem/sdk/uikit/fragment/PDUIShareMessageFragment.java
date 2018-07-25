@@ -143,6 +143,8 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
             if (mReward.getGlobalHashtag()!=null) {
                 String formated = getString(R.string.pd_facebook_tutorial_1);
                 mainText.setText(String.format(formated, mReward.getGlobalHashtag()));
+                ((TextView)mView.findViewById(R.id.pd_facebook_hashtag)).setText(mReward.getGlobalHashtag());
+                ((TextView)mView.findViewById(R.id.pd_facebook_hashtag)).setVisibility(View.VISIBLE);
             } else {
                 mainText.setText(getString(R.string.pd_facebook_tutorial_2));
             }

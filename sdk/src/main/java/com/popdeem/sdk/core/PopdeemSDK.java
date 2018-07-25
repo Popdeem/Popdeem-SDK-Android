@@ -100,6 +100,9 @@ public final class PopdeemSDK {
     private static Activity sCurrentActivity;
     private static String sPopdeemAPIKey = null;
     private static boolean sdkInitialized = false;
+    public static boolean showHome = true;
+
+
 
     private PopdeemSDK() {
     }
@@ -144,7 +147,8 @@ public final class PopdeemSDK {
         // Init Realm
         PDRealmUtils.initRealmDB(application);
 
-        TwitterAuthConfig authConfig = new TwitterAuthConfig("144pFFdkYjC9p4J61YHubqKux", "ynGwNExKrhd2q0oDriut1MrLrkXSA78j78FnSrBkFON0QV0TUh");
+        TwitterAuthConfig authConfig = PDSocialUtils.getTwitterAuthConfig(application.getApplicationContext());
+
         TwitterConfig config = new TwitterConfig.Builder(application)
                 .logger(new DefaultLogger(Log.DEBUG))
                 .twitterAuthConfig(authConfig)
@@ -659,11 +663,13 @@ public final class PopdeemSDK {
      * @param context Context to show social login flow in
      */
     public static void handleHomeFlow(Context context){
-        Intent intent = new Intent(context, PDUIHomeFlowActivity.class);
-        if(Build.VERSION.SDK_INT<= Build.VERSION_CODES.M) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if(showHome) {
+            Intent intent = new Intent(context, PDUIHomeFlowActivity.class);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            sApplication.startActivity(intent);
         }
-        sApplication.startActivity(intent);
     }
 
 
@@ -688,7 +694,7 @@ public final class PopdeemSDK {
         realm.close();
 
         // Broadcast to update rewards / wallet / etc
-        context.sendBroadcast(new Intent(PD_LOGGED_IN_RECEIVER_FILTER));
+//        context.sendBroadcast(new Intent(PD_LOGGED_IN_RECEIVER_FILTER));
     }
 
 

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.2.32'
+project.ext.popdeemSdkVersion = '1.3.0'
 
 
 android {

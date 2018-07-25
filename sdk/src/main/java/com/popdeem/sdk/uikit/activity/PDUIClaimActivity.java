@@ -87,6 +87,7 @@ import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.api.abra.PDAbraUtils;
 import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.location.PDLocationValidator;
+import com.popdeem.sdk.core.model.PDBGScanResponseModel;
 import com.popdeem.sdk.core.model.PDPostScan;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
@@ -189,6 +190,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 
     private Uri twitterURI;
     private Bitmap image;
+    private PDBGScanResponseModel pdbgScanResponseModel;
 
     public boolean isFacebookInstalled() {
         try {
@@ -358,7 +360,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             public void run() {
                 mIsHere = PDLocationValidator.validateLocationForReward(mReward, location);
 //                if(BuildConfig.DEBUG) {
-//                    mIsHere = true; // TODO: Remove for release
+//                    mIsHere = false; // TODO: Remove for release
 //                }
                 runOnUiThread(new Runnable() {
                     @Override
@@ -578,7 +580,6 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         }
 
 
-
         // If posting to instagram
         if (mInstagramSwitch.isChecked()) {
             // Check if Instagram app is installed
@@ -649,15 +650,112 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
             encodedImage = getEncodedImage();
         }
 
+        String message = "";
+        message = mReward.getGlobalHashtag();
+
         if (mInstagramSwitch.isChecked()) {
-            postToInstagram("", mCurrentCroppedPhotoPath);
+            postToInstagram(message, mCurrentCroppedPhotoPath);
         } else if (mTwitterSwitch.isChecked()) {
             postToTwitter("", mCurrentCroppedPhotoPath);
         } else if (mFacebookSwitch.isChecked()) {
-            postToFacebook("", mCurrentCroppedPhotoPath);
+            postToFacebook(message, mCurrentCroppedPhotoPath);
         } else {
             performClaimReward("", encodedImage, false, false, false);
         }
+    }
+
+    private void parseResponse(JsonObject response) {
+        pdbgScanResponseModel = new Gson().fromJson(response, PDBGScanResponseModel.class);
+
+        if (pdbgScanResponseModel.isValidated()) {
+            Log.i(TAG, "parseResponse: User has shared, show success view");
+        } else {
+            Log.i(TAG, "parseResponse: User has not shared, show failure view");
+        }
+    }
+
+    private void claimReward(){
+
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pd_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        final Button shareButton = (Button) findViewById(R.id.pd_claim_share_button);
+        shareButton.setEnabled(false);
+        shareButton.animate().alpha(0.5f);
+
+        claiming = true;
+        int postTime = 1;
+        String twitterToken = null;
+        String twitterSecret = null;
+        String facebookToken = null;
+
+        if (mTwitterSwitch.isChecked() && PDSocialUtils.isTwitterLoggedIn() && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token != null
+                && TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret != null) {
+            twitterToken = TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token;
+            twitterSecret = TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret;
+        }else if(mFacebookSwitch.isChecked()){
+            facebookToken = AccessToken.getCurrentAccessToken().getToken();
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        PDRealmUserLocation userLocation = realm.where(PDRealmUserLocation.class).findFirst();
+
+        String lat = "", lng = "", id = "";
+
+        if (userLocation != null) {
+            lat = String.valueOf(userLocation.getLatitude());
+            lng = String.valueOf(userLocation.getLongitude());
+            id = String.valueOf(userLocation.getId());
+        }
+
+
+        PDAPIClient.instance().claimDiscovery(pdbgScanResponseModel, facebookToken, twitterToken, twitterSecret, null, lat, lng, id, mReward.getId(), this, new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                Log.i(TAG, "success: " + jsonObject.toString());
+                if (jsonObject.has("error")) {
+                    new AlertDialog.Builder(PDUIClaimActivity.this)
+                            .setTitle(R.string.pd_common_sorry_text)
+                            .setMessage(jsonObject.get("error").getAsString())
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                } else {
+                    PDLog.d(PDUIClaimActivity.class, "claim: " + jsonObject.toString());
+                    progressBar.setVisibility(View.GONE);
+                    shareButton.setEnabled(true);
+                    shareButton.animate().alpha(1.0f);
+
+                    PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CLAIMED, new PDAbraProperties.Builder()
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_SOCIAL_NETWORKS, readableNetworksChosen())
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_PHOTO, mImageAdded ? "YES" : "NO")
+                            .add(PDAbraConfig.ABRA_PROPERTYNAME_REWARD_TYPE, PDAbraUtils.keyForRewardType(mReward.getRewardType()))
+                            .create());
+
+//                    finishActivityAfterClaim("twitter");
+
+                    Intent data = new Intent();
+                    data.putExtra("id", mReward.getId());
+                    data.putExtra("verificationNeeded", false);
+                    setResult(RESULT_OK, data);
+                    finish();
+                    claiming = false;
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, Exception e) {
+                Log.e(TAG, e.toString());
+                new AlertDialog.Builder(PDUIClaimActivity.this)
+                        .setTitle(R.string.pd_common_sorry_text)
+                        .setMessage(R.string.pd_common_something_wrong_text)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
+            }
+        });
+
+        realm.close();
     }
 
     private void performClaimReward(final String message, final String encodedImage, final boolean fromInstagram, final boolean fromTwitter, final Boolean fromFacebook) {
@@ -701,6 +799,16 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                             .create());
                 }
 
+                if (fromTwitter) {
+                    finishActivityAfterClaim("twitter");
+                    realm.close();
+                    return;
+                }else if(fromFacebook) {
+                    finishActivityAfterClaim("facebook");
+                    realm.close();
+                    return;
+                }
+
 
                 PDAPIClient.instance().claimReward(PDUIClaimActivity.this, mFacebookSwitch.isChecked() ? AccessToken.getCurrentAccessToken().getToken() : null,
                         twitterToken, twitterSecret, instagramAccessToken, mReward.getId(), message, mTaggedNames, mTaggedIds, encodedImage,
@@ -720,6 +828,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                                         .create());
 
                                 if (fromInstagram) {
+//                                    verifyReward();
                                     finishActivityAfterClaim("instagram");
                                 } else if (fromTwitter) {
                                     finishActivityAfterClaim("twitter");
@@ -743,7 +852,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
 //                                    .show();
                                     Intent data = new Intent();
                                     data.putExtra("id", mReward.getId());
-                                    data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+//                                    data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+                                    data.putExtra("verificationNeeded", false);
                                     setResult(RESULT_OK, data);
                                     finish();
                                     claiming = false;
@@ -841,7 +951,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         error.printStackTrace();
                     }
                 });
-                String hashTag = "";
+                String hashTag = message;
+//                String hashTag = "";
                 if(mReward!=null && mReward.getGlobalHashtag()!=null && mReward.getGlobalHashtag().length() > 0 && mReward.getTweetOptions()!=null && mReward.getTweetOptions().getForcedTag()!=null&& mReward.getTweetOptions().getForcedTag().length()>0) {
                     hashTag = mReward.getGlobalHashtag();
                 }
@@ -930,13 +1041,40 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 .commit();
     }
 
+
+
     private void finishActivityAfterClaim(String type) {
         verifyReward(type);
     }
 
+    private void verifyReward() {
 
+        PDAPIClient.instance().verifyInstagramPostForReward(mReward.getId(), new PDAPICallback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonObject) {
+                PDLog.d(PDUIClaimActivity.class, "verify success: " + jsonObject.toString());
+                boolean success = false;
+                if (jsonObject.has("data")) {
+                    JsonObject dataObject = jsonObject.getAsJsonObject("data");
+                    if (dataObject.has("status")) {
+                        success = dataObject.get("status").getAsString().equalsIgnoreCase("success");
+                    }
+                }
+                if (success) {
+                    mReward.setInstagramVerified(true);
+                }
+                mReward.setVerifying(false);
+            }
 
-    private void verifyReward(String type) {
+            @Override
+            public void failure(int statusCode, Exception e) {
+                PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
+                mReward.setVerifying(false);
+            }
+        });
+    }
+
+    private void verifyReward(final String type) {
         verifyView.setVisibility(View.VISIBLE);
         AlphaAnimation animation1 = new AlphaAnimation(0f, 1.0f);
         animation1.setDuration(250);
@@ -946,10 +1084,44 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         dotProgress.show();
         final long time = Calendar.getInstance().getTimeInMillis();
         Log.d("VERIFYING", "verifyReward: ");
+
         PDAPIClient.instance().scanSocialNetwork(mReward.getId(), type, new PDAPICallback<JsonObject>() {
             @Override
             public void success(final JsonObject jsonObject) {
 
+                if(type.equalsIgnoreCase("instagram")) {
+                    PDAPIClient.instance().verifyInstagramPostForReward(mReward.getId(), new PDAPICallback<JsonObject>() {
+                        @Override
+                        public void success(final JsonObject jsonObjectVerify) {
+                            long timediff = Calendar.getInstance().getTimeInMillis()-time;
+                            if(timediff>3000){
+                                processValidationReturn(jsonObject);
+                            }else{
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        processValidationReturn(jsonObject);
+                                    }
+                                }, timediff);
+                            }
+                        }
+
+                        @Override
+                        public void failure(int statusCode, Exception e) {
+                            Log.d("VERIFYING", "verifyReward: failed");
+                            claiming = false;
+                            PDLog.d(PDUIWalletFragment.class, "verify failed: code=" + statusCode + ", message=" + e.getMessage());
+                            mReward.setVerifying(false);
+
+                            Realm realm = Realm.getDefaultInstance();
+                            PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+                            realm.close();
+                            showInstagramFailure(userDetails, mReward.getGlobalHashtag());
+                            dotProgress.hide(150);
+                        }
+                    });
+                    return;
+                }
                 long timediff = Calendar.getInstance().getTimeInMillis()-time;
                 if(timediff>3000){
                     processValidationReturn(jsonObject);
@@ -983,6 +1155,7 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     }
 
     private void processValidationReturn(JsonObject jsonObject){
+        parseResponse(jsonObject);
         PDLog.d(PDUIClaimActivity.class, "verify success: " + jsonObject.toString());
         claiming = false;
         boolean success = false;
@@ -1038,8 +1211,13 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                         .into(pdVerifyImage);
 
                 if(postScan!=null && postScan.getProfilePictureUrl()!=null) {
+
+                    String url = postScan.getProfilePictureUrl();
+                    if(!url.startsWith("http")){
+                        url = "http:"  + url;
+                    }
                     Glide.with(PDUIClaimActivity.this)
-                            .load("http:" + postScan.getProfilePictureUrl())
+                            .load(url)
                             .placeholder(R.drawable.pd_ui_default_user)
                             .error(R.drawable.pd_ui_default_user)
                             .dontAnimate()
@@ -1071,9 +1249,15 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 pdProceedButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(mTwitterSwitch.isChecked()||mFacebookSwitch.isChecked()){
+                            claimReward();
+                            return;
+                        }
+
                         Intent data = new Intent();
                         data.putExtra("id", mReward.getId());
-                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
+                        data.putExtra("verificationNeeded", false);
+//                        data.putExtra("verificationNeeded", mInstagramSwitch.isChecked());
                         setResult(RESULT_OK, data);
                         finish();
                     }

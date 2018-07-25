@@ -52,6 +52,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.LocationListener;
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.abra.PDAbraConfig;
@@ -154,6 +155,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         view.findViewById(R.id.pd_login_text_description).setVisibility(View.VISIBLE);
         if (rewards != null){
             final ImageView logoImageView = (ImageView) view.findViewById(R.id.pd_reward_star_image_view);
+            logoImageView.setVisibility(View.GONE);
 
             for (int i = 0; i < rewards.size(); i++) {
                 if(rewards.get(i).getAction().equalsIgnoreCase("social_login")) {
@@ -199,7 +201,8 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
         ImageView loginImage = view.findViewById(R.id.pd_social_login_header_image_view);
 
         if(imagesArray.length()==1){
-            loginImage.setImageResource(imagesArray.getResourceId(imagesArray.getIndex(0),-1));
+            int id = imagesArray.getResourceId(0,R.drawable.pd_social_login_header);
+            loginImage.setImageResource(id);
         }else if(imagesArray.length()>1){
             int showNum = variationNumImages%imagesArray.length();
             loginImage.setImageResource(imagesArray.getResourceId(showNum,R.drawable.pd_social_login_header));
@@ -207,7 +210,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
         variationNumImages++;
         SharedPreferences.Editor editor = sp.edit();
-        editor.putInt("variation_num_images", variationNumImages);
+        editor.putInt("variation_num_images_login", variationNumImages);
 
         editor.commit();
 
@@ -771,7 +774,9 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
                     // Send broadcast to any registered receivers that user has logged in
                     if (getActivity() != null) {
+                        PopdeemSDK.showHome = false;
                         getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+
                     }
                     // Update view
                     updateViewAfterLogin();
@@ -823,6 +828,10 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "onActivityResult");
+
+        if(PDSocialUtils.getTwitterAuthClient() != null) {
+            PDSocialUtils.getTwitterAuthClient().onActivityResult(requestCode, resultCode, data);
+        }
         if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             mProgressFacebook.setVisibility(View.VISIBLE);
             progressView.setVisibility(View.VISIBLE);

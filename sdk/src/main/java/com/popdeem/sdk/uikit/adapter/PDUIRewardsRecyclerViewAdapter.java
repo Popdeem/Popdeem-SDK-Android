@@ -159,7 +159,13 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
             }
         }
 
-        holder.actionTextView.setText(actionStringBuilder.toString());
+        String textTest = actionStringBuilder.toString();
+
+        if(textTest.equalsIgnoreCase("Photo required")){
+            textTest = "\uD83D\uDCF8 Photo Required";
+        }
+
+        holder.actionTextView.setText(textTest);
         if(!reward.isUnlimitedAvailability()) {
             if(shouldShowTime(reward.getAvailableUntilInSeconds())){
                 String text = getTimeSting(reward.getAvailableUntilInSeconds());

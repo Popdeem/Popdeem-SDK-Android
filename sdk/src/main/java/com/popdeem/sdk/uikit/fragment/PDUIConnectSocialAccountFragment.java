@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
@@ -197,6 +198,30 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         mButton = (Button) view.findViewById(R.id.pd_connect_social_button);
         mButton.setText(getButtonText());
         mButton.setOnClickListener(this);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mType == PD_CONNECT_TYPE_FACEBOOK) {
+                mButton.setBackgroundColor(getActivity().getColor(R.color.pd_facebook_blue));
+            } else if (mType == PD_CONNECT_TYPE_TWITTER) {
+                mButton.setBackgroundColor(getActivity().getColor(R.color.pd_twitter_color));
+            } else if (mType == PD_CONNECT_TYPE_INSTAGRAM) {
+                float height = getActivity().getResources().getDimension(R.dimen.pd_button_height);
+                mButton.setBackgroundResource(R.drawable.pd_insta_button_v2);
+                mButton.getLayoutParams().height = (int)height;
+            }
+        }else{
+            if (mType == PD_CONNECT_TYPE_FACEBOOK) {
+                mButton.setBackgroundColor(getActivity().getResources().getColor(R.color.pd_facebook_blue));
+            } else if (mType == PD_CONNECT_TYPE_TWITTER) {
+                mButton.setBackgroundColor(getActivity().getResources().getColor(R.color.pd_twitter_color));
+            } else if (mType == PD_CONNECT_TYPE_INSTAGRAM) {
+                float height = getActivity().getResources().getDimension(R.dimen.pd_button_height);
+                mButton.setBackgroundResource(R.drawable.pd_insta_button_v2);
+                mButton.getLayoutParams().height = (int)height;
+            }
+        }
+
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.pd_connect_social_progress);
 
@@ -639,7 +664,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
                 PDUtils.updateSavedUser(user);
                 if ((mType == PD_CONNECT_TYPE_FACEBOOK || mType == PD_CONNECT_TYPE_INSTAGRAM || mType == PD_CONNECT_TYPE_TWITTER) && getActivity() != null) {
-                    getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+//                    getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
                 }
                 triggerCallbackAfterSuccessfulConnect();
                 toggleProgress(false);

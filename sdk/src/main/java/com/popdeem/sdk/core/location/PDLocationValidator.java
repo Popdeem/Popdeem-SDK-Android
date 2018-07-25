@@ -27,6 +27,7 @@ package com.popdeem.sdk.core.location;
 import android.location.Location;
 import android.support.annotation.NonNull;
 
+import com.popdeem.sdk.BuildConfig;
 import com.popdeem.sdk.core.model.PDLocation;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;

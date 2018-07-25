@@ -4,6 +4,7 @@ package com.popdeem.sdk.uikit.fragment.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -18,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.popdeem.sdk.R;
+import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
+import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.widget.PDAmbassadorView;
 
 import io.realm.Realm;
@@ -32,7 +35,7 @@ import io.realm.Realm;
 public class PDUIGratitudeDialog extends Dialog {
 
 
-
+    private static String mType = "";
     Context context;
 
     PDReward pdReward;
@@ -50,7 +53,7 @@ public class PDUIGratitudeDialog extends Dialog {
     }
     public static PDUIGratitudeDialog showGratitudeDialog(final Context context, String type, PDReward reward){
 
-
+        mType = type;
         Realm  mRealm = Realm.getDefaultInstance();
         PDRealmUserDetails mUser = mRealm.where(PDRealmUserDetails.class).findFirst();
         if(mUser.getAdvocacyScore()>30 && type.equalsIgnoreCase("logged_in")){
@@ -132,7 +135,8 @@ public class PDUIGratitudeDialog extends Dialog {
             icon.setVisibility(View.INVISIBLE);
         }else if(imagesArray.length()==1){
             icon.setVisibility(View.VISIBLE);
-            icon.setImageResource(imagesArray.getResourceId(imagesArray.getIndex(0),-1));
+            int resourceId = imagesArray.getResourceId(0,-1);
+            icon.setImageResource(resourceId);
         }else if(imagesArray.length()>1){
             int showNum = variationNumImages%imagesArray.length();
             icon.setImageResource(imagesArray.getResourceId(showNum,-1));
@@ -197,7 +201,8 @@ public class PDUIGratitudeDialog extends Dialog {
             }else{
                 if(reward != null && reward.getRewardType().equals(PDReward.PD_REWARD_TYPE_COUPON)){
                     if(reward.getCredit()!=null && reward.getCredit().length()>0){
-                        String.format("Thanks for sharing. %s has been added to your account. Enjoy!", "" + reward.getCredit());
+                        title = "You're Brilliant!";
+                        body = String.format("Thanks for sharing. %s has been added to your account. Enjoy!", "" + reward.getCredit());
                     }else{
                         title = "Great Job!";
                         body = "Thanks for sharing, your reward has been added to your profile. Enjoy!";
@@ -239,4 +244,14 @@ public class PDUIGratitudeDialog extends Dialog {
         this.pdReward = pdReward;
     }
 
+
+    @Override
+    public void dismiss() {
+        PopdeemSDK.showHome = true;
+        if(mType.equalsIgnoreCase("logged_in")) {
+            getContext().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
+        }
+        super.dismiss();
+
+    }
 }
