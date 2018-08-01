@@ -180,9 +180,16 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             holder.chevronImageView.setVisibility(View.VISIBLE);
             holder.titleTextView.setText(reward.getDescription());
 
+
+
+            if(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_COUPON) || reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_INSTANT) ){
+                holder.chevronImageView.setVisibility(View.VISIBLE);
+            }
+
             if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
                 String drawString = drawString(reward);
                 holder.subTitleTextView.setText(drawString);
+                holder.chevronImageView.setVisibility(View.VISIBLE);
             } else if (reward.getCredit() != null && reward.getCredit().length() > 0) {
 
                 Calendar c = Calendar.getInstance();
@@ -198,6 +205,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                         reward.getCredit() == null ? "Credit" : reward.getCredit(),
                         mAddedTextString,
                         claimedString));
+
+                holder.chevronImageView.setVisibility(View.GONE);
             }
 
             holder.verifyContainer.setVisibility(View.INVISIBLE);
@@ -209,6 +218,8 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                     holder.subTitleTextView.setText(reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE) ? R.string.pd_wallet_sweepstake_must_be_verified_text : R.string.pd_wallet_reward_must_be_verified_text);
                 }
             }
+
+
         }else{
             EventViewHolder holder = (EventViewHolder)viewHolder;
 

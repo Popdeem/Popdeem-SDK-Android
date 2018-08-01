@@ -540,7 +540,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
 
                 @Override
                 public void error(String message) {
-                    mProgressFacebook.setVisibility(View.VISIBLE);
+                    mProgressFacebook.setVisibility(View.GONE);
                     progressView.setVisibility(View.GONE);
                     showGenericAlert();
                     doingLogin = false;
@@ -549,6 +549,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
                 @Override
                 public void canceled() {
                     doingLogin = false;
+                    mProgressFacebook.setVisibility(View.GONE);
                     progressView.setVisibility(View.GONE);
                 }
             });

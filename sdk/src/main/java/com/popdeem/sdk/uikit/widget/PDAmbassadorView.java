@@ -62,6 +62,20 @@ public class PDAmbassadorView extends LinearLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if(bronzePoint<=0) {
+
+            String bronzeString = getResources().getString(R.string.pd_profile_bronze_ambassador);
+            String silverString = getResources().getString(R.string.pd_profile_silver_ambassador);
+            String goldString = getResources().getString(R.string.pd_profile_gold_ambassador);
+            bronzeString = bronzeString.replace("\nBronze\nAmbassador", "\uD83E\uDD49\nBronze\nAmbassador");
+            silverString = silverString.replace("\nSilver\nAmbassador", "\uD83E\uDD48\nSilver\nAmbassador");
+            goldString = goldString.replace("\nGold\nAmbassador", "\uD83E\uDD47\nGold\nAmbassador");
+//            bronzeString.replace("🥉", "\uD83E\uDD49");
+//            ((TextView)findViewById(R.id.tv_bronze)).setText(R.string.pd_profile_bronze_ambassador);
+//            ((TextView)findViewById(R.id.tv_bronze)).setText("\uD83E\uDD49\nBronze\nAmbassador");
+            ((TextView)findViewById(R.id.tv_bronze)).setText(bronzeString);
+            ((TextView)findViewById(R.id.tv_silver)).setText(silverString);
+            ((TextView)findViewById(R.id.tv_gold)).setText(goldString);
+
             bronzePoint = (findViewById(R.id.tv_bronze).getWidth()/2) + findViewById(R.id.tv_bronze).getX();
             silverPoint = (findViewById(R.id.tv_silver).getWidth()/2) + findViewById(R.id.tv_silver).getX();
             goldPoint = (findViewById(R.id.tv_gold).getWidth()/2) + findViewById(R.id.tv_gold).getX();
