@@ -285,7 +285,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 //                            .show();
                     if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
                         PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
-                        parent.switchToWallet();
+                        parent.switchToWallet(true);
                     }
                 }
             }

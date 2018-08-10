@@ -253,6 +253,16 @@ public class PDUIHomeFlowFragment extends Fragment {
     }
 
     public boolean switchToWallet() {
+        return switchToWallet(false);
+    }
+
+    public boolean switchToWallet(boolean refresh) {
+
+        //todo: Putin wallet refresh here?
+        if(refresh){
+            PDUIWalletFragment walletFragment = (PDUIWalletFragment) mAdapter.getFragmentAtPosition(mTabLayout.getTabCount() - 1);
+            walletFragment.refreshFeed();
+        }
         TabLayout.Tab walletTab = mTabLayout.getTabAt(mTabLayout.getTabCount() - 1);
         if (walletTab != null) {
             walletTab.select();

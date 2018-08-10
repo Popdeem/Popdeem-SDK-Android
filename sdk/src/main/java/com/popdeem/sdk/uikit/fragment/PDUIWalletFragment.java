@@ -507,4 +507,7 @@ public class PDUIWalletFragment extends Fragment {
     }
 
 
+    public void refreshFeed() {
+        refreshWallet();
+    }
 }
