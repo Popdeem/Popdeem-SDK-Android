@@ -461,6 +461,16 @@ public final class PopdeemSDK {
         pushSocialMultiLoginFragmentToActivity(activity, rewards);
     }
 
+    public static void enableSocialLogin(final int numberOfPrompts) {
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+
+        PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
+        PDPreferencesUtils.clearSocialLoginActivityName(sApplication);
+        PDPreferencesUtils.setMultiLoginEnabled(sApplication, false);
+    }
+
     /**
      * Enable social login flow for a given Activity.
      * <p>
@@ -480,16 +490,28 @@ public final class PopdeemSDK {
         PDPreferencesUtils.setMultiLoginEnabled(sApplication, false);
     }
 
-    /**
-     * Enable social multi login for a given activity
-     * <p>
-     * When this activity is presented to the user, the Popdeem Social Multi Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
-     * Works very much like the normal Social Login Flow
-     * </p>
-     *
-     * @param activityClass
-     * @param numberOfPrompts
-     */
+    public static void enableSocialMultiLogin(final int numberOfPrompts, boolean showOnlyOnce){
+        if (!isPopdeemSDKInitialized()) {
+            throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
+        }
+        PDPreferencesUtils.setShowOnlyOnce(sApplication, showOnlyOnce);
+        PDPreferencesUtils.setSocialShown(sApplication, false);
+
+        PDPreferencesUtils.setNumberOfLoginAttempts(sApplication, numberOfPrompts);
+        PDPreferencesUtils.clearSocialLoginActivityName(sApplication);
+        PDPreferencesUtils.setMultiLoginEnabled(sApplication, true);
+    }
+
+        /**
+         * Enable social multi login for a given activity
+         * <p>
+         * When this activity is presented to the user, the Popdeem Social Multi Login Flow will be displayed if they are not already logged and the number of prompts has not been reached.
+         * Works very much like the normal Social Login Flow
+         * </p>
+         *
+         * @param activityClass
+         * @param numberOfPrompts
+         */
     public static void enableSocialMultiLogin(@NonNull Class activityClass, final int numberOfPrompts){
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
@@ -585,6 +607,56 @@ public final class PopdeemSDK {
                     .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
                     .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                     .commit();
+        }
+    }
+
+    /**
+     * Manually call the Social Login Flow Fragment to the supplied Activity using
+     * the number of prompts set in the enableMultiSocialLogin or enableSocialLogin
+     *
+     * @param activity FragmentActivity / AppCompatActivity to show social login flow in
+     */
+    public static void  presentSocialLogin(final FragmentActivity activity) {
+        if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && PDSocialUtils.shouldShowSocialLogin(activity)) {
+            if(PDPreferencesUtils.getShowOnlyOnce(activity) && PDPreferencesUtils.getSocialShown(activity)){
+                return;
+            }
+            PDLog.i(PopdeemSDK.class, "showing social login");
+            PDPreferencesUtils.incrementLoginUsesCount(activity);
+            PDAPIClient.instance().getAllRewards(new PDAPICallback<ArrayList<PDReward>>() {
+                @Override
+                public void success(ArrayList<PDReward> pdRewards) {
+//                        pdRewards.get(0).setAction("social_login");
+                    PDPreferencesUtils.setSocialShown(activity, true);
+                    if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+                        showSocialLogin((FragmentActivity) activity, pdRewards);
+                    else
+                        showSocialMultiLogin((FragmentActivity) activity, pdRewards);
+                }
+
+                @Override
+                public void failure(int statusCode, Exception e) {
+                    if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
+                        showSocialLogin((FragmentActivity) activity);
+                    else
+                        showSocialMultiLogin((FragmentActivity) activity);
+                }
+            });
+
+        }
+
+        // Check if intent was started from a Popdeem Notification click and show dialog if it was
+        if (activity.getIntent() != null && activity.getIntent().getExtras() != null && (activity instanceof AppCompatActivity || activity instanceof FragmentActivity)) {
+            String messageId = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_ID_KEY, null);
+            String imageUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_IMAGE_URL_KEY, null);
+            String targetUrl = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_URL_KEY, null);
+            String title = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_TITLE_KEY, null);
+            String message = activity.getIntent().getExtras().getString(GCMIntentService.PD_NOTIFICATION_INTENT_MESSAGE_KEY, null);
+
+            if (messageId != null && title != null && message != null) {
+                FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+                PDUINotificationDialogFragment.showNotificationDialog(fm, title, message, imageUrl, targetUrl, null, messageId);
+            }
         }
     }
 

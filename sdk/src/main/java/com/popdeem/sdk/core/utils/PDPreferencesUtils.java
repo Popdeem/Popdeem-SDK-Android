@@ -51,6 +51,26 @@ public class PDPreferencesUtils {
         getSharedPreferences(context).edit().putString("socialLoginActivityName", name).apply();
     }
 
+    public static void clearSocialLoginActivityName(Context context) {
+        getSharedPreferences(context).edit().remove("socialLoginActivityName").commit();
+    }
+
+    public static void setShowOnlyOnce(Context context, boolean showOnlyOnce) {
+        getSharedPreferences(context).edit().putBoolean("showOnlyOnce", showOnlyOnce).commit();
+    }
+
+    public static boolean getShowOnlyOnce(Context context) {
+        return getSharedPreferences(context).getBoolean("showOnlyOnce", false);
+    }
+
+    public static void setSocialShown(Context context, boolean shown) {
+        getSharedPreferences(context).edit().putBoolean("social_shown", shown).commit();
+    }
+
+    public static boolean getSocialShown(Context context) {
+        return getSharedPreferences(context).getBoolean("social_shown", false);
+    }
+
     public static String getSocialLoginActivityName(Context context) {
         return getSharedPreferences(context).getString("socialLoginActivityName", "");
     }
