@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lines="3"
-                android:text="Your message has been copied to the clipboard."
+                android:text="@string/pd_copied_to_clipboard"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lines="4"
-                android:text="You will now be directed to Instagram where you can paste the message. Tap and hold to paste your message."
+                android:text="@string/pd_directed_to_instagram"
                 android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lines="3"
-                android:text="Make sure you are logged into the correct account on Instagram."
+                android:text="@string/pd_make_sure_logged_in"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lines="4"
-                android:text="Your post will publish to whichever account your are currently logged into on the Instagram app."
+                android:text="@string/pd_post_will_be_published"
                 android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
@@ -142,7 +142,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/pd_toolbar_color"
                 android:minHeight="35dp"
-                android:text="Okay, Gotcha"
+                android:text="@string/pd_okay_gotcha"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
 
@@ -242,7 +242,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/pd_toolbar_color"
                 android:minHeight="35dp"
-                android:text="Okay, Gotcha"
+                android:text="@string/pd_okay_gotcha"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
 

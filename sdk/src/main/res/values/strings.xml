@@ -320,6 +320,22 @@
     </string-array>
 
 
+    <string name="pd_claim_scan">SCAN</string>
+    <string name="pd_or_share_a_photo">OR, SHARE A PHOTO</string>
+    <string name="pd_okay_gotcha">Okay, Gotcha</string>
+    <string name="pd_months_left_text">months left to claim</string>
+    <string name="pd_month_left_text">month left to claim</string>
+    <string name="pd_weeks_left_text">weeks left to claim</string>
+    <string name="pd_days_left_text">days left to claim</string>
+    <string name="pd_day_left_text">day left to claim</string>
+    <string name="pd_hours_left_text">hours left to claim</string>
+    <string name="pd_hour_left_text">hour left to claim</string>
+
+    <string name="pd_left_to_claim_text">left to claim</string>
+    <string name="pd_copied_to_clipboard">Your message has been copied to the clipboard.</string>
+    <string name="pd_directed_to_instagram">You will now be directed to Instagram where you can paste the message. Tap and hold to paste your message.</string>
+    <string name="pd_make_sure_logged_in">Make sure you are logged into the correct account on Instagram.</string>
+    <string name="pd_post_will_be_published">Your post will publish to whichever account your are currently logged into on the Instagram app.</string>
 
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->

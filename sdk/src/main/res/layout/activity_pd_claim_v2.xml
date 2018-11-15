@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
-                        android:text="SCAN"
+                        android:text="@string/pd_claim_scan"
                         android:textSize="16sp" />
 
                     <FrameLayout
@@ -164,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
-                        android:text="OR, SHARE A PHOTO NOW"
+                        android:text="@string/pd_or_share_a_photo"
                         android:textSize="16sp" />
 
                     <FrameLayout

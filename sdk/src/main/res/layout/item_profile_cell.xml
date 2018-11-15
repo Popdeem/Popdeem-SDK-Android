@@ -134,7 +134,7 @@
         android:paddingLeft="24dp"
         android:paddingTop="14dp"
         android:paddingBottom="14dp"
-        android:text="My History"
+        android:text="@string/pd_profile_history_text"
         android:textAllCaps="true"
         android:textSize="@dimen/social_login_body_text_size" />
 

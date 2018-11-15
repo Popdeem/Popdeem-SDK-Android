@@ -168,7 +168,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         holder.actionTextView.setText(textTest);
         if(!reward.isUnlimitedAvailability()) {
             if(shouldShowTime(reward.getAvailableUntilInSeconds())){
-                String text = getTimeSting(reward.getAvailableUntilInSeconds());
+                String text = getTimeSting(holder.context, reward.getAvailableUntilInSeconds());
                 holder.timeTextView.setText(text);
                 holder.timeTextView.setVisibility(View.VISIBLE);
             }else{
@@ -285,7 +285,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         return true;
     }
 
-    public String getTimeSting(String time){
+    public String getTimeSting(Context context, String time){
         String ret = "︎";
         long interval = PDNumberUtils.toLong(time, -1) - (Calendar.getInstance().getTimeInMillis()/1000);
 //        String convertedTimeString = PDUIUtils.convertTimeToDayAndMonth(timeInSecs);
@@ -306,25 +306,40 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         // Note: watch icon is invisible in editor
         if (intervalMonths > 0) {
             if (intervalMonths > 1) {
-                ret = ret + "⌚︎ " + intervalMonths + " months left to claim";
+                ret = ret + "⌚︎ " + " " + context.getString(R.string.pd_months_left_text);
             } else {
-                ret = ret + "⌚︎ " + intervalMonths + " month left to claim";
+                ret = ret + "⌚︎ " + intervalMonths + " " + context.getString(R.string.pd_month_left_text);
             }
         } else if (intervalDays > 6) {
-            ret = ret + "⌚︎ " + intervalWeeks + " weeks left to claim";
+            ret = ret + "⌚︎ " + intervalWeeks + " " + context.getString(R.string.pd_weeks_left_text);
         } else if (intervalDays < 7 && intervalHours > 23) {
             if(intervalDays == 1) {
-                ret = ret + "⌚︎ " + intervalDays + " day left to claim";
+                ret = ret + "⌚︎ " + intervalDays + " " + context.getString(R.string.pd_day_left_text);
             }else{
-                ret = ret + "⌚︎ " + intervalDays + " days left to claim";
+                ret = ret + "⌚︎ " + intervalDays + " " + context.getString(R.string.pd_days_left_text);
             }
         } else {
             if(intervalHours == 1) {
-                ret = ret + "⌚︎ " + intervalHours + " hour left to claim";
+                ret = ret + "⌚︎ " + intervalHours + " " + context.getString(R.string.pd_hour_left_text);
             }else{
-                ret = ret + "⌚︎ " + intervalHours + " hours left to claim";
+                ret = ret + "⌚︎ " + intervalHours + " " + context.getString(R.string.pd_hours_left_text);
             }
         }
+
+        if (intervalMonths > 0) {
+            if (intervalMonths > 1) {
+                ret = ret + " " + intervalMonths + " " + context.getString(R.string.pd_months_left_text);
+            } else {
+                ret = ret + " " + intervalMonths + " " + context.getString(R.string.pd_month_left_text);
+            }
+        } else if (intervalDays > 6) {
+            ret = ret + " " + intervalWeeks + " " + context.getString(R.string.pd_weeks_left_text);
+        } else if (intervalDays < 7 && intervalHours > 23) {
+            ret = ret + " " + intervalDays + " " + context.getString(R.string.pd_days_left_text);
+        } else {
+            ret = ret + " " + intervalHours + " " + context.getString(R.string.pd_left_to_claim_text);
+        }
+
 
 
         return ret;

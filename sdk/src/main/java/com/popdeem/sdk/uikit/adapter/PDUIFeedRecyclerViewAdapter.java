@@ -246,16 +246,16 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
         if (intervalMonths > 0) {
             if (intervalMonths > 1) {
-                ret = ret + " " + intervalMonths + " months left to claim";
+                ret = ret + " " + intervalMonths + " " + context.getString(R.string.pd_months_left_text);
             } else {
-                ret = ret + " " + intervalMonths + " month left to claim";
+                ret = ret + " " + intervalMonths + " " + context.getString(R.string.pd_month_left_text);
             }
         } else if (intervalDays > 6) {
-            ret = ret + " " + intervalWeeks + " weeks left to claim";
+            ret = ret + " " + intervalWeeks + " " + context.getString(R.string.pd_weeks_left_text);
         } else if (intervalDays < 7 && intervalHours > 23) {
-            ret = ret + " " + intervalDays + " days left to claim";
+            ret = ret + " " + intervalDays + " " + context.getString(R.string.pd_days_left_text);
         } else {
-            ret = ret + " " + intervalHours + " left to claim";
+            ret = ret + " " + intervalHours + " " + context.getString(R.string.pd_left_to_claim_text);
         }
 
 
