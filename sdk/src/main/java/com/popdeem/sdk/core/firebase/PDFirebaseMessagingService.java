@@ -265,7 +265,7 @@ public class PDFirebaseMessagingService extends FirebaseMessagingService {
      * @param callback Callback for registration result
      */
     private static void registerInBackground(final Context context, final PDGCMUtils.PDGCMRegistrationCallback callback) {
-        final String gcmSenderID = getGCMSenderID(context);
+//        final String gcmSenderID = getGCMSenderID(context);
 //        if (gcmSenderID == null) {
 //            PDLog.d(PopdeemSDK.class, "Cannot register for push. GCM Sender ID was not found in AndroidManifest.xml.\n" +
 //                    "Add this string resource to your project \"<string name=\"google_app_id\">YOUR_SENDER_ID</string>\" Check that: <meta-data android:name=\"" + GCM_SENDER_ID_META_DATA_PROPERTY_NAME + "\" android:value=\"@string/google_app_id\" /> is in the <application> element of your app's AndroidManifest.xml.");
@@ -276,14 +276,18 @@ public class PDFirebaseMessagingService extends FirebaseMessagingService {
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                         @Override
                         public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            String token = task.getResult().getToken();
-                            PDLog.i(PDGCMUtils.class, "token: " + token);
+                            try {
+                                String token = task.getResult().getToken();
+                                PDLog.i(PDGCMUtils.class, "token: " + token);
 
-                            if (token != null && !token.isEmpty()) {
-                                saveRegistrationID(token, getAppVersion(context));
-                                if (callback != null) {
-                                    callback.success(token);
+                                if (token != null && !token.isEmpty()) {
+                                    saveRegistrationID(token, getAppVersion(context));
+                                    if (callback != null) {
+                                        callback.success(token);
+                                    }
                                 }
+                            }catch(Exception jo) {
+                                jo.printStackTrace();
                             }
                         }
                     });
