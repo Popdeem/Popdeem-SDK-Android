@@ -42,6 +42,7 @@ import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
@@ -49,6 +50,7 @@ import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.PDAPIConfig;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
+import com.popdeem.sdk.core.firebase.PDFirebaseMessagingService;
 import com.popdeem.sdk.core.gcm.GCMIntentService;
 import com.popdeem.sdk.core.gcm.PDGCMUtils;
 import com.popdeem.sdk.core.model.PDNonSocialUID;
@@ -223,7 +225,7 @@ public final class PopdeemSDK {
         }
 
         // Init GCM
-        PDGCMUtils.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {
+        PDFirebaseMessagingService.initGCM(application, new PDGCMUtils.PDGCMRegistrationCallback() {
             @Override
             public void success(String registrationToken) {
                 PDLog.d(PDGCMUtils.class, "Init GCM success. Registration token: " + registrationToken);

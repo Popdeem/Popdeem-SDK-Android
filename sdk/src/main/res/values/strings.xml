@@ -65,7 +65,7 @@
     <!-- Claim -->
     <string name="pd_claim_title">Claim</string>
     <string name="pd_claim_get_reward_text">Continue</string>
-    <string name="pd_claim_get_already_shared_text" formatted="false">I\'ve already shared with %s</string>
+    <string name="pd_claim_get_already_shared_text">I\'ve already shared with %s</string>
     <string name="pd_claim_already_shared_default">I\'ve already shared</string>
     <string name="pd_claim_verify_location_failed_title_text">Not at location</string>
     <string name="pd_claim_verify_location_failed_text">You must be at this location to claim this reward.\nPlease come back later.</string>
@@ -206,9 +206,9 @@
     <string name="pd_connect_facebook_title">Facebook</string>
     <string name="pd_connect_twitter_title">Twitter</string>
     <string name="pd_connect_instagram_title">Instagram</string>
-    <string name="pd_connect_dialog_message_text" formatted="false">You must connect your %1s account to claim this reward</string>
-    <string name="pd_connect_dialog_message_text_settings" formatted="false">Connect your %1s account to claim %1s rewards</string>
-    <string name="pd_connect_dialog_button_text" formatted="false">Connect %1s Account</string>
+    <string name="pd_connect_dialog_message_text">You must connect your %s account to claim this reward</string>
+    <string name="pd_connect_dialog_message_text_settings">Connect your %1$s account to claim %2$s rewards</string>
+    <string name="pd_connect_dialog_button_text">Connect %s Account</string>
     <string name="pd_connect_dialog_button_text_settings">Continue</string>
 
 
@@ -223,31 +223,31 @@
     <string name="pd_connect_twitter">Connect to Twitter</string>
     <string name="pd_scan_instagram">Scan Instagram</string>
     <string name="pd_connect_instagram">Connect to Instagram</string>
-    <string name="pd_scan_title_label" formatted="false">Choose what network you shared your experience with %s to claim your reward:</string>
-    <string name="pd_scan_note" formatted="false">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
+    <string name="pd_scan_title_label">Choose what network you shared your experience with %s to claim your reward:</string>
+    <string name="pd_scan_note">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
 
-    <string name="pd_scan_top_label" formatted="false">Scanning for stories that include %s</string>
+    <string name="pd_scan_top_label">Scanning for stories that include %s</string>
     <string name="pd_scan_bottom_label">This usually takes a few moments. Please wait…</string>
 
-    <string name="pd_scan_success_label" formatted="false">Hey %s, we found your post with %s. Thanks for sharing, you have unlocked your reward!</string>
-    <string name="pd_scan_fail_label" formatted="false">Whoops! Sorry %s, we could not find any posts on %s from the last 48 hours with %s. </string>
+    <string name="pd_scan_success_label">Hey %1$s, we found your post with %2$s. Thanks for sharing, you have unlocked your reward!</string>
+    <string name="pd_scan_fail_label">Whoops! Sorry %1$s, we could not find any posts on %2$s from the last 48 hours with %3$s. </string>
     <string name="pd_scan_fail_detail_label">Please ensure you\'ve shared from the correct social media account and try again</string>
     <string name="pd_scan_success_user_name">Dave Hannan</string>
 
     <string name="pd_claim_text">Claim Reward</string>
     <string name="pd_claim_back_text">Back to Reward</string>
     <string name="pd_back_to_reward">Back to Reward</string>
-    <string name="pd_gratitude_thanks_text"  formatted="false">Thanks for sharing. You earned an additional %s points to your account and moved up in status</string>
+    <string name="pd_gratitude_thanks_text">Thanks for sharing. You earned an additional %s points to your account and moved up in status</string>
     <string name="pd_gratitude_thanks_for_connecting">Welcome</string>
     <string name="pd_gratitude_title">You\'re Brilliant!</string>
     <string name="pd_gratitude_share_text">Thanks for sharing, your reward has been added to your profile. Enjoy!</string>
-    <string name="pd_gratitude_share_text_coupon" formatted="false">Thanks for sharing. %s has been added to your account. Enjoy!</string>
+    <string name="pd_gratitude_share_text_coupon">Thanks for sharing. %s has been added to your account. Enjoy!</string>
     <string name="pd_gratitude_unlock_offers_text">Unlock new rewards and VIP offers as you move up in status.</string>
     <string name="pd_gratitude_go_to_profile_button">Go to Profile</string>
 
     <!--Gratitude-->
-    <string name="pd_gratitude_share_body_text" formatted="false">Thanks for sharing. You earned an additional %s points to your account and moved up in status.</string>
-    <string name="pd_gratitude_connect_body_text" formatted="false">You earned %s points for connecting. Share photo’s with #RibsandBurgers to earn additional rewards!</string>
+    <string name="pd_gratitude_share_body_text">Thanks for sharing. You earned an additional %s points to your account and moved up in status.</string>
+    <string name="pd_gratitude_connect_body_text">You earned %s points for connecting. Share photo’s with #RibsandBurgers to earn additional rewards!</string>
     <string name="pd_gratitude_connect_body_text_no_ambassador">Thanks for connecting, start sharing to earn more rewards and enter amazing competitions.</string>
     <string name="pd_unlocked_reward_text">Hey Richard, we found your post with #hashtag. Thanks for sharing! You have unlocked your reward!</string>
 
@@ -284,7 +284,7 @@
     <string name="pd_facebook_tutorial_heading_photo">Share your photo</string>
     <string name="pd_facebook_tutorial_heading_check_in">Check-in</string>
 
-    <string name="pd_facebook_tutorial_1" formatted="false">Your post must include the hashtag %s, or you will be unable to claim your reward.</string>
+    <string name="pd_facebook_tutorial_1">Your post must include the hashtag %s, or you will be unable to claim your reward.</string>
     <string name="pd_facebook_tutorial_2">Your post must include the specified hashtag, or you will be unable to claim your reward.</string>
 
 
@@ -336,6 +336,9 @@
     <string name="pd_directed_to_instagram">You will now be directed to Instagram where you can paste the message. Tap and hold to paste your message.</string>
     <string name="pd_make_sure_logged_in">Make sure you are logged into the correct account on Instagram.</string>
     <string name="pd_post_will_be_published">Your post will publish to whichever account your are currently logged into on the Instagram app.</string>
+
+    <string name="claim_button">Claim</string>
+    <string name="cancel_button">Cancel</string>
 
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->

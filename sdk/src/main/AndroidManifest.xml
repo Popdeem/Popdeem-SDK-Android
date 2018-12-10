@@ -72,15 +72,15 @@
             android:name="io.fabric.ApiKey"
             android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />
 
-        <receiver
-            android:name=".core.gcm.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver-->
+            <!--android:name=".core.gcm.GCMBroadcastReceiver"-->
+            <!--android:permission="com.google.android.c2dm.permission.SEND">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
-        <service android:name=".core.gcm.GCMIntentService" />
+        <!--<service android:name=".core.gcm.GCMIntentService" />-->
         <receiver
             android:name=".core.utils.PDTwitterBroadcastReceiver"
             android:exported="false">
@@ -98,6 +98,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <service android:name=".core.firebase.PDFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

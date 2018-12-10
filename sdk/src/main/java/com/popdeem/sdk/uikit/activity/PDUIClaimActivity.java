@@ -26,6 +26,7 @@ package com.popdeem.sdk.uikit.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -106,6 +107,7 @@ import com.popdeem.sdk.uikit.fragment.PDUIShareMessageFragment;
 import com.popdeem.sdk.uikit.fragment.PDUITagFriendsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIWalletFragment;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
+import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.utils.PDUIImageUtils;
 import com.popdeem.sdk.uikit.utils.PDUIUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
@@ -133,6 +135,10 @@ import java.util.Locale;
 
 import io.realm.Realm;
 
+import static com.popdeem.sdk.core.model.PDReward.PD_REWARD_ACTION_CHECKIN;
+import static com.popdeem.sdk.core.model.PDReward.PD_REWARD_ACTION_NONE;
+import static com.popdeem.sdk.core.model.PDReward.PD_REWARD_ACTION_PHOTO;
+import static com.popdeem.sdk.core.model.PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN;
 import static com.twitter.sdk.android.tweetcomposer.TweetUploadService.TWEET_COMPOSE_CANCEL;
 import static com.twitter.sdk.android.tweetcomposer.TweetUploadService.UPLOAD_FAILURE;
 import static com.twitter.sdk.android.tweetcomposer.TweetUploadService.UPLOAD_SUCCESS;
@@ -186,6 +192,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
     private LinearLayout addPhotoView;
     private LinearLayout addedPhotoView;
 
+    private ImageView infoIcon;
+
     public PDTwitterBroadcastReceiver event_detail_receiver;
 
     private Uri twitterURI;
@@ -217,6 +225,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         mCallbackManager = CallbackManager.Factory.create();
 
         mReward = new Gson().fromJson(getIntent().getStringExtra("reward"), PDReward.class);
+        infoIcon = (ImageView)findViewById( R.id.pd_info_icon );
+
         addRewardDetailsToUI();
 
 //        mMessageEditText = (EditText) findViewById(R.id.pd_claim_share_edit_text);
@@ -500,6 +510,140 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
         } else {
 //            alreadySharedButton.setText(R.string.pd_claim_already_shared_default);
         }
+
+        infoIcon.setVisibility(View.VISIBLE);
+        infoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(PDUIClaimActivity.this);
+                PDUIDialogUtils.setMargins(dialog, 25, 100, 25, 100);
+                dialog.setContentView(R.layout.claim_alert_dialog);
+                Button claim = (Button)dialog.findViewById(R.id.button_claim);
+                Button cancel = (Button)dialog.findViewById(R.id.button_cancel);
+                ImageView icon = (ImageView) dialog.findViewById(R.id.icon);
+
+                String imageUrl = mReward.getCoverImage();
+                if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
+                    Glide.with(PDUIClaimActivity.this)
+                            .load(R.drawable.pd_ui_star_icon)
+                            .dontAnimate()
+                            .error(R.drawable.pd_ui_star_icon)
+                            .dontAnimate()
+                            .placeholder(R.drawable.pd_ui_star_icon)
+                            .into(icon);
+                } else {
+
+
+                    Glide.with(PDUIClaimActivity.this)
+                            .load(imageUrl)
+                            .dontAnimate()
+                            .error(R.drawable.pd_ui_star_icon)
+                            .dontAnimate()
+                            .placeholder(R.drawable.pd_ui_star_icon)
+                            .into(icon);
+                }
+
+
+                claim.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                claim.setText("Close");
+
+                cancel.setVisibility(View.GONE);
+
+                TextView tvTitle = dialog.findViewById(R.id.alertTitle);
+                tvTitle.setText(mReward.getDescription());
+
+                TextView message = dialog.findViewById(R.id.message);
+                message.setText(mReward.getRules());
+
+                TextView detailsActionText = (TextView)dialog.findViewById( R.id.pd_action_text );
+                setActionString(detailsActionText);
+
+                dialog.show();
+            }
+        });
+
+    }
+
+
+    private void setActionString(TextView textView){
+        StringBuilder actionStringBuilder = new StringBuilder("");
+
+        //TODO  📸 Photo Required camera image here (invisible in the editor but it is there.)
+//        final boolean TWITTER_ACTION_REQUIRED = twitterActionRequired(reward.getSocialMediaTypes());
+//        if (reward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_PHOTO)) {
+//            actionStringBuilder.append(getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_photo : R.string.pd_claim_action_photo_camera));
+//        } else if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
+//            actionStringBuilder.append(getString(TWITTER_ACTION_REQUIRED ? R.string.pd_claim_action_tweet_checkin : R.string.pd_claim_action_checkin));
+//        } else {
+//            actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+//        }
+        if(mReward.getSocialMediaTypes().size() > 0) {
+            if (mReward.getSocialMediaTypes().size() > 1) { // both networks
+                if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_tweet_checkin));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_PHOTO)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_photo_camera));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_SOCIAL_LOGIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_social_login));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_NONE)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                } else {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                }
+            } else if (mReward.getSocialMediaTypes().get(0).equalsIgnoreCase("Facebook")) {
+                if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_checkin));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_PHOTO)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_photo_camera));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_SOCIAL_LOGIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_social_login));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_NONE)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                } else {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                }
+            } else if (mReward.getSocialMediaTypes().get(0).equalsIgnoreCase("Twitter")) {
+                if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_tweet));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_PHOTO)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_photo_camera));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_SOCIAL_LOGIN)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_social_login));
+                } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_NONE)) {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                } else {
+                    actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+                }
+            } else if (mReward.getSocialMediaTypes().get(0).equalsIgnoreCase("Instagram")) {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_photo_camera));
+            }
+        }else{
+            if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_tweet_checkin));
+            } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_PHOTO)) {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_photo_camera));
+            } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_SOCIAL_LOGIN)) {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_social_login));
+            } else if (mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_NONE)) {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+            } else {
+                actionStringBuilder.append(getString(R.string.pd_claim_action_none));
+            }
+        }
+
+        String textTest = actionStringBuilder.toString();
+
+        if(textTest.equalsIgnoreCase("Photo required")){
+            textTest = "\uD83D\uDCF8 Photo Required";
+        }
+
+        textView.setText(textTest);
+        textView.setVisibility(View.VISIBLE);
     }
 
     private boolean twitterShareForced() {

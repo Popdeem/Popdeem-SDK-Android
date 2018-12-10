@@ -31,8 +31,8 @@ import android.os.AsyncTask;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.iid.InstanceID;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -191,17 +191,18 @@ public class PDGCMUtils {
 
         @Override
         protected String doInBackground(Void... params) {
-            InstanceID instanceID = InstanceID.getInstance(mContext);
-            try {
-                String token = instanceID.getToken(mGcmSenderID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-                PDLog.i(PDGCMUtils.class, "token: " + token);
-                return token;
-            } catch (IOException e) {
-                PDLog.e(PDGCMUtils.class, e.getMessage());
+//            InstanceID instanceID = InstanceID.getInstance(mContext);
+//            try {
+//                String token = instanceID.getToken(mGcmSenderID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+//                PDLog.i(PDGCMUtils.class, "token: " + token);
+//                return token;
+//            } catch (IOException e) {
+//                PDLog.e(PDGCMUtils.class, e.getMessage());
                 if (mCallback != null) {
-                    mCallback.failure(e.getMessage());
+//                    mCallback.failure(e.getMessage());
+                    mCallback.failure("DEBUG ONLY: Manual fail");
                 }
-            }
+//            }
             return null;
         }
 

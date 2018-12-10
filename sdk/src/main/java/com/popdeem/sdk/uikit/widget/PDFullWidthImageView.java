@@ -32,7 +32,7 @@ import android.widget.ImageView;
 /**
  * Created by mikenolan on 02/03/16.
  */
-public class PDFullWidthImageView extends ImageView {
+public class PDFullWidthImageView extends android.support.v7.widget.AppCompatImageView {
 
 
     public PDFullWidthImageView(Context context) {

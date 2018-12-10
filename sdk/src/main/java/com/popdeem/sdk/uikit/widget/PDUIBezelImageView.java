@@ -47,7 +47,7 @@ import com.popdeem.sdk.R;
  * drawable on top. This is useful for applying a beveled look to image contents, but is also
  * flexible enough for use with other desired aesthetics.
  */
-public class PDUIBezelImageView extends ImageView {
+public class PDUIBezelImageView extends android.support.v7.widget.AppCompatImageView {
     private Paint mBlackPaint;
     private Paint mMaskedPaint;
 

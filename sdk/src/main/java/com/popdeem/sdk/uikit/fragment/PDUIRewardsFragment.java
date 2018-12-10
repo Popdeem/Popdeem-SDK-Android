@@ -25,6 +25,7 @@
 package com.popdeem.sdk.uikit.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,7 +46,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -73,6 +78,7 @@ import com.popdeem.sdk.uikit.activity.PDUIClaimActivity;
 import com.popdeem.sdk.uikit.adapter.PDUIRewardsRecyclerViewAdapter;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUIProgressDialogFragment;
+import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
 import com.popdeem.sdk.uikit.widget.PDUIDividerItemDecoration;
 import com.popdeem.sdk.uikit.widget.PDUISwipeRefreshLayout;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -140,6 +146,8 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                             }
                         },2000);
 //                        performRewardClick(view);
+
+
 
                         if ((PDSocialUtils.isLoggedInToFacebook() || PDSocialUtils.isTwitterLoggedIn() || PDSocialUtils.isInstagramLoggedIn()) && PDUtils.getUserToken() != null) {
                             performRewardClick(view);
@@ -220,14 +228,65 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             return;
         }
 
-        PDReward reward = mRewards.get(position);
+        final PDReward reward = mRewards.get(position);
 
 //        if(BuildConfig.DEBUG){
 //            showDebugGratitude(reward.getId());
 //            return;
 //        }
         if (reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_NONE)) {
-            claimNoActionReward(position, reward);
+
+            final Dialog dialog = new Dialog(getActivity());
+            PDUIDialogUtils.setMargins(dialog, 25, 100, 25, 100);
+            dialog.setContentView(R.layout.claim_alert_dialog);
+            Button claim = (Button)dialog.findViewById(R.id.button_claim);
+            Button cancel = (Button)dialog.findViewById(R.id.button_cancel);
+            ImageView icon = (ImageView) dialog.findViewById(R.id.icon);
+
+            String imageUrl = reward.getCoverImage();
+            if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
+                Glide.with(getActivity())
+                        .load(R.drawable.pd_ui_star_icon)
+                        .dontAnimate()
+                        .error(R.drawable.pd_ui_star_icon)
+                        .dontAnimate()
+                        .placeholder(R.drawable.pd_ui_star_icon)
+                        .into(icon);
+            } else {
+
+
+                Glide.with(getActivity())
+                        .load(imageUrl)
+                        .dontAnimate()
+                        .error(R.drawable.pd_ui_star_icon)
+                        .dontAnimate()
+                        .placeholder(R.drawable.pd_ui_star_icon)
+                        .into(icon);
+            }
+
+
+            claim.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    claimNoActionReward(position, reward);
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
+            TextView tvTitle = dialog.findViewById(R.id.alertTitle);
+            tvTitle.setText(reward.getDescription());
+
+            TextView message = dialog.findViewById(R.id.message);
+            message.setText(reward.getRules());
+            dialog.show();
+
         } else if (!reward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_SOCIAL_LOGIN)) {
             Intent intent = new Intent(getActivity(), PDUIClaimActivity.class);
             intent.putExtra("reward", new Gson().toJson(reward, PDReward.class));
@@ -315,7 +374,6 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             @Override
             public void success(ArrayList<PDReward> pdRewards) {
 
-                Collections.sort(pdRewards, new PDRewardComparator(PDRewardComparator.CREATED_AT_COMPARATOR));
 
                 Realm realm = Realm.getDefaultInstance();
                 realm.executeTransaction(new Realm.Transaction() {
@@ -365,6 +423,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             }
         }
         updateListDistances(mLocation);
+
+        Collections.sort(mRewards, new PDRewardComparator(PDRewardComparator.DISTANCE_COMPARATOR));
+
         mSwipeRefreshLayout.setRefreshing(false);
         realm.close();
 
@@ -377,51 +438,51 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-                mUpdatingDistances = true;
-                Location rewardLocation;
-                for (PDReward reward : mRewards) {
-                    if (reward.getLocations() == null) {
-                        continue;
+        mUpdatingDistances = true;
+        Location rewardLocation;
+        for (PDReward reward : mRewards) {
+            if (reward.getLocations() == null) {
+                continue;
+            }
+            for (PDLocation loc : reward.getLocations()) {
+                if (loc == null) {
+                    continue;
+                }
+                double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
+                double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
+
+                if (lat == -1 || lng == -1) {
+                    if (reward.getDistanceFromUser() <= 0) {
+                        reward.setDistanceFromUser(-1);
                     }
-                    for (PDLocation loc : reward.getLocations()) {
-                        if (loc == null) {
-                            continue;
-                        }
-                        double lat = PDNumberUtils.toDouble(loc.getLatitude(), -1);
-                        double lng = PDNumberUtils.toDouble(loc.getLongitude(), -1);
-
-                        if (lat == -1 || lng == -1) {
-                            if (reward.getDistanceFromUser() <= 0) {
-                                reward.setDistanceFromUser(-1);
-                            }
-                            continue;
-                        }
-
-                        rewardLocation = new Location("");
-                        rewardLocation.setLatitude(lat);
-                        rewardLocation.setLongitude(lng);
-
-                        float distanceInMeters = location.distanceTo(rewardLocation);
-                        if (reward.getDistanceFromUser() == 0 || reward.getDistanceFromUser() > distanceInMeters) {
-                            reward.setDistanceFromUser(distanceInMeters);
-                        }
-                    }
+                    continue;
                 }
 
-                synchronized (mRewards) {
+                rewardLocation = new Location("");
+                rewardLocation.setLatitude(lat);
+                rewardLocation.setLongitude(lng);
+
+                float distanceInMeters = location.distanceTo(rewardLocation);
+                if (reward.getDistanceFromUser() == 0 || reward.getDistanceFromUser() > distanceInMeters) {
+                    reward.setDistanceFromUser(distanceInMeters);
+                }
+            }
+        }
+
+        synchronized (mRewards) {
 //                    Collections.sort(mRewards, new PDRewardComparator(PDRewardComparator.DISTANCE_COMPARATOR));
-                    if (getActivity() != null) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mRecyclerViewAdapter != null) {
-                                    mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
-                                }
-                            }
-                        });
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mRecyclerViewAdapter != null) {
+                            mRecyclerViewAdapter.notifyItemRangeChanged(0, mRewards.size() - 1);
+                        }
                     }
-                }
-                mUpdatingDistances = false;
+                });
+            }
+        }
+        mUpdatingDistances = false;
 //            }
 //        }).start();
     }

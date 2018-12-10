@@ -23,11 +23,9 @@
             android:id="@+id/textview_tab_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="marquee"
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:maxLines="1"
             android:text="Section 1sdassbsd kjasbdkjasbdkasjsajdsda"
             android:textAllCaps="true" />
 

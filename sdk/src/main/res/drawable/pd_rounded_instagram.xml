@@ -26,6 +26,6 @@
         android:radius="6dp"
         />
     <solid android:color="@color/clear"/>
-    <stroke android:color="@color/tw__solid_white" android:width="10dp"/>
+    <stroke android:color="#ffffff" android:width="10dp"/>
 
 </shape>

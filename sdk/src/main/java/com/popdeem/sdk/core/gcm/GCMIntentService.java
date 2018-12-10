@@ -38,7 +38,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.PopdeemSDK;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -78,13 +78,13 @@ public class GCMIntentService extends IntentService {
             return;
         }
 
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        String messageType = gcm.getMessageType(intent);
-        Bundle extras = intent.getExtras();
-
-        if (!extras.isEmpty() && messageType.equalsIgnoreCase(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE)) {
-            handleMessage(intent);
-        }
+//        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+//        String messageType = gcm.getMessageType(intent);
+//        Bundle extras = intent.getExtras();
+//
+//        if (!extras.isEmpty() && messageType.equalsIgnoreCase(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE)) {
+//            handleMessage(intent);
+//        }
 
         GCMBroadcastReceiver.completeWakefulIntent(intent);
     }
