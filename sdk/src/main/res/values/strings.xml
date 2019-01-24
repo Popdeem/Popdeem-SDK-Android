@@ -339,6 +339,7 @@
 
     <string name="claim_button">Claim</string>
     <string name="cancel_button">Cancel</string>
+    <string name="pd_entered_competition">You have been entered in this competition.</string>
 
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->

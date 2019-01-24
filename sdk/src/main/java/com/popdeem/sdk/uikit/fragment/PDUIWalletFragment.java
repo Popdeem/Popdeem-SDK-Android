@@ -142,7 +142,7 @@ public class PDUIWalletFragment extends Fragment {
                             return;
                         }
 
-                        if (reward.getCredit() != null && reward.getCredit().length() > 0) {
+                        if (reward.getCredit() != null && reward.getCredit().length() > 0 && !reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
                             return;
                         }
 

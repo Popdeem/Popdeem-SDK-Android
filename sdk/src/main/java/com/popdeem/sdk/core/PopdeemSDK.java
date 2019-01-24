@@ -150,14 +150,14 @@ public final class PopdeemSDK {
         PDRealmUtils.initRealmDB(application);
 
         TwitterAuthConfig authConfig = PDSocialUtils.getTwitterAuthConfig(application.getApplicationContext());
-
-        TwitterConfig config = new TwitterConfig.Builder(application)
-                .logger(new DefaultLogger(Log.DEBUG))
-                .twitterAuthConfig(authConfig)
-                .debug(true)
-                .build();
-        Twitter.initialize(config);
-
+        if(authConfig!=null) {
+            TwitterConfig config = new TwitterConfig.Builder(application)
+                    .logger(new DefaultLogger(Log.DEBUG))
+                    .twitterAuthConfig(authConfig)
+                    .debug(true)
+                    .build();
+            Twitter.initialize(config);
+        }
         // Get Popdeem API Key
         getPopdeemAPIKey();
         FacebookSdk.sdkInitialize(application, new FacebookSdk.InitializeCallback() {

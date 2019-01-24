@@ -187,9 +187,10 @@ public class PDUIWalletRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             }
 
             if (reward.getRewardType().equalsIgnoreCase(PDReward.PD_REWARD_TYPE_SWEEPSTAKE)) {
-                String drawString = drawString(reward);
+                String drawString = holder.context.getResources().getString(R.string.pd_entered_competition);
                 holder.subTitleTextView.setText(drawString);
                 holder.chevronImageView.setVisibility(View.VISIBLE);
+
             } else if (reward.getCredit() != null && reward.getCredit().length() > 0) {
 
                 Calendar c = Calendar.getInstance();
