@@ -3,51 +3,44 @@
 ### Dependency
 
 The Popdeem Android SDK is available through jcenter and mavenCentral.
+
+In your ***top-level*** `build.gradle` file add the lines marked in the sample below:
+
+```java
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" } // Add this line
+    }
+}
+```
+
+Add the following between the `buildscripts` and the `allprojects`: 
+
+```java
+ext {
+    compileSdkVersion = 28
+    supportLibVersion = "28.0.0"
+}
+```
+
+These should be set to the same level as your project sdk version and support library. To avoid conflicts we recommend setting all support libraries using the following:
+
+```java
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+```
+
+
 Add the following line to the `dependencies` block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
 
 ```java
 implementation 'com.popdeem.sdk:sdk:1.3.24'
 ```
 
-In the Project level `build.gradle`
 
 
----
-#### NOTE: For projects that do NOT use Fabric
 
-The Popdeem SDK uses [Fabric](https://get.fabric.io/ "Fabric") for the official Twitter SDK but due to a limitation in Fabric regarding use in Android Libraries these steps will need to be taken. Fabric have stated that official support for this is upcoming.      
-_If you already use Fabric in your application, these steps do not apply to you. You can skip to the Initialise SDK section below._
-
-If you do not use Fabric in your project you will need to add the following or you will get an error when syncing project files:
-
-In your ***top-level*** `build.gradle` file add the lines marked in the sample below:
-
-```java
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' } // Add this line
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'io.fabric.tools:gradle:1.+' // Add this line
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' } // Add this line
-    }
-}
-```
-
-Then in your ***application-level*** `build.gradle` file add the line marked below:
-
-```java
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric' // Add this line
-```
 ---
 ### Initialise SDK
 
@@ -75,39 +68,19 @@ Add the following permissions to your applications `AndroidManifest.xml` if they
 
 #### Broadcast Features
 
-To use the Popdeem Push Notification and Broadcast feature, your application must have GCM implemented.
-You can follow this [tutorial](https://developers.google.com/cloud-messaging/android/start "Android GCM") to implement GCM in your application.
+To use the Popdeem Push Notification and Broadcast feature, your application must have Firebase setup.
+Go to [Firebase](https://firebase.google.com/ "Firebase") and create a project for your application. Add your application details to the cloud messaging and place the `google-services.json` in the same folder as your app level `build.gradle` 
 
-Once you have implemented GCM, include the following:
+In the `buildscripts->dependencies` add the following: 
 
-Add your Google App ID to your applications `strings.xml`.  
-_This can be found in your [Google Console Dashboard](https://console.cloud.google.com/home/dashboard "Google Console") for your app under the **Project Number** heading._
-
-```xml
-<string name="google_app_id">YOUR_GOOGLE_APP_ID</string>
+```java
+classpath 'com.google.gms:google-services:4.0.1'
 ```
 
-Then reference this in your `AndroidManifest.xml` inside the `<application>` tags:
-```xml
-<meta-data
-    android:name="GCMSenderID"
-    android:value="@string/google_app_id" />
-```
+At the bottom of the applications `build.gradle` add the following line:
 
-Add the following `receiver` and `service` after the lines above:
-```xml
-<receiver
-    android:name="com.popdeem.sdk.core.gcm.GCMBroadcastReceiver"
-    android:exported="true"
-    android:permission="com.google.android.c2dm.permission.SEND">
-    <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-    </intent-filter>
-</receiver>
-
-<service
-    android:name="com.popdeem.sdk.core.gcm.GCMIntentService"
-    android:exported="true" />
+```java
+apply plugin: 'com.google.gms.google-services'
 ```
 
 #### Initialise Popdeem SDK

@@ -11,12 +11,46 @@ ic_pd_notification.png
 _We recommend using the built in Image Asset creator in Android Studio to do this as it will add an image for all densities._   
 _To do this use File -> New -> Image Asset and choose "Notification Icons"_
 
-##### Social Login Header Image
-To customize the header image shown in the Social Login view add an image to your drawable folders called:
+##### Image Customisation
+To customize the images shown in the app add the images to your drawable folders and add the following to the array.xml:
 ```
-pd_social_login_header.png
+<resources>
+
+<!-- Login Images -->
+    <string-array name="pd_login_images">
+        <item>@drawable/l1</item>
+        <item>@drawable/l2</item>
+        <item>@drawable/l3</item>
+    </string-array>
+
+<!-- Gratitude Images -->
+    <string-array name="pd_coupon_images">
+        <item>@drawable/gratitude_1</item>
+        <item>@drawable/gratitude_2</item>
+        <item>@drawable/gratitude_3</item>
+    </string-array>
+
+    <string-array name="pd_connect_images">
+        <item>@drawable/gratitude_1</item>
+        <item>@drawable/gratitude_2</item>
+        <item>@drawable/gratitude_3</item>
+    </string-array>
+
+    <string-array name="pd_credit_images">
+        <item>@drawable/gratitude_1</item>
+        <item>@drawable/gratitude_2</item>
+        <item>@drawable/gratitude_3</item>
+    </string-array>
+
+    <string-array name="pd_sweepstake_images">
+        <item>@drawable/gratitude_1</item>
+        <item>@drawable/gratitude_2</item>
+        <item>@drawable/gratitude_3</item>
+    </string-array>
+</resources>
 ```
 
+Images will go through the arrays each time they are used.
 
 ##### Home Flow Banner Image
 To customize the header / banner image shown in the Home Flow, add an image to your drawable folders called:

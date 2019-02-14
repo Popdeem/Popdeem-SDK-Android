@@ -25,7 +25,7 @@ In the Activity class that you would like the multi login flow to appear, you mu
     }
 ```
 
-Provided all of the items in [Facebook App Setup](facebook_app_setup.md "Facebook Setup") have been performed correctly, this login flow will result in the user being logged in.
+Provided all of the items in the previous steps have been performed correctly, this login flow will result in the user being logged in.
 
 On app launch, if the user has been previously logged in, the Popdeem SDK will take care of automatic login.
 
