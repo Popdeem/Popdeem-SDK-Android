@@ -197,6 +197,9 @@ The list of colors that can be changed are as follows:
 </array>
 ```
 
+
+
+
 ---
 
 Next, you may want to customize the [strings](strings.md "strings") throughout the PopdeemSDK.  

@@ -146,6 +146,42 @@ The list of strings that can be changed are as follows:
 <string name="pd_suspended_message_with_date_string">You have been suspended. Your account will become active on %1s</string>
 ```
 
+
+For the gratuity screens add the below arrays with any strings you want to display. Titles and bodys should have the same number of items in each array. Each time the gratuity screen is shown popdeem will select the next item in the relevant array.
+ 
+```xml
+    <string-array name="pd_gratuity_strings_share_coupon_title">
+        <item>@string/grat1_title</item>
+        <item>@string/grat2_title</item>
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_coupon_body">
+        <item>@string/grat1_text</item>
+        <item>@string/grat2_text</item>
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_credit_title">
+        <item>@string/grat1_text</item>
+        <item>@string/grat2_text</item>
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_credit_body">
+        <item>@string/grat1_text</item>
+        <item>@string/grat2_text</item>
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_sweepstake_title">
+        <item>@string/grat1_text</item>
+        <item>@string/grat2_text</item>
+    </string-array>
+
+    <string-array name="pd_gratuity_strings_share_sweepstake_body">
+        <item>@string/grat1_text</item>
+        <item>@string/grat2_text</item>
+    </string-array>
+```
+
+
 Next, [MultiLogin Flow](MultiLoginFlow.md "MultiLogin Flow")
 
 ---
