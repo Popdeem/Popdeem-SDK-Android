@@ -24,7 +24,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+//import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.popdeem.sdk.BuildConfig;
@@ -146,20 +146,20 @@ public class PDFirebaseMessagingService extends FirebaseMessagingService {
 
 
     }
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
-    @Override
-    public void onNewToken(String token) {
-        PDLog.d(this.getClass(), "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-
-    }
+//    /**
+//     * Called if InstanceID token is updated. This may occur if the security of
+//     * the previous token had been compromised. Note that this is called when the InstanceID token
+//     * is initially generated so this is where you would retrieve the token.
+//     */
+//    @Override
+//    public void onNewToken(String token) {
+//        PDLog.d(this.getClass(), "Refreshed token: " + token);
+//
+//        // If you want to send messages to this application instance or
+//        // manage this apps subscriptions on the server side, send the
+//        // Instance ID token to your app server.
+//
+//    }
 
     /**
      * Initialise GCM.
@@ -272,25 +272,40 @@ public class PDFirebaseMessagingService extends FirebaseMessagingService {
 //        } else {
 //            new PDGCMUtils.PDGCMRegisterAsync(context, gcmSenderID, callback).execute();
 
-            FirebaseInstanceId.getInstance().getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            try {
-                                String token = task.getResult().getToken();
-                                PDLog.i(PDGCMUtils.class, "token: " + token);
+        try {
 
-                                if (token != null && !token.isEmpty()) {
-                                    saveRegistrationID(token, getAppVersion(context));
-                                    if (callback != null) {
-                                        callback.success(token);
-                                    }
-                                }
-                            }catch(Exception jo) {
-                                jo.printStackTrace();
-                            }
-                        }
-                    });
+            String token = FirebaseInstanceId.getInstance().getToken();
+            PDLog.i(PDGCMUtils.class, "token: " + token);
+
+            if (token != null && !token.isEmpty()) {
+                saveRegistrationID(token, getAppVersion(context));
+                if (callback != null) {
+                    callback.success(token);
+                }
+            }
+        }catch(Exception jo) {
+            jo.printStackTrace();
+        }
+//
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        try {
+//                            String token = task.getResult().getToken();
+//                            PDLog.i(PDGCMUtils.class, "token: " + token);
+//
+//                            if (token != null && !token.isEmpty()) {
+//                                saveRegistrationID(token, getAppVersion(context));
+//                                if (callback != null) {
+//                                    callback.success(token);
+//                                }
+//                            }
+//                        }catch(Exception jo) {
+//                            jo.printStackTrace();
+//                        }
+//                    }
+//                });
 //        }
     }
 
