@@ -385,7 +385,9 @@ public class PDUISocialLoginFragment extends Fragment {
     }
 
     public void removeThisFragment() {
-        getActivity().getSupportFragmentManager().popBackStack(PDUISocialLoginFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if(getActivity()!=null && getActivity().getSupportFragmentManager()!=null) {
+            getActivity().getSupportFragmentManager().popBackStack(PDUISocialLoginFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     @Override

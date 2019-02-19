@@ -438,7 +438,10 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         if (!isAdded()) {
             return;
         }
-        getActivity().getSupportFragmentManager().popBackStack(getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        if(getActivity()!=null && getActivity().getSupportFragmentManager()!=null) {
+            getActivity().getSupportFragmentManager().popBackStack(getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     private void toggleProgress(boolean show) {
