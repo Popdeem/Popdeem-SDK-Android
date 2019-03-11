@@ -546,27 +546,31 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     //////////////////////////////////////////////////
 
     private void checkForLocationPermissionAndStartLocationManager() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
-                        .setTitle(R.string.pd_location_permission_title_text)
-                        .setMessage(R.string.pd_location_permission_rationale_text)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        LOCATION_PERMISSION_REQUEST);
-                            }
-                        })
-                        .create()
-                        .show();
+        if(getActivity()!=null) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+                            .setTitle(R.string.pd_location_permission_title_text)
+                            .setMessage(R.string.pd_location_permission_rationale_text)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                            LOCATION_PERMISSION_REQUEST);
+                                }
+                            })
+                            .create()
+                            .show();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST);
+                }
             } else {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                        LOCATION_PERMISSION_REQUEST);
+                startLocationManagerAfterLogin();
             }
-        } else {
-            startLocationManagerAfterLogin();
+        }else {
+            updateUser();
         }
     }
 
@@ -660,7 +664,14 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         if (mType == PD_CONNECT_TYPE_INSTAGRAM)
             socialType = PDSocialUtils.SOCIAL_TYPE_INSTAGRAM;
 
-        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new PDAPICallback<PDUser>() {
+        String lat = "";
+        String lng = "";
+        if(location != null){
+            lat = String.valueOf(location.getLatitude());
+            lng = String.valueOf(location.getLongitude());
+        }
+
+        PDAPIClient.instance().updateUserLocationAndDeviceToken(socialType, userDetails.getId(), deviceToken, lat, lng, new PDAPICallback<PDUser>() {
             @Override
             public void success(PDUser user) {
                 PDLog.d(PDUIConnectSocialAccountFragment.class, "update user: " + user);

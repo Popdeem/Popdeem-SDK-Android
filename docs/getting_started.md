@@ -35,7 +35,7 @@ These should be set to the same level as your project sdk version and support li
 Add the following line to the `dependencies` block of your applications `build.gradle` file and Gradle Sync your project to download the SDK dependency:
 
 ```java
-implementation 'com.popdeem.sdk:sdk:1.3.24'
+implementation 'com.popdeem.sdk:sdk:1.3.26'
 ```
 
 

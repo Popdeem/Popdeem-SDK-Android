@@ -318,6 +318,9 @@ public class PDUIWalletFragment extends Fragment {
                         JsonObject user = jsonObject.getAsJsonObject("user");
                         float score = Float.valueOf(user.get("advocacy_score").getAsString());
 
+                        if (realm == null) {
+                            realm = Realm.getDefaultInstance();
+                        }
                         realm.beginTransaction();
                         userDetails.setAdvocacyScore(score);
                         realm.commitTransaction();
