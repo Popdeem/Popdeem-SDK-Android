@@ -597,7 +597,7 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     //////////////////////////////////////////////////
 
     public void removeThisFragment() {
-        if(getActivity()!=null && getActivity().getSupportFragmentManager()!=null) {
+        if(getActivity()!=null && getActivity().getSupportFragmentManager()!=null && isAdded()) {
             getActivity().getSupportFragmentManager().popBackStack(PDUISocialMultiLoginFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }

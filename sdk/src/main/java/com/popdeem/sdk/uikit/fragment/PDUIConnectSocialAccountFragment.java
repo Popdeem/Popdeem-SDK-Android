@@ -259,18 +259,21 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     }
 
     private String getButtonText() {
-        if(fromSettings){
-            return getString(R.string.pd_connect_dialog_button_text_settings);
+        if(getActivity()!=null && isAdded()) {
+            if (fromSettings) {
+                return getActivity().getString(R.string.pd_connect_dialog_button_text_settings);
+            }
+            String network = "";
+            if (mType == PD_CONNECT_TYPE_FACEBOOK) {
+                network = getString(R.string.pd_connect_facebook_title);
+            } else if (mType == PD_CONNECT_TYPE_TWITTER) {
+                network = getString(R.string.pd_connect_twitter_title);
+            } else if (mType == PD_CONNECT_TYPE_INSTAGRAM) {
+                network = getString(R.string.pd_connect_instagram_title);
+            }
+            return getString(R.string.pd_connect_dialog_button_text, network);
         }
-        String network = "";
-        if (mType == PD_CONNECT_TYPE_FACEBOOK) {
-            network = getString(R.string.pd_connect_facebook_title);
-        } else if (mType == PD_CONNECT_TYPE_TWITTER) {
-            network = getString(R.string.pd_connect_twitter_title);
-        } else if (mType == PD_CONNECT_TYPE_INSTAGRAM) {
-            network = getString(R.string.pd_connect_instagram_title);
-        }
-        return getString(R.string.pd_connect_dialog_button_text, network);
+        return "";
     }
 
     private void registerFacebookLoginManagerCallback() {
@@ -447,8 +450,10 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     private void toggleProgress(boolean show) {
         mImageView.animate().alpha(show ? 0.5f : 1.0f);
         mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        mButton.setEnabled(!show);
-        mButton.setText(show ? getString(R.string.pd_social_connect_connecting_button_text) : getButtonText());
+        if(mButton!=null) {
+            mButton.setEnabled(!show);
+            mButton.setText(show ? getString(R.string.pd_social_connect_connecting_button_text) : getButtonText());
+        }
     }
 
     @Override
