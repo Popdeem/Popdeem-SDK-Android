@@ -100,7 +100,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
     private static String TAG = PDUIConnectSocialAccountCallback.class.getSimpleName();
     private Realm realm;
-
+    private boolean loginRunning = false;
 
     /**
      * Location is now needed in this Fragment, as the user can now Register as well as Connect
@@ -286,6 +286,8 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
             @Override
             public void onCancel() {
                 PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_CANCELLED_FACEBOOK_LOGIN, null);
+                loginRunning = false;
+
 //                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onCancel()");
 //                if (getActivity() != null) {
 //                    PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_common_facebook_login_cancelled_title_text, R.string.pd_common_facebook_login_cancelled_message_text);
@@ -294,8 +296,10 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
             @Override
             public void onError(FacebookException error) {
-                PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
-                if (getActivity() != null) {
+
+                if (isAdded() && getActivity() != null) {
+                    loginRunning = false;
+                    PDLog.d(PDUISocialLoginFragment.class, "Facebook Login onError(): " + error.getMessage());
                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_common_sorry_text, error.getMessage());
                 }
             }
@@ -315,12 +319,14 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 //                getActivity().sendBroadcast(new Intent(PDUIRewardsFragment.PD_LOGGED_IN_RECEIVER_FILTER));
 //            }
             checkForLocationPermissionAndStartLocationManager();
+
 //            updateUser();
         }
 
         @Override
         public void failure(int statusCode, Exception e) {
             toggleProgress(false);
+            loginRunning = false;
             if (mType == PD_CONNECT_TYPE_FACEBOOK) {
                 LoginManager.getInstance().logOut();
             }
@@ -334,7 +340,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     if (jsobj.get("error") != null) {
                         if (jsobj.getString("error") != null) {
                             if (jsobj.getString("error").contains("social account is already connected")) {
-                                if (getActivity() != null) {
+                                if (isAdded() && getActivity() != null) {
                                     PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), "Sorry - Wrong Account", "This social account has been linked to another user.");
                                     return;
                                 }
@@ -432,12 +438,13 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     }
 
     private void showGenericAlert() {
-        if (getActivity() != null) {
+        if (getActivity() != null && isAdded()) {
             PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_common_sorry_text, R.string.pd_common_something_wrong_text);
         }
     }
 
     public void removeThisFragment() {
+        loginRunning = false;
         if (!isAdded()) {
             return;
         }
@@ -458,13 +465,17 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
 
     @Override
     public void onClick(View v) {
+//        loginRunning = true;
+
         switch (mType) {
             case PD_CONNECT_TYPE_FACEBOOK:
+                loginRunning = true;
                 registerFacebookLoginManagerCallback();
                 LoginManager.getInstance().logInWithReadPermissions(PDUIConnectSocialAccountFragment.this, Arrays.asList(PDSocialUtils.FACEBOOK_READ_PERMISSIONS));
                 break;
 
             case PD_CONNECT_TYPE_TWITTER:
+                loginRunning = true;
                 PDSocialUtils.loginWithTwitter(getActivity(), new Callback<TwitterSession>() {
                     @Override
                     public void success(Result<TwitterSession> result) {
@@ -472,12 +483,15 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                             connectTwitterAccount(result.data);
                         } else {
                             showGenericAlert();
+                            loginRunning = false;
                         }
+
                     }
 
                     @Override
                     public void failure(TwitterException e) {
-                        if (getActivity() != null) {
+                        if (isAdded() && getActivity() != null) {
+                            loginRunning = false;
                             PDUIDialogUtils.showBasicOKAlertDialog(getActivity(), R.string.pd_claim_twitter_button_text, e.getMessage());
                         }
                     }
@@ -490,17 +504,19 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     PDUIInstagramLoginFragment fragment = PDUIInstagramLoginFragment.newInstance(new PDUIInstagramLoginFragment.PDInstagramLoginCallback() {
                         @Override
                         public void loggedIn(PDInstagramResponse response) {
+                            loginRunning = true;
                             connectInstagramAccount(response);
                         }
 
                         @Override
                         public void error(String message) {
+                            loginRunning = false;
                             showGenericAlert();
                         }
 
                         @Override
                         public void canceled() {
-
+                            loginRunning = false;
                         }
                     });
                     final int containerId = ((ViewGroup) getView().getParent()).getId();
@@ -551,7 +567,7 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
     //////////////////////////////////////////////////
 
     private void checkForLocationPermissionAndStartLocationManager() {
-        if(getActivity()!=null) {
+        if(isAdded() && getActivity()!=null) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -611,25 +627,27 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
                     PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_DENIED_LOCATION, null);
                     if (mAskForPermission) {
                         mAskForPermission = false;
-                        new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
-                                .setTitle(R.string.pd_location_permission_title_text)
-                                .setMessage(R.string.pd_location_permission_are_you_sure_text)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                                                LOCATION_PERMISSION_REQUEST);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        LoginManager.getInstance().logOut();
-                                        removeThisFragment();
-                                    }
-                                })
-                                .create()
-                                .show();
+                        if(isAdded() && getActivity()!=null) {
+                            new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+                                    .setTitle(R.string.pd_location_permission_title_text)
+                                    .setMessage(R.string.pd_location_permission_are_you_sure_text)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                                    LOCATION_PERMISSION_REQUEST);
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            LoginManager.getInstance().logOut();
+                                            removeThisFragment();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
                     } else {
                         new Handler().post(new Runnable() {
                             @Override
@@ -699,4 +717,11 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         });
         realm.close();
     }
+
+    public boolean isLoginRunning(){
+        return loginRunning;
+    }
+
+
+
 }

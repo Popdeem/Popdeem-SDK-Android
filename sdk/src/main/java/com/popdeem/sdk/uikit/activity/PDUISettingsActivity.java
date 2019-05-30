@@ -66,6 +66,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -383,6 +384,33 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+
+        Fragment f = getVisibleFragment();
+        if(f instanceof PDUIConnectSocialAccountFragment) {
+            if(!((PDUIConnectSocialAccountFragment) f).isLoginRunning()){
+                super.onBackPressed();
+            }
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+
+    public Fragment getVisibleFragment(){
+        List<Fragment> fragments = mFragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible() && fragment instanceof PDUIConnectSocialAccountFragment)
+                    return fragment;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Class used to fill recycler view.

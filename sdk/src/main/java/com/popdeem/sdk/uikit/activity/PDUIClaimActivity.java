@@ -1335,7 +1335,8 @@ public class PDUIClaimActivity extends PDBaseActivity implements View.OnClickLis
                 mReward.setInstagramVerified(true);
                 Log.d("VERIFYING", "verifyReward: success");
 
-                String headingText = pdVerifyHeadingText.getText().toString();
+                String headingText = getString(R.string.pd_unlocked_reward_text);
+
                 if (userDetails.getFirstName() != null && userDetails.getFirstName().length()>0){
                     headingText = headingText.replace("Richard", userDetails.getFirstName());
                 }else{

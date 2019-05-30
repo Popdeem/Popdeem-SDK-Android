@@ -321,9 +321,12 @@ public class PDUIWalletFragment extends Fragment {
                         if (realm == null) {
                             realm = Realm.getDefaultInstance();
                         }
-                        realm.beginTransaction();
-                        userDetails.setAdvocacyScore(score);
-                        realm.commitTransaction();
+                        final PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
+                        if(userDetails!=null && userDetails.isValid()) {
+                            realm.beginTransaction();
+                            userDetails.setAdvocacyScore(score);
+                            realm.commitTransaction();
+                        }
                         mAdapter.notifyDataSetChanged();
                     }
 
