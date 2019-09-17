@@ -13,11 +13,14 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:padding="16dp"
+
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/scan_top_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -26,15 +29,16 @@
                 android:text="@string/pd_scan_top_label" />
 
             <com.wang.avi.AVLoadingIndicatorView
+                android:visibility="visible"
                 android:id="@+id/av_indicator"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="30dp"
-                app:indicatorColor="@color/colorPrimary"
-                app:indicatorName="BallPulseIndicator"
-                android:visibility="invisible"/>
+                app:indicatorColor="@color/pd_dots_color"
+                app:indicatorName="BallPulseIndicator"/>
 
             <TextView
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

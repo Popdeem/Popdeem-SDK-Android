@@ -84,7 +84,7 @@
             android:minWidth="60dp"
             android:text="@string/pd_wallet_verify_button_text"
             android:textAllCaps="false"
-            android:textColor="@color/pd_toolbar_color" />
+            android:textColor="@color/pd_primary_text_color" />
 
         <ProgressBar
             android:id="@+id/pd_wallet_verify_progress_bar"

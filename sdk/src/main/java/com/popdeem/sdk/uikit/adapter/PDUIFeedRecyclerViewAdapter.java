@@ -123,7 +123,6 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
             Glide.with(context)
                     .load(item.getImageUrlString())
-                    .error(null)
                     .dontAnimate()
                     .into(holder.sharedImageView);
 
@@ -133,7 +132,6 @@ public class PDUIFeedRecyclerViewAdapter extends RecyclerView.Adapter<PDUIFeedRe
 
             Glide.with(context)
                     .load(R.drawable.pduikit_default_user)
-                    .dontAnimate()
                     .dontAnimate()
                     .fitCenter()
                     .into(holder.profileImageView);

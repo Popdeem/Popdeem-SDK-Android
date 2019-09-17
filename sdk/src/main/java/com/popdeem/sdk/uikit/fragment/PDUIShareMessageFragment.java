@@ -50,6 +50,7 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
 
     PDReward mReward;
     String type;
+    private boolean withImage;
 
     public interface PDInstagramShareCallback {
         void onShareClick();
@@ -57,12 +58,13 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
         void onCancel();
     }
 
-    public static PDUIShareMessageFragment newInstance(PDReward reward, @NonNull String type, @NonNull PDInstagramShareCallback callback) {
+    public static PDUIShareMessageFragment newInstance(PDReward reward, boolean withImage, @NonNull String type, @NonNull PDInstagramShareCallback callback) {
         Bundle args = new Bundle();
 
         PDUIShareMessageFragment fragment = new PDUIShareMessageFragment();
         fragment.mReward = reward;
         fragment.type = type;
+        fragment.withImage = withImage;
         fragment.setCallback(callback);
         fragment.setArguments(args);
         return fragment;
@@ -91,7 +93,9 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
         mView.findViewById(R.id.pd_facebook_share_okay_button).setOnClickListener(this);
 
 
-        if(type.equalsIgnoreCase("facebook")){
+        if(type.equalsIgnoreCase("facebook_not_installed_check_in")){
+            setupFacebookViews();
+        }else if(type.equalsIgnoreCase("facebook")){
             setupFacebookViews();
         }else{
             PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
@@ -105,7 +109,7 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
         return mView;
     }
 
-    public void setupFacebookViews(){
+    public void setupFacebookViews() {
 
         LinearLayout firstView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_first_view);
         LinearLayout secondView = (LinearLayout) mView.findViewById(R.id.pd_instagram_share_second_view);
@@ -116,7 +120,6 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
         facebookView.setVisibility(View.VISIBLE);
 
 
-
         mView.findViewById(R.id.pd_facebook_share_okay_button).setOnClickListener(this);
 
         TextView header = mView.findViewById(R.id.facebook_share_tutorial_heading);
@@ -124,15 +127,28 @@ public class PDUIShareMessageFragment extends Fragment implements View.OnClickLi
         ImageView imageView = mView.findViewById(R.id.facebook_share_tutorial_image);
 
 
-        if (!checkFbInstalled()) {
-            header.setText(getText(R.string.pd_claim_insta_not_installed));
-            imageView.setImageResource(R.drawable.pduikit_facebook_noapp);
-            if (mReward.getGlobalHashtag()!=null) {
-                mainText.setText(String.format(getString(R.string.pd_facebook_not_installed),mReward.getGlobalHashtag()));
-            } else {
-                mainText.setText(getString(R.string.pd_facebook_not_installed2));
+        if (!checkFbInstalled() && withImage) {
+            header.setText(getText(R.string.pd_claim_facebook_not_installed));
+            if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
+                imageView.setImageResource(R.drawable.pduikit_facebook_noapp_check_in);
+                String formated = getString(R.string.pd_facebook_not_check_in);
+                mainText.setText(String.format(formated, getString(R.string.LOCATION_NAME)));
+            }else{
+                imageView.setImageResource(R.drawable.pduikit_facebook_noapp);
+                if (mReward.getGlobalHashtag() != null) {
+                    mainText.setText(String.format(getString(R.string.pd_facebook_not_installed), mReward.getGlobalHashtag()));
+                } else {
+                    mainText.setText(getString(R.string.pd_facebook_not_installed2));
+                }
             }
-        } else {
+        }else if(mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)){
+            imageView.setImageResource(R.drawable.pduikit_facebook_checkin);
+            String formated = getString(R.string.pd_facebook_tutorial_check_in);
+            mainText.setText(String.format(formated, getString(R.string.LOCATION_NAME)));
+            ((TextView)mView.findViewById(R.id.pd_facebook_location)).setText(getString(R.string.LOCATION_NAME));
+            ((TextView)mView.findViewById(R.id.pd_facebook_location)).setVisibility(View.VISIBLE);
+
+        }else {
             imageView.setImageResource(R.drawable.pduikit_facebook_step1);
 
             if (mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_PHOTO)) {

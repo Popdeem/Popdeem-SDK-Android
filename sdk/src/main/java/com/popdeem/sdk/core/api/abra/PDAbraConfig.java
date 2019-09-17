@@ -32,7 +32,7 @@ public class PDAbraConfig {
 
     public static final String ABRA_PROJECT_TOKEN = "b414ae329d7993e2bce41198b899f871";
 
-    public static final String ABRA_URL = "http://insights.popdeem.com/v1";
+    public static final String ABRA_URL = "https://insights.popdeem.com/v1";
     public static final String ABRA_EVENT_PATH = "/event";
     public static final String ABRA_TOKEN_PATH = "/fetch_token";
 
@@ -44,6 +44,7 @@ public class PDAbraConfig {
     public static final String ABRA_KEY_PROPERTIES = "properties";
 
     public static final String ABRA_EVENT_PAGE_VIEWED = "Viewed";
+    public static final String ABRA_EVENT_SHOW_LOGIN_TAKEOVER = "Login Takeover Count:";
     public static final String ABRA_PROPERTYNAME_PAGE = "Page";
     public static final String ABRA_PROPERTYVALUE_PAGE_LOGINTAKEOVER = "Login Takeover";
     public static final String ABRA_PROPERTYVALUE_PAGE_REWARDS_HOME = "Rewards Home";

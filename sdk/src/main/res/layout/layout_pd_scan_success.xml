@@ -85,7 +85,7 @@
             android:visibility="visible"
             android:background="@drawable/pd_rounded_button"
             android:text="@string/pd_claim_text"
-            android:textColor="@color/pd_toolbar_text_color"/>
+            android:textColor="@color/pd_primary_text_color"/>
 
         <Button
             android:id="@+id/btn_return"
@@ -94,7 +94,7 @@
             android:visibility="gone"
             android:text="@string/pd_back_to_reward"
             android:background="@drawable/pd_button_rounded_rect_primary"
-            android:textColor="@color/pd_toolbar_color"/>
+            android:textColor="@color/pd_primary_text_color"/>
 
     </LinearLayout>
 

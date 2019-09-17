@@ -241,7 +241,7 @@ public class PDUIHomeFlowFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             PDLog.i(PDUIRewardsFragment.class, "LoggedIn broadcast onReceive");
             if(viewPager!=null){
-                viewPager.setCurrentItem(2,false);
+//                viewPager.setCurrentItem(2,false);
             }
         }
     };
@@ -265,7 +265,7 @@ public class PDUIHomeFlowFragment extends Fragment {
         }
         TabLayout.Tab walletTab = mTabLayout.getTabAt(mTabLayout.getTabCount() - 1);
         if (walletTab != null) {
-            walletTab.select();
+//            walletTab.select();
             return true;
         }
         return false;

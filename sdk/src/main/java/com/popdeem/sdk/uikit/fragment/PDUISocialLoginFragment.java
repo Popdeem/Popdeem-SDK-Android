@@ -56,6 +56,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.LocationListener;
+import com.popdeem.sdk.PDLoginCallback;
 import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
@@ -101,6 +102,7 @@ public class PDUISocialLoginFragment extends Fragment {
 
     private PDFragmentCommunicator communicator; //used for certain instances where login does not occur at the beginning
     private ArrayList<PDReward> rewards;
+    private PDLoginCallback callback;
 
     public PDUISocialLoginFragment() {
     }
@@ -109,9 +111,10 @@ public class PDUISocialLoginFragment extends Fragment {
         return new PDUISocialLoginFragment();
     }
 
-    public static PDUISocialLoginFragment newInstance(ArrayList<PDReward> rewards) {
+    public static PDUISocialLoginFragment newInstance(ArrayList<PDReward> rewards, PDLoginCallback callBack) {
         PDUISocialLoginFragment frag = new PDUISocialLoginFragment();
         frag.rewards = rewards;
+        frag.callback = callBack;
 
         return new PDUISocialLoginFragment();
     }

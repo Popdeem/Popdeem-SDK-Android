@@ -15,7 +15,7 @@ public class PDActivityCompat extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         FragmentManager fm = getSupportFragmentManager();
-        Fragment frag = fm.findFragmentByTag("PDUISocialMultiLoginFragment");
+        Fragment frag = fm.findFragmentByTag("PDUISocialMultiLoginFragment_V2");
         if(frag!=null){
             frag.onActivityResult(requestCode, resultCode, data);
         }

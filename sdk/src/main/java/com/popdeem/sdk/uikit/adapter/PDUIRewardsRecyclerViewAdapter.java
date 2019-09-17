@@ -162,7 +162,7 @@ public class PDUIRewardsRecyclerViewAdapter extends RecyclerView.Adapter<PDUIRew
         String textTest = actionStringBuilder.toString();
 
         if(textTest.equalsIgnoreCase("Photo required")){
-            textTest = "\uD83D\uDCF8 Photo Required";
+            textTest = "📸 Photo Required";
         }
 
         holder.actionTextView.setText(textTest);

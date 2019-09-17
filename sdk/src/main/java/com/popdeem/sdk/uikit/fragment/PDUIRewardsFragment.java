@@ -159,9 +159,9 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
                                         performRewardClick(view);
                                     } else {
                                         if (PDPreferencesUtils.getIsMultiLoginEnabled(getActivity())) {
-                                            PopdeemSDK.showSocialMultiLogin(getActivity(), mRewards);
+                                            PopdeemSDK.showSocialMultiLogin(getActivity(), mRewards, null);
                                         } else
-                                            PopdeemSDK.showSocialLogin(getActivity(), mRewards);
+                                            PopdeemSDK.showSocialLogin(getActivity(), mRewards, null);
                                     }
                                 }
 
@@ -247,7 +247,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
             if (imageUrl == null || imageUrl.isEmpty() || imageUrl.contains("default")) {
                 Glide.with(getActivity())
                         .load(R.drawable.pd_ui_star_icon)
-                        .dontAnimate()
+//                        .dontAnimate()
                         .error(R.drawable.pd_ui_star_icon)
                         .dontAnimate()
                         .placeholder(R.drawable.pd_ui_star_icon)
@@ -257,7 +257,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
                 Glide.with(getActivity())
                         .load(imageUrl)
-                        .dontAnimate()
+//                        .dontAnimate()
                         .error(R.drawable.pd_ui_star_icon)
                         .dontAnimate()
                         .placeholder(R.drawable.pd_ui_star_icon)
@@ -344,7 +344,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 //                            .show();
                     if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
                         PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
-                        parent.switchToWallet(true);
+//                        parent.switchToWallet(true);
                     }
                 }
             }
@@ -542,7 +542,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
         if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
             PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
-            parent.switchToWalletForVerify(false, id);
+//            parent.switchToWalletForVerify(false, id);
         }
     }
 
@@ -584,7 +584,7 @@ public class PDUIRewardsFragment extends Fragment implements LocationListener {
 
             if (getParentFragment() != null && getParentFragment() instanceof PDUIHomeFlowFragment) {
                 PDUIHomeFlowFragment parent = (PDUIHomeFlowFragment) getParentFragment();
-                parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
+//                parent.switchToWalletForVerify(data.getBooleanExtra("verificationNeeded", false), id);
             }
         } else if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
             TwitterLoginButton loginButton = new TwitterLoginButton(getActivity());

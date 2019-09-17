@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.os.Environment;
 import android.util.Log;
@@ -146,17 +147,17 @@ public class PDUIImageUtils {
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
-		/* Figure out which way needs to be reduced less */
+        /* Figure out which way needs to be reduced less */
         int scaleFactor = 1;
         if ((targetWidth > 0) || (targetHeight > 0)) {
             scaleFactor = Math.min(photoW / targetWidth, photoH / targetHeight);
         }
 
-		/* Set bitmap options to scale the image decode target */
+        /* Set bitmap options to scale the image decode target */
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
-		/* Decode the JPEG file into a Bitmap */
+        /* Decode the JPEG file into a Bitmap */
         Bitmap bitmap;
         boolean hasOrientation = orientation != -1;
         if (hasOrientation) {
@@ -167,6 +168,8 @@ public class PDUIImageUtils {
 
         return bitmap;
     }
+
+
 
     public static boolean deleteDirectoryTree(final Context mContext) {
 

@@ -286,12 +286,22 @@ public class PDUISettingsActivity extends PDBaseActivity implements PDUISettings
 
     private void refreshList() {
         mItems.clear();
-        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
         boolean addTwitter = PDSocialUtils.usesTwitter(this);
+        boolean addFacebook = PDSocialUtils.usesFacebook();
+        boolean addInstagram = PDSocialUtils.usesInstagram(this);
+
+        if(addFacebook) {
+            mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK, PDSocialUtils.isLoggedInToFacebook(), R.drawable.pd_facebook_icon_small));
+        }
+
         if(addTwitter) {
             mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER, PDSocialUtils.userHasTwitterCredentials(), R.drawable.pd_twitter_icon_small));
         }
-        mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
+
+        if(addInstagram) {
+            mItems.add(new PDSettingsSocialNetwork(PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM, false, R.drawable.pd_instagram_icon_small));
+        }
+
         mAdapter.notifyDataSetChanged();
 
         PDSocialUtils.isInstagramLoggedIn(new PDAPICallback<Boolean>() {

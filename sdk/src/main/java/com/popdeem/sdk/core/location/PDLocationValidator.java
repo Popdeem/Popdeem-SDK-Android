@@ -44,7 +44,7 @@ import io.realm.Realm;
  */
 public class PDLocationValidator {
 
-    public static boolean validateLocationForReward(@NonNull PDReward reward, @NonNull Location userLocation) {
+    public static boolean validateLocationForReward(@NonNull PDReward reward, Location userLocation) {
         // Check if user is a tester
         Realm realm = Realm.getDefaultInstance();
         PDRealmUserDetails userDetails = realm.where(PDRealmUserDetails.class).findFirst();
@@ -54,6 +54,8 @@ public class PDLocationValidator {
         // If location verification is disabled for this reward, return true
         if (reward.getDisableLocationVerification().equalsIgnoreCase(PDReward.PD_TRUE) || isTester) {
             return true;
+        }else if (userLocation == null){
+            return false;
         }
 
         // Otherwise check all locations for reward to find closest and check

@@ -2,14 +2,23 @@
 <resources>
 
     <!-- Toolbar Colors -->
-    <color name="pd_toolbar_color">#da4d59</color>
-    <color name="pd_toolbar_color_dark">#cc4752</color>
-    <color name="pd_toolbar_text_color">#ffffff</color>
-    <color name="pd_accent">#dba7ac</color>
+    <!--<color name="pd_toolbar_color">#da4d59</color>-->
+
+    <color name="pd_primary_color">#000000</color>
+    <color name="pd_primary_color_dark">#000000</color>
+    <color name="pd_primary_text_color">#ffffff</color>
+    <color name="pd_accent_color">#ffffff</color>
+
+
+    <color name="pd_toolbar_color">@color/pd_primary_color</color>
+    <color name="pd_toolbar_color_dark">@color/pd_primary_color_dark</color>
+    <color name="pd_toolbar_text_color">@color/pd_primary_text_color</color>
+    <color name="pd_accent">@color/pd_accent_color</color>
     <color name="pd_back_button_color">@color/pd_toolbar_text_color</color>
     <!-- Can be used if your social login header image clashes with the back button color for the rest of your app. Otherwise it defaults to pd_back_button_color -->
     <color name="pd_social_login_back_button_color">@color/pd_toolbar_color</color>
 
+    <color name="pd_dots_color">@color/pd_toolbar_color</color>
 
     <!-- Inbox Floating Action Button Colors -->
     <color name="pd_inbox_button_bg_color">@color/pd_toolbar_color</color>
@@ -30,7 +39,7 @@
 
 
     <!-- Settings -->
-    <color name="pd_settings_social_networks_header_color">#56575c</color>
+    <color name="pd_settings_social_networks_header_color">#eeeeee</color>
 
 
     <!-- Inbox / Message Center Colors -->
@@ -116,7 +125,7 @@
     <color name="pd_claim_location_verification_text_color">#000000</color>
     <color name="pd_claim_verification_text_color">#000000</color>
     <color name="pd_claim_location_verification_tick_color">#777777</color>
-    <color name="pd_claim_switch_tint_color">@color/pd_toolbar_color</color>
+    <color name="pd_claim_switch_tint_color">#009900</color>
     <color name="pd_claim_add_hashtag_button_text_color">@color/pd_toolbar_color</color>
     <color name="pd_claim_add_hashtag_text_color">#A2A2A1</color>
 
@@ -148,7 +157,15 @@
 
     <!-- Misc Colors -->
     <color name="pd_twitter_blue">#FF5BAAF4</color>
+    <color name="pd_twitter_blue_pressed">#885BAAF4</color>
+
     <color name="pd_facebook_blue">#3b5998</color>
+    <color name="pd_facebook_blue_pressed">#883b5998</color>
+
+    <color name="pd_instagram_red">#FF3D2B</color>
+    <color name="pd_instagram_red_pressed">#88FF3D2B</color>
+
+
     <color name="pd_claim_network_button_off_text_color">#dba7ac</color>
 
     <color name="pd_connect_social_account_background_color">#aa000000</color>
@@ -184,6 +201,8 @@
 
     <color name="clear">#00ffffff</color>
     <color name="DEBUG">#00ff00ff</color>
+
+    <color name="DEBUG_TRANS">#00ff00ff</color>
 
 
 </resources>

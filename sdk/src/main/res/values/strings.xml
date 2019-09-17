@@ -69,7 +69,11 @@
     <string name="pd_claim_already_shared_default">I\'ve already shared</string>
     <string name="pd_claim_verify_location_failed_title_text">Not at location</string>
     <string name="pd_claim_verify_location_failed_text">You must be at this location to claim this reward.\nPlease come back later.</string>
+    <string name="pd_claim_verify_location_off_text">You must be at this location and location services must be enabled to claim this reward.</string>
+    <string name="pd_claim_verify_location_permission_text">You must be at this location and location permission must be given to claim this reward.</string>
+
     <string name="pd_claim_scan_for_already_shared_text" >Scan for already shared photo</string>
+    <string name="pd_claim_scan_for_already_shared_sign_in_text" >Scan for an existing check-in</string>
     <string name="pd_claim_scan_for_already_shared_activity_text" >Scan for already shared activity</string>
 
 
@@ -91,10 +95,10 @@
 
     <string name="pd_claim_action_tweet_checkin">Check-in or Tweet Required</string>
     <string name="pd_claim_action_photo">Photo required</string>
-    <string name="pd_claim_action_photo_camera">\uD83D\uDCF8 Photo Required</string>
+    <string name="pd_claim_action_photo_camera">📸 Photo Required</string>
     <string name="pd_claim_action_none">No Action Required</string>
     <string name="pd_claim_action_social_login">Social Login</string>
-    <string name="pd_claim_action_checkin">Check-in Required</string>
+    <string name="pd_claim_action_checkin">📍 Check-in Required</string>
     <string name="pd_claim_action_tweet">Tweet Required</string>
     <string name="pd_claim_action_tweet_photo">Tweet with Photo Required</string>
     <string name="pd_add_text">Add</string>
@@ -197,6 +201,13 @@
     <string name="pd_log_in_with_facebook_text">Log in with Facebook</string>
     <string name="pd_log_in_with_twitter_text">Log in with Twitter</string>
     <string name="pd_log_in_with_instagram_text">Log in with Instagram</string>
+
+    <string name="pd_connect_facebook_text">Connect Facebook</string>
+    <string name="pd_connect_twitter_text">Connect Twitter</string>
+    <string name="pd_connect_instagram_text">Connect Instagram</string>
+
+    <string name="pd_connect_skip">Skip</string>
+
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
     <string name="pd_claim_twitter_button_text">Twitter</string>
@@ -216,6 +227,7 @@
     <string name="facebook_url_scheme">sdkscheme</string>
 
     <!--Scan-->
+    <string name="LOCATION_NAME">@string/app_name</string>
     <string name="pd_scan_title">Scan</string>
     <string name="pd_scan_facebook">Scan Facebook</string>
     <string name="pd_connect_facebook">Connect to Facebook</string>
@@ -224,13 +236,18 @@
     <string name="pd_scan_instagram">Scan Instagram</string>
     <string name="pd_connect_instagram">Connect to Instagram</string>
     <string name="pd_scan_title_label">Choose what network you shared your experience with %s to claim your reward:</string>
+    <string name="pd_scan_title_label_check_in">Scan Facebook for a check-in at a %s location to claim your reward:</string>
     <string name="pd_scan_note">Note: You must have shared your experience with %s in the last 48 hours in order to be eligible for a reward.</string>
+    <string name="pd_scan_note_check_in">Note: You must have checked-in at a %s in the last 48 hours in order to be eligible for a reward.</string>
+
 
     <string name="pd_scan_top_label">Scanning for stories that include %s</string>
     <string name="pd_scan_bottom_label">This usually takes a few moments. Please wait…</string>
 
     <string name="pd_scan_success_label">Hey %1$s, we found your post with %2$s. Thanks for sharing, you have unlocked your reward!</string>
+    <string name="pd_scan_success_label_check_in">Hey %1$s, we found your check-in at %2$s. Thanks for checking-in! You have unlocked your reward!</string>
     <string name="pd_scan_fail_label">Whoops! Sorry %1$s, we could not find any posts on %2$s from the last 48 hours with %3$s. </string>
+    <string name="pd_scan_fail_label_check_in">Whoops! Sorry %1$s, we could not find a check-in from the last 48 hours at %3$s. </string>
     <string name="pd_scan_fail_detail_label">Please ensure you\'ve shared from the correct social media account and try again</string>
     <string name="pd_scan_success_user_name">Dave Hannan</string>
 
@@ -243,7 +260,7 @@
     <string name="pd_gratitude_share_text">Thanks for sharing, your reward has been added to your profile. Enjoy!</string>
     <string name="pd_gratitude_share_text_coupon">Thanks for sharing. %s has been added to your account. Enjoy!</string>
     <string name="pd_gratitude_unlock_offers_text">Unlock new rewards and VIP offers as you move up in status.</string>
-    <string name="pd_gratitude_go_to_profile_button">Go to Profile</string>
+    <string name="pd_gratitude_go_to_profile_button">Continue</string>
 
     <!--Gratitude-->
     <string name="pd_gratitude_share_body_text">Thanks for sharing. You earned an additional %s points to your account and moved up in status.</string>
@@ -270,15 +287,23 @@
 
     <!--New Claim Strings-->
     <string name="pd_claim_info_photo">Your photo must contain %s in the caption to redeem this reward.</string>
-    <string name="pd_claim_info_check_in">Your check-in or photo must contain %s in the caption to redeem this reward.</string>
+    <string name="pd_claim_info_check_in">You check-in must be at a %s location to redeem this reward</string>
+
+    <string name="pd_claim_info_activity">Your check-in or photo must contain %s in the caption to redeem this reward.</string>
+
     <string name="pd_claim_change_photo">Change Photo</string>
     <string name="pd_claim_insta_not_installed">It appears that you do not have Instagram installed. You will now be directed to the Play Store to download the Instagram App</string>
+    <string name="pd_claim_facebook_not_installed">Facebook not installed\n</string>
+    <string name="pd_claim_pin">📍 </string>
+
+
     <string name="pd_twitter_error">Twitter error</string>
     <string name="pd_tweet_failed_to_send">Tweet failed to send</string>
 
     <string name="pd_facebook_not_installed_heading">Facebook not installed</string>
     <string name="pd_facebook_not_installed">Make your post on Facebook, making sure to include the hashtag %s. Then use the scan feature on the previous screen to claim your reward.</string>
     <string name="pd_facebook_not_installed2">Make your post on Facebook, making sure to include the required hashtag. Then use the scan feature on the previous screen to claim your reward.</string>
+    <string name="pd_facebook_not_check_in">Check in to %s on Facebook. Then use the scan feature on the previous screen to claim your reward.</string>
 
 
     <string name="pd_facebook_tutorial_heading_photo">Share your photo</string>
@@ -286,6 +311,8 @@
 
     <string name="pd_facebook_tutorial_1">Your post must include the hashtag %s, or you will be unable to claim your reward.</string>
     <string name="pd_facebook_tutorial_2">Your post must include the specified hashtag, or you will be unable to claim your reward.</string>
+
+    <string name="pd_facebook_tutorial_check_in">You must check-in at a %s location, or you will be unable to claim your reward.</string>
 
 
     <string-array name="pd_sociallogin_title">

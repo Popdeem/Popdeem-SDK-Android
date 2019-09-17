@@ -452,7 +452,7 @@
                     android:padding="10dp"
                     android:text="@string/pd_claim_get_reward_text"
                     android:textAllCaps="false"
-                    android:textColor="@color/pd_claim_share_button_text_color"
+                    android:textColor="@color/pd_primary_text_color"
                     android:textSize="16sp" />
 
 
@@ -486,7 +486,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:radius="8dp"
-                android:color="@color/pd_toolbar_color"
+                android:color="@color/pd_dots_color"
                 app:dd_numDots="3"
                 app:dd_scaleMultiplier="1.5"
                 app:dd_animationDuration="500"
@@ -594,7 +594,7 @@
                     android:id="@+id/pd_verify_proceed_button"
                     android:visibility="gone"
                     android:background="@drawable/pd_rounded_button"
-                    android:textColor="@color/pd_toolbar_text_color"
+                    android:textColor="@color/pd_primary_text_color"
                     android:text="@string/pd_claim_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -603,7 +603,7 @@
                     android:id="@+id/pd_verify_back_button"
                     android:visibility="gone"
                     android:background="@drawable/pd_button_rounded_rect_primary"
-                    android:textColor="@color/pd_toolbar_color"
+                    android:textColor="@color/pd_primary_text_color"
                     android:text="@string/pd_claim_back_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -649,6 +649,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
+                    android:id="@+id/pd_claim_not_here_text"
                     android:layout_toEndOf="@id/pd_claim_not_here_tick_image_view"
                     android:layout_toRightOf="@id/pd_claim_not_here_tick_image_view"
                     android:text="@string/pd_claim_verify_location_failed_text"

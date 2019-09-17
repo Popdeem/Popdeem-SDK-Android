@@ -28,11 +28,13 @@ import com.popdeem.sdk.core.utils.PDSocialUtils;
 import com.popdeem.sdk.uikit.widget.PDUIBezelImageView;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.wang.avi.AVLoadingIndicatorView;
+import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import java.util.List;
 
 import io.realm.Realm;
 
+import static com.popdeem.sdk.core.model.PDReward.PD_REWARD_ACTION_CHECKIN;
 import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_FACEBOOK;
 import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_INSTAGRAM;
 import static com.popdeem.sdk.core.model.PDReward.PD_SOCIAL_MEDIA_TYPE_TWITTER;
@@ -51,6 +53,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
     private LinearLayout PDScanView, PDScanSuccess, PDScanFailure;
     private AVLoadingIndicatorView indicatorView;
     private PDBGScanResponseModel pdbgScanResponseModel;
+    private DilatingDotsProgressBar dotProgress;
 
 
     @Override
@@ -60,6 +63,10 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         setTitle(R.string.pd_scan_title);
 
         PDScanView = (LinearLayout) findViewById(R.id.pd_scan);
+
+        //todo: put in activity change here
+
+
         PDScanSuccess = (LinearLayout) findViewById(R.id.pd_scan_success);
         PDScanFailure = (LinearLayout) findViewById(R.id.pd_scan_failure);
 
@@ -72,6 +79,7 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
         indicatorView = (AVLoadingIndicatorView) PDScanView.findViewById(R.id.av_indicator);
         indicatorView.smoothToShow();
+
 
         scan();
     }
@@ -129,7 +137,11 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         PDScanSuccess.setVisibility(View.VISIBLE);
 
         TextView topLabel = (TextView) PDScanSuccess.findViewById(R.id.pd_success_title);
-        topLabel.setText(String.format(getString(R.string.pd_scan_success_label), pdbgScanResponseModel.getSocialName(), mReward.getGlobalHashtag()));
+        if(mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+            topLabel.setText(String.format(getString(R.string.pd_scan_success_label_check_in), pdbgScanResponseModel.getSocialName(), getResources().getString(R.string.LOCATION_NAME)));
+        }else{
+            topLabel.setText(String.format(getString(R.string.pd_scan_success_label), pdbgScanResponseModel.getSocialName(), mReward.getGlobalHashtag()));
+        }
 
 
         //profile photo
@@ -145,17 +157,27 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
 
         //user name
         TextView userSocialName = (TextView) PDScanSuccess.findViewById(R.id.pd_social_user_name);
-        userSocialName.setText(pdbgScanResponseModel.getSocialName());
+
 
 
         //media image
         ImageView mediaImage = (ImageView) PDScanSuccess.findViewById(R.id.image_media_url);
-        Glide.with(this)
-                .load(pdbgScanResponseModel.getMediaUrl())
-                .fitCenter()
-                .dontAnimate()
-                .into(mediaImage);
+        if(mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)){
 
+            userSocialName.setText(pdbgScanResponseModel.getSocialName() + "\n" + getString(R.string.pd_claim_pin) + getString(R.string.LOCATION_NAME));
+            Glide.with(this)
+                    .load(R.drawable.pduikit_map_pin)
+                    .fitCenter()
+                    .dontAnimate()
+                    .into(mediaImage);
+        }else {
+            userSocialName.setText(pdbgScanResponseModel.getSocialName());
+            Glide.with(this)
+                    .load(pdbgScanResponseModel.getMediaUrl())
+                    .fitCenter()
+                    .dontAnimate()
+                    .into(mediaImage);
+        }
 
         Button claimButton = (Button) PDScanSuccess.findViewById(R.id.btn_claim);
         claimButton.setOnClickListener(this);
@@ -172,8 +194,12 @@ public class PDUIScanActivity extends PDBaseActivity implements View.OnClickList
         PDScanFailure.setVisibility(View.VISIBLE);
 
         TextView topLabel = (TextView) PDScanFailure.findViewById(R.id.pd_scan_label_fail);
-        topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), pdbgScanResponseModel.getSocialName(), mNetwork, mReward.getGlobalHashtag()));
 
+        if(mReward.getAction().equalsIgnoreCase(PD_REWARD_ACTION_CHECKIN)) {
+            topLabel.setText(String.format(getString(R.string.pd_scan_fail_label_check_in), pdbgScanResponseModel.getSocialName(), mNetwork, getResources().getString(R.string.LOCATION_NAME)));
+        }else{
+            topLabel.setText(String.format(getString(R.string.pd_scan_fail_label), pdbgScanResponseModel.getSocialName(), mNetwork, mReward.getGlobalHashtag()));
+        }
 
         Button returnButton = (Button) PDScanFailure.findViewById(R.id.btn_return_fail);
         returnButton.setOnClickListener(this);

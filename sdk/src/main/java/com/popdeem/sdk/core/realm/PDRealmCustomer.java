@@ -40,9 +40,17 @@ public class PDRealmCustomer extends RealmObject {
         PDRealmCustomer ret = new PDRealmCustomer();
 
         ret.setName(jsonObject.get(NAME).getAsString());
+
+        if(!jsonObject.get(FB_APP_ID).isJsonNull() && !jsonObject.get(FB_APP_ACCESS_TOKEN).isJsonNull() && !jsonObject.get(FACEBOOK_NAMESPACE).isJsonNull() && jsonObject.get(FB_APP_ID)!=null && jsonObject.get(FB_APP_ACCESS_TOKEN)!=null  && jsonObject.get(FACEBOOK_NAMESPACE)!=null) {
         ret.setFb_app_id(jsonObject.get(FB_APP_ID).getAsString());
         ret.setFb_app_access_token(jsonObject.get(FB_APP_ACCESS_TOKEN).getAsString());
         ret.setFacebook_namespace(jsonObject.get(FACEBOOK_NAMESPACE).getAsString());
+        }else{
+            ret.setFb_app_id("");
+            ret.setFb_app_access_token("");
+            ret.setFacebook_namespace("");
+        }
+
         if(!jsonObject.get(TWITTER_CONSUMER_KEY).isJsonNull() && !jsonObject.get(TWITTER_CONSUMER_KEY).isJsonNull() && jsonObject.get(TWITTER_CONSUMER_KEY)!=null && jsonObject.get(TWITTER_CONSUMER_SECRET)!=null) {
             ret.setTwitter_consumer_key(jsonObject.get(TWITTER_CONSUMER_KEY).getAsString());
             ret.setTwitter_consumer_secret(jsonObject.get(TWITTER_CONSUMER_SECRET).getAsString());
@@ -51,9 +59,17 @@ public class PDRealmCustomer extends RealmObject {
             ret.setTwitter_consumer_secret("");
         }
         ret.setTwitter_handle(jsonObject.get(TWITTER_HANDLE).getAsString());
+
+        if(!jsonObject.get(INSTAGRAM_CLIENT_ID).isJsonNull() && !jsonObject.get(INSTAGRAM_CLIENT_SECRET).isJsonNull() && jsonObject.get(INSTAGRAM_CLIENT_ID)!=null && jsonObject.get(INSTAGRAM_CLIENT_SECRET)!=null) {
         ret.setInstagram_client_id(jsonObject.get(INSTAGRAM_CLIENT_ID).getAsString());
         ret.setInstagram_client_secret(jsonObject.get(INSTAGRAM_CLIENT_SECRET).getAsString());
+        }else{
+            ret.setInstagram_client_id("'");
+            ret.setInstagram_client_secret("");
+        }
         ret.setCountdown_timer(jsonObject.get(COUNTDOWN_TIMER).getAsInt());
+
+
         if(jsonObject.get(INCREMENT_ADVOCACY_POINTS)!=null) {
             ret.setIncrement_advocacy_points(jsonObject.get(INCREMENT_ADVOCACY_POINTS).getAsInt());
         }else{

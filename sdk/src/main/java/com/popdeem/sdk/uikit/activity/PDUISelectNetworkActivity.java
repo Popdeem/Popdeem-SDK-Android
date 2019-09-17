@@ -1,9 +1,11 @@
 package com.popdeem.sdk.uikit.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,10 +71,15 @@ public class PDUISelectNetworkActivity extends PDBaseActivity implements View.On
 
     private void populateUIWithTag() {
         TextView titleLabel = (TextView) findViewById(R.id.title_label);
-        titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), mReward.getGlobalHashtag()));
-
         TextView noteLabel = (TextView) findViewById(R.id.note_label);
-        noteLabel.setText(String.format(getString(R.string.pd_scan_note), mReward.getGlobalHashtag()));
+        if(mReward.getAction().equalsIgnoreCase(PDReward.PD_REWARD_ACTION_CHECKIN)) {
+            titleLabel.setText(String.format(getString(R.string.pd_scan_title_label_check_in), getResources().getString(R.string.LOCATION_NAME)));
+            noteLabel.setText(String.format(getString(R.string.pd_scan_note_check_in), getResources().getString(R.string.LOCATION_NAME)));
+        }else {
+            titleLabel.setText(String.format(getString(R.string.pd_scan_title_label), mReward.getGlobalHashtag()));
+            noteLabel.setText(String.format(getString(R.string.pd_scan_note), mReward.getGlobalHashtag()));
+        }
+
     }
 
     private void checkSocialAccounts() {

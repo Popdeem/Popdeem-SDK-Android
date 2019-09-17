@@ -68,9 +68,9 @@
             android:theme="@style/PopdeemSDKTheme.DarkerWindowBackgroundTheme"
             />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />
+        <!--<meta-data-->
+            <!--android:name="io.fabric.ApiKey"-->
+            <!--android:value="45fed7d3502f01cf3bf0a4d210b335db6bc2848f" />-->
 
         <!--<receiver-->
             <!--android:name=".core.gcm.GCMBroadcastReceiver"-->

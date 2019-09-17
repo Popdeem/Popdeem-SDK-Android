@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.4.2'
+project.ext.popdeemSdkVersion = '1.5.0'
 
 
 android {
@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 46
-        versionName "1.4.2"
+        versionCode 50
+        versionName "1.5.0"
         consumerProguardFiles 'consumer-proguard-rules.pro'
 //        multiDexEnabled true
 
@@ -72,7 +72,8 @@ dependencies {
     api 'joda-time:joda-time:2.9.4'
     api 'com.soundcloud.android:android-crop:1.0.1@aar'
     api 'com.github.yalantis:ucrop:2.2.2'
-    api 'com.github.bumptech.glide:glide:3.8.0'
+//    api 'com.github.bumptech.glide:glide:3.8.0'
+    api 'com.github.bumptech.glide:glide:4.9.0'
 
 
     // Square

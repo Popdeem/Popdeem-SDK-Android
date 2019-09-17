@@ -28,6 +28,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/pd_settings_social_networks_header_color"
     tools:context="com.popdeem.sdk.uikit.activity.PDUISettingsActivity">
 
     <include layout="@layout/pd_toolbar" />
@@ -42,7 +43,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/pd_header_image" />
+            android:src="@drawable/pd_settings_header_image" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textColor="@color/pd_toolbar_text_color"
+                android:textColor="@color/pd_primary_text_color"
                 android:textSize="16sp"
                 tools:text="Users Name" />
 
@@ -80,7 +81,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/pd_settings_social_networks_heading_text"
-        android:textColor="@color/pd_settings_social_networks_header_color" />
+        android:textColor="@color/pd_primary_text_color" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pd_settings_recycler_view"
@@ -93,6 +94,6 @@
         android:layout_height="50dp"
         android:background="@null"
         android:text="@string/pd_log_out"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/pd_primary_text_color"/>
 
 </LinearLayout>

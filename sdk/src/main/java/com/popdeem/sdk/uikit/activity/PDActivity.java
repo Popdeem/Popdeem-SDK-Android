@@ -14,7 +14,7 @@ public class PDActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         FragmentManager fm = getFragmentManager();
-        fm.findFragmentByTag("PDUISocialMultiLoginFragment").onActivityResult(requestCode, resultCode, data);
+        fm.findFragmentByTag("PDUISocialMultiLoginFragment_V2").onActivityResult(requestCode, resultCode, data);
     }
 
 }
