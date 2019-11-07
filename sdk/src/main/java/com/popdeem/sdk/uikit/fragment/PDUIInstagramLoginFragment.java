@@ -176,7 +176,7 @@ public class PDUIInstagramLoginFragment extends Fragment {
         mWebView.clearCache(true);
         mWebView.clearHistory();
         mWebView.loadUrl(String.format(Locale.getDefault(),
-                "https://api.instagram.com/oauth/authorize/?client_id=%1s&redirect_uri=%2s&response_type=code&scope=public_content+likes+comments+basic",
+                "https://api.instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=code&scope=basic",
                 mClientId, mCallbackUrl));
     }
 
