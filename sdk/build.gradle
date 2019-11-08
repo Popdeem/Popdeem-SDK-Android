@@ -2,18 +2,18 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
-project.ext.popdeemSdkVersion = '1.5.2'
+project.ext.popdeemSdkVersion = '1.5.3'
 
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '28.0.3'
 
-    defaultConfig
+    defaultConfig {
         minSdkVersion 15
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 50
-        versionName "1.5.2"
+        versionName "1.5.3"
         consumerProguardFiles 'consumer-proguard-rules.pro'
 //        multiDexEnabled true
 
