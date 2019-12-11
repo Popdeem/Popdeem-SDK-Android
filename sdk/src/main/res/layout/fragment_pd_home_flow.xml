@@ -71,7 +71,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text=""
+                    android:text="@string/pd_home_banner_text"
                     android:textColor="@color/pd_home_flow_banner_text_color" />
 
             </RelativeLayout>
