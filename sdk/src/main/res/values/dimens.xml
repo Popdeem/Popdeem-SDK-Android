@@ -56,7 +56,7 @@
     <dimen name="pd_button_corner_radius">6dp</dimen>
     <dimen name="pd_button_height">50dp</dimen>
 
-    <dimen name="pd_login_button_text_size">186dp</dimen>
+    <dimen name="pd_login_button_text_size">186p</dimen>
     <dimen name="pd_login_text_size">16sp</dimen>
     <dimen name="pd_login_button_height">50dp</dimen>
 
