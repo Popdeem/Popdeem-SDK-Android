@@ -130,21 +130,24 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     private Handler handler;
     private Runnable runny;
     private boolean loggedIn = false;
+    private boolean isInternetAvailable = false;
     private PDLoginCallback callback;
 
     public PDUISocialMultiLoginFragment() {
     }
 
-    public static PDUISocialMultiLoginFragment newInstance(PDLoginCallback callBack) {
+    public static PDUISocialMultiLoginFragment newInstance(PDLoginCallback callBack, boolean isInternetAvailable) {
         PDUISocialMultiLoginFragment frag = new PDUISocialMultiLoginFragment();
+        frag.isInternetAvailable = isInternetAvailable;
         frag.callback = callBack;
         return frag;
     }
 
-    public static PDUISocialMultiLoginFragment newInstance(ArrayList<PDReward> rewards, PDLoginCallback callBack) {
+    public static PDUISocialMultiLoginFragment newInstance(ArrayList<PDReward> rewards, PDLoginCallback callBack, boolean isInternetAvailable) {
         PDUISocialMultiLoginFragment frag = new PDUISocialMultiLoginFragment();
         frag.rewards = rewards;
         frag.callback = callBack;
+        frag.isInternetAvailable = isInternetAvailable;
         return frag;
     }
 
@@ -369,12 +372,18 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
     ///////////////////////////////////////////////////
 
     private void setupSocialButtons() {
+
         mFacebookLoginButton = (Button) view.findViewById(R.id.pd_facebook_login_button);
         mFacebookLoginButton.setOnClickListener(this);
         mTwitterLoginButton = (Button) view.findViewById(R.id.pd_twitter_login_button);
         mTwitterLoginButton.setOnClickListener(this);
         mInstaLoginButton = (Button) view.findViewById(R.id.pd_instagram_login_button);
         mInstaLoginButton.setOnClickListener(this);
+        if(!isInternetAvailable){
+            mFacebookLoginButton.setVisibility(View.INVISIBLE);
+            mTwitterLoginButton.setVisibility(View.INVISIBLE);
+            mInstaLoginButton.setVisibility(View.INVISIBLE);
+        }
         mInstaLoginButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -447,6 +456,25 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             isTwitter = false;
             isInstagram = true;
             checkForLocationPermissionAndStartLocationManager();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    final AlertDialog.Builder alertadd = new AlertDialog.Builder(getContext());
+                    LayoutInflater factory = LayoutInflater.from(getContext());
+                    final View view = factory.inflate(R.layout.alert_pd_permission, null);
+                    Button button = view.findViewById(R.id.pd_instagram_permission);
+                    alertadd.setView(view);
+                    final AlertDialog dialog = alertadd.create();
+                    dialog.show();
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                }
+            });
         }
     }
 

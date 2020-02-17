@@ -35,66 +35,50 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:id="@+id/pd_social_login_header_image_view"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:id="@+id/pd_login_info_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintDimensionRatio="H,375:275"
-                    android:src="@drawable/pd_social_login_header_blue" />
+                    android:src="@drawable/pd_social_login_image_1" />
 
-                <LinearLayout
 
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintDimensionRatio="H,375:275"
-
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp">
-                    <FrameLayout
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
-
-                    <TextView
-
-                        android:background="@color/DEBUG_TRANS"
-                        android:id="@+id/pd_social_rewards_info_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center"
-                        android:minLines="3"
-                        android:text="@string/pd_social_login_body_text"
-                        android:textColor="@color/pd_login_body_text_color"
-                        android:textSize="@dimen/pd_login_text_size" />
-                </LinearLayout>
 
             </android.support.constraint.ConstraintLayout>
 
 
+        <TextView
+            android:id="@+id/pd_social_rewards_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:text="@string/pd_sociallogin_title"
+            android:textColor="#13673D"
+            android:textSize="22sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textFontWeight="700"/>
+        <TextView
+            android:id="@+id/pd_social_rewards_info_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="@string/pd_sociallogin_body"
+            android:textSize="17sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="20dp"/>
 
-        </RelativeLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
 
         <LinearLayout
             android:clipChildren="false"
@@ -178,18 +162,6 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/pd_social_rewards_title_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="TEXT TEXT TEXT"
-                    android:textColor="@color/pd_login_tagline_text_color"
-                    android:textSize="@dimen/social_login_header_text_size"
-                    android:textStyle="bold" />
-
 
 
             <FrameLayout
@@ -301,13 +273,10 @@
                 android:background="@color/clear"
                 android:text="@string/pd_connect_skip"
                 android:textSize="@dimen/pd_login_button_text_size"
-                android:padding="10dp"/>
+                android:padding="2dp"/>
 
         </LinearLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"/>
+
     </LinearLayout>
 
     <LinearLayout
