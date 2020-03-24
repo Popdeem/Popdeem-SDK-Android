@@ -227,17 +227,18 @@ public class PDSocialUtils {
         if (accessToken == null || accessToken.isEmpty()) {
             callback.success(false);
         } else {
-            PDAPIClient.instance().checkInstagramAccessToken(accessToken, new PDAPICallback<Boolean>() {
-                @Override
-                public void success(Boolean success) {
-                    callback.success(success);
-                }
-
-                @Override
-                public void failure(int statusCode, Exception e) {
-                    callback.success(false);
-                }
-            });
+            callback.success(true);
+//            PDAPIClient.instance().checkInstagramAccessToken(accessToken, new PDAPICallback<Boolean>() {
+//                @Override
+//                public void success(Boolean success) {
+//                    callback.success(success);
+//                }
+//
+//                @Override
+//                public void failure(int statusCode, Exception e) {
+//                    callback.success(false);
+//                }
+//            });
         }
     }
 

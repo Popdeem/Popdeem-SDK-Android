@@ -592,11 +592,9 @@ public class PDUISocialMultiLoginFragment_V2 extends Fragment implements View.On
     }
 
     private void registerInstagramAccount(PDInstagramResponse instagramResponse) {
-        PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
+        PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUserId(),
                 instagramResponse.getAccessToken(),
-                instagramResponse.getUser().getFullName(),
-                instagramResponse.getUser().getUsername(),
-                instagramResponse.getUser().getProfilePicture(),
+                "","","",
                 PD_API_CALLBACK);
     }
 
