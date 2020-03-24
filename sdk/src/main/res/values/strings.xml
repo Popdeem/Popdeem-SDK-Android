@@ -207,6 +207,7 @@
     <string name="pd_connect_instagram_text">Connect Instagram</string>
 
     <string name="pd_connect_skip">Skip</string>
+    <string name="pd_connect_continue">Continue</string>
 
     <string name="pd_log_out_facebook_text">Log out</string>
     <string name="pd_claim_facebook_button_text">Facebook</string>
@@ -367,7 +368,14 @@
     <string name="claim_button">Claim</string>
     <string name="cancel_button">Cancel</string>
     <string name="pd_entered_competition">You have been entered in this competition.</string>
+    <string name="pd_instagram_permission">Instagram Permissions</string>
+    <string name="pd_instagram_permission_description">Please ensure you give the following permissions to avail of Social Rewards</string>
+    <string name="btn_continue">Continue</string>
 
+    <string name="pd_sociallogin_title">CONNECT TO SOCIAL REWARDS</string>
+    <string name="pd_sociallogin_body">Connect to your social media accounts to Krispy Kreme to earn additional rewards!</string>
+    <string name="pd_sociallogin_title_no_internet">CONNECT SOCIAL MEDIA ACCOUNTS</string>
+    <string name="pd_sociallogin_body_no_internet">Go to the Social Rewards section of the app to connect your social media accounts</string>
 
     <!--<string name="pd_redeem_at_stores_label">Redeem at participating stores.</string>-->
     <!--<string name="title_activity_pduiwallet_image">Image</string>-->

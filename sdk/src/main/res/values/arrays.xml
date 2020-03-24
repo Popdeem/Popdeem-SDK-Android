@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string-array name="pd_login_images">
         <item>@drawable/pd_social_login_header</item>
     </string-array>
 
     <string-array name="pd_coupon_images">
-        <item>@drawable/ambassador_icon</item>
+        <item>@drawable/pd_gratitude_coupon_image_1</item>
     </string-array>
 
     <string-array name="pd_connect_images">
-        <item>@drawable/ambassador_icon</item>
+        <item>@drawable/pd_gratitude_coupon_image_1</item>
     </string-array>
 
     <string-array name="pd_credit_images">
-        <item>@drawable/ambassador_icon</item>
+        <item>@drawable/pd_gratitude_coupon_image_1</item>
     </string-array>
 
     <string-array name="pd_sweepstake_images">
-        <item>@drawable/ambassador_icon</item>
+        <item>@drawable/pd_gratitude_coupon_image_1</item>
     </string-array>
 </resources>

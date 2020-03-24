@@ -30,8 +30,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -43,7 +44,6 @@ import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.popdeem.sdk.PDFacebookCallback;
 import com.popdeem.sdk.PDLoginCallback;
@@ -51,9 +51,6 @@ import com.popdeem.sdk.R;
 import com.popdeem.sdk.core.api.PDAPICallback;
 import com.popdeem.sdk.core.api.PDAPIClient;
 import com.popdeem.sdk.core.api.PDAPIConfig;
-import com.popdeem.sdk.core.api.abra.PDAbraConfig;
-import com.popdeem.sdk.core.api.abra.PDAbraLogEvent;
-import com.popdeem.sdk.core.api.abra.PDAbraProperties;
 import com.popdeem.sdk.core.api.response.PDBasicResponse;
 import com.popdeem.sdk.core.exception.PopdeemSDKNotInitializedException;
 import com.popdeem.sdk.core.firebase.PDFirebaseMessagingService;
@@ -81,7 +78,6 @@ import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.activity.PDUIHomeFlowActivity;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
-import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.fragment.dialog.PDUINotificationDialogFragment;
 import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment;
 import com.popdeem.sdk.uikit.fragment.multilogin.PDUISocialMultiLoginFragment_V2;
@@ -133,13 +129,12 @@ public final class PopdeemSDK {
      * Initialize Popdeem SDK
      *
      * @param application Application context
-     *
      */
     public static void initializeSDK(@NonNull final Application application) {
         initializeSDK(application, PD_PROD_API_ENDPOINT);
     }
 
-    public static void setLoginVersion(int version){
+    public static void setLoginVersion(int version) {
         loginVersion = version;
     }
 
@@ -152,16 +147,16 @@ public final class PopdeemSDK {
 
         }
     };
+
     /**
      * Initialize Popdeem SDK
      *
      * @param application Application context
-     * @param enviroment Popdeem enviroment PD_PROD_API_ENDPOINT, PD_STAGING_API_ENDPOINT
-     *
+     * @param enviroment  Popdeem enviroment PD_PROD_API_ENDPOINT, PD_STAGING_API_ENDPOINT
      */
     public static void initializeSDK(@NonNull final Application application, String enviroment) {
 
-        application.registerReceiver(mLoggedInBroadcastReceiver , new IntentFilter(PD_LOGGED_IN_RECEIVER_FILTER));
+        application.registerReceiver(mLoggedInBroadcastReceiver, new IntentFilter(PD_LOGGED_IN_RECEIVER_FILTER));
 
         PDAPIConfig.PD_API_ENDPOINT = enviroment;
         sApplication = application;
@@ -173,7 +168,7 @@ public final class PopdeemSDK {
         PDRealmUtils.initRealmDB(application);
 
         TwitterAuthConfig authConfig = PDSocialUtils.getTwitterAuthConfig(application.getApplicationContext());
-        if(authConfig!=null) {
+        if (authConfig != null) {
             TwitterConfig config = new TwitterConfig.Builder(application)
                     .logger(new DefaultLogger(Log.DEBUG))
                     .twitterAuthConfig(authConfig)
@@ -196,7 +191,7 @@ public final class PopdeemSDK {
             @Override
             public void success(JsonObject jsonObject) {
                 Log.i("JsonObject", "success: ");
-                if(jsonObject.has("customer")){
+                if (jsonObject.has("customer")) {
                     JsonObject customer = jsonObject.getAsJsonObject("customer");
                     PDRealmCustomer realmCustomer = PDRealmCustomer.fromJson(customer);
 
@@ -262,12 +257,9 @@ public final class PopdeemSDK {
         });
 
 
-
-
-
     }
 
-    private static void initFromCustomer(Application application){
+    private static void initFromCustomer(Application application) {
         // Init Facebook
 //        FacebookSdk.sdkInitialize(application);
 //        PDSocialUtils.initFacebook(application);
@@ -278,8 +270,6 @@ public final class PopdeemSDK {
         // Init Instagram
         PDSocialUtils.initInstagram(application);
     }
-
-
 
 
     /**
@@ -458,7 +448,7 @@ public final class PopdeemSDK {
      * Show social login flow.
      *
      * @param activity FragmentActivity / AppCompatActivity initiating the social login flow
-     * @param rewards Rewards to add to social login screen
+     * @param rewards  Rewards to add to social login screen
      */
     public static void showSocialLogin(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack) {
         if (!isPopdeemSDKInitialized()) {
@@ -469,18 +459,20 @@ public final class PopdeemSDK {
 
     /**
      * Show multi-login flow
+     *
      * @param activity FragmentActivity / AppCompatActivity initiating the social multi-login flow
      */
-    public static void showSocialMultiLogin(final FragmentActivity activity, PDLoginCallback callBack){
+    public static void showSocialMultiLogin(final FragmentActivity activity, PDLoginCallback callBack) {
         showSocialMultiLogin(activity, null, callBack);
     }
 
     /**
      * Show multi-login flow
+     *
      * @param activity FragmentActivity / AppCompatActivity initiating the social multi-login flow
-     * @param rewards Rewards to add to social login screen
+     * @param rewards  Rewards to add to social login screen
      */
-    public static void showSocialMultiLogin(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack){
+    public static void showSocialMultiLogin(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
@@ -542,7 +534,7 @@ public final class PopdeemSDK {
 
     }
 
-    public static void enableSocialMultiLogin(@NonNull Class activityClass, final int numberOfPrompts, Boolean showRewardsAfterLogin){
+    public static void enableSocialMultiLogin(@NonNull Class activityClass, final int numberOfPrompts, Boolean showRewardsAfterLogin) {
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
         }
@@ -553,7 +545,7 @@ public final class PopdeemSDK {
     }
 
 
-    public static void enableSocialMultiLogin(final int numberOfPrompts, boolean showOnlyOnce, Boolean showRewardsAfterLogin){
+    public static void enableSocialMultiLogin(final int numberOfPrompts, boolean showOnlyOnce, Boolean showRewardsAfterLogin) {
         showHome = showRewardsAfterLogin;
         if (!isPopdeemSDKInitialized()) {
             throw new PopdeemSDKNotInitializedException("Popdeem SDK is not initialized. Be sure to call PopdeemSDK.initializeSDK(Application application) in your Application class before using the SDK.");
@@ -565,8 +557,6 @@ public final class PopdeemSDK {
         PDPreferencesUtils.clearSocialLoginActivityName(sApplication);
         PDPreferencesUtils.setMultiLoginEnabled(sApplication, true);
     }
-
-
 
 
     public static void setFacebookCredentials(String facebookAccessToken, String facebookId, final PDFacebookCallback callback) {
@@ -602,12 +592,12 @@ public final class PopdeemSDK {
             }
         });
     }
-    public static void setFacebookCredentials(String facebookAccessToken, String facebookId, PDAPICallback<PDUser> callback){
+
+    public static void setFacebookCredentials(String facebookAccessToken, String facebookId, PDAPICallback<PDUser> callback) {
 
         PDAPIClient.instance().registerUserWithFacebook(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), callback);
 
     }
-
 
 
     /**
@@ -678,25 +668,26 @@ public final class PopdeemSDK {
     }
 
     /**
-    * Push the Social Login Flow Fragment to the supplied Activity
-    *
-    * @param activity FragmentActivity / AppCompatActivity to show social login flow in
-    * @param rewards Rewards to add to social login screen
-    */
+     * Push the Social Login Flow Fragment to the supplied Activity
+     *
+     * @param activity FragmentActivity / AppCompatActivity to show social login flow in
+     * @param rewards  Rewards to add to social login screen
+     */
     private static void pushSocialLoginFragmentToActivity(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        if(rewards!=null && rewards.size()>0){
+        if (rewards != null && rewards.size() > 0) {
             fragmentManager.beginTransaction()
                     .add(android.R.id.content, PDUISocialLoginFragment.newInstance(rewards, callBack))
                     .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                     .commit();
-        }else{
+        } else {
             fragmentManager.beginTransaction()
                     .add(android.R.id.content, PDUISocialLoginFragment.newInstance())
                     .addToBackStack(PDUISocialLoginFragment.class.getSimpleName())
                     .commit();
         }
     }
+
     /**
      * Manually call the Social Login Flow Fragment to the supplied Activity using
      * the number of prompts set in the enableMultiSocialLogin or enableSocialLogin
@@ -704,7 +695,7 @@ public final class PopdeemSDK {
      * @param activity FragmentActivity / AppCompatActivity to show social login flow in
      * @param callback set version of the social login screen to show. Currently version 1 or 2
      */
-    public static void  forcePresentSocialLogin(final FragmentActivity activity, PDLoginCallback callback) {
+    public static void forcePresentSocialLogin(final FragmentActivity activity, PDLoginCallback callback) {
 
         if (!PDPreferencesUtils.getIsMultiLoginEnabled(sApplication))
             showSocialLogin((FragmentActivity) activity, null, callback);
@@ -719,9 +710,9 @@ public final class PopdeemSDK {
      *
      * @param activity FragmentActivity / AppCompatActivity to show social login flow in
      */
-    public static void  presentSocialLogin(final FragmentActivity activity, PDLoginCallback callback) {
+    public static void presentSocialLogin(final FragmentActivity activity, PDLoginCallback callback) {
         if ((activity instanceof AppCompatActivity || activity instanceof FragmentActivity) && PDSocialUtils.shouldShowSocialLogin(activity)) {
-            if(PDPreferencesUtils.getShowOnlyOnce(activity) && PDPreferencesUtils.getSocialShown(activity)){
+            if (PDPreferencesUtils.getShowOnlyOnce(activity) && PDPreferencesUtils.getSocialShown(activity)) {
                 return;
             }
             PDLog.i(PopdeemSDK.class, "showing social login");
@@ -764,38 +755,37 @@ public final class PopdeemSDK {
     }
 
 
-     /**
+    /**
      * Push the Social Multi-Login Flow Fragment to the supplied Activity
      *
      * @param activity FragmentActivity / AppCompatActivity to show social login flow in
-     * @param rewards Rewards to add to social login screen
+     * @param rewards  Rewards to add to social login screen
      */
-    public static void  pushSocialMultiLoginFragmentToActivity(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack) {
+    public static void pushSocialMultiLoginFragmentToActivity(final FragmentActivity activity, ArrayList<PDReward> rewards, PDLoginCallback callBack) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
-
-        if(loginVersion == 2) {
+        if (loginVersion == 2) {
             if (rewards != null && rewards.size() > 0) {
-                PDUISocialMultiLoginFragment_V2 frag = PDUISocialMultiLoginFragment_V2.newInstance(rewards, callBack);
-            fragmentManager.beginTransaction()
-                    .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment_V2")
+                PDUISocialMultiLoginFragment_V2 frag = PDUISocialMultiLoginFragment_V2.newInstance(rewards, callBack, isOnline());
+                fragmentManager.beginTransaction()
+                        .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment_V2")
 //                .addToBackStack(PDUISocialMultiLoginFragment_V2.class.getSimpleName())
-                    .addToBackStack("PDUISocialMultiLoginFragment_V2")
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_out_right, R.anim.slide_in_left)
-                    .commit();
+                        .addToBackStack("PDUISocialMultiLoginFragment_V2")
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_out_right, R.anim.slide_in_left)
+                        .commit();
             } else {
 
-                PDUISocialMultiLoginFragment_V2 frag = PDUISocialMultiLoginFragment_V2.newInstance(callBack);
-            fragmentManager.beginTransaction()
-                    .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment_V2")
+                PDUISocialMultiLoginFragment_V2 frag = PDUISocialMultiLoginFragment_V2.newInstance(callBack,isOnline());
+                fragmentManager.beginTransaction()
+                        .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment_V2")
 //                .addToBackStack(PDUISocialMultiLoginFragment_V2.class.getSimpleName())
-                    .addToBackStack("PDUISocialMultiLoginFragment_V2")
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_out_right, R.anim.slide_in_left)
-                    .commit();
+                        .addToBackStack("PDUISocialMultiLoginFragment_V2")
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_out_right, R.anim.slide_in_left)
+                        .commit();
             }
-        }else{
+        } else {
 
             if (rewards != null && rewards.size() > 0) {
-                PDUISocialMultiLoginFragment frag = PDUISocialMultiLoginFragment.newInstance(rewards, callBack);
+                PDUISocialMultiLoginFragment frag = PDUISocialMultiLoginFragment.newInstance(rewards, callBack, isOnline());
                 fragmentManager.beginTransaction()
                         .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment")
 //                .addToBackStack(PDUISocialMultiLoginFragment_V2.class.getSimpleName())
@@ -804,7 +794,7 @@ public final class PopdeemSDK {
                         .commit();
             } else {
 
-                PDUISocialMultiLoginFragment frag = PDUISocialMultiLoginFragment.newInstance( callBack);
+                PDUISocialMultiLoginFragment frag = PDUISocialMultiLoginFragment.newInstance(callBack,isOnline());
                 fragmentManager.beginTransaction()
                         .replace(android.R.id.content, frag, "PDUISocialMultiLoginFragment")
 //                .addToBackStack(PDUISocialMultiLoginFragment_V2.class.getSimpleName())
@@ -813,6 +803,8 @@ public final class PopdeemSDK {
                         .commit();
             }
         }
+
+
     }
 
     public static void pushCordovaLogin(final Activity activity, int numberOfPrompts) {
@@ -856,11 +848,11 @@ public final class PopdeemSDK {
      *
      * @param context Context to show social login flow in
      */
-    public static void handleHomeFlow(Context context){
-        if(showHome) {
+    public static void handleHomeFlow(Context context) {
+        if (showHome) {
             Intent intent = new Intent(context, PDUIHomeFlowActivity.class);
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            }
             sApplication.startActivity(intent);
         }
@@ -982,5 +974,25 @@ public final class PopdeemSDK {
         public void onActivityDestroyed(Activity activity) {
         }
     };
+
+    private static boolean isInternetAvailableOnSystem(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private static boolean isOnline() {
+        try {
+            String command = "ping -c 1 google.com";
+            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 }

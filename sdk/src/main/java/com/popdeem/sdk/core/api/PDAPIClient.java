@@ -355,8 +355,9 @@ public class PDAPIClient {
     public void connectWithInstagramAccount(@NonNull String userId, @NonNull String accessToken, @NonNull String screenName, @NonNull final PDAPICallback<PDUser> callback) {
         JsonObject instagramObject = new JsonObject();
         instagramObject.addProperty("id", userId);
-        instagramObject.addProperty("access_token", accessToken);
+        instagramObject.addProperty("short_term_token", accessToken);
         instagramObject.addProperty("screen_name", screenName);
+        instagramObject.addProperty("useBasicDisplayAPI", true);
 
         JsonObject userJson = new JsonObject();
         userJson.add("instagram", instagramObject);
@@ -403,9 +404,10 @@ public class PDAPIClient {
 
         JsonObject instaBody = new JsonObject();
         instaBody.addProperty("id", instagramId);
-        instaBody.addProperty("access_token", accessToken);
+        instaBody.addProperty("short_term_token", accessToken);
         instaBody.addProperty("full_name", fullname);
         instaBody.addProperty("profile_picture", profilePicture);
+        instaBody.addProperty("useBasicDisplayAPI",true);
 
         userBody.add("instagram", instaBody);
 

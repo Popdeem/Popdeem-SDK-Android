@@ -387,17 +387,16 @@ public class PDUIConnectSocialAccountFragment extends Fragment implements View.O
         if (userDetails == null) {
             //register
             Log.i(TAG, "connectInstagramAccount: Registering user via Instagram");
-            PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUser().getId(),
+            PDAPIClient.instance().registerWithInstagramId(instagramResponse.getUserId(),
                     instagramResponse.getAccessToken(),
-                    instagramResponse.getUser().getFullName(),
-                    instagramResponse.getUser().getUsername(),
-                    instagramResponse.getUser().getProfilePicture(),
+                    "","","",
                     PD_API_CALLBACK);
         } else {
             //connect
             Log.i(TAG, "connectInstagramAccount: Connecting user via Instagram");
-            PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUser().getId(),
-                    instagramResponse.getAccessToken(), instagramResponse.getUser().getUsername(), PD_API_CALLBACK);
+            PDAPIClient.instance().connectWithInstagramAccount(instagramResponse.getUserId(),
+                    instagramResponse.getAccessToken(),
+                    "", PD_API_CALLBACK);
         }
     }
 
