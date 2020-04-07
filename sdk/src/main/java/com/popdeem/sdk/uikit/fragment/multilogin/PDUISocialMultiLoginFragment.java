@@ -394,9 +394,9 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             }
         });
 
-//        if(!PDSocialUtils.usesTwitter(getContext())){
-//            mTwitterLoginButton.setVisibility(View.GONE);
-//        }
+        if(!PDSocialUtils.usesTwitter(getContext())){
+            mTwitterLoginButton.setVisibility(View.GONE);
+        }
 
         mProgressFacebook = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
         progressView = (LinearLayout) view.findViewById(R.id.pd_progress_layout);
