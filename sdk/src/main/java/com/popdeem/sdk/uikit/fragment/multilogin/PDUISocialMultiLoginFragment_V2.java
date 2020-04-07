@@ -161,6 +161,8 @@ public class PDUISocialMultiLoginFragment_V2 extends Fragment implements View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_pd_social_multi_login_v2, container, false);
 
+        TextView titleTextView = view.findViewById(R.id.pd_social_rewards_title_text_view);
+        TextView infoTextView = view.findViewById(R.id.pd_social_rewards_info_text_view);
 
         Log.i(TAG, "onCreateView: " + PDPreferencesUtils.getLoginUsesCount(getActivity()));
         PDAbraLogEvent.log(PDAbraConfig.ABRA_EVENT_PAGE_VIEWED, new PDAbraProperties.Builder()
@@ -203,18 +205,14 @@ public class PDUISocialMultiLoginFragment_V2 extends Fragment implements View.On
                     }
 
                     // Reward Description
-                    TextView textView = (TextView) view.findViewById(R.id.pd_reward_offer_text_view);
-                    textView.setText(rewards.get(i).getDescription());
+                     infoTextView.setText(rewards.get(i).getRules());
 
                     // Rules
-                    textView = (TextView) view.findViewById(R.id.pd_reward_item_rules_text_view);
-                    textView.setText(rewards.get(i).getRules());
+                    titleTextView.setText(rewards.get(i).getDescription());
                     if (rewards.get(i).getRules() == null || rewards.get(i).getRules().isEmpty()) {
-                        textView.setVisibility(View.GONE);
+                        titleTextView.setVisibility(View.GONE);
                     }
                     view.findViewById(R.id.pd_login_reward_layout).setVisibility(View.VISIBLE);
-                    view.findViewById(R.id.pd_social_rewards_info_text_view).setVisibility(View.GONE);
-
                     break;
                 }
             }
@@ -224,7 +222,7 @@ public class PDUISocialMultiLoginFragment_V2 extends Fragment implements View.On
         int variationNumImages = sp.getInt("variation_num_images_login", 0);
 
         TypedArray imagesArray = getResources().obtainTypedArray(R.array.pd_login_images);
-        ImageView infoImage = view.findViewById(R.id.pd_login_info_image);
+        ImageView infoImage = view.findViewById(R.id.pd_social_login_header_image_view);
 //        if (imagesArray.length() == 1) {
 //            int id = imagesArray.getResourceId(0, R.drawable.pd_social_login_header);
 //            loginImage.setImageResource(id);
@@ -232,11 +230,10 @@ public class PDUISocialMultiLoginFragment_V2 extends Fragment implements View.On
 //            int showNum = variationNumImages % imagesArray.length();
 //            loginImage.setImageResource(R.drawable.pd_social_login_image_1);
 //        }
-        TextView titleTextView = view.findViewById(R.id.pd_social_rewards_title_text_view);
-        TextView descriptionTextView = view.findViewById(R.id.pd_social_rewards_info_text_view);
+
         if(!isInternetAvailable){
             titleTextView.setText(R.string.pd_sociallogin_title_no_internet);
-            descriptionTextView.setText(R.string.pd_sociallogin_body_no_internet);
+            infoTextView.setText(R.string.pd_sociallogin_body_no_internet);
         }
 
 

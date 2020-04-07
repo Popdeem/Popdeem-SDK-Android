@@ -32,7 +32,6 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -64,7 +63,6 @@ import com.popdeem.sdk.core.location.PDLocationManager;
 import com.popdeem.sdk.core.model.PDInstagramResponse;
 import com.popdeem.sdk.core.model.PDReward;
 import com.popdeem.sdk.core.model.PDUser;
-import com.popdeem.sdk.core.realm.PDRealmCustomer;
 import com.popdeem.sdk.core.realm.PDRealmGCM;
 import com.popdeem.sdk.core.realm.PDRealmUserDetails;
 import com.popdeem.sdk.core.utils.PDLog;
@@ -73,10 +71,8 @@ import com.popdeem.sdk.core.utils.PDUtils;
 import com.popdeem.sdk.uikit.fragment.PDUIInstagramLoginFragment;
 import com.popdeem.sdk.uikit.fragment.PDUIRewardsFragment;
 import com.popdeem.sdk.uikit.fragment.PDUISocialLoginFragment;
-import com.popdeem.sdk.uikit.fragment.dialog.PDUIGratitudeDialog;
 import com.popdeem.sdk.uikit.utils.PDUIColorUtils;
 import com.popdeem.sdk.uikit.utils.PDUIDialogUtils;
-import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -398,9 +394,9 @@ public class PDUISocialMultiLoginFragment extends Fragment implements View.OnCli
             }
         });
 
-        if(!PDSocialUtils.usesTwitter(getContext())){
-            mTwitterLoginButton.setVisibility(View.GONE);
-        }
+//        if(!PDSocialUtils.usesTwitter(getContext())){
+//            mTwitterLoginButton.setVisibility(View.GONE);
+//        }
 
         mProgressFacebook = (ProgressBar) view.findViewById(R.id.pd_progress_bar);
         progressView = (LinearLayout) view.findViewById(R.id.pd_progress_layout);
